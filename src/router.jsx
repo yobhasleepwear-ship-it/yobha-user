@@ -19,6 +19,7 @@ const FAQ = lazy(() => import("./pages/faq/faq"))
 const PrivacyPolicy = lazy(() => import("./pages/privacy-policy/privacy-policy"));
 const TermsConditions = lazy(() => import("./pages/terms-conditions/terms-conditions"));
 const ReturnPolicy = lazy(() => import("./pages/return-policy/return-policy"));
+const Buyback = lazy(() => import("./pages/buyback/buyback"))
 const Router = () => {
   const routes = [
     { path: "/", element: <Navigate to="/home" replace /> },
@@ -38,7 +39,8 @@ const Router = () => {
     { path: '/faq', element: <FAQ /> },
     { path: '/privacy-policy', element: <PrivacyPolicy /> },
     { path: '/terms-conditions', element: <TermsConditions /> },
-    { path: '/return-policy', element: <ReturnPolicy /> }
+    { path: '/return-policy', element: <ReturnPolicy /> },
+    {path:'/buyback',element:<Buyback/>}
   ];
 
   return (

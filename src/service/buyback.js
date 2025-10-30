@@ -1,0 +1,21 @@
+import * as axiosService from "./axiosService";
+
+export const createBuyback = async (data) => {
+  try {
+    const response = await axiosService.Post("/buyback/create", data);
+    return response.data;
+  } catch (error) {
+    console.error("createBuyback error:", error);
+    throw error;
+  }
+};
+
+export const getBuybackDetails = async ()=>{
+    try{
+        const response = await axiosService.Get("/buyback/getBuyBackDetails")
+        return response
+    }
+    catch(err){
+        console.error(err)
+    }
+}

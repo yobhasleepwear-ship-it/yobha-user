@@ -250,7 +250,7 @@ const accessoriesItems = [
 
   return (
     <header
-      className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/50"
+      className=" left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/50"
       style={{
         fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
       }}
@@ -423,6 +423,10 @@ const accessoriesItems = [
                title={t("navbar.wishlist.tooltip." + i18n.language)}
              >
                <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
+             </Link>
+             <Link
+             to="/buyback">
+             Buyback
              </Link>
 
             {/* Account Icon - Luxury Design */}
