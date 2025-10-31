@@ -250,7 +250,7 @@ const accessoriesItems = [
 
   return (
     <header
-      className=" left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/50"
+      className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/50"
       style={{
         fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
       }}
@@ -565,13 +565,13 @@ const accessoriesItems = [
 
       {/* Sidebar */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-50 flex">
+        <div className="fixed inset-0 z-[9999] flex">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/50  z-[9998]"
             onClick={() => setSidebarOpen(false)}
           ></div>
 
-          <div className="relative w-72 h-screen bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col">
+          <div className="relative w-72 h-screen bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[9999]">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <img
                 src={logoImage}

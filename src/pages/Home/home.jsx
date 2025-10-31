@@ -45,7 +45,7 @@ const HomePage = () => {
     <div className="relative min-h-screen bg-[#FAF6F2]">
 
       {/* Hero Section */}
-      <section className="relative h-screen w-full flex items-center justify-center text-center overflow-hidden">
+      <section className="relative h-screen w-full flex items-center justify-center text-center overflow-hidden z-0">
 
         {/* Background Video */}
         <video
@@ -54,7 +54,7 @@ const HomePage = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover z-0"
           key={isPortrait ? 'portrait' : 'landscape'}
         />
 
