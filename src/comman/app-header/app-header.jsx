@@ -571,7 +571,10 @@ const accessoriesItems = [
             onClick={() => setSidebarOpen(false)}
           ></div>
 
-          <div className="relative w-72 h-screen bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[9999]">
+          <div 
+            className="relative w-72 h-screen bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[9999]"
+            style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+          >
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <img
                 src={logoImage}
