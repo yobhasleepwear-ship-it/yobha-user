@@ -444,11 +444,11 @@ useEffect(() => {
   return (
     <div
       className="min-h-screen bg-premium-cream"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
     >
       {/* Filter Sidebar - Opens from left */}
       {showMobileFilters && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-[1300]">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setShowMobileFilters(false)}
