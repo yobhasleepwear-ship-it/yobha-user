@@ -284,36 +284,19 @@ const WishlistPage = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-auto space-y-2">
-                      {/* Move to Cart Button */}
-                      {/* <button
-                        onClick={() => moveToCart(item)}
-                        disabled={!product.variantSku} // cleaner check
-                        className={`w-full py-3 font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors
-    ${product.variantSku
-                            ? 'bg-black text-white hover:bg-gray-900'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          }`}
-                      >
-                        <ShoppingBag size={16} strokeWidth={1.5} />
-                        Move to Cart
-                      </button> */}
+                  <div className="mt-auto space-y-2">
+  {/* Notify Me Button */}
+  <button
+    disabled
+    className="w-full py-3 bg-premium-beige text-black border border-text-light/30 
+               font-semibold text-xs uppercase tracking-wider flex items-center 
+               justify-center gap-2 cursor-not-allowed opacity-60"
+  >
+    <Bell size={14} strokeWidth={1.5} />
+    Notify Me
+  </button>
+</div>
 
-
-                      {/* Notify When Back in Stock */}
-                      {/* <button
-                        onClick={() => toggleNotification(item.id)}
-                        className={`w-full py-2 text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors ${item.notifyWhenBackInStock
-                          ? 'bg-premium-beige text-black border-2 border-black'
-                          : 'border-2 border-text-light/30 text-text-medium hover:border-black hover:text-black'
-                          }`}
-                      >
-                        <Bell size={14} strokeWidth={1.5} />
-                        {/* {item.notifyWhenBackInStock ? 'Notifications On' : 'Notify Me'}
-                         */}
-                         {/* {item?.name}
-                      </button> */} 
-                    </div>
                   </div>
                 </div>
               );
