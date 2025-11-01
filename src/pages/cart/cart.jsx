@@ -27,6 +27,7 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   console.log(cartItems, "carrt")
   const [isLoading, setIsLoading] = useState(false);
+  const [wishlistedItems, setWishlistedItems] = useState(() => new Set());
   const pageFontStyle = {
     fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
   };
@@ -49,6 +50,7 @@ const CartPage = () => {
   }, [fetchCart]);
 
   const handleAddToWishlist = async (productId, item) => {
+    const itemKey = `${productId}_${item.size || ""}`;
     const selectedVariant = item.variants.find(
       (v) => v.color === item.color && v.size === item.size
     );
@@ -67,6 +69,11 @@ const CartPage = () => {
       const result = await addToWishlist(productId, payload);
       console.log("Added to wishlist:", result);
       message.success("Product added to wishlist!");
+      setWishlistedItems((prev) => {
+        const updated = new Set(prev);
+        updated.add(itemKey);
+        return updated;
+      });
     } catch (err) {
       console.error("Failed to add to wishlist:", err);
       message.error("Failed to add to wishlist");
@@ -180,6 +187,8 @@ const CartPage = () => {
             <div className="lg:col-span-2 space-y-4">
               {cartItems.map(item => {
                 const product = item || {};
+                const itemKey = `${item.id}_${item.size || ""}`;
+                const isWishlisted = wishlistedItems.has(itemKey);
 
                 console.log(product, "product")
                 return (
@@ -211,10 +220,10 @@ const CartPage = () => {
                             <button
                               type="button"
                               onClick={() => handleAddToWishlist(item.id, item)}
-                              className="text-text-medium hover:text-black transition-colors"
+                              className={`transition-colors ${isWishlisted ? "text-yellow-500 hover:text-yellow-400" : "text-text-medium hover:text-black"}`}
                               aria-label="Add to wishlist"
                             >
-                              <Heart size={18} strokeWidth={1.5} />
+                              <Heart size={18} strokeWidth={1.5} fill={isWishlisted ? "currentColor" : "none"} />
                             </button>
                             <button
                               type="button"

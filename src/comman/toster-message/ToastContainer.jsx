@@ -40,11 +40,11 @@ const ToastContainer = () => {
   };
 
   return (
-    <div className="fixed top-5 right-5 z-50 flex flex-col gap-2">
+    <div className="fixed inset-x-4 top-32 sm:inset-x-auto sm:top-28 sm:right-5 lg:top-24 z-[2000] flex flex-col gap-2 items-center sm:items-end pointer-events-none">
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`${getBgColor(t.type)} text-white px-4 py-2 rounded shadow-lg`}
+          className={`${getBgColor(t.type)} text-white px-4 py-2 rounded shadow-lg w-full sm:w-auto max-w-sm pointer-events-auto`}
         >
           {t.message}
         </div>
