@@ -59,6 +59,9 @@ const CheckoutPage = () => {
   const [isCouponsExpanded, setIsCouponsExpanded] = useState(false);
   const [isLoadingCoupons, setIsLoadingCoupons] = useState(false);
   const [loyaltyDiscountAmount, setLoyaltyDiscountAmount] = useState(0);
+  const pageFontStyle = {
+    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
+  };
 
   // Payment Methods
   const paymentMethods = [
@@ -505,7 +508,7 @@ fetchCoupons(subTotal)
   };
 
   return (
-    <div className="min-h-screen bg-premium-cream font-sans">
+    <div className="min-h-screen bg-premium-cream font-sans" style={pageFontStyle}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
         {/* Back Button & Header */}

@@ -19,6 +19,9 @@ const AccountPage = () => {
   const [loading, setLoading] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
   const [savingName, setSavingName] = useState(false);
+  const pageFontStyle = {
+    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
+  };
 
 
 
@@ -262,7 +265,7 @@ const AccountPage = () => {
   return (
     <div
       className="min-h-screen bg-premium-cream pt-4 lg:pt-4 pb-12"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      style={pageFontStyle}
     >
       <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8 lg:py-12">
 

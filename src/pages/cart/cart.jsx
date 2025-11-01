@@ -27,8 +27,9 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   console.log(cartItems, "carrt")
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingButtons, setLoadingButtons] = useState({});
-  const [addingToWishlist, setAddingToWishlist] = useState(false);
+  const pageFontStyle = {
+    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
+  };
   const fetchCart = useCallback(() => {
     setIsLoading(true);
     try {
@@ -48,7 +49,6 @@ const CartPage = () => {
   }, [fetchCart]);
 
   const handleAddToWishlist = async (productId, item) => {
-    setAddingToWishlist(true);
     const selectedVariant = item.variants.find(
       (v) => v.color === item.color && v.size === item.size
     );
@@ -70,8 +70,6 @@ const CartPage = () => {
     } catch (err) {
       console.error("Failed to add to wishlist:", err);
       message.error("Failed to add to wishlist");
-    } finally {
-      setAddingToWishlist(false);
     }
   };
   const updateQuantity = (itemId, size, delta) => {
@@ -96,11 +94,6 @@ const CartPage = () => {
       dispatch(setCartCount(updated.length));
       return updated;
     });
-  };
-
-
-  const moveToWishlist = (itemId, size) => {
-    removeItem(itemId, size);
   };
 
 
@@ -148,7 +141,7 @@ const CartPage = () => {
 
   // Loading
   if (isLoading) return (
-    <div className="min-h-screen bg-premium-cream flex items-center justify-center" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+    <div className="min-h-screen bg-premium-cream flex items-center justify-center" style={pageFontStyle}>
       <div className="text-center">
         <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
         <p className="text-text-medium text-sm uppercase tracking-wider">Loading Cart...</p>
@@ -157,7 +150,7 @@ const CartPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-premium-cream" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+    <div className="min-h-screen bg-premium-cream" style={pageFontStyle}>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
         {/* Page Header */}
@@ -214,16 +207,24 @@ const CartPage = () => {
                             {item.note && <p className="text-xs text-text-light italic line-clamp-1">Note: {item.note}</p>}
                           </div>
 
-                          {/* Remove */}
-                          <button onClick={() => removeItem(item.id, item.size)} className="text-text-medium hover:text-black transition-colors flex-shrink-0">
-                            <Trash2 size={18} strokeWidth={1.5} />
-                          </button>
-                          <Heart
-                            size={14}
-                            strokeWidth={1.5}
-                            onClick={()=>handleAddToWishlist(item.id,item)}
-                            // className={`${isWishlisted ? 'fill-white text-white' : 'text-black'}`}
-                          />
+                          <div className="flex items-center gap-3 flex-shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => handleAddToWishlist(item.id, item)}
+                              className="text-text-medium hover:text-black transition-colors"
+                              aria-label="Add to wishlist"
+                            >
+                              <Heart size={18} strokeWidth={1.5} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeItem(item.id, item.size)}
+                              className="text-text-medium hover:text-black transition-colors"
+                              aria-label="Remove from cart"
+                            >
+                              <Trash2 size={18} strokeWidth={1.5} />
+                            </button>
+                          </div>
                         </div>
 
                         {/* Price */}

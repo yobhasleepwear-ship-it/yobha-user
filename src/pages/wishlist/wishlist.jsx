@@ -28,6 +28,9 @@ const WishlistPage = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const pageFontStyle = {
+    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
+  };
 
 
   useEffect(() => {
@@ -104,7 +107,7 @@ const WishlistPage = () => {
     return (
       <div
         className="min-h-screen bg-premium-cream flex items-center justify-center"
-        style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+        style={pageFontStyle}
       >
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
@@ -119,7 +122,7 @@ const WishlistPage = () => {
     return (
       <div
         className="min-h-screen bg-premium-cream flex items-center justify-center"
-        style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+        style={pageFontStyle}
       >
         <div className="text-center max-w-md px-4">
           <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
@@ -140,7 +143,7 @@ const WishlistPage = () => {
   return (
     <div
       className="min-h-screen bg-premium-cream"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      style={pageFontStyle}
     >
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
