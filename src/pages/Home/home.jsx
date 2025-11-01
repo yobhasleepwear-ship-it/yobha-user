@@ -53,6 +53,9 @@ const HomePage = () => {
       }
     }
   }, []);
+
+  const isSingleRecent = recentVisited.length === 1;
+  const isCarousel = recentVisited.length > 1;
   return (
     <div className="relative min-h-screen bg-[#FAF6F2]">
       {/* Hero Section */}
@@ -115,12 +118,14 @@ const HomePage = () => {
 
 
             <div className="mt-10 sm:hidden">
-              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div
+                className={`w-full flex gap-4 pb-4 ${isCarousel ? 'overflow-x-auto scrollbar-hide snap-x snap-mandatory' : ''} ${isSingleRecent ? 'justify-center' : ''}`}
+              >
                 {recentVisited.map((item) => (
                   <article
                     key={item.id}
                     onClick={() => navigate(`/productDetail/${item.id}`)}
-                    className="group flex-shrink-0 w-60 border border-gray-200/70 bg-white/85 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2"
+                    className={`group flex-shrink-0 w-60 border border-gray-200/70 bg-white/85 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2 ${isCarousel ? 'snap-center' : ''} ${isSingleRecent ? 'mx-auto' : ''}`}
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
