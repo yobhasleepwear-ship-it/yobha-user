@@ -2,24 +2,14 @@ import React, { useState, useEffect } from "react";
 import TrendingNewArrivals from './components/TrendingNewArrivals';
 import GenderGrid from './components/GenderGrid';
 import AccessoriesSection from './components/AccessoriesSection';
-import { Sparkles, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 const HomePage = () => {
   const navigate = useNavigate();
-  const [showFloatingElements, setShowFloatingElements] = useState(false);
   const [isPortrait, setIsPortrait] = useState(false);
   const [recentVisited, setRecentVisited] = useState([]);
   // Video URLs
   const portraitVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
   const landscapeVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
-
-  useEffect(() => {
-    // Show floating elements after component mounts
-    const timer = setTimeout(() => {
-      setShowFloatingElements(true);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     // Check screen orientation and size
@@ -47,7 +37,16 @@ const HomePage = () => {
       try {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          setRecentVisited(parsed);
+          const seen = new Set();
+          const unique = [];
+          for (let i = parsed.length - 1; i >= 0; i -= 1) {
+            const item = parsed[i];
+            if (item && item.id && !seen.has(item.id)) {
+              seen.add(item.id);
+              unique.unshift(item);
+            }
+          }
+          setRecentVisited(unique.slice(-6));
         }
       } catch (err) {
         console.error("Error parsing recentVisited:", err);
@@ -56,44 +55,6 @@ const HomePage = () => {
   }, []);
   return (
     <div className="relative min-h-screen bg-[#FAF6F2]">
-      {recentVisited.length > 0 && (
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 w-[92%] sm:w-[75%] md:w-[65%] text-center">
-          {/* Title */}
-          <h2 className="text-white text-sm sm:text-base md:text-lg font-light tracking-[0.2em] uppercase mb-4 drop-shadow-sm">
-            Your Recent Visit
-          </h2>
-
-          {/* Carousel */}
-          <div className="bg-white/60 backdrop-blur-2xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/50 py-4 px-5 overflow-x-auto flex gap-6 justify-center items-center no-scrollbar">
-            {recentVisited.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => navigate(`/productDetail/${item.id}`)}
-                className="group relative w-24 sm:w-28 md:w-32 shrink-0 transition-all duration-500 hover:scale-110 hover:-translate-y-1"
-              >
-                {/* Image Container */}
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border border-gray-200/70 shadow-md transition-all duration-500 group-hover:shadow-[0_0_20px_rgba(234,84,48,0.4)] group-hover:border-[#ea5430]/70">
-                  <img
-                    src={item.images?.[0]}
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-
-                  {/* Overlay gradient with text */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex items-end justify-center p-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <p className="text-white text-[10px] sm:text-xs md:text-sm font-light tracking-wide uppercase text-center leading-tight">
-                      {item.name}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-
-
       {/* Hero Section */}
       <section className="relative h-screen w-full flex items-center justify-center text-center overflow-hidden z-0">
 
@@ -128,6 +89,64 @@ const HomePage = () => {
         <AccessoriesSection />
         <TrendingNewArrivals />
       </div>
+
+      {recentVisited.length > 0 && (
+        <section
+          className="relative px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-14 md:py-16"
+          style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-white via-[#fef8f4] to-[#f4e6dc] opacity-90" />
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-8 left-10 h-20 w-20 border border-luxury-gold/25 rotate-6" />
+            <div className="absolute bottom-8 right-12 h-24 w-24 border border-luxury-gold/25 -rotate-6" />
+          </div>
+
+          <div className="relative mx-auto max-w-6xl">
+            <div className="text-center">
+              <span className="uppercase tracking-[0.35em] text-[10px] sm:text-xs text-luxury-gold">Your Curated Picks</span>
+              <h2 className="mt-3 text-2xl sm:text-3xl md:text-4xl font-light uppercase tracking-[0.4em] text-gray-900">
+                Recently Viewed
+              </h2>
+              <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 font-light tracking-wide max-w-2xl mx-auto">
+                Revisit the pieces that caught your eye and continue curating your YOBHA wardrobe with ease.
+              </p>
+            </div>
+
+
+
+            <div className="mt-10 block sm:hidden">
+              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {recentVisited.map((item) => (
+                  <article
+                    key={item.id}
+                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                    className="flex-shrink-0 w-60 border border-gray-200/70 bg-white/85 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2"
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={item.images?.[0]}
+                        alt={item.name}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-transparent" />
+                      <div className="absolute bottom-3 left-3 right-3 text-left">
+                        <p className="text-white/90 text-[11px] uppercase tracking-[0.3em]">YOBHA EDIT</p>
+                        <h3 className="mt-1 text-sm text-white font-light uppercase tracking-[0.2em] leading-snug">
+                          {item.name}
+                        </h3>
+                      </div>
+                    </div>
+                    <div className="px-4 py-4 flex items-center justify-between text-[11px] uppercase tracking-[0.28em] text-gray-600">
+                      <span>View Piece</span>
+                      <span className="text-luxury-gold">→</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 };
