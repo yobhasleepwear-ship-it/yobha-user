@@ -293,7 +293,7 @@ const HeaderWithSidebar = () => {
       >
         
       <div
-        className="bg-[#ea5430] text-white relative overflow-hidden"
+        className="bg-black text-white relative overflow-hidden"
         style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
       >
         <div className="top-banner">
