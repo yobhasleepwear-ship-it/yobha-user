@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Facebook, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "../../assets/yobhaLogo.png";
@@ -6,6 +6,12 @@ import { SubscribeNewsletter } from "../../service/notification";
 import { message } from "../toster-message/ToastContainer";
 const Footer = () => {
 const [newsletter , setNewsletter]=useState("")
+useEffect(() => {
+  if (window.ELFSIGHT_APP) {
+    window.ELFSIGHT_APP.init();
+  }
+}, []);
+
   const handleNewsSubscribe = () => {
     const payload = {
       "email": newsletter,
@@ -25,6 +31,10 @@ const [newsletter , setNewsletter]=useState("")
       className="bg-premium-cream relative z-10 border-t border-text-light/20"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
+      <div
+  className="elfsight-app-0644ebdf-2b74-4039-b5c3-85f4e294c0b1"
+  data-elfsight-app-lazy
+></div>
       
       {/* Main Footer Content */}
       <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-16">

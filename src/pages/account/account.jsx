@@ -105,8 +105,10 @@ const AccountPage = () => {
             state: addressToEdit.state || "",
             zip: addressToEdit.zip || "",
             country: addressToEdit.country || "",
+            MobileNumnber: addressToEdit.mobileNumner || "",
             isDefault: addressToEdit.isDefault || false
           });
+
         }
       } else {
 
@@ -119,6 +121,7 @@ const AccountPage = () => {
           state: "",
           zip: "",
           country: "",
+          MobileNumnber: '',
           isDefault: false
         });
       }
@@ -250,11 +253,11 @@ const AccountPage = () => {
         .catch(() => message.error("Failed to copy referral link"));
     }
   };
-// const handleCountryConfirmed = (country) => {
-//   // Save selected country in localStorage and state if needed
-//   updateLocalStorage({ country: country.label });
-//   message.success(`Country updated to ${country.label}`);
-// };
+  // const handleCountryConfirmed = (country) => {
+  //   // Save selected country in localStorage and state if needed
+  //   updateLocalStorage({ country: country.label });
+  //   message.success(`Country updated to ${country.label}`);
+  // };
 
   return (
     <div
@@ -401,9 +404,17 @@ const AccountPage = () => {
                     />
                     <input
                       type="text"
-                      placeholder="Your Contact Number"
+                      placeholder="Address Line 2"
                       value={tempData.line2 || ""}
                       onChange={(e) => setTempData({ ...tempData, line2: e.target.value })}
+                      className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Mobile Number"
+                      value={tempData.MobileNumnber || ""}
+                      onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
                       className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
                     />
                     <div className="grid grid-cols-2 gap-4">
@@ -500,6 +511,10 @@ const AccountPage = () => {
                               <p className="text-text-medium mb-1">
                                 {addr.city}, {addr.state} - {addr.zip}
                               </p>
+                              <p className="text-text-medium mt-1">
+                                📞 {addr.mobileNumner || "No mobile number"}
+                              </p>
+
                               <p className="text-text-medium">{addr.country}</p>
                             </div>
                           </div>
@@ -607,13 +622,13 @@ const AccountPage = () => {
           </form>
         </div>
         {/* Country Selector */}
-<div className="mt-6">
-  <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
-    <MapPin size={14} />
-    Country
-  </label>
-  <CountryDropdown  />
-</div>
+        <div className="mt-6">
+          <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
+            <MapPin size={14} />
+            Country
+          </label>
+          <CountryDropdown />
+        </div>
 
       </div>
     </div>
