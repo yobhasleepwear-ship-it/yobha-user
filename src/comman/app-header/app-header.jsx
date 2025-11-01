@@ -55,20 +55,19 @@ const HeaderWithSidebar = () => {
 
   const topBannerItems = [
     {
-      type: "link",
       icon: "♻️",
       label: t("navbar.topbar.buyback." + i18n.language),
       to: "/buyback"
     },
     {
-      type: "text",
       icon: "🛡️",
-      label: "Anti-Viral Finish"
+      label: "Anti-Viral Finish",
+      to: "/fabric-protection#anti-viral"
     },
     {
-      type: "text",
       icon: "🧼",
-      label: "Anti-Bacterial Fabric"
+      label: "Anti-Microbial Fabric",
+      to: "/fabric-protection#anti-microbial"
     }
   ];
 
@@ -303,23 +302,15 @@ const HeaderWithSidebar = () => {
               <React.Fragment key={`banner-segment-${repeat}`}>
                 {topBannerItems.map((item, index) => {
                   const key = `banner-item-${repeat}-${index}`;
-                  if (item.type === "link") {
-                    return (
-                      <Link
-                        key={key}
-                        to={item.to}
-                        className="top-banner__item top-banner__item--link"
-                      >
-                        <span aria-hidden="true">{item.icon}</span>
-                        {item.label}
-                      </Link>
-                    );
-                  }
                   return (
-                    <span key={key} className="top-banner__item">
+                    <Link
+                      key={key}
+                      to={item.to}
+                      className="top-banner__item top-banner__item--link"
+                    >
                       <span aria-hidden="true">{item.icon}</span>
                       {item.label}
-                    </span>
+                    </Link>
                   );
                 })}
               </React.Fragment>
