@@ -79,7 +79,7 @@ const [ cartItem ,setCartItems]=useState([])
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState(null);
   const [newProducts, setProducts] = useState([])
-
+  const [monogram , setMonogram]=useState("")
   // Review Form State
   const [averageProdRating, setAverageProdRating] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -340,7 +340,8 @@ const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
       size: selectedSize,
       country: selectedCountry,
       quantity: quantity,
-      country:selectedCountry
+      country:selectedCountry,
+      monogram:monogram
     });
   }
 
@@ -391,6 +392,7 @@ const handleBuyNow = () => {
         success: true,
         message: "OK",
         suggestedCountryPrice: null,
+        monogram:monogram
         },
        
       
@@ -1022,7 +1024,17 @@ const handleBuyNow = () => {
             )}
           </div>
         </div>
-
+            <div>
+              <p>Customise Your Product</p>
+              <p>
+                <input
+                value={monogram}
+                onChange={(e)=>setMonogram(e.target.value)}
+                placeholder="enter your text"
+                className="border-black"
+                />
+              </p>
+              </div>
         {/* Review Form Section */}
         <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
           <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-widest mb-5 md:mb-6">

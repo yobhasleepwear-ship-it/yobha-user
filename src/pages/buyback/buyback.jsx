@@ -20,9 +20,7 @@ const Buyback = () => {
   const [invoiceUrl, setInvoiceUrl] = useState("");
   const [message, setMessage] = useState("");
   const [buybackData, setBuybackData] = useState()
-  useEffect(() => {
-    GetBuybackDetails()
-  }, [])
+
   // Handle radio answer
   const handleAnswer = (index, value) => {
     const updated = [...questions];
@@ -219,6 +217,13 @@ const Buyback = () => {
                 className="px-4 py-2 rounded-md border border-text-light/20"
               >
                 Reset
+              </button>
+              <button
+                type="button"
+                onClick={GetBuybackDetails}
+                className="px-5 py-2 rounded-md bg-[#ea5430] text-white font-medium shadow-sm hover:opacity-95"
+              >
+                Get Buyback Status
               </button>
             </div>
           </form>
