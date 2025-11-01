@@ -1,15 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 const LanguageSwitcher = () => {
   const { i18n, t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
 
   const languages = [
     { code: "en", label: t("navbar.languageSwitcher.english.en") },
     { code: "hi", label: t("navbar.languageSwitcher.hindi.en") },
     { code: "ar", label: t("navbar.languageSwitcher.arabic.en") }
   ];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLanguageChange = (code) => {
     i18n.changeLanguage(code);
@@ -18,31 +30,45 @@ const LanguageSwitcher = () => {
     setOpen(false);
   };
 
+  const currentLanguage = languages.find((lang) => lang.code === i18n.language);
+  const currentLabel = currentLanguage ? currentLanguage.label : i18n.language.toUpperCase();
+
   return (
-    <div className="relative inline-block text-left w-full">
+    <div ref={containerRef} className="relative inline-block text-left w-full">
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 bg-white text-sm font-medium text-black hover:bg-gray-50 focus:outline-none"
+        type="button"
+        className="inline-flex w-full items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-xs font-light uppercase tracking-[0.28em] text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-luxury-gold/30 focus:border-luxury-gold/40 hover:bg-white"
       >
-        {i18n.language.toUpperCase()}
-        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.354a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+        <span className="flex-1 truncate text-left">{currentLabel}</span>
+        <svg
+          className={`h-4 w-4 transform transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"}`}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {open && (
-        <div className="origin-top-left absolute left-0 mt-2 w-full sm:w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-          <div className="py-1">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => handleLanguageChange(lang.code)}
-                className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100 z-1000"
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
+        <div className="absolute left-0 mt-2 w-full sm:w-36 border border-gray-200 bg-white shadow-xl z-50">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              type="button"
+              onClick={() => handleLanguageChange(lang.code)}
+              className={`block w-full text-left px-5 py-3 text-xs uppercase tracking-[0.28em] transition-colors duration-200 ${
+                i18n.language === lang.code
+                  ? "bg-premium-cream/60 text-black"
+                  : "text-black hover:bg-premium-cream/40"
+              }`}
+            >
+              {lang.label}
+            </button>
+          ))}
         </div>
       )}
     </div>

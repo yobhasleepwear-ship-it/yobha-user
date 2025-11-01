@@ -557,14 +557,14 @@ const HeaderWithSidebar = () => {
                       <div className="space-y-1">
                         <Link
                           to="/account"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
+                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black/80 hover:text-black font-light uppercase tracking-widest"
                         >
                           <User size={16} />
                           <span>{t("navbar.account.myAccount." + i18n.language)}</span>
                         </Link>
                         <Link
                           to="/orders"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-sm text-black hover:text-luxury-gold font-medium"
+                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black/80 hover:text-black font-light uppercase tracking-widest"
                         >
                           <Package size={16} />
                           <span>{t("navbar.account.orders." + i18n.language)}</span>
@@ -720,13 +720,13 @@ const HeaderWithSidebar = () => {
                     <div key={item.nav} className="w-full">
                       <button
                         onClick={() => toggleAccordion(item.nav.toLowerCase())}
-                        className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
+                        className="flex items-center justify-between w-full py-3 text-[11px] uppercase tracking-[0.3em] text-black/80 font-light border-b border-transparent transition-all duration-300 hover:text-black hover:border-black/20"
                       >
                         <span>{item.label}</span>
                         {expandedSections[item.nav.toLowerCase()] ? (
-                          <ChevronDown size={18} />
+                          <ChevronDown size={18} className="text-black/60" />
                         ) : (
-                          <ChevronRight size={18} />
+                          <ChevronRight size={18} className="text-black/60" />
                         )}
                       </button>
 
@@ -736,7 +736,7 @@ const HeaderWithSidebar = () => {
                             <Link
                               key={cat.label}
                               to={`/products/${cat.nav.replace(/\s/g, "-")}`}
-                              className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               {cat.label}
@@ -751,7 +751,7 @@ const HeaderWithSidebar = () => {
                             <Link
                               key={accessory.label}
                               to={`/products/${accessory.nav}`}
-                              className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               {accessory.label}
@@ -766,13 +766,13 @@ const HeaderWithSidebar = () => {
                   <div className="pt-4 border-t border-gray-200 mt-4">
                     <button
                       onClick={() => toggleAccordion('account')}
-                      className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
+                      className="flex items-center justify-between w-full py-3 text-[11px] uppercase tracking-[0.3em] text-black/80 font-light border-b border-transparent transition-all duration-300 hover:text-black hover:border-black/20"
                     >
                       <span>{t("navbar.account.myAccount." + i18n.language)}</span>
                       {expandedSections.account ? (
-                        <ChevronDown size={18} />
+                        <ChevronDown size={18} className="text-black/60" />
                       ) : (
-                        <ChevronRight size={18} />
+                        <ChevronRight size={18} className="text-black/60" />
                       )}
                     </button>
 
@@ -781,7 +781,7 @@ const HeaderWithSidebar = () => {
                         {!isAuthenticated ? (
                           <Link
                             to="/login"
-                            className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                            className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
                             onClick={() => setSidebarOpen(false)}
                           >
                             {t("navbar.account.login." + i18n.language)}
@@ -790,7 +790,7 @@ const HeaderWithSidebar = () => {
                           <>
                             <Link
                               to="/account"
-                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               <User size={16} />
@@ -798,14 +798,14 @@ const HeaderWithSidebar = () => {
                             </Link>
                             <Link
                               to="/buyback"
-                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
                             >
                               <Recycle size={16} />
                               <span>{t("navbar.account.buyback." + i18n.language)}</span>
                             </Link>
                             <Link
                               to="/orders"
-                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               <Package size={16} />
@@ -816,7 +816,7 @@ const HeaderWithSidebar = () => {
                                 setSidebarOpen(false);
                                 handleLogout();
                               }}
-                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm text-left w-full"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black text-left w-full"
                             >
                               <LogOut size={16} />
                               <span>{t("navbar.account.logout." + i18n.language)}</span>
