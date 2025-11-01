@@ -38,7 +38,9 @@ const LoginPage = () => {
       localStorageService.setValue(LocalStorageKeys.RefreshToken, refreshToken);
       localStorageService.setValue(LocalStorageKeys.User, JSON.stringify(user));
 
-      navigate("/");
+       const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/";
+      localStorageService.removeValue("redirectAfterLogin");
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       console.error("Signup failed:", err);
       message.error("Signup failed. Try again.");
@@ -400,7 +402,9 @@ const LoginPage = () => {
 
 
                     setShowOtpModal(false);
-                    navigate("/");
+                    const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/";
+                    localStorageService.removeValue("redirectAfterLogin");
+                    navigate(redirectTo, { replace: true });
                   } catch (err) {
                     console.error("OTP verification failed:", err);
                     message.error(err.response?.data?.message || "OTP verification failed");
