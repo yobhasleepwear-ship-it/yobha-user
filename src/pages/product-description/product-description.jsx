@@ -43,6 +43,14 @@ const formatPrice = (price, currency ) => {
   });
 };
 
+const sizeGuideData = [
+  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+  { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
+  { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
+];
+
 const ProductDetailPage = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
@@ -69,6 +77,7 @@ const [ cartItem ,setCartItems]=useState([])
     fabric: false,
     careInstructions: false
   });
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
   // Button Loading States
   const [addingToCart, setAddingToCart] = useState(false);
@@ -738,13 +747,24 @@ const handleBuyNow = () => {
             {/* Size Selection */}
             {product.sizeOfProduct.length > 0 && (
               <div className="bg-white border border-text-light/10 p-3 rounded-sm">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xs font-light text-black uppercase tracking-widest">
-                    Size
-                  </h3>
-                  <span className="text-xs text-text-medium font-light">
-                    {selectedSize}
-                  </span>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <div>
+                    <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                      Size
+                    </h3>
+                    <span className="text-xs text-text-medium font-light">
+                      {selectedSize}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.28em] text-black/70 hover:text-black transition-colors"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-black/40"></span>
+                    Size Guide
+                  </button>
                 </div>
                 <div className="flex gap-1.5 overflow-x-auto pb-1 pt-1 scrollbar-hide px-1 -mx-1">
                   {product.sizeOfProduct.map((size) => (
@@ -1285,6 +1305,51 @@ const handleBuyNow = () => {
           >
             ✕
           </button>
+        </div>
+      )}
+
+      {isSizeGuideOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 z-[60]">
+          <div className="relative w-full max-w-xl bg-white p-6 md:p-8 shadow-xl">
+            <button
+              className="absolute top-4 right-4 text-black/60 hover:text-black transition-colors"
+              onClick={() => setIsSizeGuideOpen(false)}
+              aria-label="Close size guide"
+            >
+              ✕
+            </button>
+            <h3 className="text-sm md:text-base uppercase tracking-[0.3em] text-black mb-4">Size Guide</h3>
+            <div className="space-y-4 text-xs md:text-sm text-text-medium leading-relaxed">
+              <p>
+                Discover your perfect fit. Refer to the measurement chart curated for our signature silhouettes. If you are in-between sizes, we recommend choosing the larger size for a more relaxed drape.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border border-premium-beige">
+                  <thead>
+                    <tr className="bg-premium-beige/60 text-black uppercase tracking-[0.25em] text-[11px]">
+                      <th className="px-4 py-2 text-left font-light">Size</th>
+                      <th className="px-4 py-2 text-left font-light">Bust (in)</th>
+                      <th className="px-4 py-2 text-left font-light">Waist (in)</th>
+                      <th className="px-4 py-2 text-left font-light">Hip (in)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-black/80">
+                    {sizeGuideData.map((row, idx) => (
+                      <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-premium-beige/20'}>
+                        <td className="px-4 py-2 uppercase tracking-[0.25em] text-[11px] font-medium">{row.size}</td>
+                        <td className="px-4 py-2">{row.bust}</td>
+                        <td className="px-4 py-2">{row.waist}</td>
+                        <td className="px-4 py-2">{row.hip}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-text-medium">
+                Need assistance? Our client care team is happy to guide you to your ideal size.
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
