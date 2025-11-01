@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ImageUploader from "../../comman/Image-Uploader/ImageUploader"; // adjust path
 import { createBuyback, getBuybackDetails } from "../../service/buyback";
 
@@ -19,7 +19,6 @@ const Buyback = () => {
   const [productUrls, setProductUrls] = useState([]); // 4 images max
   const [invoiceUrl, setInvoiceUrl] = useState("");
   const [message, setMessage] = useState("");
-  const [buybackData, setBuybackData] = useState()
 
   // Handle radio answer
   const handleAnswer = (index, value) => {
@@ -41,13 +40,14 @@ const Buyback = () => {
 
   const GetBuybackDetails = async () => {
     try {
-      const response = getBuybackDetails()
-      setBuybackData(response.data)
+      const response = await getBuybackDetails();
+      const statusMessage = response?.data?.message || "Buyback status fetched successfully.";
+      setMessage(statusMessage);
+    } catch (err) {
+      console.error("GetBuybackDetails error:", err);
+      setMessage("Unable to fetch buyback status right now. Please try again later.");
     }
-    catch (err) {
-      message.error(err)
-    }
-  }
+  };
   // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -100,54 +100,82 @@ const Buyback = () => {
   };
 
   return (
-    <div className="min-h-screen bg-premium-cream font-sans">
-      <div className="max-w-4xl mx-auto px-6 py-10">
-        <div className="bg-white shadow-lg rounded-2xl p-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-black uppercase tracking-widest mb-2">
-            YOBHA Buy-Back Eligibility Quiz
+    <div className="relative min-h-screen overflow-hidden bg-premium-beige font-helvetica text-text-dark">
+      <div className="pointer-events-none absolute -top-32 -left-24 hidden h-96 w-96 rounded-full bg-luxury-gold/10 blur-3xl md:block" />
+      <div className="pointer-events-none absolute -bottom-40 -right-10 hidden h-80 w-80 rounded-full bg-text-rose-gold/8 blur-3xl lg:block" />
+      <div className="relative z-10 mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:py-16">
+        <div className="border border-white/40 bg-premium-beige p-6 shadow-[0_30px_80px_rgba(18,18,18,0.08)] backdrop-blur-xl sm:p-10">
+          <h1 className="text-2xl font-semibold uppercase tracking-[0.2em] text-text-dark sm:text-3xl sm:tracking-[0.3em] md:text-4xl md:tracking-[0.35em]">
+            <span className="text-luxury-gold">YOBHA</span> Buy-Back Eligibility Quiz
           </h1>
-          <p className="text-text-medium mb-6">
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-text-medium/90 sm:text-base">
             Complete this short quiz to evaluate your item for our Buy-Back Program.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="mt-6 space-y-6 sm:mt-8 sm:space-y-8">
             {/* Product Info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Product ID</label>
-                <input
-                  value={productId}
-                  onChange={(e) => setProductId(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-text-light/20 p-2 outline-none"
-                  placeholder="e.g. YB-12345"
-                />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-[0.25em] text-text-medium/70">
+                  Product ID
+                </label>
+                <div className="border border-white/70 bg-white/70 px-3 py-2.5 text-sm text-text-dark shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] transition hover:border-luxury-gold/40 hover:shadow-md focus-within:border-luxury-gold/60 focus-within:shadow-md sm:px-4 sm:py-3">
+                  <input
+                    value={productId}
+                    onChange={(e) => setProductId(e.target.value)}
+                    className="w-full bg-transparent focus:outline-none"
+                    placeholder="e.g. YB-12345"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Order Number</label>
-                <input
-                  value={orderNumber}
-                  onChange={(e) => setOrderNumber(e.target.value)}
-                  className="mt-1 block w-full rounded-lg border border-text-light/20 p-2 outline-none"
-                  placeholder="e.g. ORD-98765"
-                />
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-[0.25em] text-text-medium/70">
+                  Order Number
+                </label>
+                <div className="border border-white/70 bg-white/70 px-3 py-2.5 text-sm text-text-dark shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] transition hover:border-luxury-gold/40 hover:shadow-md focus-within:border-luxury-gold/60 focus-within:shadow-md sm:px-4 sm:py-3">
+                  <input
+                    value={orderNumber}
+                    onChange={(e) => setOrderNumber(e.target.value)}
+                    className="w-full bg-transparent focus:outline-none"
+                    placeholder="e.g. ORD-98765"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Quiz Questions */}
             {questions.map((q, idx) => (
-              <div key={idx} className="p-4 rounded-lg border border-text-light/20">
-                <p className="font-semibold mb-3 text-black uppercase tracking-wide">{q.que}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div
+                key={idx}
+                className="border border-white/60 bg-white/60 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5"
+              >
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-text-dark/80 sm:mb-4 sm:text-xs sm:tracking-[0.3em]">
+                  {q.que}
+                </p>
+                <div className="grid grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
                   {q.options.map((opt, oIdx) => (
-                    <label key={oIdx} className="flex items-center space-x-3 cursor-pointer">
+                    <label
+                      key={oIdx}
+                      className={`group relative flex flex-col gap-2 border border-white/70 px-4 py-3 text-sm shadow-sm transition hover:border-luxury-gold/40 hover:shadow-md sm:flex-row sm:items-center sm:justify-between ${
+                        q.ans === opt
+                          ? "border-luxury-gold/60 bg-white"
+                          : "bg-white/80"
+                      }`}
+                    >
                       <input
                         type="radio"
                         name={`q-${idx}`}
                         checked={q.ans === opt}
                         onChange={() => handleAnswer(idx, opt)}
-                        className="form-radio h-4 w-4"
+                        className="h-4 w-4 cursor-pointer accent-luxury-gold"
                       />
-                      <span className="text-sm text-text-dark">{opt}</span>
+                      <span
+                        className={`w-full text-left text-sm font-medium transition sm:w-auto ${
+                          q.ans === opt ? "text-text-dark" : "text-text-dark/80"
+                        }`}
+                      >
+                        {opt}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -155,25 +183,30 @@ const Buyback = () => {
             ))}
 
             {/* Upload Section */}
-            <div className="p-4 rounded-lg border border-text-light/20">
-              <p className="font-semibold mb-4 text-black uppercase tracking-wide">
+            <div className="border border-dashed border-luxury-gold/40 bg-white/65 p-6 shadow-sm">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-text-dark/70">
                 Upload Product & Invoice Images
               </p>
 
               {/* Product Images */}
-              <ImageUploader
-                productId={productId}
-                onUploadComplete={handleProductUpload}
-              />
+                <div className="border border-white/60 bg-white/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] transition hover:border-luxury-gold/40 hover:shadow-md focus-within:border-luxury-gold/50">
+                <ImageUploader
+                  productId={productId}
+                  onUploadComplete={handleProductUpload}
+                />
+              </div>
 
               {productUrls.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
+                <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {productUrls.map((img, i) => (
-                    <div key={i} className="border rounded-md overflow-hidden">
+                    <div
+                      key={i}
+                      className="overflow-hidden border border-white/70 bg-white/85 shadow-sm transition hover:border-luxury-gold/40 hover:shadow-md"
+                    >
                       <img
                         src={img.url}
                         alt={`Product ${i + 1}`}
-                        className="w-full h-24 object-cover"
+                        className="h-28 w-full object-cover transition duration-500 ease-out hover:scale-105"
                       />
                     </div>
                   ))}
@@ -182,16 +215,23 @@ const Buyback = () => {
 
               {/* Invoice Upload */}
               <div className="mt-6">
-                <h4 className="text-sm font-semibold text-black uppercase tracking-wider mb-2">
+                <h4 className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-text-dark/70">
                   Upload Invoice / Bill
                 </h4>
-                <ImageUploader
-                  productId={`${productId || "unknown"}_invoice`}
-                  onUploadComplete={(results) => setInvoiceUrl(results[0]?.url || "")}
-                />
+                <div className="border border-white/60 bg-white/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] transition hover:border-luxury-gold/40 hover:shadow-md focus-within:border-luxury-gold/50">
+                  <ImageUploader
+                    productId={`${productId || "unknown"}_invoice`}
+                    onUploadComplete={(results) => setInvoiceUrl(results[0]?.url || "")}
+                  />
+                </div>
                 {invoiceUrl && (
-                  <div className="mt-2 text-sm text-blue-600 underline">
-                    <a href={invoiceUrl} target="_blank" rel="noreferrer">
+                  <div className="mt-3 text-sm">
+                    <a
+                      href={invoiceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center text-text-rose-gold underline transition hover:text-luxury-gold"
+                    >
                       View Uploaded Invoice
                     </a>
                   </div>
@@ -200,13 +240,17 @@ const Buyback = () => {
             </div>
 
             {/* Message */}
-            {message && <div className="text-sm text-gray-700">{message}</div>}
+            {message && (
+              <div className="border border-luxury-gold/40 bg-white/70 px-5 py-4 text-sm text-text-dark/80 shadow-sm">
+                {message}
+              </div>
+            )}
 
             {/* Buttons */}
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <button
                 type="submit"
-                className="px-5 py-2 rounded-md bg-luxury-gold text-white font-medium shadow-sm hover:opacity-95"
+                className="w-full bg-black px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-md transition hover:-translate-y-0.5 hover:bg-neutral-900 hover:shadow-xl sm:w-auto"
               >
                 Submit
               </button>
@@ -214,14 +258,14 @@ const Buyback = () => {
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-4 py-2 rounded-md border border-text-light/20"
+                className="w-full border border-text-light/30 px-5 py-3 text-sm font-medium uppercase tracking-[0.2em] text-text-medium transition hover:bg-white/80 hover:text-text-dark sm:w-auto"
               >
                 Reset
               </button>
               <button
                 type="button"
                 onClick={GetBuybackDetails}
-                className="px-5 py-2 rounded-md bg-[#ea5430] text-white font-medium shadow-sm hover:opacity-95"
+                className="w-full bg-black px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-md transition hover:-translate-y-0.5 hover:bg-neutral-900 hover:shadow-xl sm:w-auto"
               >
                 Get Buyback Status
               </button>
