@@ -95,6 +95,18 @@ console.log(passedProducts,"passed")
       { id: "price_asc", name: "Price: Low to High" },
       { id: "price_desc", name: "Price: High to Low" },
     ],
+    fabricOptions: [
+  { id: "cotton", name: "Premium Cotton" },
+  { id: "satin", name: "Luxury Satin" },
+  { id: "silk", name: "Pure Mulberry Silk" },
+  { id: "modal", name: "Soft Modal Blend" },
+  { id: "viscose", name: "Breathable Viscose" },
+  { id: "rayon", name: "Lightweight Rayon" },
+  { id: "linen", name: "Cool Linen" },
+  { id: "jersey", name: "Stretch Jersey Knit" },
+  { id: "bamboo", name: "Eco-Friendly Bamboo Fabric" },
+],
+
   });
   useEffect(() => {
     const debouncedFilterUpdate = debounce(() => {
@@ -286,6 +298,38 @@ useEffect(() => {
           ))}
         </div>
       </FilterAccordion>
+      <FilterAccordion
+  title="Fabric Type"
+  isOpen={openAccordion === "fabric"}
+  onToggle={() => toggleAccordion("fabric")}
+>
+  <div className="space-y-3">
+    {filterOptions.fabricOptions.map((fabric) => (
+      <label
+        key={fabric.id}
+        className="flex items-center cursor-pointer group"
+      >
+        <input
+          type="radio"
+          name="fabric"
+          checked={filters.fabric === fabric.id}
+          onChange={() => updateFilter("fabric", fabric.id)}
+          className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
+        />
+        <span
+          className={`ml-3 text-sm tracking-wide transition-colors ${
+            filters.fabric === fabric.id
+              ? "text-black font-medium"
+              : "text-text-medium group-hover:text-black"
+          }`}
+        >
+          {fabric.name}
+        </span>
+      </label>
+    ))}
+  </div>
+</FilterAccordion>
+
 
       {/* Categories */}
       {/* <FilterAccordion
