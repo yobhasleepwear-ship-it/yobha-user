@@ -41,16 +41,33 @@ const ProductCard = ({ product }) => {
   const availableColors = Array.isArray(product?.availableColors) ? product.availableColors : [];
   const availableSizes = Array.isArray(product?.availableSizes) ? product.availableSizes : [];
 
-  // Format price
-  const formattedPrice = typeof productPrice === 'number'
-    ? `₹${productPrice.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
-    : productPrice;
+  
+ const handleCardClick = () => {
 
-  const handleCardClick = () => {
-    if (productId) {
-      navigate(`/productDetail/${productId}`);
+  if (productId) {
+    try {
+console.log("i am in ")
+      const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
+
+      
+      const filtered = existing.filter((p) => p.id !== productId);
+
+    
+      const updated = [product, ...filtered];
+
+ 
+      const limited = updated.slice(0, 8);
+
+     
+      localStorage.setItem("recentVisited", JSON.stringify(limited));
+    } catch (err) {
+      console.error("Error saving recent visited products:", err);
     }
-  };
+
+   
+    navigate(`/productDetail/${productId}`);
+  }
+};
 
   const nextImage = (e) => {
     e.stopPropagation();

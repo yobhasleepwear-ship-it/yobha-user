@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Minus, Heart, Trash2, ShoppingBag, ArrowRight, Truck, RotateCcw } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
+import { addToWishlist } from "../../service/wishlist";
+import { message } from "../../comman/toster-message/ToastContainer";
 
 /**
  * Format price based on currency
  */
-const formatPrice = (price, currency = "INR") => {
+const formatPrice = (price, currency) => {
+  console.log(price, currency)
   if (typeof price !== 'number') return '0';
   return price.toLocaleString(undefined, {
     style: 'currency',
@@ -22,9 +25,10 @@ const CartPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [cartItems, setCartItems] = useState([]);
+  console.log(cartItems, "carrt")
   const [isLoading, setIsLoading] = useState(false);
   const [loadingButtons, setLoadingButtons] = useState({});
-
+  const [addingToWishlist, setAddingToWishlist] = useState(false);
   const fetchCart = useCallback(() => {
     setIsLoading(true);
     try {
@@ -43,6 +47,33 @@ const CartPage = () => {
     fetchCart();
   }, [fetchCart]);
 
+  const handleAddToWishlist = async (productId, item) => {
+    setAddingToWishlist(true);
+    const selectedVariant = item.variants.find(
+      (v) => v.color === item.color && v.size === item.size
+    );
+
+    const payload = {
+      productId: item.productId,
+      size: selectedVariant?.sku || '',
+      desiredQuantity: item.quantity,
+      desiredSize: item.size,
+      desiredColor: item.color,
+      notifyWhenBackInStock: true,
+
+    }
+
+    try {
+      const result = await addToWishlist(productId, payload);
+      console.log("Added to wishlist:", result);
+      message.success("Product added to wishlist!");
+    } catch (err) {
+      console.error("Failed to add to wishlist:", err);
+      message.error("Failed to add to wishlist");
+    } finally {
+      setAddingToWishlist(false);
+    }
+  };
   const updateQuantity = (itemId, size, delta) => {
     setCartItems((prevCart) => {
       const updated = prevCart.map((item) => {
@@ -74,11 +105,12 @@ const CartPage = () => {
 
 
   const getCorrectPrice = (item) => {
-    const product = item?.product || {};
-    const priceList = product?.priceList || [];
-    if (!priceList || priceList.length === 0) return product?.unitPrice || 0;
+    console.log(item)
+    const product = item || {};
+
+    const priceList = item?.priceList || [];
     const matchingPrice = priceList.find(price =>
-      price.currency === product.currency &&
+      price.country === product.country &&
       price.size === item.size
     );
     return matchingPrice ? matchingPrice.priceAmount : (product?.unitPrice || 0);
@@ -155,16 +187,16 @@ const CartPage = () => {
             <div className="lg:col-span-2 space-y-4">
               {cartItems.map(item => {
                 const product = item || {};
-                const availableStock = (product.stockQuantity || 0) - (product.reservedQuantity || 0);
 
+                console.log(product, "product")
                 return (
                   <div key={item.id + item.size} className="bg-white border border-text-light/20 p-4 md:p-6 hover:shadow-md transition-all">
                     <div className="flex flex-col sm:flex-row gap-4">
                       {/* Image */}
                       <div className="w-full sm:w-28 md:w-32 h-32 flex-shrink-0 bg-premium-beige overflow-hidden cursor-pointer"
-                           onClick={() => navigate(`/productDetail/${product.productObjectId}`)}>
+                        onClick={() => navigate(`/productDetail/${product.id}`)}>
                         <img src={product.images[0].thumbnailUrl} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                             onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'} />
+                          onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'} />
                       </div>
 
                       {/* Details */}
@@ -172,7 +204,7 @@ const CartPage = () => {
                         <div className="flex justify-between gap-2 mb-3">
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-black text-base md:text-lg mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight"
-                                onClick={() => navigate(`/productDetail/${product.productObjectId}`)}>
+                              onClick={() => navigate(`/productDetail/${product.id}`)}>
                               {product.name}
                             </h3>
                             <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-text-medium mb-2">
@@ -186,11 +218,21 @@ const CartPage = () => {
                           <button onClick={() => removeItem(item.id, item.size)} className="text-text-medium hover:text-black transition-colors flex-shrink-0">
                             <Trash2 size={18} strokeWidth={1.5} />
                           </button>
+                          <Heart
+                            size={14}
+                            strokeWidth={1.5}
+                            onClick={()=>handleAddToWishlist(item.id,item)}
+                            // className={`${isWishlisted ? 'fill-white text-white' : 'text-black'}`}
+                          />
                         </div>
 
                         {/* Price */}
                         <div className="mb-4">
-                          <span className="text-xl md:text-2xl font-bold text-black">{formatPrice(product.priceList.find((e)=>(e.country===product.country && e.size===product.size)).price,product.priceList.find((e)=>(e.country===product.country && e.size===product.size)).currency)}</span>
+                          <span className="text-xl md:text-2xl font-bold text-black">{formatPrice(product.priceList.find(
+                            (e) =>
+                              e.country?.trim().toUpperCase() === product.country?.trim().toUpperCase() &&
+                              e.size?.trim().toUpperCase() === product.size?.trim().toUpperCase()
+                          ).priceAmount, product.priceList.find((e) => (e.country === product.country && e.size === product.size)).currency)}</span>
                         </div>
 
                         {/* Quantity Controls */}
@@ -200,7 +242,7 @@ const CartPage = () => {
                               <Minus size={14} strokeWidth={2} />
                             </button>
                             <span className="px-4 md:px-6 py-2 font-semibold text-sm md:text-base min-w-[50px] text-center">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, item.size, 1)} disabled={item.quantity >= availableStock} className="p-2 hover:bg-premium-beige transition-colors">
+                            <button onClick={() => updateQuantity(item.id, item.size, 1)} className="p-2 hover:bg-premium-beige transition-colors">
                               <Plus size={14} strokeWidth={2} />
                             </button>
                           </div>
@@ -210,9 +252,7 @@ const CartPage = () => {
                             <span className="hidden sm:inline">Wishlist</span>
                           </button> */}
 
-                          {availableStock <= 5 && availableStock > 0 && (
-                            <span className="text-xs text-luxury-rose-gold whitespace-nowrap">Only {availableStock} left</span>
-                          )}
+
                         </div>
                       </div>
                     </div>

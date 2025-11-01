@@ -52,6 +52,7 @@ const ProductDetailPage = () => {
 const parsedCountry = savedCountry ? JSON.parse(savedCountry) : countryOptions[0];
 
 // const [selectedCountry] = useState(parsedCountry);
+const [ cartItem ,setCartItems]=useState([])
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState('');
@@ -317,7 +318,7 @@ const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
   // 🛑 Restrict to one country
   const existingCountry = cart.length > 0 ? cart[0].country : null;
   if (existingCountry && existingCountry !== selectedCountry) {
-    alert(`You can only add items from ${existingCountry}.`);
+    message.error(`You can only add items from ${existingCountry}.`);
     return;
   }
 
@@ -344,7 +345,9 @@ const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
-  alert(`${safeProduct.name || "Product"} added to cart!`);
+  setCartItems(cart);
+  dispatch(setCartCount(cart.length));
+  message.success(`${safeProduct.name || "Product"} added to cart!`);
 };
 
 
@@ -366,20 +369,20 @@ const handleBuyNow = () => {
    console.log(product.priceList,"pro")
   const checkoutProd={
     items: [
-      {
-        product: {
+      
+        {
           ...product,
           currency:selectedPrice.currency,
           variantSize:selectedSize,
           variantColor:selectedColor,
+          country:selectedCountry,
           size:selectedSize,
            thumbnailUrl:product.images[0].url,
           // countryPrice: {
           //   priceAmount: selectedPrice.priceAmount || product.unitPrice,
           //   currency: selectedPrice.currency || product.currency,
           // },
-        },
-        quantity:quantity,
+           quantity:quantity,
        
         lineTotal:lineTotal,
         addedAt: new Date().toISOString(),
@@ -388,7 +391,9 @@ const handleBuyNow = () => {
         success: true,
         message: "OK",
         suggestedCountryPrice: null,
-      },
+        },
+       
+      
     ],
   };
   navigate("/checkout/buynow", { state: { checkoutProd,selectedCountry , selectedSize ,quantity} });
@@ -494,7 +499,7 @@ const handleBuyNow = () => {
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("Link copied to clipboard!");
+      message.success("Link copied to clipboard!");
     }
   };
 

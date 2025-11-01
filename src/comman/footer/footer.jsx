@@ -25,6 +25,7 @@ const [newsletter , setNewsletter]=useState("")
       className="bg-premium-cream relative z-10 border-t border-text-light/20"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
+      
       {/* Main Footer Content */}
       <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 sm:gap-12 lg:gap-8">

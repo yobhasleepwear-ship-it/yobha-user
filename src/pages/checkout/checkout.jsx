@@ -8,10 +8,10 @@ import { message } from "../../comman/toster-message/ToastContainer";
 import { getCoupons } from "../../service/coupans";
 
 const CheckoutPage = () => {
-  const {pageProps}=useParams();
-   const location = useLocation();
- const { checkoutProd, selectedCountry, selectedSize,quantity } = location.state || {};
-  console.log(checkoutProd,selectedCountry,selectedSize,quantity,"product")
+  const { pageProps } = useParams();
+  const location = useLocation();
+  const { checkoutProd, selectedCountry, selectedSize, quantity } = location.state || {};
+  console.log(checkoutProd, selectedCountry, selectedSize, quantity, "product")
   const navigate = useNavigate();
 
   // Address State
@@ -40,7 +40,7 @@ const CheckoutPage = () => {
   // Order & Cart State
   const [isProcessing, setIsProcessing] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  console.log(cartItems,"cartItems")
+  console.log(cartItems, "cartItems")
   const [cartSummary, setCartSummary] = useState({
     totalItems: 0,
     distinctItems: 0,
@@ -49,8 +49,9 @@ const CheckoutPage = () => {
     tax: 0,
     discount: 0,
     grandTotal: 0,
-    currency: "INR"
+    currency: ""
   });
+  console.log(cartSummary, "carts")
   // Coupons & Loyalty State
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
@@ -76,17 +77,17 @@ const CheckoutPage = () => {
   ];
 
   // Fetch coupons function
-  const fetchCoupons = useCallback(async () => {
+  const fetchCoupons = useCallback(async (Subtotal) => {
     try {
       setIsLoadingCoupons(true);
-      const response = await getCoupons(cartSummary.subTotal);
-      
+      const response = await getCoupons(Subtotal);
+
       if (response.success) {
         // Updated to use the correct API response structure
         console.log("Coupons API Response:", response.data);
         setAvailableCoupons(response.data.coupons || []);
         setLoyaltyPoints(response.data.loyaltyPoints || 0);
-        
+
         // Calculate loyalty discount amount (loyalty points / 10)
         const loyaltyDiscount = Math.floor((response.data.loyaltyPoints || 0) / 10);
         setLoyaltyDiscountAmount(loyaltyDiscount);
@@ -100,31 +101,32 @@ const CheckoutPage = () => {
   }, [cartSummary.subTotal]);
 
   // Fetch addresses and cart
- useEffect(() => {
-  fetchAddresses();
+  useEffect(() => {
+    fetchAddresses();
 
-  if (checkoutProd && checkoutProd.length > 0 || pageProps=='buynow') {
-    const items = checkoutProd.items
-    setCartItems(checkoutProd.items)
+
+    if (checkoutProd && checkoutProd.length > 0 || pageProps == 'buynow') {
+      const items = checkoutProd.items
+      console.log(items,"items")
+      setCartItems(checkoutProd.items)
       const subTotal = items.reduce((sum, item) => {
-        const product = item?.product || {};
+        const product = item || {};
         const priceList = product?.priceList || [];
 
-        if (!priceList || priceList.length === 0) {
-          return sum + (product?.unitPrice || 0) * item.quantity;
-        }
+       console.log(priceList,"pp2")
 
         // Find matching price based on currency and size
         const matchingPrice = priceList.find(price =>
-          price.currency === product.currency &&
+          price.country === product.country &&
           price.size === product.size
         );
-
+        console.log(matchingPrice,"matching")
         const correctPrice = matchingPrice ? matchingPrice.priceAmount : (product?.unitPrice || 0);
         return sum + (correctPrice * item.quantity);
       }, 0);
+      console.log(subTotal,"55")
+fetchCoupons(subTotal)
 
-   
       let totalShipping = 0;
       items.forEach(item => {
         const countryPrice = item?.product?.countryPrice;
@@ -145,20 +147,16 @@ const CheckoutPage = () => {
         tax,
         discount,
         grandTotal,
-        currency: "INR"
+        // currency: items.priceList((e)=>e.country===items.country && e.size===items.size).currency
+        currency:'INR'
       });
-  } else {
-    fetchCart();
-  }
-}, [checkoutProd]);
-
-
-  // Fetch coupons when cart summary changes
-  useEffect(() => {
-    if (cartSummary.subTotal > 0) {
-      fetchCoupons();
+    } else {
+      fetchCart();
     }
-  }, [cartSummary.subTotal, fetchCoupons]);
+  }, [checkoutProd]);
+
+
+
 
   const fetchAddresses = async () => {
     try {
@@ -183,33 +181,29 @@ const CheckoutPage = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await getCartDetails();
-      const items = response.data.items || [];
+      const response = await JSON.parse(localStorage.getItem("cart")) || [];
+      const items = response || [];
       setCartItems(items);
 
       // Calculate summary dynamically using same logic as cart page
       const subTotal = items.reduce((sum, item) => {
-        const product = item?.product || {};
+        const product = item || {};
         const priceList = product?.priceList || [];
 
-        if (!priceList || priceList.length === 0) {
-          return sum + (product?.unitPrice || 0) * item.quantity;
-        }
-
-        // Find matching price based on currency and size
         const matchingPrice = priceList.find(price =>
-          price.currency === product.currency &&
+          price.country === product.country &&
           price.size === product.size
         );
 
-        const correctPrice = matchingPrice ? matchingPrice.priceAmount : (product?.unitPrice || 0);
+        const correctPrice = matchingPrice ? matchingPrice.priceAmount : 0
         return sum + (correctPrice * item.quantity);
       }, 0);
 
-   
+      fetchCoupons(subTotal)
+
       let totalShipping = 0;
       items.forEach(item => {
-        const countryPrice = item?.product?.countryPrice;
+        const countryPrice = item?.countryPrice;
         if (countryPrice && countryPrice.priceAmount !== undefined) {
           totalShipping += countryPrice.priceAmount;
         }
@@ -227,7 +221,10 @@ const CheckoutPage = () => {
         tax,
         discount,
         grandTotal,
-        currency: "INR"
+         currency:items.priceList.find(price =>
+          price.country === items.country &&
+          price.size === items.size
+        ).currency
       });
     } catch (err) {
       console.log(err || "Failed to fetch cart");
@@ -451,9 +448,9 @@ const CheckoutPage = () => {
 
   const calculateCouponDiscount = (coupon) => {
     if (!coupon) return 0;
-    
+
     let discount = 0;
-    
+
     if (coupon.type === 0) {
       // Percentage discount
       discount = (cartSummary.subTotal * coupon.value) / 100;
@@ -464,27 +461,27 @@ const CheckoutPage = () => {
       // Fixed amount discount
       discount = coupon.value;
     }
-    
+
     return Math.floor(discount);
   }
 
   const calculateTotalDiscount = () => {
     let totalDiscount = 0;
-    
+
     if (selectedCoupon) {
       totalDiscount += calculateCouponDiscount(selectedCoupon);
     }
-    
+
     if (loyaltyDiscountAmount > 0) {
       totalDiscount += loyaltyDiscountAmount;
     }
-    
+
     return totalDiscount;
   }
 
   const getValidCoupons = () => {
-    return availableCoupons.filter(coupon => 
-      coupon.isActive && 
+    return availableCoupons.filter(coupon =>
+      coupon.isActive &&
       cartSummary.subTotal >= coupon.minOrderAmount
     );
   }
@@ -581,8 +578,8 @@ const CheckoutPage = () => {
                         <div
                           key={addr.id}
                           className={`p-4 border-2  cursor-pointer transition-all ${address.id === addr.id
-                              ? 'border-black bg-premium-beige'
-                              : 'border-text-light/20 hover:border-text-dark bg-white'
+                            ? 'border-black bg-premium-beige'
+                            : 'border-text-light/20 hover:border-text-dark bg-white'
                             }`}
                           onClick={() => setAddress(addr)}
                         >
@@ -647,8 +644,8 @@ const CheckoutPage = () => {
                             onChange={handleInputChange}
                             placeholder="Enter your full name"
                             className={`w-full px-4 py-3 border-2 focus:outline-none text-sm transition-colors ${addressErrors.fullName
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-300 focus:border-black hover:border-gray-400'
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
                           {addressErrors.fullName && <p className="text-xs text-red-500 mt-1">{addressErrors.fullName}</p>}
@@ -663,8 +660,8 @@ const CheckoutPage = () => {
                             onChange={handleInputChange}
                             placeholder="Enter your phone number"
                             className={`w-full px-4 py-3 border-2 focus:outline-none text-sm transition-colors ${addressErrors.phone
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-300 focus:border-black hover:border-gray-400'
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
                           {addressErrors.phone && <p className="text-xs text-red-500 mt-1">{addressErrors.phone}</p>}
@@ -679,8 +676,8 @@ const CheckoutPage = () => {
                             onChange={handleInputChange}
                             placeholder="Street address, building, house number"
                             className={`w-full px-4 py-3 border-2 focus:outline-none text-sm transition-colors ${addressErrors.addressLine1
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-300 focus:border-black hover:border-gray-400'
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
                           {addressErrors.addressLine1 && <p className="text-xs text-red-500 mt-1">{addressErrors.addressLine1}</p>}
@@ -707,8 +704,8 @@ const CheckoutPage = () => {
                             onChange={handleInputChange}
                             placeholder="Enter city"
                             className={`w-full px-4 py-3 border-2 focus:outline-none text-sm  transition-colors ${addressErrors.city
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-300 focus:border-black hover:border-gray-400'
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
                           {addressErrors.city && <p className="text-xs text-red-500 mt-1">{addressErrors.city}</p>}
@@ -723,8 +720,8 @@ const CheckoutPage = () => {
                             onChange={handleInputChange}
                             placeholder="Enter state"
                             className={`w-full px-4 py-3 border-2 focus:outline-none text-sm  transition-colors ${addressErrors.state
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-300 focus:border-black hover:border-gray-400'
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
                           {addressErrors.state && <p className="text-xs text-red-500 mt-1">{addressErrors.state}</p>}
@@ -740,8 +737,8 @@ const CheckoutPage = () => {
                             placeholder="Enter pincode"
                             maxLength={6}
                             className={`w-full px-4 py-3 border-2 focus:outline-none text-sm  transition-colors ${addressErrors.pincode
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-300 focus:border-black hover:border-gray-400'
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
                           {addressErrors.pincode && <p className="text-xs text-red-500 mt-1">{addressErrors.pincode}</p>}
@@ -868,11 +865,10 @@ const CheckoutPage = () => {
                         {getValidCoupons().map((coupon) => (
                           <div
                             key={coupon.id}
-                            className={`p-4 border-2 cursor-pointer transition-all ${
-                              selectedCoupon?.id === coupon.id
-                                ? 'border-luxury-rose-gold bg-luxury-light-gold/20'
-                                : 'border-text-light/20 hover:border-luxury-gold/50 bg-white'
-                            }`}
+                            className={`p-4 border-2 cursor-pointer transition-all ${selectedCoupon?.id === coupon.id
+                              ? 'border-luxury-rose-gold bg-luxury-light-gold/20'
+                              : 'border-text-light/20 hover:border-luxury-gold/50 bg-white'
+                              }`}
                             onClick={() => handleCouponSelect(coupon)}
                           >
                             <div className="flex items-start justify-between">
@@ -934,7 +930,7 @@ const CheckoutPage = () => {
                       <div className="text-center py-8">
                         <Gift size={48} className="text-text-light mx-auto mb-3" strokeWidth={1} />
                         <p className="text-sm text-text-medium">
-                          {availableCoupons.length === 0 
+                          {availableCoupons.length === 0
                             ? "No coupons available for this order"
                             : `No valid coupons for orders under ₹${Math.min(...availableCoupons.map(c => c.minOrderAmount))}`
                           }
@@ -1044,32 +1040,24 @@ const CheckoutPage = () => {
 
               <div className="p-4 md:p-6 space-y-3">
                 {cartItems.map(item => {
-                  // Calculate correct price using same logic as cart page
-                  const product = item?.product || {};
+
+                  const product = item || {};
                   const priceList = product?.priceList || [];
-
-                  let correctPrice = product?.unitPrice || 0;
-
-                  if (priceList && priceList.length > 0) {
-                    // Find matching price based on currency and size
-                    const matchingPrice = priceList.find(price =>
-                      price.currency === product.currency &&
-                      price.size === product.size
-                    );
-
-                    if (matchingPrice) {
-                      correctPrice = matchingPrice.priceAmount;
-                    }
-                  }
-
-                  const itemTotal = correctPrice * item.quantity;
+                  console.log(priceList , product.country , product.size)
+                  const matchingPrice = priceList.find(price =>
+                    price.country === product.country &&
+                    price.size === product.size
+                  );
+                  {console.log(matchingPrice,"mmmttt")}
+                  const itemTotal = matchingPrice.priceAmount * item.quantity;
 
                   return (
                     <div key={item.id} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
-                      <img src={item.product.thumbnailUrl} alt={item.product.name} className="w-16 h-16 object-cover rounded" />
+                      <img src={item.images[0].url} alt={item.name} className="w-16 h-16 object-cover rounded" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-black">{item.product.name}</p>
-                        <p className="text-xs text-text-medium">{item.quantity} × {formatPrice(correctPrice, getCurrency())}</p>
+                        <p className="text-sm font-semibold text-black">{item.name} </p>
+                        <p className="text-sm font-semibold text-black"> {item.size}</p>
+                        <p className="text-xs text-text-medium">{item.quantity} × {formatPrice(matchingPrice.priceAmount, getCurrency())}</p>
                       </div>
                       <div className="text-sm font-semibold text-black">{formatPrice(itemTotal, getCurrency())}</div>
                     </div>
@@ -1081,7 +1069,7 @@ const CheckoutPage = () => {
                     <span className="text-text-medium">Subtotal</span>
                     <span className="text-black font-semibold">{formatPrice(cartSummary.subTotal, getCurrency())}</span>
                   </div>
-                  
+
                   {/* Coupon Discount */}
                   {selectedCoupon && (
                     <div className="flex justify-between text-xs md:text-sm">
@@ -1089,7 +1077,7 @@ const CheckoutPage = () => {
                       <span className="text-luxury-rose-gold font-semibold">-{formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency())}</span>
                     </div>
                   )}
-                  
+
                   {/* Loyalty Points Discount */}
                   {loyaltyDiscountAmount > 0 && (
                     <div className="flex justify-between text-xs md:text-sm">
@@ -1097,7 +1085,7 @@ const CheckoutPage = () => {
                       <span className="text-luxury-gold font-semibold">-{formatPrice(loyaltyDiscountAmount, getCurrency())}</span>
                     </div>
                   )}
-                  
+
                   {/* Total Discount */}
                   {calculateTotalDiscount() > 0 && (
                     <div className="flex justify-between text-xs md:text-sm border-t border-text-light/10 pt-2">
@@ -1105,7 +1093,7 @@ const CheckoutPage = () => {
                       <span className="text-luxury-rose-gold font-bold">-{formatPrice(calculateTotalDiscount(), getCurrency())}</span>
                     </div>
                   )}
-                  
+
                   <div className="flex justify-between text-xs md:text-sm">
                     <span className="text-text-medium">Shipping</span>
                     {cartSummary.shipping === 0 ? (

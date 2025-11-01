@@ -42,9 +42,9 @@ function AppContent() {
   }, [navigate]);
   const fetchCart = async () => {
     try {
-      const response = await getCartDetails();
-      const count = response.data.items.length;
-      dispatch(setCartCount(count)); 
+     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+       
+          dispatch(setCartCount(storedCart.length));
     } catch (err) {
       console.log(err || "something went wrong");
     }

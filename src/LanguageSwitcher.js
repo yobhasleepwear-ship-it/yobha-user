@@ -37,7 +37,7 @@ const LanguageSwitcher = () => {
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100 z-1000"
               >
                 {lang.label}
               </button>

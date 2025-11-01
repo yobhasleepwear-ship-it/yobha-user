@@ -1,5 +1,12 @@
 {
   "navbar": {
+    "topbar": {
+      "buyback": {
+        "en": "Introducing YOBHA Buyback Program – Exchange your gently used pieces today!",
+        "hi": "YOBHA बायबैक प्रोग्राम – अपने उपयोग किए गए कपड़ों को आज ही एक्सचेंज करें!",
+        "ar": "برنامج الاسترجاع من YOBHA - استبدل قطعك المستخدمة اليوم!"
+      }
+    },
     "menu": {
       "home": {
         "en": "Home",
@@ -81,6 +88,11 @@
         "en": "Wishlist",
         "hi": "विशलिस्ट",
         "ar": "قائمة الرغبات"
+      },
+      "buyback": {
+        "en": "Buyback",
+        "hi": "बायबैक",
+        "ar": "استرجاع"
       },
       "login": {
         "en": "Login",
