@@ -176,10 +176,11 @@ const HeaderWithSidebar = () => {
 
   // Logout function
   const handleLogout = () => {
-    localStorageService.clearAll(); // clear all keys
+    localStorageService.clearAllExcept(["selectedCountry"]);
     setIsAuthenticated(false);
     navigate("/login");
   };
+
 
   // Accordion toggle function
   const toggleAccordion = (section) => {
@@ -339,33 +340,33 @@ const HeaderWithSidebar = () => {
           fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
         }}
       >
-        
-      <div
-        className="bg-black text-white relative overflow-hidden"
-        style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
-      >
-        <div className="top-banner">
-          <div className="top-banner__track">
-            {[0, 1].map((repeat) => (
-              <React.Fragment key={`banner-segment-${repeat}`}>
-                {topBannerItems.map((item, index) => {
-                  const key = `banner-item-${repeat}-${index}`;
-                  return (
-                    <Link
-                      key={key}
-                      to={item.to}
-                      className="top-banner__item top-banner__item--link"
-                    >
-                      <span aria-hidden="true">{item.icon}</span>
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </React.Fragment>
-            ))}
+
+        <div
+          className="bg-black text-white relative overflow-hidden"
+          style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+        >
+          <div className="top-banner">
+            <div className="top-banner__track">
+              {[0, 1].map((repeat) => (
+                <React.Fragment key={`banner-segment-${repeat}`}>
+                  {topBannerItems.map((item, index) => {
+                    const key = `banner-item-${repeat}-${index}`;
+                    return (
+                      <Link
+                        key={key}
+                        to={item.to}
+                        className="top-banner__item top-banner__item--link"
+                      >
+                        <span aria-hidden="true">{item.icon}</span>
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
         <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5">
 
           {/* Mobile Layout */}

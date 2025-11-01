@@ -4,13 +4,42 @@ import { Link } from "react-router-dom";
 import logoImage from "../../assets/yobhaLogo.png";
 import { SubscribeNewsletter } from "../../service/notification";
 import { message } from "../toster-message/ToastContainer";
+import { countryOptions, CountrySelector } from "../../countryDropdown";
 const Footer = () => {
 const [newsletter , setNewsletter]=useState("")
+ const resolveSavedCountry = () => {
+    if (typeof window === "undefined") return countryOptions[0];
+    try {
+      const saved = window.localStorage.getItem("selectedCountry");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const match = countryOptions.find((c) => c.code === parsed.code);
+        return match || countryOptions[0];
+      }
+    } catch (error) {
+      console.error("Unable to parse saved country", error);
+    }
+    return countryOptions[0];
+  };
+
+  const [selectedSidebarCountry, setSelectedSidebarCountry] = useState(resolveSavedCountry);
+
 useEffect(() => {
   if (window.ELFSIGHT_APP) {
     window.ELFSIGHT_APP.init();
   }
 }, []);
+  const handleSidebarCountryChange = (selectedCode) => {
+    const chosen = countryOptions.find((option) => option.code === selectedCode);
+    if (!chosen) return;
+
+    setSelectedSidebarCountry(chosen);
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("selectedCountry", JSON.stringify(chosen));
+      window.dispatchEvent(new CustomEvent("yobha-country-change", { detail: chosen }));
+    }
+  };
 
   const handleNewsSubscribe = () => {
     const payload = {
@@ -143,6 +172,17 @@ useEffect(() => {
 
           {/* Newsletter & Social */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
+             <div className=" border-b border-gray-200 bg-premium-cream/70">
+                              <p className="text-[11px] uppercase tracking-[0.28em] text-black/70">Ship To</p>
+                              <CountrySelector
+                                value={selectedSidebarCountry?.code}
+                                onSelect={handleSidebarCountryChange}
+                                placeholder="Select country"
+                                buttonClassName="bg-white/90 shadow-sm"
+                                menuClassName="bg-white"
+                                optionClassName=""
+                              />
+                            </div>
             <div>
               <h3 className="text-sm font-semibold mb-6 text-black uppercase tracking-wider">
                 Newsletter

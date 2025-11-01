@@ -62,7 +62,9 @@ const LoginPage = () => {
       localStorageService.setValue(LocalStorageKeys.User, JSON.stringify(user));
 
       message.success("Welcome to YOBHA")
-      navigate("/");
+      const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/";
+      localStorageService.removeValue("redirectAfterLogin");
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       console.error("Login failed:", err);
       message.error(err.response?.data?.message || "Login failed. Try again.");

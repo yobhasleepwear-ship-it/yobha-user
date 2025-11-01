@@ -190,7 +190,7 @@ const CartPage = () => {
                 const itemKey = `${item.id}_${item.size || ""}`;
                 const isWishlisted = wishlistedItems.has(itemKey);
 
-                console.log(product, "product")
+              
                 return (
                   <div key={item.id + item.size} className="bg-white border border-text-light/20 p-4 md:p-6 hover:shadow-md transition-all">
                     <div className="flex flex-col sm:flex-row gap-4">
@@ -213,7 +213,12 @@ const CartPage = () => {
                               {product.variantColor && <span>Color: <span className="text-black font-medium capitalize">{product.variantColor}</span></span>}
                               {item.size && <span>Size: <span className="text-black font-medium">{item.size}</span></span>}
                             </div>
-                            {item.note && <p className="text-xs text-text-light italic line-clamp-1">Note: {item.note}</p>}
+                             {item.monogram && (
+                          <div className="inline-flex items-center gap-2  border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-luxury-gold">
+                           
+                            <span className="font-semibold tracking-[0.2em] text-black text-[11px]">{item.monogram}</span>
+                          </div>
+                        )}
                           </div>
 
                           <div className="flex items-center gap-3 flex-shrink-0">

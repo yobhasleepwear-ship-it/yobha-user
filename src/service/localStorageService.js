@@ -21,3 +21,20 @@ export const removeKey = (key) => {
 export const clearAll = () => {
   localStorage.clear();
 };
+
+export const removeValue = (key) => {
+  localStorage.removeItem(key);
+};
+export const clearAllExcept = (keysToKeep = []) => {
+  const savedData = {};
+  keysToKeep.forEach((key) => {
+    const value = localStorage.getItem(key);
+    if (value !== null) savedData[key] = value;
+  });
+
+  localStorage.clear();
+
+  Object.entries(savedData).forEach(([key, value]) => {
+    localStorage.setItem(key, value);
+  });
+};

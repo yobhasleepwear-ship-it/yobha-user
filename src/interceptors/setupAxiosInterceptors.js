@@ -32,13 +32,18 @@ const setupAxiosInterceptors = (navigate) => {
       if (error?.name === "CanceledError") return Promise.reject(error);
 
       const status = error?.response?.status;
-
       if (status === 401) {
         cancelAllRequests("Access token expired. Logging out.");
         localStorageService.clearAll();
+
+        const currentPath = window.location.pathname + window.location.search;
+        localStorageService.setValue("redirectAfterLogin", currentPath);
+
         navigate("/login");
         return Promise.reject(error);
       }
+
+
 
       const message =
         error?.response?.data?.message ||
