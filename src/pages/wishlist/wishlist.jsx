@@ -35,7 +35,7 @@ const WishlistPage = () => {
 
   useEffect(() => {
     fetchWishList();
-   
+
   }, []);
 
   const fetchWishList = async () => {
@@ -284,18 +284,18 @@ const WishlistPage = () => {
                     </div>
 
                     {/* Actions */}
-                  <div className="mt-auto space-y-2">
-  {/* Notify Me Button */}
-  <button
-    disabled
-    className="w-full py-3 bg-premium-beige text-black border border-text-light/30 
+                    <div className="mt-auto space-y-2">
+                      {/* Notify Me Button */}
+                      <button
+                        disabled
+                        className="w-full py-3 bg-premium-beige text-black border border-text-light/30 
                font-semibold text-xs uppercase tracking-wider flex items-center 
                justify-center gap-2 cursor-not-allowed opacity-60"
-  >
-    <Bell size={14} strokeWidth={1.5} />
-    Notify Me
-  </button>
-</div>
+                      >
+                        <Bell size={14} strokeWidth={1.5} />
+                        Notify Me
+                      </button>
+                    </div>
 
                   </div>
                 </div>
