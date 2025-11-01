@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { LogOut, Menu, X, User, Heart, Package, Search, ChevronDown, ChevronRight, Loader2, Recycle } from "lucide-react";
 import { BsBag } from "react-icons/bs";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -52,6 +53,25 @@ const HeaderWithSidebar = () => {
     { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "petaccessories" },
   ];
 
+  const topBannerItems = [
+    {
+      type: "link",
+      icon: "♻️",
+      label: t("navbar.topbar.buyback." + i18n.language),
+      to: "/buyback"
+    },
+    {
+      type: "text",
+      icon: "🛡️",
+      label: "Anti-Viral Finish"
+    },
+    {
+      type: "text",
+      icon: "🧼",
+      label: "Anti-Bacterial Fabric"
+    }
+  ];
+
   // Check authentication status
   useEffect(() => {
     const checkAuth = () => {
@@ -93,6 +113,19 @@ const HeaderWithSidebar = () => {
     setShowSecondaryHeader(false);
     setActiveSecondaryMenu(null);
   }, [location.pathname]);
+
+  // Disable background scroll when sidebar is open
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [sidebarOpen]);
 
   // Logout function
   const handleLogout = () => {
@@ -254,19 +287,45 @@ const HeaderWithSidebar = () => {
 
 
       <header
-        className="  w-full z-[100] bg-white/95 backdrop-blur-md border-b border-gray-100/50"
+        className="relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-100/50"
         style={{
           fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
         }}
       >
         
-      <div className="hidden md:block bg-[#ea5430]  text-white text-center text-xs md:text-sm py-2 tracking-wide font-medium">
-        <Link
-          to="/buyback"
-          className="inline-block text-white hover:underline transition-all duration-200"
-        >
-          ♻️ {t("navbar.topbar.buyback." + i18n.language)} ♻️
-        </Link>
+      <div
+        className="bg-[#ea5430] text-white relative overflow-hidden"
+        style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+      >
+        <div className="top-banner">
+          <div className="top-banner__track">
+            {[0, 1].map((repeat) => (
+              <React.Fragment key={`banner-segment-${repeat}`}>
+                {topBannerItems.map((item, index) => {
+                  const key = `banner-item-${repeat}-${index}`;
+                  if (item.type === "link") {
+                    return (
+                      <Link
+                        key={key}
+                        to={item.to}
+                        className="top-banner__item top-banner__item--link"
+                      >
+                        <span aria-hidden="true">{item.icon}</span>
+                        {item.label}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <span key={key} className="top-banner__item">
+                      <span aria-hidden="true">{item.icon}</span>
+                      {item.label}
+                    </span>
+                  );
+                })}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
       </div>
         <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5">
 
@@ -577,152 +636,155 @@ const HeaderWithSidebar = () => {
         )}
 
         {/* Sidebar */}
-        {sidebarOpen && (
-          <div className="fixed inset-0 z-[99999] flex sidebar-overlay">
-            <div
-              className="fixed inset-0 bg-black/50  z-[99998]"
-              onClick={() => setSidebarOpen(false)}
-            ></div>
+        {sidebarOpen &&
+          typeof document !== "undefined" &&
+          createPortal(
+            <div className="fixed inset-0 z-[99999]">
+              <div
+                className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
+                onClick={() => setSidebarOpen(false)}
+              ></div>
 
-            <div
-              className="relative w-72 h-screen bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[9999]"
-              style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
-            >
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                <img
-                  src={logoImage}
-                  alt="YOBHA Logo"
-                  className="h-10"
-                />
-                <button
-                  className="text-black hover:text-gray-700 transition-all duration-300"
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <X size={24} />
-                </button>
-              </div>
+              <aside
+                className="absolute left-0 top-0 h-full w-72 max-w-[92vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000]"
+                style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+              >
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                  <img
+                    src={logoImage}
+                    alt="YOBHA Logo"
+                    className="h-10"
+                  />
+                  <button
+                    className="text-black hover:text-gray-700 transition-all duration-300"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
 
-              <nav className="flex flex-col flex-1 px-6 py-4 space-y-2 text-black text-base bg-white">
-                {/* Main Navigation */}
-                {menuItems.map((item) => (
-                  <div key={item.nav} className="w-full">
+                <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-4 space-y-2 text-black text-base bg-white">
+                  {/* Main Navigation */}
+                  {menuItems.map((item) => (
+                    <div key={item.nav} className="w-full">
+                      <button
+                        onClick={() => toggleAccordion(item.nav.toLowerCase())}
+                        className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
+                      >
+                        <span>{item.label}</span>
+                        {expandedSections[item.nav.toLowerCase()] ? (
+                          <ChevronDown size={18} />
+                        ) : (
+                          <ChevronRight size={18} />
+                        )}
+                      </button>
+
+                      {item.nav === "Collections" && expandedSections.collections && (
+                        <div className="pl-4 mt-2 space-y-2 animate-slideDown">
+                          {collectionItems.map((cat) => (
+                            <Link
+                              key={cat.label}
+                              to={`/products/${cat.nav.replace(/\s/g, "-")}`}
+                              className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              onClick={() => setSidebarOpen(false)}
+                            >
+                              {cat.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+
+                      {item.nav === "Accessories" && expandedSections.accessories && (
+                        <div className="pl-4 mt-2 space-y-2 animate-slideDown">
+                          {accessoriesItems.map((accessory) => (
+                            <Link
+                              key={accessory.label}
+                              to={`/products/${accessory.nav}`}
+                              className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              onClick={() => setSidebarOpen(false)}
+                            >
+                              {accessory.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Account Section - Accordion */}
+                  <div className="pt-4 border-t border-gray-200 mt-4">
                     <button
-                      onClick={() => toggleAccordion(item.nav.toLowerCase())}
+                      onClick={() => toggleAccordion('account')}
                       className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
                     >
-                      <span>{item.label}</span>
-                      {expandedSections[item.nav.toLowerCase()] ? (
+                      <span>{t("navbar.account.myAccount." + i18n.language)}</span>
+                      {expandedSections.account ? (
                         <ChevronDown size={18} />
                       ) : (
                         <ChevronRight size={18} />
                       )}
                     </button>
 
-                    {item.nav === "Collections" && expandedSections.collections && (
+                    {expandedSections.account && (
                       <div className="pl-4 mt-2 space-y-2 animate-slideDown">
-                        {collectionItems.map((cat) => (
+                        {!isAuthenticated ? (
                           <Link
-                            key={cat.label}
-                            to={`/products/${cat.nav.replace(/\s/g, "-")}`}
+                            to="/login"
                             className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
                             onClick={() => setSidebarOpen(false)}
                           >
-                            {cat.label}
+                            {t("navbar.account.login." + i18n.language)}
                           </Link>
-                        ))}
-                      </div>
-                    )}
-
-                    {item.nav === "Accessories" && expandedSections.accessories && (
-                      <div className="pl-4 mt-2 space-y-2 animate-slideDown">
-                        {accessoriesItems.map((accessory) => (
-                          <Link
-                            key={accessory.label}
-                            to={`/products/${accessory.nav}`}
-                            className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
-                            onClick={() => setSidebarOpen(false)}
-                          >
-                            {accessory.label}
-                          </Link>
-                        ))}
+                        ) : (
+                          <>
+                            <Link
+                              to="/account"
+                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              onClick={() => setSidebarOpen(false)}
+                            >
+                              <User size={16} />
+                              <span>{t("navbar.account.myAccount." + i18n.language)}</span>
+                            </Link>
+                            <Link
+                              to="/buyback"
+                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                            >
+                              <Recycle size={16} />
+                              <span>{t("navbar.account.buyback." + i18n.language)}</span>
+                            </Link>
+                            <Link
+                              to="/orders"
+                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
+                              onClick={() => setSidebarOpen(false)}
+                            >
+                              <Package size={16} />
+                              <span>{t("navbar.account.orders." + i18n.language)}</span>
+                            </Link>
+                            <button
+                              onClick={() => {
+                                setSidebarOpen(false);
+                                handleLogout();
+                              }}
+                              className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm text-left w-full"
+                            >
+                              <LogOut size={16} />
+                              <span>{t("navbar.account.logout." + i18n.language)}</span>
+                            </button>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
-                ))}
 
-                {/* Account Section - Accordion */}
-                <div className="pt-4 border-t border-gray-200 mt-4">
-                  <button
-                    onClick={() => toggleAccordion('account')}
-                    className="flex items-center justify-between w-full text-black font-semibold py-2 hover:text-gray-700 transition-colors duration-300"
-                  >
-                    <span>{t("navbar.account.myAccount." + i18n.language)}</span>
-                    {expandedSections.account ? (
-                      <ChevronDown size={18} />
-                    ) : (
-                      <ChevronRight size={18} />
-                    )}
-                  </button>
-
-                  {expandedSections.account && (
-                    <div className="pl-4 mt-2 space-y-2 animate-slideDown">
-                      {!isAuthenticated ? (
-                        <Link
-                          to="/login"
-                          className="block text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
-                          onClick={() => setSidebarOpen(false)}
-                        >
-                          {t("navbar.account.login." + i18n.language)}
-                        </Link>
-                      ) : (
-                        <>
-                          <Link
-                            to="/account"
-                            className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
-                            onClick={() => setSidebarOpen(false)}
-                          >
-                            <User size={16} />
-                            <span>{t("navbar.account.myAccount." + i18n.language)}</span>
-                          </Link>
-                          <Link
-                            to="/buyback"
-                            className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
-                          >
-                            <Recycle size={16} />
-                            <span>{t("navbar.account.buyback." + i18n.language)}</span>
-                          </Link>
-                          <Link
-                            to="/orders"
-                            className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm"
-                            onClick={() => setSidebarOpen(false)}
-                          >
-                            <Package size={16} />
-                            <span>{t("navbar.account.orders." + i18n.language)}</span>
-                          </Link>
-                          <button
-                            onClick={() => {
-                              setSidebarOpen(false);
-                              handleLogout();
-                            }}
-                            className="flex items-center gap-3 text-black hover:text-gray-700 transition-colors duration-300 py-1 text-sm text-left w-full"
-                          >
-                            <LogOut size={16} />
-                            <span>{t("navbar.account.logout." + i18n.language)}</span>
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Language Switcher */}
-                <div className="pt-4 border-t border-gray-200 mt-4">
-                  <LanguageSwitcher />
-                </div>
-              </nav>
-            </div>
-          </div>
-        )}
+                  {/* Language Switcher */}
+                  <div className="pt-4 border-t border-gray-200 mt-4">
+                    <LanguageSwitcher />
+                  </div>
+                </nav>
+              </aside>
+            </div>,
+            document.body
+          )}
 
         {/* Search Section - Mobile Only */}
         {searchOpen && (
@@ -868,6 +930,67 @@ const HeaderWithSidebar = () => {
         /* Tracking Wide for Premium Feel */
         .tracking-wide {
           letter-spacing: 0.025em;
+        }
+
+        /* Marquee styles */
+        .top-banner {
+          position: relative;
+          overflow: hidden;
+          padding: 0.4rem 0;
+        }
+
+        .top-banner__track {
+          display: flex;
+          align-items: center;
+          width: max-content;
+          gap: 2.5rem;
+          padding: 0 1.5rem;
+          white-space: nowrap;
+          animation: topBannerMarquee 20s linear infinite;
+          will-change: transform;
+        }
+
+        .top-banner__item {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.65rem;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+        }
+
+        .top-banner__item span[aria-hidden="true"] {
+          font-size: 0.8rem;
+        }
+
+        .top-banner__item--link {
+          color: inherit;
+          transition: opacity 0.3s ease;
+        }
+
+        .top-banner__item--link:hover {
+          opacity: 0.85;
+        }
+
+        @keyframes topBannerMarquee {
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .top-banner__track {
+            gap: 1.5rem;
+            padding: 0 1rem;
+          }
+
+          .top-banner__item {
+            font-size: 0.62rem;
+            letter-spacing: 0.22em;
+          }
         }
       `}</style>
       </header>
