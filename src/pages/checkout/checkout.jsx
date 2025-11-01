@@ -1046,23 +1046,33 @@ fetchCoupons(subTotal)
 
                   const product = item || {};
                   const priceList = product?.priceList || [];
-                  console.log(priceList , product.country , product.size)
                   const matchingPrice = priceList.find(price =>
                     price.country === product.country &&
                     price.size === product.size
                   );
-                  {console.log(matchingPrice,"mmmttt")}
-                  const itemTotal = matchingPrice.priceAmount * item.quantity;
+                  const unitPrice = matchingPrice?.priceAmount ?? product?.unitPrice ?? 0;
+                  const currency = matchingPrice?.currency ?? getCurrency();
+                  const itemTotal = unitPrice * (item.quantity || 0);
+                  const imageSrc = item?.images?.[0]?.thumbnailUrl || item?.images?.[0]?.url || product?.images?.[0]?.thumbnailUrl || product?.images?.[0]?.url || item?.thumbnailUrl || product?.thumbnailUrl || "https://via.placeholder.com/64";
+                  const monogramText = (item?.monogram || product?.monogram || "").trim();
 
                   return (
-                    <div key={item.id} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
-                      <img src={item.images[0].url} alt={item.name} className="w-16 h-16 object-cover rounded" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-black">{item.name} </p>
-                        <p className="text-sm font-semibold text-black"> {item.size}</p>
-                        <p className="text-xs text-text-medium">{item.quantity} × {formatPrice(matchingPrice.priceAmount, getCurrency())}</p>
+                    <div key={`${item.id}_${item.size || "nosize"}`} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
+                      <img src={imageSrc} alt={product.name} className="w-16 h-16 object-cover rounded" />
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <p className="text-sm font-semibold text-black truncate">{product.name}</p>
+                        {item.size && (
+                          <p className="text-xs uppercase tracking-widest text-text-medium">Size • <span className="text-black tracking-normal">{item.size}</span></p>
+                        )}
+                        <p className="text-xs text-text-medium">{item.quantity} × {formatPrice(unitPrice, currency)}</p>
+                        {monogramText && (
+                          <div className="inline-flex items-center gap-2  border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-luxury-gold">
+                           
+                            <span className="font-semibold tracking-[0.2em] text-black text-[11px]">{monogramText}</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="text-sm font-semibold text-black">{formatPrice(itemTotal, getCurrency())}</div>
+                      <div className="text-sm font-semibold text-black whitespace-nowrap">{formatPrice(itemTotal, currency)}</div>
                     </div>
                   );
                 })}
