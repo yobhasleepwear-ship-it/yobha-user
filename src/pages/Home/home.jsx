@@ -114,13 +114,13 @@ const HomePage = () => {
 
 
 
-            <div className="mt-10 block sm:hidden">
+            <div className="mt-10 sm:hidden">
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {recentVisited.map((item) => (
                   <article
                     key={item.id}
                     onClick={() => navigate(`/productDetail/${item.id}`)}
-                    className="flex-shrink-0 w-60 border border-gray-200/70 bg-white/85 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2"
+                    className="group flex-shrink-0 w-60 border border-gray-200/70 bg-white/85 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2"
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -137,6 +137,37 @@ const HomePage = () => {
                       </div>
                     </div>
                     <div className="px-4 py-4 flex items-center justify-between text-[11px] uppercase tracking-[0.28em] text-gray-600">
+                      <span>View Piece</span>
+                      <span className="text-luxury-gold">→</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10 hidden sm:block">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {recentVisited.map((item) => (
+                  <article
+                    key={item.id}
+                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                    className="group border border-gray-200/70 bg-white/90 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2"
+                  >
+                    <div className="relative h-60 overflow-hidden">
+                      <img
+                        src={item.images?.[0]}
+                        alt={item.name}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4 text-left">
+                        <p className="text-white/90 text-[11px] uppercase tracking-[0.3em]">YOBHA EDIT</p>
+                        <h3 className="mt-1 text-base text-white font-light uppercase tracking-[0.2em] leading-snug">
+                          {item.name}
+                        </h3>
+                      </div>
+                    </div>
+                    <div className="px-5 py-5 flex items-center justify-between text-[11px] uppercase tracking-[0.28em] text-gray-600">
                       <span>View Piece</span>
                       <span className="text-luxury-gold">→</span>
                     </div>
