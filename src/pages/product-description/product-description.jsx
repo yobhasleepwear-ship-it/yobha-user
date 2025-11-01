@@ -80,6 +80,7 @@ const [ cartItem ,setCartItems]=useState([])
   const [error] = useState(null);
   const [newProducts, setProducts] = useState([])
   const [monogram , setMonogram]=useState("")
+  const MONOGRAM_CHAR_LIMIT = 12;
   // Review Form State
   const [averageProdRating, setAverageProdRating] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -799,6 +800,29 @@ const handleBuyNow = () => {
               </div>
             </div>
 
+            {/* Personalisation */}
+            <div className="bg-white border border-text-light/10 p-4 rounded-sm space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                  Add Monogram
+                </h3>
+                <span className="text-[11px] text-text-medium">
+                  {monogram.length}/{MONOGRAM_CHAR_LIMIT}
+                </span>
+              </div>
+              <p className="text-[11px] text-text-medium font-light leading-relaxed">
+                Personalise this piece with refined initials or a short note.
+              </p>
+              <input
+                type="text"
+                value={monogram}
+                onChange={(e) => setMonogram(e.target.value)}
+                maxLength={MONOGRAM_CHAR_LIMIT}
+                placeholder="Add Monogram text"
+                className="w-full px-3 py-2 text-sm bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light tracking-wide"
+              />
+            </div>
+
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
               {availableQuantity === 0 ? (
@@ -1024,17 +1048,6 @@ const handleBuyNow = () => {
             )}
           </div>
         </div>
-            <div>
-              <p>Customise Your Product</p>
-              <p>
-                <input
-                value={monogram}
-                onChange={(e)=>setMonogram(e.target.value)}
-                placeholder="enter your text"
-                className="border-black"
-                />
-              </p>
-              </div>
         {/* Review Form Section */}
         <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
           <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-widest mb-5 md:mb-6">
