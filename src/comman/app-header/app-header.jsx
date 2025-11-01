@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import LanguageSwitcher from "../../LanguageSwitcher";
 import { getFilteredProducts } from "../../service/productAPI";
 import { useTranslation } from "react-i18next";
+import { countryOptions, CountrySelector } from "../../countryDropdown";
 
 const HeaderWithSidebar = () => {
   const { t, i18n } = useTranslation();
@@ -29,6 +30,23 @@ const HeaderWithSidebar = () => {
   const secondaryHeaderRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const resolveSavedCountry = () => {
+    if (typeof window === "undefined") return countryOptions[0];
+    try {
+      const saved = window.localStorage.getItem("selectedCountry");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const match = countryOptions.find((c) => c.code === parsed.code);
+        return match || countryOptions[0];
+      }
+    } catch (error) {
+      console.error("Unable to parse saved country", error);
+    }
+    return countryOptions[0];
+  };
+
+  const [selectedSidebarCountry, setSelectedSidebarCountry] = useState(resolveSavedCountry);
 
   const menuItems = [
     { label: t("navbar.menu.collections." + i18n.language), nav: "Collections" },
@@ -106,6 +124,36 @@ const HeaderWithSidebar = () => {
       setPrevCartCount(cartCount);
     }
   }, [cartCount, prevCartCount, isInitialized]);
+
+  useEffect(() => {
+    const syncCountryFromStorage = () => {
+      setSelectedSidebarCountry(resolveSavedCountry());
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", syncCountryFromStorage);
+      window.addEventListener("yobha-country-change", syncCountryFromStorage);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("storage", syncCountryFromStorage);
+        window.removeEventListener("yobha-country-change", syncCountryFromStorage);
+      }
+    };
+  }, []);
+
+  const handleSidebarCountryChange = (selectedCode) => {
+    const chosen = countryOptions.find((option) => option.code === selectedCode);
+    if (!chosen) return;
+
+    setSelectedSidebarCountry(chosen);
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("selectedCountry", JSON.stringify(chosen));
+      window.dispatchEvent(new CustomEvent("yobha-country-change", { detail: chosen }));
+    }
+  };
 
   // Close secondary header when navigating to different routes
   useEffect(() => {
@@ -652,6 +700,18 @@ const HeaderWithSidebar = () => {
                   >
                     <X size={24} />
                   </button>
+                </div>
+
+                <div className="px-6 py-4 border-b border-gray-200 bg-premium-cream/70">
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-black/70">Ship To</p>
+                  <CountrySelector
+                    value={selectedSidebarCountry?.code}
+                    onSelect={handleSidebarCountryChange}
+                    placeholder="Select country"
+                    buttonClassName="bg-white/90 shadow-sm"
+                    menuClassName="bg-white"
+                    optionClassName=""
+                  />
                 </div>
 
                 <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-4 space-y-2 text-black text-base bg-white">

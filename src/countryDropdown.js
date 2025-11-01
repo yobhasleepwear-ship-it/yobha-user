@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-const countryOptions = [
+export const countryOptions = [
   { code: "IN", label: "India" },
   { code: "AE", label: "United Arab Emirates (UAE)" },
   { code: "SA", label: "Saudi Arabia" },
@@ -13,6 +13,83 @@ const countryOptions = [
   { code: "EG", label: "Egypt" },
   { code: "IQ", label: "Iraq" },
 ];
+
+export const CountrySelector = ({
+  value,
+  onSelect,
+  placeholder = "Select country",
+  buttonClassName = "",
+  menuClassName = "",
+  optionClassName = "",
+  align = "left",
+  wrapperClassName = "",
+  style,
+}) => {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+  const selectedOption = countryOptions.find((option) => option.code === value);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (code) => {
+    setOpen(false);
+    onSelect?.(code);
+  };
+
+  const baseButtonClasses = "w-full flex items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-left text-xs font-light uppercase tracking-[0.28em] text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-luxury-gold/30 focus:border-luxury-gold/40 hover:bg-white";
+  const baseMenuClasses = "absolute z-50 mt-2 w-full bg-white border border-gray-200 shadow-xl";
+  const baseOptionClasses = "block w-full text-left px-5 py-3 text-xs uppercase tracking-[0.28em] text-black hover:bg-premium-cream/60 transition-colors";
+  const menuAlignmentClass = align === "right" ? "right-0" : "left-0";
+
+  return (
+    <div ref={containerRef} className={`relative ${wrapperClassName}`} style={style}>
+      <button
+        type="button"
+        className={`${baseButtonClasses} ${buttonClassName}`}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span className="truncate text-left flex-1">
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <svg
+          className={`h-4 w-4 transform transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className={`${baseMenuClasses} ${menuAlignmentClass} ${menuClassName}`} role="listbox">
+          {countryOptions.map((option) => (
+            <button
+              key={option.code}
+              type="button"
+              onClick={() => handleSelect(option.code)}
+              className={`${baseOptionClasses} ${optionClassName}`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const CountryDropdown = ({ onConfirmed }) => {
   const [detectedCountry, setDetectedCountry] = useState(null);
@@ -50,19 +127,26 @@ const CountryDropdown = ({ onConfirmed }) => {
       });
   }, [onConfirmed]);
 
-  const handleConfirm = () => {
-    setSelectedCountry(detectedCountry);
-    localStorage.setItem("selectedCountry", JSON.stringify(detectedCountry));
-    setShowConfirmation(false);
-    onConfirmed?.(detectedCountry);
-  };
+  const handleSelectCountry = (code) => {
+    const selected = countryOptions.find((c) => c.code === code);
+    if (!selected) return;
 
-  const handleChange = (e) => {
-    const selected = countryOptions.find((c) => c.code === e.target.value);
     setSelectedCountry(selected);
     localStorage.setItem("selectedCountry", JSON.stringify(selected));
     setShowConfirmation(false);
+    setApiFailed(false);
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("yobha-country-change", { detail: selected }));
+    }
+
     onConfirmed?.(selected);
+  };
+
+  const handleConfirm = () => {
+    if (detectedCountry?.code) {
+      handleSelectCountry(detectedCountry.code);
+    }
   };
 
   // 🟢 If API fails → show same themed modal with manual selection
@@ -109,39 +193,14 @@ const CountryDropdown = ({ onConfirmed }) => {
           </div>
 
           <div className="space-y-4">
-            <div className="relative">
-              <select
-                onChange={handleChange}
-                defaultValue=""
-                className="w-full appearance-none bg-premium-cream border border-gray-200 rounded-2xl py-4 px-6 text-text-dark font-light text-sm tracking-wide focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 transition-all duration-300 hover:bg-white cursor-pointer"
-              >
-                <option value="" disabled>
-                  Select your country
-                </option>
-                {countryOptions.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-
-              {/* Custom Arrow */}
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-text-light"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
-            </div>
+            <CountrySelector
+              value={selectedCountry?.code}
+              onSelect={handleSelectCountry}
+              placeholder="Select your country"
+              buttonClassName="bg-premium-cream text-text-dark text-sm tracking-[0.25em]"
+              menuClassName="bg-white"
+              optionClassName="text-sm tracking-[0.22em]"
+            />
           </div>
 
           {/* Decorative Elements */}
@@ -204,43 +263,19 @@ const CountryDropdown = ({ onConfirmed }) => {
           <div className="space-y-4">
             <button
               onClick={handleConfirm}
-              className="w-full bg-luxury-gold text-white py-4 px-8 rounded-2xl font-light text-sm tracking-widest uppercase transition-all duration-300 hover:shadow-xl hover:brightness-95 hover:scale-105 transform focus:outline-none focus:ring-2 focus:ring-luxury-gold/30"
+              className="w-full bg-luxury-gold text-white py-4 px-8 font-light text-sm tracking-widest uppercase transition-all duration-300 hover:shadow-xl hover:brightness-95 hover:scale-105 transform focus:outline-none focus:ring-2 focus:ring-luxury-gold/30"
             >
               Yes, Continue
             </button>
 
-            <div className="relative">
-              <select
-                onChange={handleChange}
-                defaultValue=""
-                className="w-full appearance-none bg-premium-cream border border-gray-200 rounded-2xl py-4 px-6 text-text-dark font-light text-sm tracking-wide focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 transition-all duration-300 hover:bg-white cursor-pointer"
-              >
-                <option value="" disabled>
-                  Or select your country
-                </option>
-                {countryOptions.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-text-light"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
-            </div>
+            <CountrySelector
+              value={selectedCountry?.code}
+              onSelect={handleSelectCountry}
+              placeholder="Or select your country"
+              buttonClassName="bg-premium-cream text-text-dark text-sm tracking-[0.25em]"
+              menuClassName="bg-white"
+              optionClassName="text-sm tracking-[0.22em]"
+            />
           </div>
 
           <div className="absolute top-4 right-4 w-2 h-2 bg-luxury-gold/30 rounded-full animate-pulse"></div>
@@ -311,42 +346,14 @@ const CountryDropdown = ({ onConfirmed }) => {
 
   // ✅ Final small dropdown (after confirm)
   return (
-    <div
-      className="relative group"
-      style={{
-        fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-      }}
-    >
-      <select
-        value={selectedCountry.code}
-        onChange={handleChange}
-        className="appearance-none bg-premium-cream border border-gray-200 rounded-2xl py-3 px-6 pr-12 text-text-dark font-light text-sm tracking-wide focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 transition-all duration-300 hover:bg-white cursor-pointer min-w-[200px] shadow-sm hover:shadow-md"
-      >
-        {countryOptions.map((c) => (
-          <option key={c.code} value={c.code}>
-            {c.label}
-          </option>
-        ))}
-      </select>
-
-      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none transition-transform duration-300 group-hover:scale-110">
-        <svg
-          className="w-4 h-4 text-text-light"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </div>
-
-      <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-luxury-gold/20 transition-all duration-300 pointer-events-none"></div>
-    </div>
+    <CountrySelector
+      value={selectedCountry?.code}
+      onSelect={handleSelectCountry}
+      placeholder="Select your country"
+      buttonClassName="min-w-[200px] text-text-dark text-sm tracking-[0.25em]"
+      menuClassName="bg-white"
+      optionClassName="text-sm tracking-[0.22em]"
+    />
   );
 };
 
