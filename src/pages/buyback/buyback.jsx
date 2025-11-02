@@ -19,6 +19,7 @@ const Buyback = () => {
   const [productUrls, setProductUrls] = useState([]); // 4 images max
   const [invoiceUrl, setInvoiceUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [buybackData, setBuybackData] = useState([]);
 
   // Handle radio answer
   const handleAnswer = (index, value) => {
@@ -41,7 +42,8 @@ const Buyback = () => {
   const GetBuybackDetails = async () => {
     try {
       const response = await getBuybackDetails();
-      const statusMessage = response?.data?.message || "Buyback status fetched successfully.";
+      const statusMessage = response?.data?.message
+      setBuybackData(response.data.data)
       setMessage(statusMessage);
     } catch (err) {
       console.error("GetBuybackDetails error:", err);
@@ -73,7 +75,8 @@ const Buyback = () => {
       productUrl: productUrls.map((p) => p.url),
       invoiceUrl,
       country: selectedCountry.label,
-      quiz: questions.map(({ que, ans }) => ({ que, ans })),
+      quiz: questions.map(({ que, ans }) => ({ Ques: que, Ans: ans })),
+
     };
 
     try {
@@ -103,7 +106,7 @@ const Buyback = () => {
     <div className="relative min-h-screen overflow-hidden bg-premium-beige font-helvetica text-text-dark">
       <div className="pointer-events-none absolute -top-32 -left-24 hidden h-96 w-96 rounded-full bg-luxury-gold/10 blur-3xl md:block" />
       <div className="pointer-events-none absolute -bottom-40 -right-10 hidden h-80 w-80 rounded-full bg-text-rose-gold/8 blur-3xl lg:block" />
-      <div className="relative z-10 mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:py-16">
+      <div className="relative z-10 mx-auto  px-4 py-10 sm:px-6 lg:py-16">
         <div className="border border-white/40 bg-premium-beige p-6 shadow-[0_30px_80px_rgba(18,18,18,0.08)] backdrop-blur-xl sm:p-10">
           <h1 className="text-2xl font-semibold uppercase tracking-[0.2em] text-text-dark sm:text-3xl sm:tracking-[0.3em] md:text-4xl md:tracking-[0.35em]">
             <span className="text-luxury-gold">YOBHA</span> Buy-Back Eligibility Quiz
@@ -156,11 +159,10 @@ const Buyback = () => {
                   {q.options.map((opt, oIdx) => (
                     <label
                       key={oIdx}
-                      className={`group relative flex flex-col gap-2 border border-white/70 px-4 py-3 text-sm shadow-sm transition hover:border-luxury-gold/40 hover:shadow-md sm:flex-row sm:items-center sm:justify-between ${
-                        q.ans === opt
+                      className={`group relative flex flex-col gap-2 border border-white/70 px-4 py-3 text-sm shadow-sm transition hover:border-luxury-gold/40 hover:shadow-md sm:flex-row sm:items-center sm:justify-between ${q.ans === opt
                           ? "border-luxury-gold/60 bg-white"
                           : "bg-white/80"
-                      }`}
+                        }`}
                     >
                       <input
                         type="radio"
@@ -170,9 +172,8 @@ const Buyback = () => {
                         className="h-4 w-4 cursor-pointer accent-luxury-gold"
                       />
                       <span
-                        className={`w-full text-left text-sm font-medium transition sm:w-auto ${
-                          q.ans === opt ? "text-text-dark" : "text-text-dark/80"
-                        }`}
+                        className={`w-full text-left text-sm font-medium transition sm:w-auto ${q.ans === opt ? "text-text-dark" : "text-text-dark/80"
+                          }`}
                       >
                         {opt}
                       </span>
@@ -189,7 +190,7 @@ const Buyback = () => {
               </p>
 
               {/* Product Images */}
-                <div className="border border-white/60 bg-white/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] transition hover:border-luxury-gold/40 hover:shadow-md focus-within:border-luxury-gold/50">
+              <div className="border border-white/60 bg-white/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] transition hover:border-luxury-gold/40 hover:shadow-md focus-within:border-luxury-gold/50">
                 <ImageUploader
                   productId={productId}
                   onUploadComplete={handleProductUpload}
@@ -273,6 +274,114 @@ const Buyback = () => {
           </form>
         </div>
       </div>
+      {buybackData.length > 0 && (
+  <div className="mt-8 space-y-6">
+   {buybackData.length > 0 && (
+  <div className="mt-10 space-y-8 p-8">
+    {buybackData.map((item) => (
+      <div
+        key={item.id}
+        className="border border-luxury-gold/40 bg-gradient-to-br from-white/90 to-[#fff9f3] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)] rounded-2xl transition hover:shadow-[0_12px_36px_rgba(0,0,0,0.12)]"
+      >
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h3 className="text-lg font-semibold uppercase tracking-[0.25em] text-text-dark">
+            Product ID: <span className="text-luxury-gold">{item.productId}</span>
+          </h3>
+          <p className="text-sm text-text-medium">
+            Order ID: <span className="font-medium text-text-dark">{item.orderId}</span>
+          </p>
+        </div>
+
+        {/* Product Images */}
+        <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {item.productUrl.map((url, i) => (
+            <a
+              key={i}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative overflow-hidden rounded-xl border border-white/70 shadow-sm transition hover:shadow-lg hover:border-luxury-gold/60"
+            >
+              <img
+                src={url}
+                alt={`Product ${i + 1}`}
+                className="h-28 w-full object-cover transition duration-500 ease-out group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 flex items-end justify-center pb-2 transition">
+                <span className="text-xs text-white font-medium tracking-wide">View</span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        {/* Status */}
+        <div className="mt-6 flex flex-wrap gap-3 text-xs font-medium">
+          <span
+            className={`px-3 py-1.5 rounded-full shadow-sm ${
+              item.buybackStatus === "approved"
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : item.buybackStatus === "rejected"
+                ? "bg-red-100 text-red-700 border border-red-300"
+                : "bg-yellow-50 text-yellow-700 border border-yellow-300"
+            }`}
+          >
+            Buyback: {item.buybackStatus}
+          </span>
+
+          <span
+            className={`px-3 py-1.5 rounded-full shadow-sm ${
+              item.finalStatus === "approved"
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : item.finalStatus === "rejected"
+                ? "bg-red-100 text-red-700 border border-red-300"
+                : "bg-yellow-50 text-yellow-700 border border-yellow-300"
+            }`}
+          >
+            Final: {item.finalStatus}
+          </span>
+
+          <span
+            className={`px-3 py-1.5 rounded-full shadow-sm ${
+              item.deliveryStatus === "delivered"
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : "bg-blue-50 text-blue-700 border border-blue-300"
+            }`}
+          >
+            Delivery: {item.deliveryStatus}
+          </span>
+        </div>
+
+        {/* Quiz Summary */}
+        <div className="mt-6 border-t border-white/60 pt-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-text-dark/70 mb-3">
+            Your Answers
+          </p>
+          <ul className="space-y-2 text-sm text-text-medium/90">
+            {item.quiz.map((q, idx) => (
+              <li
+                key={idx}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/60 border border-white/60 px-3 py-2 rounded-md hover:border-luxury-gold/40 hover:shadow-sm transition"
+              >
+                <span className="font-medium text-text-dark/80">{q.ques}</span>
+                <span className="text-text-rose-gold font-semibold mt-1 sm:mt-0">{q.ans}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-4 text-[10px] text-text-medium/70 italic">
+          Submitted on: {new Date(item.createdAt).toLocaleString()}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+  </div>
+)}
+
     </div>
   );
 };
