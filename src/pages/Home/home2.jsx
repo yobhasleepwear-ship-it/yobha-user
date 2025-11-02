@@ -142,14 +142,14 @@ const HomePage2 = () => {
         </div>
 
         {/* Video Section - Part 2 */}
-        <div className="relative h-[40vh] md:h-[50vh] w-full flex items-center justify-center overflow-hidden">
+        <div className="relative h-[40vh] md:h-screen w-full overflow-hidden">
           <video
             src={isPortrait ? portraitVideo : landscapeVideo}
             autoPlay
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            className="w-full h-full object-cover"
             key={isPortrait ? 'portrait' : 'landscape'}
           />
         </div>

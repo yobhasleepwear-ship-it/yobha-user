@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../app-header/app-header";
+import Header from "../app-header/app-header2";
 import Footer from "../footer/footer";
 
 const AppLayout = ({ children }) => {
