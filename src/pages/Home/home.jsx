@@ -95,8 +95,7 @@ const HomePage = () => {
 
       {recentVisited.length > 0 && (
         <section
-          className="relative px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-14 md:py-16"
-          style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+          className="relative px-4 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-14 md:py-16 font-sweet-sans"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-white via-[#fef8f4] to-[#f4e6dc] opacity-90" />
           <div className="absolute inset-0 pointer-events-none">

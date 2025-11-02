@@ -19,9 +19,6 @@ const AccountPage = () => {
   const [loading, setLoading] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
   const [savingName, setSavingName] = useState(false);
-  const pageFontStyle = {
-    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
-  };
 
 
 
@@ -264,15 +261,14 @@ const AccountPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-premium-cream pt-4 lg:pt-4 pb-12"
-      style={pageFontStyle}
+      className="min-h-screen bg-premium-cream pt-4 lg:pt-4 pb-12 font-sweet-sans"
     >
       <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8 lg:py-12">
 
         {/* Page Header */}
         <div className="mb-8 sm:mb-12">
           <div className="border-b border-text-light/10 pb-6">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-3 uppercase tracking-[0.2em]">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-3 uppercase tracking-widest">
               My Account
             </h1>
             <p className="text-base sm:text-lg text-text-medium uppercase tracking-wider">
@@ -294,7 +290,7 @@ const AccountPage = () => {
                   <div className="w-10 h-10 bg-black flex items-center justify-center">
                     <User size={20} className="text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-black uppercase tracking-[0.15em]">
+                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest">
                     Profile Information
                   </h2>
                 </div>
@@ -382,7 +378,7 @@ const AccountPage = () => {
                   <div className="w-10 h-10 bg-black flex items-center justify-center">
                     <MapPin size={20} className="text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-black uppercase tracking-[0.15em]">
+                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest">
                     Addresses
                   </h2>
                 </div>
@@ -549,7 +545,7 @@ const AccountPage = () => {
         </div>
 
         <div className="mb-8 sm:mb-12 border-b border-text-light/10 pb-6 mt-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-3 uppercase tracking-[0.2em]">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-3 uppercase tracking-widest">
             Refer & Earn
           </h1>
           <p className="text-base sm:text-lg text-text-medium uppercase tracking-wider">

@@ -445,8 +445,7 @@ const handleBuyNow = () => {
   if (isLoading) {
     return (
       <div
-        className="min-h-screen bg-premium-cream flex items-center justify-center"
-        style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+        className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center">
           <div className="w-12 h-12 border-2 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-3"></div>
@@ -460,8 +459,7 @@ const handleBuyNow = () => {
   if (error || !product) {
     return (
       <div
-        className="min-h-screen bg-premium-cream flex items-center justify-center"
-        style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+        className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center max-w-md px-6">
           <h2 className="text-xl font-light text-black mb-3 uppercase tracking-widest">
@@ -527,8 +525,7 @@ const handleBuyNow = () => {
 
   return (
     <div
-      className="min-h-screen bg-premium-cream"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      className="min-h-screen bg-premium-cream font-sweet-sans"
     >
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-10">
 
@@ -636,7 +633,7 @@ const handleBuyNow = () => {
 
             {/* Product Name */}
             <div>
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-light text-black uppercase tracking-widest mb-3 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 leading-tight">
                 {product.name}
               </h1>
 

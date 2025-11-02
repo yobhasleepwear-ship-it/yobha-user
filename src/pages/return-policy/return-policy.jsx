@@ -3,14 +3,13 @@ import React from "react";
 const ReturnPolicy = () => {
   return (
     <div
-      className="min-h-screen bg-premium-cream"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
+      className="min-h-screen bg-premium-cream font-sweet-sans"
     >
       <div className="max-w-4xl mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-16">
         
         {/* Page Header */}
         <div className="mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4 md:mb-6">
             Return Policy
           </h1>
           <div className="w-24 h-1 bg-luxury-gold mb-6"></div>

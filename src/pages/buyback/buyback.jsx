@@ -103,7 +103,7 @@ const Buyback = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-premium-beige font-helvetica text-text-dark">
+    <div className="relative min-h-screen overflow-hidden bg-premium-beige font-sweet-sans text-text-dark">
       <div className="pointer-events-none absolute -top-32 -left-24 hidden h-96 w-96 rounded-full bg-luxury-gold/10 blur-3xl md:block" />
       <div className="pointer-events-none absolute -bottom-40 -right-10 hidden h-80 w-80 rounded-full bg-text-rose-gold/8 blur-3xl lg:block" />
       <div className="relative z-10 mx-auto  px-4 py-10 sm:px-6 lg:py-16">

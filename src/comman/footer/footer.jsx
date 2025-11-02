@@ -57,8 +57,7 @@ useEffect(() => {
   }
   return (
     <footer
-      className="bg-premium-cream relative z-10 border-t border-text-light/20"
-      style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+      className="bg-premium-cream relative z-10 border-t border-text-light/20 font-sweet-sans"
     >
       <div
   className="elfsight-app-0644ebdf-2b74-4039-b5c3-85f4e294c0b1"

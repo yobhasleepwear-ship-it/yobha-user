@@ -335,15 +335,11 @@ const HeaderWithSidebar = () => {
 
 
       <header
-        className="relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-100/50"
-        style={{
-          fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
-        }}
+        className="relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-100/50 font-sweet-sans"
       >
 
         <div
-          className="bg-black text-white relative overflow-hidden"
-          style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+          className="bg-black text-white relative overflow-hidden font-sweet-sans"
         >
           <div className="top-banner">
             <div className="top-banner__track">
@@ -470,7 +466,7 @@ const HeaderWithSidebar = () => {
                   >
                     <button
                       onClick={() => handleMainMenuClick(item.nav)}
-                      className={`text-gray-700 hover:text-gray-900 transition-all duration-500 font-light text-xs md:text-sm tracking-widest uppercase relative group ${activeSecondaryMenu === item.nav ? 'text-gray-900' : ''
+                      className={`text-black hover:text-gray-900 transition-all duration-500 font-normal text-xs md:text-sm tracking-widest uppercase relative group ${activeSecondaryMenu === item.nav ? 'text-black' : ''
                         }`}
                     >
                       {item.label}
@@ -564,14 +560,14 @@ const HeaderWithSidebar = () => {
                       <div className="space-y-1">
                         <Link
                           to="/account"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black/80 hover:text-black font-light uppercase tracking-widest"
+                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
                         >
                           <User size={16} />
                           <span>{t("navbar.account.myAccount." + i18n.language)}</span>
                         </Link>
                         <Link
                           to="/orders"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black/80 hover:text-black font-light uppercase tracking-widest"
+                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
                         >
                           <Package size={16} />
                           <span>{t("navbar.account.orders." + i18n.language)}</span>
@@ -583,11 +579,11 @@ const HeaderWithSidebar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
+                  className="flex items-center gap-2 px-3 py-2 text-black hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
                   title={t("navbar.account.login." + i18n.language)}
                 >
                   <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
-                  <span className="hidden sm:inline font-light text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.login." + i18n.language)}</span>
+                  <span className="hidden sm:inline font-normal text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.login." + i18n.language)}</span>
                 </Link>
               )}
 
@@ -612,11 +608,11 @@ const HeaderWithSidebar = () => {
               {isAuthenticated && (
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
+                  className="flex items-center gap-2 px-3 py-2 text-black hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
                   title={t("navbar.account.logout." + i18n.language)}
                 >
                   <LogOut size={16} className="md:w-4 md:h-4" strokeWidth={1.5} />
-                  <span className="hidden sm:inline font-light text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.logout." + i18n.language)}</span>
+                  <span className="hidden sm:inline font-normal text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.logout." + i18n.language)}</span>
                 </button>
               )}
 
@@ -632,10 +628,7 @@ const HeaderWithSidebar = () => {
         {showSecondaryHeader && (
           <div
             ref={secondaryHeaderRef}
-            className="hidden md:block bg-white/95 backdrop-blur-md border-t border-gray-100/50 shadow-xl animate-slideDown"
-            style={{
-              fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif",
-            }}
+            className="hidden md:block bg-white/95 backdrop-blur-md border-t border-gray-100/50 shadow-xl animate-slideDown font-sweet-sans"
             onMouseEnter={handleSecondaryHeaderMouseEnter}
             onMouseLeave={handleSecondaryHeaderMouseLeave}
           >
@@ -646,7 +639,7 @@ const HeaderWithSidebar = () => {
                     <Link
                       key={item.label}
                       to={`/products/${item.nav.replace(/\s/g, "-")}`}
-                      className="group relative px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
+                      className="group relative px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-normal text-black hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
                       style={{
                         animationDelay: `${index * 100}ms`,
                         animation: 'fadeInUp 0.6s ease-out forwards'
@@ -665,7 +658,7 @@ const HeaderWithSidebar = () => {
                     <Link
                       key={item.label}
                       to={`/products/${item.nav}`}
-                      className="group relative px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-light text-gray-600 hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
+                      className="group relative px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-normal text-black hover:text-gray-900 transition-all duration-500 uppercase tracking-widest hover:scale-105 transform"
                       style={{
                         animationDelay: `${index * 100}ms`,
                         animation: 'fadeInUp 0.6s ease-out forwards'
@@ -692,8 +685,7 @@ const HeaderWithSidebar = () => {
               ></div>
 
               <aside
-                className="absolute left-0 top-0 h-full w-72 max-w-[92vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000]"
-                style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+                className="absolute left-0 top-0 h-full w-72 max-w-[92vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-sweet-sans"
               >
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
                   <img
@@ -710,7 +702,7 @@ const HeaderWithSidebar = () => {
                 </div>
 
                 <div className="px-6 py-4 border-b border-gray-200 bg-premium-cream/70">
-                  <p className="text-[11px] uppercase tracking-[0.28em] text-black/70">Ship To</p>
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-black">Ship To</p>
                   <CountrySelector
                     value={selectedSidebarCountry?.code}
                     onSelect={handleSidebarCountryChange}
@@ -727,13 +719,13 @@ const HeaderWithSidebar = () => {
                     <div key={item.nav} className="w-full">
                       <button
                         onClick={() => toggleAccordion(item.nav.toLowerCase())}
-                        className="flex items-center justify-between w-full py-3 text-[11px] uppercase tracking-[0.3em] text-black/80 font-light border-b border-transparent transition-all duration-300 hover:text-black hover:border-black/20"
+                        className="flex items-center justify-between w-full py-3 text-[11px] uppercase tracking-[0.3em] text-black font-normal border-b border-transparent transition-all duration-300 hover:text-black hover:border-black/20"
                       >
                         <span>{item.label}</span>
                         {expandedSections[item.nav.toLowerCase()] ? (
-                          <ChevronDown size={18} className="text-black/60" />
+                          <ChevronDown size={18} className="text-black" />
                         ) : (
-                          <ChevronRight size={18} className="text-black/60" />
+                          <ChevronRight size={18} className="text-black" />
                         )}
                       </button>
 
@@ -743,7 +735,7 @@ const HeaderWithSidebar = () => {
                             <Link
                               key={cat.label}
                               to={`/products/${cat.nav.replace(/\s/g, "-")}`}
-                              className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
+                              className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               {cat.label}
@@ -758,7 +750,7 @@ const HeaderWithSidebar = () => {
                             <Link
                               key={accessory.label}
                               to={`/products/${accessory.nav}`}
-                              className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
+                              className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               {accessory.label}
@@ -773,13 +765,13 @@ const HeaderWithSidebar = () => {
                   <div className="pt-4 border-t border-gray-200 mt-4">
                     <button
                       onClick={() => toggleAccordion('account')}
-                      className="flex items-center justify-between w-full py-3 text-[11px] uppercase tracking-[0.3em] text-black/80 font-light border-b border-transparent transition-all duration-300 hover:text-black hover:border-black/20"
+                      className="flex items-center justify-between w-full py-3 text-[11px] uppercase tracking-[0.3em] text-black font-normal border-b border-transparent transition-all duration-300 hover:text-black hover:border-black/20"
                     >
                       <span>{t("navbar.account.myAccount." + i18n.language)}</span>
                       {expandedSections.account ? (
-                        <ChevronDown size={18} className="text-black/60" />
+                        <ChevronDown size={18} className="text-black" />
                       ) : (
-                        <ChevronRight size={18} className="text-black/60" />
+                        <ChevronRight size={18} className="text-black" />
                       )}
                     </button>
 
@@ -788,7 +780,7 @@ const HeaderWithSidebar = () => {
                         {!isAuthenticated ? (
                           <Link
                             to="/login"
-                            className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
+                            className="block py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black"
                             onClick={() => setSidebarOpen(false)}
                           >
                             {t("navbar.account.login." + i18n.language)}
@@ -797,7 +789,7 @@ const HeaderWithSidebar = () => {
                           <>
                             <Link
                               to="/account"
-                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               <User size={16} />
@@ -805,14 +797,14 @@ const HeaderWithSidebar = () => {
                             </Link>
                             <Link
                               to="/buyback"
-                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black"
                             >
                               <Recycle size={16} />
                               <span>{t("navbar.account.buyback." + i18n.language)}</span>
                             </Link>
                             <Link
                               to="/orders"
-                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black"
                               onClick={() => setSidebarOpen(false)}
                             >
                               <Package size={16} />
@@ -823,7 +815,7 @@ const HeaderWithSidebar = () => {
                                 setSidebarOpen(false);
                                 handleLogout();
                               }}
-                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black/70 transition-colors duration-300 hover:text-black text-left w-full"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black text-left w-full"
                             >
                               <LogOut size={16} />
                               <span>{t("navbar.account.logout." + i18n.language)}</span>
@@ -969,7 +961,7 @@ const HeaderWithSidebar = () => {
         /* Enhanced Typography for Luxury Feel */
         .luxury-text {
           font-family: 'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
-          font-weight: 300;
+          font-weight: 400;
           letter-spacing: 0.05em;
         }
         .luxury-text-bold {
@@ -977,13 +969,13 @@ const HeaderWithSidebar = () => {
           font-weight: 400;
           letter-spacing: 0.05em;
         }
-        /* Thin Fonts for Navigation */
+        /* Normal Font Weight for Navigation */
         nav, .nav-text {
-          font-weight: 300 !important;
+          font-weight: 400 !important;
         }
-        /* Light Gray Color for Thin Look */
+        /* Dark Color for Navbar Text */
         .luxury-text, .luxury-text-bold, nav, .nav-text {
-          color: #4a4a4a !important;
+          color: #2c2c2c !important;
         }
         /* Tracking Wide for Premium Feel */
         .tracking-wide {

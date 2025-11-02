@@ -59,9 +59,6 @@ const CheckoutPage = () => {
   const [isCouponsExpanded, setIsCouponsExpanded] = useState(false);
   const [isLoadingCoupons, setIsLoadingCoupons] = useState(false);
   const [loyaltyDiscountAmount, setLoyaltyDiscountAmount] = useState(0);
-  const pageFontStyle = {
-    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
-  };
 
   // Payment Methods
   const paymentMethods = [
@@ -508,7 +505,7 @@ fetchCoupons(subTotal)
   };
 
   return (
-    <div className="min-h-screen bg-premium-cream font-sans" style={pageFontStyle}>
+    <div className="min-h-screen bg-premium-cream font-sweet-sans">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
         {/* Back Button & Header */}
@@ -517,7 +514,7 @@ fetchCoupons(subTotal)
             <ArrowLeft size={20} strokeWidth={1.5} />
             <span className="text-sm uppercase tracking-wider">Back to Cart</span>
           </button>
-          <h1 className="text-3xl md:text-5xl font-bold text-black uppercase tracking-wide mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2">
             Checkout
           </h1>
           <p className="text-text-medium text-sm md:text-base">Complete your order details</p>

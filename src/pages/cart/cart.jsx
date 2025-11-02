@@ -28,9 +28,6 @@ const CartPage = () => {
   console.log(cartItems, "carrt")
   const [isLoading, setIsLoading] = useState(false);
   const [wishlistedItems, setWishlistedItems] = useState(() => new Set());
-  const pageFontStyle = {
-    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
-  };
   const fetchCart = useCallback(() => {
     setIsLoading(true);
     try {
@@ -148,7 +145,7 @@ const CartPage = () => {
 
   // Loading
   if (isLoading) return (
-    <div className="min-h-screen bg-premium-cream flex items-center justify-center" style={pageFontStyle}>
+    <div className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans">
       <div className="text-center">
         <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
         <p className="text-text-medium text-sm uppercase tracking-wider">Loading Cart...</p>
@@ -157,12 +154,12 @@ const CartPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-premium-cream" style={pageFontStyle}>
+    <div className="min-h-screen bg-premium-cream font-sweet-sans">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
         {/* Page Header */}
         <div className="mb-8 md:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black uppercase tracking-wide mb-2 md:mb-3">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 md:mb-3">
             Shopping Cart
           </h1>
           <p className="text-text-medium text-sm md:text-base">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>

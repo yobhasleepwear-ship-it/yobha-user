@@ -54,7 +54,7 @@ const FabricProtection = () => {
   }, [location.hash]);
 
   return (
-    <div className="bg-[#FAF6F2] min-h-screen" style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}>
+    <div className="bg-[#FAF6F2] min-h-screen font-sweet-sans">
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#f9ede5] via-[#fef8f5] to-[#f4e6dc] opacity-90" />
         <div className="absolute inset-0 pointer-events-none">

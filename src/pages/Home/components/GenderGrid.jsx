@@ -70,8 +70,7 @@ const GenderGrid = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-gradient-to-br from-yellow-50/30 via-amber-50/20 to-orange-50/30 overflow-hidden"
-      style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-gradient-to-br from-yellow-50/30 via-amber-50/20 to-orange-50/30 overflow-hidden font-sweet-sans"
     >
       {/* Luxury Background Pattern */}
       <div className="absolute inset-0 opacity-5">

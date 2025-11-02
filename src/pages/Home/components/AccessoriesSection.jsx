@@ -85,8 +85,7 @@ const AccessoriesSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-10 md:py-12 lg:py-16 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-100 overflow-hidden"
-      style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+      className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 sm:py-10 md:py-12 lg:py-16 bg-gradient-to-br from-slate-50 via-gray-50 to-stone-100 overflow-hidden font-sweet-sans"
     >
       {/* Luxury Background Pattern */}
       <div className="absolute inset-0 opacity-5">

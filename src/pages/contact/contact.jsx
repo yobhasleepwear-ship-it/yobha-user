@@ -94,7 +94,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-premium-cream lg:pt-6 md:pt-6">
+    <div className="min-h-screen bg-premium-cream lg:pt-6 md:pt-6 font-sweet-sans">
       {/* Hero Section */}
       <section className="relative py-2 bg-gradient-to-br from-premium-beige via-premium-cream to-premium-warm-white overflow-hidden">
         <div className="absolute inset-0 opacity-5">
@@ -105,7 +105,7 @@ const Contact = () => {
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-          <h1 className="text-6xl md:text-7xl font-bold text-black uppercase tracking-widest mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4">
             Contact Us
           </h1>
           <p className="text-text-medium text-xl font-light tracking-wide max-w-2xl mx-auto">

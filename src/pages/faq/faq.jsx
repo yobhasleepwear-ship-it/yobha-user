@@ -3,7 +3,7 @@ import FAQ from "../../comman/faq/faq";
 
 const FAQPage = () => {
   return (
-    <div className="min-h-screen bg-premium-cream">
+    <div className="min-h-screen bg-premium-cream font-sweet-sans">
       {/* Hero Section */}
       <section className="relative py-16 bg-gradient-to-br from-premium-beige via-premium-cream to-premium-warm-white overflow-hidden">
         <div className="absolute inset-0 opacity-5">
@@ -14,7 +14,7 @@ const FAQPage = () => {
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-          <h1 className="text-6xl md:text-7xl font-bold text-black uppercase tracking-widest mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4">
             FAQ
           </h1>
           <p className="text-text-medium text-xl font-light tracking-wide max-w-2xl mx-auto">

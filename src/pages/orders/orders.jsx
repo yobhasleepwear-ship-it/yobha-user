@@ -130,9 +130,6 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const pageFontStyle = {
-    fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif"
-  };
 
 
   // Fetch orders
@@ -163,8 +160,7 @@ const OrdersPage = () => {
   if (isLoading) {
     return (
       <div 
-        className="min-h-screen bg-premium-cream flex items-center justify-center"
-        style={pageFontStyle}
+        className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
@@ -178,8 +174,7 @@ const OrdersPage = () => {
   if (error) {
     return (
       <div 
-        className="min-h-screen bg-premium-cream flex items-center justify-center"
-        style={pageFontStyle}
+        className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center max-w-md px-4">
           <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
@@ -199,14 +194,13 @@ const OrdersPage = () => {
 
   return (
     <div 
-      className="min-h-screen bg-premium-cream"
-      style={pageFontStyle}
+      className="min-h-screen bg-premium-cream font-sweet-sans"
     >
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
         
         {/* Page Header */}
         <div className="mb-8 md:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-black uppercase tracking-wide mb-2 md:mb-3">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 md:mb-3">
             My Orders
           </h1>
           <p className="text-text-medium text-sm md:text-base">

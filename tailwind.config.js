@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       fontFamily: {
         'helvetica': ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        'sweet-sans': ['SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
       },
       colors: {
         'luxury': {

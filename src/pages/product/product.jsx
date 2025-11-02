@@ -446,8 +446,7 @@ const ProductsPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-premium-cream"
-      style={{ fontFamily: "'SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif" }}
+      className="min-h-screen bg-premium-cream font-sweet-sans"
     >
       {/* Filter Sidebar - Opens from left */}
       {showMobileFilters && (
@@ -540,7 +539,7 @@ const ProductsPage = () => {
 
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2">
             {category
               ? `${category.replace(/([A-Z])/g, " $1").trim()} Collection`
               : "All Products"}
