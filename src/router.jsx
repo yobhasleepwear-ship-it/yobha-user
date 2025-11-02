@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AppLayout from "./comman/app-layout/app-layout";
 import logoImage from "./assets/yobhaLogo.png"
 // Lazy load pages
-const Home = lazy(() => import("./pages/Home/home"));
+const Home = lazy(() => import("./pages/Home/home2"));
 const Login = lazy(() => import("./pages/login/login"))
 const ProductsPage = lazy(() => import("./pages/product/product"));
 const ProductDescription = lazy(() => import("./pages/product-description/product-description"))
