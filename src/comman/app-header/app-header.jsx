@@ -410,6 +410,12 @@ const HeaderWithSidebar = () => {
             {/* Right Side - Wishlist & Cart (Mobile) */}
             <div className="flex items-center gap-4">
               {/* Wishlist Icon - Mobile */}
+                  <Link
+                to="/login"
+                className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300 relative"               
+              >
+                <User size={20} strokeWidth={1.8} />
+              </Link>
               <Link
                 to="/wishlist"
                 className="flex items-center justify-center w-8 h-8 text-black hover:text-gray-700 transition-colors duration-300 relative"

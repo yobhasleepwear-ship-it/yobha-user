@@ -264,14 +264,14 @@ fetchCoupons(subTotal)
       // Map form fields to API expected fields
       const addressPayload = {
         fullName: address.fullName,
-        phone: address.phone,
+        MobileNumnber: address.phone,
         line1: address.addressLine1,
         line2: address.addressLine2 || '',
         city: address.city,
         state: address.state,
         zip: address.pincode,
         country: address.country,
-        landmark: address.landmark || ''
+        isDefault:  false
       };
 
       // Log the address object being sent

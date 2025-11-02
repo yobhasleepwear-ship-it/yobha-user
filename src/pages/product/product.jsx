@@ -20,9 +20,13 @@ const debounce = (func, delay) => {
 const ProductsPage = () => {
   const { category } = useParams();
   const location = useLocation();
+  const savedCountry = localStorage.getItem('selectedCountry');
+  const parsedCountry = JSON.parse(savedCountry);
+  const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
+  console.log(selectedCountry,"s")
   const navigate = useNavigate();
   const passedProducts = location.state?.products || [];
-console.log(passedProducts,"passed")
+  console.log(passedProducts, "passed")
   // UI State
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMobileSort, setShowMobileSort] = useState(false);
@@ -96,16 +100,16 @@ console.log(passedProducts,"passed")
       { id: "price_desc", name: "Price: High to Low" },
     ],
     fabricOptions: [
-  { id: "cotton", name: "Premium Cotton" },
-  { id: "satin", name: "Luxury Satin" },
-  { id: "silk", name: "Pure Mulberry Silk" },
-  { id: "modal", name: "Soft Modal Blend" },
-  { id: "viscose", name: "Breathable Viscose" },
-  { id: "rayon", name: "Lightweight Rayon" },
-  { id: "linen", name: "Cool Linen" },
-  { id: "jersey", name: "Stretch Jersey Knit" },
-  { id: "bamboo", name: "Eco-Friendly Bamboo Fabric" },
-],
+      { id: "cotton", name: "Premium Cotton" },
+      { id: "satin", name: "Luxury Satin" },
+      { id: "silk", name: "Pure Mulberry Silk" },
+      { id: "modal", name: "Soft Modal Blend" },
+      { id: "viscose", name: "Breathable Viscose" },
+      { id: "rayon", name: "Lightweight Rayon" },
+      { id: "linen", name: "Cool Linen" },
+      { id: "jersey", name: "Stretch Jersey Knit" },
+      { id: "bamboo", name: "Eco-Friendly Bamboo Fabric" },
+    ],
 
   });
   useEffect(() => {
@@ -162,22 +166,22 @@ console.log(passedProducts,"passed")
   };
 
   useEffect(() => {
-     if (passedProducts.length > 0) {
-    setProducts(passedProducts);
-  } 
-  else if(category==''&& passedProducts.length==0){
-    setProducts([])
-  }
-  }, [passedProducts ]);
-useEffect(() => {
- 
-  if (!location.state?.products){
-  fetchProducts();
-  
-  }
+    if (passedProducts.length > 0) {
+      setProducts(passedProducts);
+    }
+    else if (category == '' && passedProducts.length == 0) {
+      setProducts([])
+    }
+  }, [passedProducts]);
+  useEffect(() => {
+
+    if (!location.state?.products) {
+      fetchProducts();
+
+    }
 
 
-}, [category,filters.categories, filters.sortBy, pagination.pageNumber, priceRange, filters.country, filters.subCategories, filters.segment]);
+  }, [category, filters.categories, filters.sortBy, pagination.pageNumber, priceRange, filters.country, filters.subCategories, filters.segment]);
 
   // Handle filter changes
   const updateFilter = (key, value) => {
@@ -299,36 +303,35 @@ useEffect(() => {
         </div>
       </FilterAccordion>
       <FilterAccordion
-  title="Fabric Type"
-  isOpen={openAccordion === "fabric"}
-  onToggle={() => toggleAccordion("fabric")}
->
-  <div className="space-y-3">
-    {filterOptions.fabricOptions.map((fabric) => (
-      <label
-        key={fabric.id}
-        className="flex items-center cursor-pointer group"
+        title="Fabric Type"
+        isOpen={openAccordion === "fabric"}
+        onToggle={() => toggleAccordion("fabric")}
       >
-        <input
-          type="radio"
-          name="fabric"
-          checked={filters.fabric === fabric.id}
-          onChange={() => updateFilter("fabric", fabric.id)}
-          className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
-        />
-        <span
-          className={`ml-3 text-sm tracking-wide transition-colors ${
-            filters.fabric === fabric.id
-              ? "text-black font-medium"
-              : "text-text-medium group-hover:text-black"
-          }`}
-        >
-          {fabric.name}
-        </span>
-      </label>
-    ))}
-  </div>
-</FilterAccordion>
+        <div className="space-y-3">
+          {filterOptions.fabricOptions.map((fabric) => (
+            <label
+              key={fabric.id}
+              className="flex items-center cursor-pointer group"
+            >
+              <input
+                type="radio"
+                name="fabric"
+                checked={filters.fabric === fabric.id}
+                onChange={() => updateFilter("fabric", fabric.id)}
+                className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
+              />
+              <span
+                className={`ml-3 text-sm tracking-wide transition-colors ${filters.fabric === fabric.id
+                    ? "text-black font-medium"
+                    : "text-text-medium group-hover:text-black"
+                  }`}
+              >
+                {fabric.name}
+              </span>
+            </label>
+          ))}
+        </div>
+      </FilterAccordion>
 
 
       {/* Categories */}
@@ -508,7 +511,7 @@ useEffect(() => {
                 </button>
               </div>
             </div>
-            
+
             <div className="px-6 py-4">
               <div className="space-y-1">
                 {filterOptions.sortOptions.map((option) => (
@@ -518,11 +521,10 @@ useEffect(() => {
                       updateFilter('sortBy', option.id);
                       setShowMobileSort(false);
                     }}
-                    className={`w-full text-left py-4 px-0 text-sm font-medium transition-colors ${
-                      filters.sortBy === option.id
+                    className={`w-full text-left py-4 px-0 text-sm font-medium transition-colors ${filters.sortBy === option.id
                         ? 'text-black'
                         : 'text-text-medium hover:text-black'
-                    }`}
+                      }`}
                   >
                     {option.name}
                   </button>
@@ -572,11 +574,10 @@ useEffect(() => {
                     <button
                       key={option.id}
                       onClick={() => updateFilter('sortBy', option.id)}
-                      className={`px-3 py-1.5 text-xs uppercase tracking-wider transition-all duration-200 ${
-                        filters.sortBy === option.id
+                      className={`px-3 py-1.5 text-xs uppercase tracking-wider transition-all duration-200 ${filters.sortBy === option.id
                           ? 'bg-black text-white'
                           : 'border border-text-light text-black hover:bg-black hover:text-white'
-                      }`}
+                        }`}
                     >
                       {option.name}
                     </button>

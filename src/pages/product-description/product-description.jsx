@@ -159,7 +159,7 @@ const [ cartItem ,setCartItems]=useState([])
     return () => window.removeEventListener('resize', updateItemsPerView);
   }, []);
 
-  // Reset carousel index when items per view changes or products change
+
   useEffect(() => {
     setCarouselIndex(0);
   }, [itemsPerView, newProducts.length]);
