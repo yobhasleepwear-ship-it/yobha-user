@@ -13,6 +13,8 @@ import eyemask from "../../assets/EYEMASKS.jpg";
 import cushions from "../../assets/CUSHIONS.jpg";
 import BATHROBE_IMAGE from "../../assets/bathrobe.jpg";
 import TOWELS_IMAGE from "../../assets/towel.jpg";
+import SALE_BANNER_IMAGE from "../../assets/sale-banner.jpg";
+import BUYBACK_IMAGE from "../../assets/buyback-image.jpg";
 import { getFilteredProducts } from "../../service/productAPI";
 
 const HomePage2 = () => {
@@ -117,7 +119,7 @@ const HomePage2 = () => {
 
   const displayProducts = products
     .filter((p) => p.available)
-    .slice(0, 8)
+    .slice(0, 3)
     .map((p) => ({
       id: p.id,
       title: p.name || "Untitled Product",
@@ -132,63 +134,71 @@ const HomePage2 = () => {
     <div className="relative min-h-screen bg-[#FAF6F2]">
       {/* Hero Section with Banner and Video - Two Parts with Equal Height */}
       <section className="relative w-full">
-        {/* Sale Banner Image - Part 1 */}
-        <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
-          <div className="w-full h-full bg-gradient-to-r from-luxury-gold/80 to-luxury-rose-gold/80 flex items-center justify-center">
-            <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl uppercase tracking-[0.15em] md:tracking-[0.2em] text-white font-light text-center px-4">
-              Limited Time Offer: Free Shipping on Orders Above ₹2000
-            </p>
+        {/* Mobile: Stacked Layout - Banner above, Video below */}
+        {/* Desktop/Laptop: 2 Column Grid - Banner left, Video right */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 px-0 lg:px-8">
+          {/* Sale Banner - Left on desktop, Top on mobile */}
+          <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[500px] overflow-hidden group cursor-pointer lg:shadow-2xl lg:border-r-4 lg:border-luxury-gold/30">
+            {/* Background Image */}
+            <img 
+              src={SALE_BANNER_IMAGE} 
+              alt="Sale Banner" 
+              className="w-full h-full object-contain md:object-cover lg:object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            {/* Elegant Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Decorative Border Effect on Hover */}
+            <div className="absolute inset-0 border-4 border-luxury-gold/0 group-hover:border-luxury-gold/50 transition-all duration-500" />
+            {/* Subtle Corner Accent */}
+            <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-luxury-gold/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute bottom-4 left-4 w-16 h-16 border-b-2 border-l-2 border-luxury-gold/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
-        </div>
 
-        {/* Video Section - Part 2 */}
-        <div className="relative h-[40vh] md:h-screen w-full overflow-hidden">
-          <video
-            src={isPortrait ? portraitVideo : landscapeVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-            key={isPortrait ? 'portrait' : 'landscape'}
-          />
+          {/* Video Section - Right on desktop, Bottom on mobile */}
+          <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[500px] overflow-hidden group cursor-pointer lg:shadow-2xl lg:border-l-4 lg:border-gray-900/20 mt-4 lg:mt-0">
+            <video
+              src={isPortrait ? portraitVideo : landscapeVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              key={isPortrait ? 'portrait' : 'landscape'}
+            />
+            {/* Elegant Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tl from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Decorative Border Effect on Hover */}
+            <div className="absolute inset-0 border-4 border-gray-900/0 group-hover:border-gray-900/30 transition-all duration-500" />
+          </div>
         </div>
       </section>
 
       {/* Buyback USP Section */}
-      <section className="relative w-full bg-white font-sweet-sans">
+      <section className="relative w-full bg-white font-sweet-sans py-8 md:py-12 lg:py-16">
         {/* Mobile: Image with Overlaid Text */}
         <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
           onClick={() => navigate('/buyback')}>
           {/* Image Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200">
-            {/* Placeholder for image - you can replace this with an actual buyback image */}
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-center p-8">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-300 flex items-center justify-center">
-                  <svg className="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </div>
-                <p className="text-gray-500 text-sm">Buyback Image</p>
-              </div>
-            </div>
-          </div>
+          <img 
+            src={BUYBACK_IMAGE} 
+            alt="Buyback" 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
           
           {/* Dark Overlay for Text Readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
           
           {/* Overlaid Text and Button */}
           <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
-            <div className="max-w-sm">
-              <h2 className="text-white font-light">
-                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide">Trade in.</span>
-                <span className="text-4xl sm:text-5xl block tracking-wide">Get Credit.</span>
+            <div className="max-w-sm font-sweet-sans">
+              <h2 className="text-white font-light font-sweet-sans">
+                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-sweet-sans">Trade in.</span>
+                <span className="text-4xl sm:text-5xl block tracking-wide font-sweet-sans">Get Credit.</span>
               </h2>
-              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed">
+              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed font-sweet-sans">
                 We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
               </p>
-              <button className="mt-6 px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full">
+              <button className="mt-6 px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
                 Learn More
               </button>
             </div>
@@ -199,16 +209,16 @@ const HomePage2 = () => {
         <div className="hidden md:grid md:grid-cols-2 min-h-[500px] lg:min-h-[600px] cursor-pointer group"
           onClick={() => navigate('/buyback')}>
           {/* Text Section - Dark Background */}
-          <div className="relative bg-gray-900 flex flex-col justify-center px-12 lg:px-16 py-16">
-            <div className="max-w-xl">
-              <h2 className="text-white font-light">
-                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide">Trade in.</span>
-                <span className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl block tracking-wide">Get Credit.</span>
+          <div className="relative bg-gray-900 flex flex-col justify-center px-12 lg:px-16 py-16 font-sweet-sans">
+            <div className="max-w-xl font-sweet-sans">
+              <h2 className="text-white font-light font-sweet-sans">
+                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-sweet-sans">Trade in.</span>
+                <span className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl block tracking-wide font-sweet-sans">Get Credit.</span>
               </h2>
-              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed max-w-md">
+              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed max-w-md font-sweet-sans">
                 We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
               </p>
-              <button className="mt-10 px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full">
+              <button className="mt-10 px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
                 Learn More
               </button>
             </div>
@@ -216,19 +226,11 @@ const HomePage2 = () => {
           
           {/* Image Section */}
           <div className="relative h-auto overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 group-hover:opacity-95 transition-opacity duration-500">
-              {/* Placeholder for image - you can replace this with an actual buyback image */}
-              <div className="w-full h-full flex items-center justify-center min-h-[500px] lg:min-h-[600px]">
-                <div className="text-center p-8">
-                  <div className="w-32 h-32 lg:w-40 lg:h-40 mx-auto mb-4 rounded-full bg-gray-300 flex items-center justify-center">
-                    <svg className="w-16 h-16 lg:w-20 lg:h-20 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                  </div>
-                  <p className="text-gray-500 text-sm">Buyback Image</p>
-                </div>
-              </div>
-            </div>
+            <img 
+              src={BUYBACK_IMAGE} 
+              alt="Buyback" 
+              className="w-full h-full object-cover min-h-[500px] lg:min-h-[600px] group-hover:scale-105 transition-transform duration-700"
+            />
           </div>
         </div>
       </section>
@@ -424,7 +426,7 @@ const HomePage2 = () => {
               <div className="w-12 h-12 border-4 border-luxury-gold/20 animate-spin" />
             </div>
           ) : displayProducts.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
               {displayProducts.map((product) => (
                 <article
                   key={product.id}
@@ -460,10 +462,10 @@ const HomePage2 = () => {
           {displayProducts.length > 0 && (
             <div className="text-center mt-12">
               <button
-                onClick={() => navigate('/products')}
+                onClick={() => navigate('/products', { state: { sortBy: 'latest' } })}
                 className="px-8 py-4 border-2 border-gray-900 text-gray-900 text-sm uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500"
               >
-                View All Products →
+                Check All New Arrivals →
               </button>
             </div>
           )}
