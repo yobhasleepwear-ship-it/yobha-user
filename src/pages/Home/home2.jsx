@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import MEN_IMAGE from "../../assets/Men.png";
 import WOMEN_IMAGE from "../../assets/Women.png";
@@ -119,16 +119,96 @@ const HomePage2 = () => {
 
   const displayProducts = products
     .filter((p) => p.available)
-    .slice(0, 3)
+    .slice(0, 8)
     .map((p) => ({
       id: p.id,
       title: p.name || "Untitled Product",
       price: p.price ? `₹${p.price.toLocaleString("en-IN")}` : "Price not available",
       image: p.images?.[0] || "",
+      images: p.images || [],
       badge: p.productMainCategory || "New",
       slug: p.productId,
       category: p.category || "Luxury Collection"
     }));
+
+  // Image carousel state for each product
+  const [productImageIndices, setProductImageIndices] = useState({});
+  const carouselRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+  
+  // Auto-rotate images for each product
+  useEffect(() => {
+    if (displayProducts.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setProductImageIndices(prev => {
+        const newIndices = { ...prev };
+        displayProducts.forEach(product => {
+          if (product.images && product.images.length > 1) {
+            const currentIndex = prev[product.id] || 0;
+            newIndices[product.id] = (currentIndex + 1) % product.images.length;
+          }
+        });
+        return newIndices;
+      });
+    }, 3000); // Change image every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [displayProducts]);
+
+  // Initialize image indices
+  useEffect(() => {
+    if (displayProducts.length > 0) {
+      const initialIndices = {};
+      displayProducts.forEach(product => {
+        initialIndices[product.id] = 0;
+      });
+      setProductImageIndices(initialIndices);
+    }
+  }, [displayProducts]);
+
+  // Handle drag to scroll
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging || !carouselRef.current) return;
+      e.preventDefault();
+      const x = e.pageX - carouselRef.current.offsetLeft;
+      const walk = (x - startX) * 2; // Scroll speed multiplier
+      carouselRef.current.scrollLeft = scrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      // Reset interaction state after 5 seconds
+      setTimeout(() => setIsUserInteracting(false), 5000);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, startX, scrollLeft]);
+
+  const handleMouseDown = (e) => {
+    if (!carouselRef.current) return;
+    setIsDragging(true);
+    setIsUserInteracting(true);
+    setStartX(e.pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
+    e.preventDefault();
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
 
   return (
     <div className="relative min-h-screen bg-[#FAF6F2]">
@@ -152,19 +232,19 @@ const HomePage2 = () => {
             {/* Subtle Corner Accent */}
             <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-luxury-gold/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute bottom-4 left-4 w-16 h-16 border-b-2 border-l-2 border-luxury-gold/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
+        </div>
 
           {/* Video Section - Right on desktop, Bottom on mobile */}
           <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[500px] overflow-hidden group cursor-pointer lg:shadow-2xl lg:border-l-4 lg:border-gray-900/20 mt-4 lg:mt-0">
-            <video
-              src={isPortrait ? portraitVideo : landscapeVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
+          <video
+            src={isPortrait ? portraitVideo : landscapeVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              key={isPortrait ? 'portrait' : 'landscape'}
-            />
+            key={isPortrait ? 'portrait' : 'landscape'}
+          />
             {/* Elegant Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-tl from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             {/* Decorative Border Effect on Hover */}
@@ -426,32 +506,122 @@ const HomePage2 = () => {
               <div className="w-12 h-12 border-4 border-luxury-gold/20 animate-spin" />
             </div>
           ) : displayProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+            <div className="relative overflow-hidden">
+              {/* Carousel Container - Scrollable */}
+              <div 
+                ref={carouselRef}
+                className={`flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 ${!isUserInteracting ? 'new-arrivals-carousel' : ''}`}
+                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseLeave}
+                onTouchStart={(e) => setIsUserInteracting(true)}
+                onTouchEnd={() => setTimeout(() => setIsUserInteracting(false), 5000)}
+                onWheel={() => setIsUserInteracting(true)}
+              >
+                {/* First set of products */}
               {displayProducts.map((product) => (
                 <article
-                  key={product.id}
-                  className="group cursor-pointer"
+                    key={`product-1-${product.id}`}
+                    className="group cursor-pointer flex-shrink-0 w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
                   onClick={() => navigate(`/productDetail/${product.id}`)}
                 >
-                  <div className="relative h-[250px] md:h-[350px] overflow-hidden bg-gray-100 border border-gray-200">
+                    <div className="relative h-[280px] md:h-[380px] lg:h-[420px] overflow-hidden bg-white border border-gray-200/30 shadow-sm group-hover:shadow-2xl group-hover:border-gray-300/50 transition-all duration-700">
+                      {/* Product Image Carousel */}
+                      <div className="relative w-full h-full">
+                        {product.images && product.images.length > 0 ? (
+                          product.images.map((image, imgIndex) => (
+                            <img
+                              key={imgIndex}
+                              src={image}
+                              alt={`${product.title} - ${imgIndex + 1}`}
+                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                                productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
+                              } group-hover:scale-110 transition-transform duration-700`}
+                            />
+                          ))
+                        ) : (
                     <img
                       src={product.image}
                       alt={product.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          />
+                        )}
+                        
+                        {/* Subtle overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </div>
+                      
+                      {/* Badge */}
+                      {product.badge && (
+                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm border border-gray-200/50">
+                          <span className="text-xs uppercase tracking-[0.2em] text-gray-900 font-light">
+                            {product.badge}
+                          </span>
+                        </div>
+                      )}
                   </div>
+                    
+                    {/* Product Info */}
                   <div className="mt-4 space-y-2">
-                    <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2.5rem] group-hover:text-luxury-gold transition-colors duration-300">
+                      <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2.5rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
                       {product.title}
                     </h3>
+                    </div>
+                  </article>
+                ))}
+                
+                {/* Duplicate set for seamless loop */}
+                {displayProducts.map((product) => (
+                  <article
+                    key={`product-2-${product.id}`}
+                    className="group cursor-pointer flex-shrink-0 w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
+                    onClick={() => navigate(`/productDetail/${product.id}`)}
+                  >
+                    <div className="relative h-[280px] md:h-[380px] lg:h-[420px] overflow-hidden bg-white border border-gray-200/30 shadow-sm group-hover:shadow-2xl group-hover:border-gray-300/50 transition-all duration-700">
+                      {/* Product Image Carousel */}
+                      <div className="relative w-full h-full">
+                        {product.images && product.images.length > 0 ? (
+                          product.images.map((image, imgIndex) => (
+                            <img
+                              key={imgIndex}
+                              src={image}
+                              alt={`${product.title} - ${imgIndex + 1}`}
+                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                                productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
+                              } group-hover:scale-110 transition-transform duration-700`}
+                            />
+                          ))
+                        ) : (
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          />
+                        )}
+                        
+                        {/* Subtle overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </div>
+                      
+                      {/* Badge */}
                     {product.badge && (
-                      <span className="inline-block text-xs uppercase tracking-widest text-luxury-gold">
+                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm border border-gray-200/50">
+                          <span className="text-xs uppercase tracking-[0.2em] text-gray-900 font-light">
                         {product.badge}
                       </span>
+                        </div>
                     )}
+                  </div>
+                    
+                    {/* Product Info */}
+                    <div className="mt-4 space-y-2">
+                      <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2.5rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
+                        {product.title}
+                      </h3>
                   </div>
                 </article>
               ))}
+              </div>
             </div>
           ) : (
             <div className="text-center py-20">
@@ -460,12 +630,12 @@ const HomePage2 = () => {
           )}
 
           {displayProducts.length > 0 && (
-            <div className="text-center mt-12">
+            <div className="text-center mt-12 md:mt-16">
               <button
                 onClick={() => navigate('/products', { state: { sortBy: 'latest' } })}
-                className="px-8 py-4 border-2 border-gray-900 text-gray-900 text-sm uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500"
+                className="px-10 py-3.5 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.25em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-500 bg-transparent font-sweet-sans"
               >
-                Check All New Arrivals →
+                View All New Arrivals →
               </button>
             </div>
           )}

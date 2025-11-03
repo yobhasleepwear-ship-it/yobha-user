@@ -51,3 +51,30 @@ code {
     animation: carouselScroll 25s linear infinite;
   }
 }
+
+/* New Arrivals Carousel Animation */
+@keyframes newArrivalsCarousel {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 12px));
+  }
+}
+
+.new-arrivals-carousel {
+  animation: newArrivalsCarousel 60s linear infinite;
+  will-change: transform;
+}
+
+@media (max-width: 1024px) {
+  .new-arrivals-carousel {
+    animation: newArrivalsCarousel 50s linear infinite;
+  }
+}
+
+@media (max-width: 768px) {
+  .new-arrivals-carousel {
+    animation: newArrivalsCarousel 40s linear infinite;
+  }
+}
