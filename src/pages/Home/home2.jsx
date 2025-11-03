@@ -156,25 +156,77 @@ const HomePage2 = () => {
       </section>
 
       {/* Buyback USP Section */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="border border-gray-200 bg-[#FAF6F2]/50 overflow-hidden cursor-pointer group"
-            onClick={() => navigate('/buyback')}>
-            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 p-8 md:p-12">
-              <div>
-                <span className="text-xs uppercase tracking-[0.4em] text-luxury-gold font-light">Our Main USP</span>
-                <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest">
-                  YOBHA Buy-Back Program
-                </h2>
-                <p className="mt-6 text-base md:text-lg text-gray-600 font-light tracking-wide leading-relaxed">
-                  Trade in your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
-                </p>
-                <button className="mt-8 px-8 py-4 border-2 border-gray-900 text-gray-900 text-sm uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500">
-                  Learn More →
-                </button>
+      <section className="relative w-full bg-white font-sweet-sans">
+        {/* Mobile: Image with Overlaid Text */}
+        <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
+          onClick={() => navigate('/buyback')}>
+          {/* Image Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200">
+            {/* Placeholder for image - you can replace this with an actual buyback image */}
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center p-8">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-300 flex items-center justify-center">
+                  <svg className="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <p className="text-gray-500 text-sm">Buyback Image</p>
               </div>
-              <div className="relative h-[300px] md:h-[400px] bg-gray-100 group-hover:opacity-90 transition-opacity duration-500">
-                <div className="absolute inset-0 bg-gradient-to-br from-luxury-gold/20 via-transparent to-luxury-rose-gold/20" />
+            </div>
+          </div>
+          
+          {/* Dark Overlay for Text Readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+          
+          {/* Overlaid Text and Button */}
+          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
+            <div className="max-w-sm">
+              <h2 className="text-white font-light">
+                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide">Trade in.</span>
+                <span className="text-4xl sm:text-5xl block tracking-wide">Get Credit.</span>
+              </h2>
+              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed">
+                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
+              </p>
+              <button className="mt-6 px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Split Layout */}
+        <div className="hidden md:grid md:grid-cols-2 min-h-[500px] lg:min-h-[600px] cursor-pointer group"
+          onClick={() => navigate('/buyback')}>
+          {/* Text Section - Dark Background */}
+          <div className="relative bg-gray-900 flex flex-col justify-center px-12 lg:px-16 py-16">
+            <div className="max-w-xl">
+              <h2 className="text-white font-light">
+                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide">Trade in.</span>
+                <span className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl block tracking-wide">Get Credit.</span>
+              </h2>
+              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed max-w-md">
+                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
+              </p>
+              <button className="mt-10 px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full">
+                Learn More
+              </button>
+            </div>
+          </div>
+          
+          {/* Image Section */}
+          <div className="relative h-auto overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 group-hover:opacity-95 transition-opacity duration-500">
+              {/* Placeholder for image - you can replace this with an actual buyback image */}
+              <div className="w-full h-full flex items-center justify-center min-h-[500px] lg:min-h-[600px]">
+                <div className="text-center p-8">
+                  <div className="w-32 h-32 lg:w-40 lg:h-40 mx-auto mb-4 rounded-full bg-gray-300 flex items-center justify-center">
+                    <svg className="w-16 h-16 lg:w-20 lg:h-20 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-500 text-sm">Buyback Image</p>
+                </div>
               </div>
             </div>
           </div>
@@ -182,7 +234,7 @@ const HomePage2 = () => {
       </section>
 
       {/* Anti-Microbial Highlight Section */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2]">
+      {/* <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2]">
         <div className="max-w-7xl mx-auto">
           <div className="border border-gray-200 bg-white overflow-hidden cursor-pointer group"
             onClick={() => navigate('/fabric-protection#anti-microbial')}>
@@ -207,7 +259,7 @@ const HomePage2 = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Gender Grid Section with Text Outside */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white font-sweet-sans">
@@ -223,52 +275,125 @@ const HomePage2 = () => {
           </div>
 
           {/* Gender Categories Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-12">
-            {genderCategories.map((category) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-10 mb-20">
+            {genderCategories.map((category, index) => (
               <div
                 key={category.id}
                 className="group cursor-pointer"
                 onClick={() => navigate(`/products/${category.id}`)}
               >
-                <div className="relative h-[200px] md:h-[300px] overflow-hidden bg-gray-100 border border-gray-200">
+                <div className="relative h-[240px] md:h-[360px] lg:h-[400px] overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300/70 transition-all duration-500">
+                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/0 via-white/0 to-black/5 group-hover:from-white/0 group-hover:via-white/0 group-hover:to-black/10 transition-all duration-700" />
                   <img
                     src={category.image}
                     alt={category.title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.08] group-hover:brightness-[1.02]"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Subtle overlay text on hover */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
+                    <div className="h-px w-0 group-hover:w-full bg-white/40 transition-all duration-700 delay-100 mb-3" />
+                    <p className="text-white text-xs uppercase tracking-[0.3em] font-light">
+                      Explore Collection
+                    </p>
+                  </div>
                 </div>
-                <div className="mt-4 text-center">
-                  <h3 className="text-lg md:text-xl font-light text-gray-900 uppercase tracking-widest group-hover:text-luxury-gold transition-colors duration-300">
+                <div className="mt-6 md:mt-7 text-center">
+                  <h3 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300">
                     {category.title}
                   </h3>
+                  <div className="mt-2 h-px w-0 mx-auto bg-gray-300 group-hover:w-12 transition-all duration-500" />
                 </div>
               </div>
             ))}
           </div>
 
           {/* Accessories Section Within Gender Grid - No Separate Heading */}
-          <div className="mt-16">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {accessoriesCategories.map((accessory) => (
-                <div
-                  key={accessory.id}
-                  className="group cursor-pointer"
-                  onClick={() => navigate(`/products/${accessory.id.toLowerCase()}`)}
-                >
-                  <div className="relative h-[150px] md:h-[200px] overflow-hidden bg-gray-100 border border-gray-200">
-                    <img
-                      src={accessory.image}
-                      alt={accessory.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+          <div className="mt-24 md:mt-28">
+            {/* Subtle divider */}
+            <div className="flex items-center justify-center mb-12 md:mb-16">
+              <div className="h-px w-24 bg-gray-200" />
+              <div className="mx-4 w-1 h-1 rounded-full bg-gray-300" />
+              <div className="h-px w-24 bg-gray-200" />
+            </div>
+            
+            {/* Auto-scrolling Carousel Container */}
+            <div className="relative overflow-hidden w-full">
+              {/* Gradient overlays for fade effect on edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+              
+              {/* Scrolling container */}
+              <div className="flex gap-5 md:gap-6 carousel-auto-scroll">
+                {/* First set of items */}
+                {accessoriesCategories.map((accessory, index) => (
+                  <div
+                    key={`accessory-1-${accessory.id}`}
+                    className="group cursor-pointer flex-shrink-0"
+                    style={{ width: 'calc(50vw - 40px)', minWidth: '160px', maxWidth: '280px' }}
+                    onClick={() => navigate(`/products/${accessory.id.toLowerCase()}`)}
+                  >
+                    <div className="relative h-[200px] md:h-[260px] lg:h-[280px] overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300/70 transition-all duration-500">
+                      <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/0 via-white/0 to-black/5 group-hover:from-white/0 group-hover:via-white/0 group-hover:to-black/10 transition-all duration-700" />
+                      <img
+                        src={accessory.image}
+                        alt={accessory.title}
+                        className="h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.08] group-hover:brightness-[1.02]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      {/* Subtle overlay text on hover */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
+                        <div className="h-px w-0 group-hover:w-full bg-white/40 transition-all duration-700 delay-100 mb-2" />
+                        <p className="text-white text-[10px] md:text-xs uppercase tracking-[0.25em] font-light">
+                          View
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-5 md:mt-6 text-center">
+                      <h4 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300">
+                        {accessory.title}
+                      </h4>
+                      <div className="mt-2 h-px w-0 mx-auto bg-gray-300 group-hover:w-10 transition-all duration-500" />
+                    </div>
                   </div>
-                  <div className="mt-3 text-center">
-                    <h4 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-widest group-hover:text-luxury-gold transition-colors duration-300">
-                      {accessory.title}
-                    </h4>
+                ))}
+                
+                {/* Duplicate set for seamless loop */}
+                {accessoriesCategories.map((accessory, index) => (
+                  <div
+                    key={`accessory-2-${accessory.id}`}
+                    className="group cursor-pointer flex-shrink-0"
+                    style={{ width: 'calc(50vw - 40px)', minWidth: '160px', maxWidth: '280px' }}
+                    onClick={() => navigate(`/products/${accessory.id.toLowerCase()}`)}
+                  >
+                    <div className="relative h-[200px] md:h-[260px] lg:h-[280px] overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300/70 transition-all duration-500">
+                      <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/0 via-white/0 to-black/5 group-hover:from-white/0 group-hover:via-white/0 group-hover:to-black/10 transition-all duration-700" />
+                      <img
+                        src={accessory.image}
+                        alt={accessory.title}
+                        className="h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.08] group-hover:brightness-[1.02]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      {/* Subtle overlay text on hover */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
+                        <div className="h-px w-0 group-hover:w-full bg-white/40 transition-all duration-700 delay-100 mb-2" />
+                        <p className="text-white text-[10px] md:text-xs uppercase tracking-[0.25em] font-light">
+                          View
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-5 md:mt-6 text-center">
+                      <h4 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300">
+                        {accessory.title}
+                      </h4>
+                      <div className="mt-2 h-px w-0 mx-auto bg-gray-300 group-hover:w-10 transition-all duration-500" />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -24,3 +24,30 @@ code {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
 }
+
+/* Carousel auto-scroll animation */
+@keyframes carouselScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 12px));
+  }
+}
+
+.carousel-auto-scroll {
+  animation: carouselScroll 40s linear infinite;
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  .carousel-auto-scroll {
+    animation: carouselScroll 30s linear infinite;
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel-auto-scroll {
+    animation: carouselScroll 25s linear infinite;
+  }
+}
