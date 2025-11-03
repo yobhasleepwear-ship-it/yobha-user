@@ -646,65 +646,120 @@ const HomePage2 = () => {
       {recentVisited.length > 0 && (
         <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white font-sweet-sans">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-900 uppercase tracking-widest mb-4">
+            {/* Section Header */}
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 font-sweet-sans">
                 Recently Viewed
               </h2>
-              <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto font-light tracking-wide">
+              <p className="text-gray-600 text-xs sm:text-sm md:text-base max-w-xl mx-auto font-light tracking-wide font-sweet-sans">
                 Revisit the pieces that caught your eye
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {recentVisited.map((item) => (
-                <article
-                  key={item.id}
-                  className="group cursor-pointer"
-                  onClick={() => navigate(`/productDetail/${item.id}`)}
-                >
-                  <div className="relative h-[200px] md:h-[250px] overflow-hidden bg-gray-100 border border-gray-200">
-                    <img
-                      src={item.images?.[0]}
-                      alt={item.name}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  </div>
-                  <div className="mt-3">
-                    <h3 className="text-sm font-light text-gray-900 uppercase tracking-wide line-clamp-1 group-hover:text-luxury-gold transition-colors duration-300">
-                      {item.name}
-                    </h3>
-                  </div>
-                </article>
-              ))}
+            {/* Products Container */}
+            <div className="relative">
+              {/* Mobile: Horizontal Scroll */}
+              <div className="flex gap-4 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 md:hidden">
+                {recentVisited.map((item) => (
+                  <article
+                    key={item.id}
+                    className="group cursor-pointer flex-shrink-0 w-[calc((100%-16px)/2)]"
+                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                  >
+                    <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300 transition-all duration-300 mb-2">
+                      <img
+                        src={item.images?.[0]}
+                        alt={item.name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-xs font-light text-gray-900 uppercase tracking-wide line-clamp-2 group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
+                        {item.name}
+                      </h3>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              {/* Desktop: Centered Grid */}
+              <div className={`hidden md:grid gap-6 ${
+                recentVisited.length === 1 
+                  ? 'grid-cols-1 justify-items-center' 
+                  : recentVisited.length === 2
+                  ? 'grid-cols-2 max-w-2xl mx-auto'
+                  : recentVisited.length === 3
+                  ? 'grid-cols-3 max-w-4xl mx-auto'
+                  : recentVisited.length === 4
+                  ? 'grid-cols-4 max-w-5xl mx-auto'
+                  : 'grid-cols-4 lg:grid-cols-6'
+              }`}>
+                {recentVisited.map((item) => (
+                  <article
+                    key={item.id}
+                    className="group cursor-pointer"
+                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                  >
+                    <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300 group-hover:shadow-lg transition-all duration-300 mb-3">
+                      <img
+                        src={item.images?.[0]}
+                        alt={item.name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-sm font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
+                        {item.name}
+                      </h3>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>
       )}
 
       {/* Follow Us on Instagram Section */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white font-sweet-sans">
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-900 uppercase tracking-widest mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4 font-sweet-sans">
             Follow Us
           </h2>
-          <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto font-light tracking-wide mb-8">
+          <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide mb-12 md:mb-16 font-sweet-sans">
             Join our community on Instagram for the latest updates and exclusive content
           </p>
           
-          <div className="flex justify-center items-center mt-12">
+          <div className="flex justify-center items-center">
             <a
               href="https://www.instagram.com/yobha.world"
               target="_blank"
               rel="noopener noreferrer"
-              className="group"
+              className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 font-sweet-sans"
             >
-              <div className="flex items-center justify-center w-20 h-20 md:w-24 md:h-24 border-2 border-gray-900 hover:bg-gray-900 transition-all duration-500">
-                <svg className="w-10 h-10 md:w-12 md:h-12 fill-current text-gray-900 group-hover:text-white" viewBox="0 0 24 24">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                  <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" fill="white"/>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="white" strokeLinecap="round"/>
+              {/* Instagram Icon */}
+              <div className="relative">
+                <svg 
+                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900 group-hover:text-white transition-colors duration-500" 
+                  fill="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                 </svg>
               </div>
+              {/* Text */}
+              <span className="text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.25em] text-gray-900 group-hover:text-white transition-colors duration-500 font-light font-sweet-sans">
+                Instagram
+              </span>
+              {/* Arrow */}
+              <svg 
+                className="w-4 h-4 md:w-5 md:h-5 text-gray-900 group-hover:text-white transition-colors duration-500 transform group-hover:translate-x-1 transition-transform duration-500" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+              </svg>
             </a>
           </div>
         </div>
