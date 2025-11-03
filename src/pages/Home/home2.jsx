@@ -262,48 +262,56 @@ const HomePage2 = () => {
       </section> */}
 
       {/* Gender Grid Section with Text Outside */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white font-sweet-sans">
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4">
+          <div className="text-center mb-16 md:mb-20 lg:mb-24">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8">
               Indulge in Luxury
             </h2>
-            <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-3xl mx-auto font-light tracking-wide leading-relaxed">
+            <div className="w-16 md:w-20 h-px bg-gray-300 mx-auto mb-6 md:mb-8" />
+            <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
               Discover timeless elegance across our curated collections
             </p>
           </div>
 
           {/* Gender Categories Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-10 mb-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 mb-16 md:mb-20">
             {genderCategories.map((category, index) => (
               <div
                 key={category.id}
                 className="group cursor-pointer"
                 onClick={() => navigate(`/products/${category.id}`)}
               >
-                <div className="relative h-[240px] md:h-[360px] lg:h-[400px] overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300/70 transition-all duration-500">
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/0 via-white/0 to-black/5 group-hover:from-white/0 group-hover:via-white/0 group-hover:to-black/10 transition-all duration-700" />
+                <div className="relative h-[220px] sm:h-[280px] md:h-[380px] lg:h-[420px] xl:h-[480px] overflow-hidden bg-gray-50/50 border border-gray-100 group-hover:border-gray-200 transition-all duration-700 ease-out">
+                  {/* Subtle shadow on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                    <div className="absolute inset-0 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]" />
+                  </div>
+                  
+                  {/* Refined gradient overlay */}
+                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/5 via-transparent to-black/5 group-hover:from-white/10 group-hover:via-transparent group-hover:to-black/10 transition-all duration-700" />
+                  
                   <img
                     src={category.image}
                     alt={category.title}
-                    className="h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.08] group-hover:brightness-[1.02]"
+                    className={`h-full w-full object-cover transition-all duration-[1000ms] ease-out group-hover:scale-[1.05] group-hover:brightness-[1.03] ${
+                      category.id === "couple" ? "object-[center_top]" : ""
+                    }`}
+                    style={category.id === "couple" ? { objectPosition: "center top" } : {}}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
-                  {/* Subtle overlay text on hover */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
-                    <div className="h-px w-0 group-hover:w-full bg-white/40 transition-all duration-700 delay-100 mb-3" />
-                    <p className="text-white text-xs uppercase tracking-[0.3em] font-light">
-                      Explore Collection
-                    </p>
-                  </div>
+                  {/* Elegant gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </div>
-                <div className="mt-6 md:mt-7 text-center">
-                  <h3 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300">
+                
+                {/* Text Outside - Enhanced Typography */}
+                <div className="mt-6 md:mt-8 lg:mt-10 text-center">
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-gray-900 uppercase tracking-[0.2em] md:tracking-[0.25em] group-hover:text-gray-700 transition-colors duration-500">
                     {category.title}
                   </h3>
-                  <div className="mt-2 h-px w-0 mx-auto bg-gray-300 group-hover:w-12 transition-all duration-500" />
+                  {/* Minimal decorative line */}
+                  <div className="mt-3 md:mt-4 h-[1px] w-0 mx-auto bg-gray-400 group-hover:w-10 md:group-hover:w-12 transition-all duration-700 ease-out" />
                 </div>
               </div>
             ))}
