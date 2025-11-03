@@ -32,7 +32,7 @@ const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
 
 
 
-const formatPrice = (price, currency ) => {
+const formatPrice = (price, currency) => {
   if (typeof price !== 'number') return '0';
 
   return price.toLocaleString(undefined, {
@@ -57,10 +57,10 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   // UI State
   const savedCountry = localStorage.getItem('selectedCountry');
-const parsedCountry = savedCountry ? JSON.parse(savedCountry) : countryOptions[0];
+  const parsedCountry = savedCountry ? JSON.parse(savedCountry) : countryOptions[0];
 
-// const [selectedCountry] = useState(parsedCountry);
-const [ cartItem ,setCartItems]=useState([])
+  // const [selectedCountry] = useState(parsedCountry);
+  const [cartItem, setCartItems] = useState([])
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState('');
@@ -88,7 +88,7 @@ const [ cartItem ,setCartItems]=useState([])
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState(null);
   const [newProducts, setProducts] = useState([])
-  const [monogram , setMonogram]=useState("")
+  const [monogram, setMonogram] = useState("")
   const MONOGRAM_CHAR_LIMIT = 12;
   // Review Form State
   const [averageProdRating, setAverageProdRating] = useState(0);
@@ -153,7 +153,7 @@ const [ cartItem ,setCartItems]=useState([])
     const updateItemsPerView = () => {
       setItemsPerView(window.innerWidth >= 1024 ? 3 : 2);
     };
-    
+
     updateItemsPerView();
     window.addEventListener('resize', updateItemsPerView);
     return () => window.removeEventListener('resize', updateItemsPerView);
@@ -313,53 +313,53 @@ const [ cartItem ,setCartItems]=useState([])
   //     setAddingToCart(false);
   //   }
   // };
-const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 
-  const safeProduct = JSON.parse(
-    JSON.stringify(product, (key, value) => {
-      if (typeof value === "function") return undefined;
-      if (key.startsWith("__react")) return undefined;
-      return value;
-    })
-  );
+    const safeProduct = JSON.parse(
+      JSON.stringify(product, (key, value) => {
+        if (typeof value === "function") return undefined;
+        if (key.startsWith("__react")) return undefined;
+        return value;
+      })
+    );
 
-  // 🛑 Restrict to one country
-  const existingCountry = cart.length > 0 ? cart[0].country : null;
-  if (existingCountry && existingCountry !== selectedCountry) {
-    message.error(`You can only add items from ${existingCountry}.`);
-    return;
-  }
+    // 🛑 Restrict to one country
+    const existingCountry = cart.length > 0 ? cart[0].country : null;
+    if (existingCountry && existingCountry !== selectedCountry) {
+      message.error(`You can only add items from ${existingCountry}.`);
+      return;
+    }
 
 
-  const itemIndex = cart.findIndex(
-    (item) => item.id === safeProduct.id && item.size === selectedSize
-  );
+    const itemIndex = cart.findIndex(
+      (item) => item.id === safeProduct.id && item.size === selectedSize
+    );
 
-  if (itemIndex !== -1) {
-   
-    cart[itemIndex] = {
-      ...cart[itemIndex],
-      quantity: quantity,
-    };
-  } else {
+    if (itemIndex !== -1) {
 
-    cart.push({
-      ...safeProduct,
-      size: selectedSize,
-      country: selectedCountry,
-      quantity: quantity,
-      country:selectedCountry,
-      monogram:monogram
-    });
-  }
+      cart[itemIndex] = {
+        ...cart[itemIndex],
+        quantity: quantity,
+      };
+    } else {
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-  setCartItems(cart);
-  dispatch(setCartCount(cart.length));
-  message.success(`${safeProduct.name || "Product"} added to cart!`);
-};
+      cart.push({
+        ...safeProduct,
+        size: selectedSize,
+        country: selectedCountry,
+        quantity: quantity,
+        country: selectedCountry,
+        monogram: monogram
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    setCartItems(cart);
+    dispatch(setCartCount(cart.length));
+    message.success(`${safeProduct.name || "Product"} added to cart!`);
+  };
 
 
 
@@ -367,49 +367,49 @@ const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
     navigate("/cart");
   };
 
- 
-const handleBuyNow = () => {
- 
-   const selectedPrice =
-    product.priceList.find(
-      (p) =>
-        p.size === selectedSize && p.country === selectedCountry
-    ) || {};
 
-  const lineTotal = (selectedPrice.priceAmount || product.unitPrice) * quantity;
-   console.log(product.priceList,"pro")
-  const checkoutProd={
-    items: [
-      
+  const handleBuyNow = () => {
+
+    const selectedPrice =
+      product.priceList.find(
+        (p) =>
+          p.size === selectedSize && p.country === selectedCountry
+      ) || {};
+
+    const lineTotal = (selectedPrice.priceAmount || product.unitPrice) * quantity;
+    console.log(product.priceList, "pro")
+    const checkoutProd = {
+      items: [
+
         {
           ...product,
-          currency:selectedPrice.currency,
-          variantSize:selectedSize,
-          variantColor:selectedColor,
-          country:selectedCountry,
-          size:selectedSize,
-           thumbnailUrl:product.images[0].url,
+          currency: selectedPrice.currency,
+          variantSize: selectedSize,
+          variantColor: selectedColor,
+          country: selectedCountry,
+          size: selectedSize,
+          thumbnailUrl: product.images[0].url,
           // countryPrice: {
           //   priceAmount: selectedPrice.priceAmount || product.unitPrice,
           //   currency: selectedPrice.currency || product.currency,
           // },
-           quantity:quantity,
-       
-        lineTotal:lineTotal,
-        addedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        note: "",
-        success: true,
-        message: "OK",
-        suggestedCountryPrice: null,
-        monogram:monogram
+          quantity: quantity,
+
+          lineTotal: lineTotal,
+          addedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          note: "",
+          success: true,
+          message: "OK",
+          suggestedCountryPrice: null,
+          monogram: monogram
         },
-       
-      
-    ],
+
+
+      ],
+    };
+    navigate("/checkout/buynow", { state: { checkoutProd, selectedCountry, selectedSize, quantity } });
   };
-  navigate("/checkout/buynow", { state: { checkoutProd,selectedCountry , selectedSize ,quantity} });
-};
 
 
   // Wishlist toggle
@@ -698,7 +698,7 @@ const handleBuyNow = () => {
                   return matchedPrice ? (
                     <>
                       <span className="text-2xl md:text-3xl font-light text-black tracking-tight">
-                        {formatPrice(matchedPrice.priceAmount , matchedPrice.currency)}
+                        {formatPrice(matchedPrice.priceAmount, matchedPrice.currency)}
                       </span>
                     </>
                   ) : (
@@ -857,7 +857,7 @@ const handleBuyNow = () => {
                 // In Stock - Show both buttons
                 <div className="flex gap-2.5 sm:gap-3 flex-1">
                   <button
-                    onClick={itemAddedToCart ? handleGoToCart :  () => handleAddToCart(product, selectedSize, selectedCountry,quantity)}
+                    onClick={itemAddedToCart ? handleGoToCart : () => handleAddToCart(product, selectedSize, selectedCountry, quantity)}
                     disabled={
                       !selectedColor ||
                       !selectedSize ||
@@ -1222,7 +1222,7 @@ const handleBuyNow = () => {
             <div className="relative px-0 py-4">
               {/* Carousel Container */}
               <div className="overflow-hidden">
-                <div 
+                <div
                   className="flex items-stretch transition-transform duration-300 ease-in-out gap-4 md:gap-5"
                   style={{
                     transform: `translateX(-${carouselIndex * (100 / itemsPerView)}%)`

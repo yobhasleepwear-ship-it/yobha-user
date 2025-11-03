@@ -271,7 +271,7 @@ const HeaderWithSidebar2 = () => {
 
             {/* Center - Logo (Mobile) */}
             <Link
-              to="/"
+              to="/home"
               className="flex items-center"
             >
               <img
@@ -331,7 +331,7 @@ const HeaderWithSidebar2 = () => {
 
               {/* YOBHA Logo */}
               <Link
-                to="/"
+                to="/home"
                 className="flex items-center group"
               >
                 <img

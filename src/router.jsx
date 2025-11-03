@@ -23,7 +23,7 @@ const Buyback = lazy(() => import("./pages/buyback/buyback"))
 const FabricProtection = lazy(() => import("./pages/fabric-protection/fabric-protection"));
 const Router = () => {
   const routes = [
-    { path: "/", element: <Navigate to="/home" replace /> },
+    // { path: "/", element: <Navigate to="/home" replace /> },
     { path: "/home", element: <Home /> },
     { path: '/login', element: <Login /> },
     { path: "/products/:category?", element: <ProductsPage /> },

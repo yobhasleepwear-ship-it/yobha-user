@@ -24,6 +24,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
  */
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const savedCountry = localStorage.getItem('selectedCountry');
+  const parsedCountry = JSON.parse(savedCountry);
+  const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -33,7 +36,13 @@ const ProductCard = ({ product }) => {
   // Safe data extraction with null checks
   const productId = product?.id || '';
   const productName = product?.name || 'Untitled Product';
-  const productPrice = product?.price || 0;
+ 
+  const matchedPrice = product?.priceList?.find(
+    (e) => e.country === selectedCountry && e.size === product?.availableSizes?.[0]
+  );
+  console.log(matchedPrice,"matchedprice")
+  const productPrice = matchedPrice?.priceAmount || 0;
+  const currency = matchedPrice?.currency || "";
   const productImages = Array.isArray(product?.images) && product.images.length > 0
     ? product.images
     : ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4='];
@@ -41,33 +50,33 @@ const ProductCard = ({ product }) => {
   const availableColors = Array.isArray(product?.availableColors) ? product.availableColors : [];
   const availableSizes = Array.isArray(product?.availableSizes) ? product.availableSizes : [];
 
-  
- const handleCardClick = () => {
 
-  if (productId) {
-    try {
-console.log("i am in ")
-      const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
+  const handleCardClick = () => {
 
-      
-      const filtered = existing.filter((p) => p.id !== productId);
+    if (productId) {
+      try {
+        console.log("i am in ")
+        const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
 
-    
-      const updated = [product, ...filtered];
 
- 
-      const limited = updated.slice(0, 8);
+        const filtered = existing.filter((p) => p.id !== productId);
 
-     
-      localStorage.setItem("recentVisited", JSON.stringify(limited));
-    } catch (err) {
-      console.error("Error saving recent visited products:", err);
+
+        const updated = [product, ...filtered];
+
+
+        const limited = updated.slice(0, 8);
+
+
+        localStorage.setItem("recentVisited", JSON.stringify(limited));
+      } catch (err) {
+        console.error("Error saving recent visited products:", err);
+      }
+
+
+      navigate(`/productDetail/${productId}`);
     }
-
-   
-    navigate(`/productDetail/${productId}`);
-  }
-};
+  };
 
   const nextImage = (e) => {
     e.stopPropagation();
@@ -127,10 +136,9 @@ console.log("i am in ")
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`group relative bg-white border-0 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ease-out cursor-pointer flex flex-col backdrop-blur-sm transform ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-      } hover:-translate-y-2 hover:scale-[1.02]`}
-      style={{ 
+      className={`group relative bg-white border-0 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ease-out cursor-pointer flex flex-col backdrop-blur-sm transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+        } hover:-translate-y-2 hover:scale-[1.02]`}
+      style={{
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         transition: 'all 0.7s cubic-bezier(0.4, 0, 0.2, 1)'
       }}
@@ -144,11 +152,10 @@ console.log("i am in ")
               key={index}
               src={img}
               alt={`${productName} - ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${
-                index === currentImageIndex
-                  ? 'opacity-100 scale-100'
-                  : 'opacity-0 scale-105'
-              } group-hover:scale-110 group-hover/image:scale-105`}
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${index === currentImageIndex
+                ? 'opacity-100 scale-100'
+                : 'opacity-0 scale-105'
+                } group-hover:scale-110 group-hover/image:scale-105`}
               style={{
                 transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
@@ -192,11 +199,10 @@ console.log("i am in ")
               <button
                 key={index}
                 onClick={(e) => goToImage(index, e)}
-                className={`h-1.5 rounded-full transition-all duration-500 hover:scale-125 ${
-                  index === currentImageIndex
-                    ? 'w-8 bg-white shadow-lg scale-110'
-                    : 'w-1.5 bg-white/50 hover:bg-white/80 hover:scale-110'
-                }`}
+                className={`h-1.5 rounded-full transition-all duration-500 hover:scale-125 ${index === currentImageIndex
+                  ? 'w-8 bg-white shadow-lg scale-110'
+                  : 'w-1.5 bg-white/50 hover:bg-white/80 hover:scale-110'
+                  }`}
                 style={{ transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
                 aria-label={`Go to image ${index + 1}`}
               />
@@ -222,7 +228,9 @@ console.log("i am in ")
             </p>
           )}
         </div>
-
+        <div>
+          {currency} {productPrice}
+        </div>
         {/* Subtle shimmer effect on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out opacity-0 group-hover:opacity-100"></div>
       </div>

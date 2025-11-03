@@ -23,12 +23,18 @@ const HomePage2 = () => {
   const [recentVisited, setRecentVisited] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
-  
+  const accessoriesRef = useRef(null);
+  const [isAccDragging, setIsAccDragging] = useState(false);
+  const [accStartX, setAccStartX] = useState(0);
+  const [accScrollLeft, setAccScrollLeft] = useState(0);
+  const [isAccUserInteracting, setIsAccUserInteracting] = useState(false);
+
   // Video URLs
   const portraitVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
   const landscapeVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
 
   useEffect(() => {
+    fetchProducts();
     const checkOrientation = () => {
       const isPortraitMode = window.innerHeight > window.innerWidth ||
         (window.innerWidth < 768 && window.innerHeight > window.innerWidth);
@@ -41,6 +47,8 @@ const HomePage2 = () => {
       window.removeEventListener('resize', checkOrientation);
       window.removeEventListener('orientationchange', checkOrientation);
     };
+
+
   }, []);
 
   useEffect(() => {
@@ -64,10 +72,6 @@ const HomePage2 = () => {
         console.error("Error parsing recentVisited:", err);
       }
     }
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
@@ -138,11 +142,11 @@ const HomePage2 = () => {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
-  
+
   // Auto-rotate images for each product
   useEffect(() => {
     if (displayProducts.length === 0) return;
-    
+
     const interval = setInterval(() => {
       setProductImageIndices(prev => {
         const newIndices = { ...prev };
@@ -154,12 +158,11 @@ const HomePage2 = () => {
         });
         return newIndices;
       });
-    }, 3000); // Change image every 3 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [displayProducts]);
 
-  // Initialize image indices
   useEffect(() => {
     if (displayProducts.length > 0) {
       const initialIndices = {};
@@ -168,7 +171,39 @@ const HomePage2 = () => {
       });
       setProductImageIndices(initialIndices);
     }
-  }, [displayProducts]);
+  }, []);
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isAccDragging || !accessoriesRef.current) return;
+      e.preventDefault();
+      const x = e.pageX - accessoriesRef.current.offsetLeft;
+      const walk = (x - accStartX) * 2;
+      accessoriesRef.current.scrollLeft = accScrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      setIsAccDragging(false);
+      setTimeout(() => setIsAccUserInteracting(false), 4000);
+    };
+
+    if (isAccDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isAccDragging, accStartX, accScrollLeft]);
+  const handleAccMouseDown = (e) => {
+    if (!accessoriesRef.current) return;
+    setIsAccDragging(true);
+    setIsAccUserInteracting(true);
+    setAccStartX(e.pageX - accessoriesRef.current.offsetLeft);
+    setAccScrollLeft(accessoriesRef.current.scrollLeft);
+    e.preventDefault();
+  };
 
   // Handle drag to scroll
   useEffect(() => {
@@ -220,9 +255,9 @@ const HomePage2 = () => {
           {/* Sale Banner - Left on desktop, Top on mobile */}
           <div className="relative w-full lg:w-1/2 aspect-[4/3] overflow-hidden">
             {/* Background Image */}
-            <img 
-              src={SALE_BANNER_IMAGE} 
-              alt="Sale Banner" 
+            <img
+              src={SALE_BANNER_IMAGE}
+              alt="Sale Banner"
               className="w-full h-full object-cover"
             />
           </div>
@@ -269,23 +304,22 @@ const HomePage2 = () => {
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                     <div className="absolute inset-0 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]" />
                   </div>
-                  
+
                   {/* Refined gradient overlay */}
                   <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/5 via-transparent to-black/5 group-hover:from-white/10 group-hover:via-transparent group-hover:to-black/10 transition-all duration-700" />
-                  
+
                   <img
                     src={category.image}
                     alt={category.title}
-                    className={`h-full w-full object-cover transition-all duration-[1000ms] ease-out group-hover:scale-[1.05] group-hover:brightness-[1.03] ${
-                      category.id === "couple" ? "object-[center_top]" : ""
-                    }`}
+                    className={`h-full w-full object-cover transition-all duration-[1000ms] ease-out group-hover:scale-[1.05] group-hover:brightness-[1.03] ${category.id === "couple" ? "object-[center_top]" : ""
+                      }`}
                     style={category.id === "couple" ? { objectPosition: "center top" } : {}}
                   />
-                  
+
                   {/* Elegant gradient overlay on hover */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </div>
-                
+
                 {/* Text Outside - Enhanced Typography */}
                 <div className="mt-6 md:mt-8 lg:mt-10 text-center">
                   <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-gray-900 uppercase tracking-[0.2em] md:tracking-[0.25em] group-hover:text-gray-700 transition-colors duration-500">
@@ -306,15 +340,26 @@ const HomePage2 = () => {
               <div className="mx-4 w-1 h-1 rounded-full bg-gray-300" />
               <div className="h-px w-24 bg-gray-200" />
             </div>
-            
+
             {/* Auto-scrolling Carousel Container */}
             <div className="relative overflow-hidden w-full">
               {/* Gradient overlays for fade effect on edges */}
               <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
               <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-              
+
               {/* Scrolling container */}
-              <div className="flex gap-5 md:gap-6 carousel-auto-scroll">
+              <div
+                ref={accessoriesRef}
+                className={`flex gap-5 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 ${!isAccUserInteracting ? 'carousel-auto-scroll' : ''
+                  }`}
+                style={{ cursor: isAccDragging ? 'grabbing' : 'grab' }}
+                onMouseDown={handleAccMouseDown}
+                onMouseLeave={() => setIsAccDragging(false)}
+                onTouchStart={() => setIsAccUserInteracting(true)}
+                onTouchEnd={() => setTimeout(() => setIsAccUserInteracting(false), 4000)}
+                onWheel={() => setIsAccUserInteracting(true)}
+              >
+
                 {/* First set of items */}
                 {accessoriesCategories.map((accessory, index) => (
                   <div
@@ -331,7 +376,7 @@ const HomePage2 = () => {
                         className="h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.08] group-hover:brightness-[1.02]"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      
+
                       {/* Subtle overlay text on hover */}
                       <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
                         <div className="h-px w-0 group-hover:w-full bg-white/40 transition-all duration-700 delay-100 mb-2" />
@@ -348,7 +393,7 @@ const HomePage2 = () => {
                     </div>
                   </div>
                 ))}
-                
+
                 {/* Duplicate set for seamless loop */}
                 {accessoriesCategories.map((accessory, index) => (
                   <div
@@ -365,7 +410,7 @@ const HomePage2 = () => {
                         className="h-full w-full object-cover transition-all duration-700 group-hover:scale-[1.08] group-hover:brightness-[1.02]"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      
+
                       {/* Subtle overlay text on hover */}
                       <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
                         <div className="h-px w-0 group-hover:w-full bg-white/40 transition-all duration-700 delay-100 mb-2" />
@@ -390,19 +435,18 @@ const HomePage2 = () => {
 
       {/* Buyback USP Section */}
       <section className="relative w-full bg-white font-sweet-sans py-8 md:py-12 lg:py-16">
-        {/* Mobile: Image with Overlaid Text */}
         <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
           onClick={() => navigate('/buyback')}>
           {/* Image Background */}
-          <img 
-            src={BUYBACK_IMAGE} 
-            alt="Buyback" 
+          <img
+            src={BUYBACK_IMAGE}
+            alt="Buyback"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
-          
+
           {/* Dark Overlay for Text Readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
-          
+
           {/* Overlaid Text and Button */}
           <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
             <div className="max-w-sm font-sweet-sans">
@@ -438,12 +482,12 @@ const HomePage2 = () => {
               </button>
             </div>
           </div>
-          
+
           {/* Image Section */}
           <div className="relative h-auto overflow-hidden">
-            <img 
-              src={BUYBACK_IMAGE} 
-              alt="Buyback" 
+            <img
+              src={BUYBACK_IMAGE}
+              alt="Buyback"
               className="w-full h-full object-cover min-h-[500px] lg:min-h-[600px] group-hover:scale-105 transition-transform duration-700"
             />
           </div>
@@ -480,7 +524,7 @@ const HomePage2 = () => {
 
       {/* Trending New Arrivals */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2] font-sweet-sans">
-        <div className="max-w-7xl mx-auto">
+        <div className=" mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4">
               New Arrivals
@@ -497,7 +541,7 @@ const HomePage2 = () => {
           ) : displayProducts.length > 0 ? (
             <div className="relative overflow-hidden">
               {/* Carousel Container - Scrollable */}
-              <div 
+              <div
                 ref={carouselRef}
                 className={`flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 ${!isUserInteracting ? 'new-arrivals-carousel' : ''}`}
                 style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -508,12 +552,12 @@ const HomePage2 = () => {
                 onWheel={() => setIsUserInteracting(true)}
               >
                 {/* First set of products */}
-              {displayProducts.map((product) => (
-                <article
+                {displayProducts.map((product) => (
+                  <article
                     key={`product-1-${product.id}`}
                     className="group cursor-pointer flex-shrink-0 w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
-                  onClick={() => navigate(`/productDetail/${product.id}`)}
-                >
+                    onClick={() => navigate(`/productDetail/${product.id}`)}
+                  >
                     <div className="relative h-[280px] md:h-[380px] lg:h-[420px] overflow-hidden bg-white border border-gray-200/30 shadow-sm group-hover:shadow-2xl group-hover:border-gray-300/50 transition-all duration-700">
                       {/* Product Image Carousel */}
                       <div className="relative w-full h-full">
@@ -523,23 +567,22 @@ const HomePage2 = () => {
                               key={imgIndex}
                               src={image}
                               alt={`${product.title} - ${imgIndex + 1}`}
-                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                                productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
-                              } group-hover:scale-110 transition-transform duration-700`}
+                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
+                                } group-hover:scale-110 transition-transform duration-700`}
                             />
                           ))
                         ) : (
-                    <img
-                      src={product.image}
-                      alt={product.title}
+                          <img
+                            src={product.image}
+                            alt={product.title}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                         )}
-                        
+
                         {/* Subtle overlay on hover */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       </div>
-                      
+
                       {/* Badge */}
                       {product.badge && (
                         <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm border border-gray-200/50">
@@ -548,17 +591,17 @@ const HomePage2 = () => {
                           </span>
                         </div>
                       )}
-                  </div>
-                    
+                    </div>
+
                     {/* Product Info */}
-                  <div className="mt-4 space-y-2">
+                    <div className="mt-4 space-y-2">
                       <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2.5rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
-                      {product.title}
-                    </h3>
+                        {product.title}
+                      </h3>
                     </div>
                   </article>
                 ))}
-                
+
                 {/* Duplicate set for seamless loop */}
                 {displayProducts.map((product) => (
                   <article
@@ -575,9 +618,8 @@ const HomePage2 = () => {
                               key={imgIndex}
                               src={image}
                               alt={`${product.title} - ${imgIndex + 1}`}
-                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                                productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
-                              } group-hover:scale-110 transition-transform duration-700`}
+                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
+                                } group-hover:scale-110 transition-transform duration-700`}
                             />
                           ))
                         ) : (
@@ -587,29 +629,29 @@ const HomePage2 = () => {
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                         )}
-                        
+
                         {/* Subtle overlay on hover */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       </div>
-                      
+
                       {/* Badge */}
-                    {product.badge && (
+                      {product.badge && (
                         <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm border border-gray-200/50">
                           <span className="text-xs uppercase tracking-[0.2em] text-gray-900 font-light">
-                        {product.badge}
-                      </span>
+                            {product.badge}
+                          </span>
                         </div>
-                    )}
-                  </div>
-                    
+                      )}
+                    </div>
+
                     {/* Product Info */}
                     <div className="mt-4 space-y-2">
                       <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2.5rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
                         {product.title}
                       </h3>
-                  </div>
-                </article>
-              ))}
+                    </div>
+                  </article>
+                ))}
               </div>
             </div>
           ) : (
@@ -672,17 +714,16 @@ const HomePage2 = () => {
               </div>
 
               {/* Desktop: Centered Grid */}
-              <div className={`hidden md:grid gap-6 ${
-                recentVisited.length === 1 
-                  ? 'grid-cols-1 justify-items-center' 
+              <div className={`hidden md:grid gap-6 ${recentVisited.length === 1
+                  ? 'grid-cols-1 justify-items-center'
                   : recentVisited.length === 2
-                  ? 'grid-cols-2 max-w-2xl mx-auto'
-                  : recentVisited.length === 3
-                  ? 'grid-cols-3 max-w-4xl mx-auto'
-                  : recentVisited.length === 4
-                  ? 'grid-cols-4 max-w-5xl mx-auto'
-                  : 'grid-cols-4 lg:grid-cols-6'
-              }`}>
+                    ? 'grid-cols-2 max-w-2xl mx-auto'
+                    : recentVisited.length === 3
+                      ? 'grid-cols-3 max-w-4xl mx-auto'
+                      : recentVisited.length === 4
+                        ? 'grid-cols-4 max-w-5xl mx-auto'
+                        : 'grid-cols-4 lg:grid-cols-6'
+                }`}>
                 {recentVisited.map((item) => (
                   <article
                     key={item.id}
@@ -718,7 +759,7 @@ const HomePage2 = () => {
           <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide mb-12 md:mb-16 font-sweet-sans">
             Join our community on Instagram for the latest updates and exclusive content
           </p>
-          
+
           <div className="flex justify-center items-center">
             <a
               href="https://www.instagram.com/yobha.world"
@@ -728,12 +769,12 @@ const HomePage2 = () => {
             >
               {/* Instagram Icon */}
               <div className="relative">
-                <svg 
-                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900 group-hover:text-white transition-colors duration-500" 
-                  fill="currentColor" 
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900 group-hover:text-white transition-colors duration-500"
+                  fill="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                 </svg>
               </div>
               {/* Text */}
@@ -741,10 +782,10 @@ const HomePage2 = () => {
                 YOBHA.WORLD
               </span>
               {/* Arrow */}
-              <svg 
-                className="w-4 h-4 md:w-5 md:h-5 text-gray-900 group-hover:text-white transition-colors duration-500 transform group-hover:translate-x-1 transition-transform duration-500" 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className="w-4 h-4 md:w-5 md:h-5 text-gray-900 group-hover:text-white transition-colors duration-500 transform group-hover:translate-x-1 transition-transform duration-500"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
