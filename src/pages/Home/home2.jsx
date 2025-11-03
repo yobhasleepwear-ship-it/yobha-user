@@ -99,8 +99,8 @@ const HomePage2 = () => {
   };
 
   const genderCategories = [
-    { id: "Women", title: "Women", image: WOMEN_IMAGE },
-    { id: "men", title: "Men", image: MEN_IMAGE },
+    { id: "Women", title: "HER", image: WOMEN_IMAGE },
+    { id: "men", title: "HIM", image: MEN_IMAGE },
     { id: "kids", title: "Kids", image: KID_IMAGE },
     { id: "pets", title: "Pets", image: PET_IMAGE },
     { id: "couple", title: "Couple", image: COUPLE_IMAGE },
@@ -749,7 +749,7 @@ const HomePage2 = () => {
               </div>
               {/* Text */}
               <span className="text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.25em] text-gray-900 group-hover:text-white transition-colors duration-500 font-light font-sweet-sans">
-                Instagram
+                YOBHA.WORLD
               </span>
               {/* Arrow */}
               <svg 
