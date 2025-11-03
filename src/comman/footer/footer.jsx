@@ -72,7 +72,7 @@ const [newsletter , setNewsletter]=useState("")
               </Link>
             </div>
             <p className="text-text-medium text-sm leading-relaxed">
-              Premium sleepwear for your ultimate comfort. Designed with care, elegance, and style.
+              Premium comfortwear for your ultimate comfort. Designed with care, elegance, and style.
             </p>
           </div>
 

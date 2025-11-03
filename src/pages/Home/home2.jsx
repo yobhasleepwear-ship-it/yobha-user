@@ -216,132 +216,31 @@ const HomePage2 = () => {
       <section className="relative w-full">
         {/* Mobile: Stacked Layout - Banner above, Video below */}
         {/* Desktop/Laptop: 2 Column Grid - Banner left, Video right */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 px-0 lg:px-8">
+        <div className="flex flex-col lg:flex-row w-full">
           {/* Sale Banner - Left on desktop, Top on mobile */}
-          <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[500px] overflow-hidden group cursor-pointer lg:shadow-2xl lg:border-r-4 lg:border-luxury-gold/30">
+          <div className="relative w-full lg:w-1/2 aspect-[4/3] overflow-hidden">
             {/* Background Image */}
             <img 
               src={SALE_BANNER_IMAGE} 
               alt="Sale Banner" 
-              className="w-full h-full object-contain md:object-cover lg:object-cover transition-transform duration-700 group-hover:scale-110"
+              className="w-full h-full object-cover"
             />
-            {/* Elegant Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            {/* Decorative Border Effect on Hover */}
-            <div className="absolute inset-0 border-4 border-luxury-gold/0 group-hover:border-luxury-gold/50 transition-all duration-500" />
-            {/* Subtle Corner Accent */}
-            <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-luxury-gold/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="absolute bottom-4 left-4 w-16 h-16 border-b-2 border-l-2 border-luxury-gold/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        </div>
+          </div>
 
           {/* Video Section - Right on desktop, Bottom on mobile */}
-          <div className="relative w-full h-[30vh] md:h-[35vh] lg:h-[500px] overflow-hidden group cursor-pointer lg:shadow-2xl lg:border-l-4 lg:border-gray-900/20 mt-4 lg:mt-0">
-          <video
-            src={isPortrait ? portraitVideo : landscapeVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            key={isPortrait ? 'portrait' : 'landscape'}
-          />
-            {/* Elegant Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-tl from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            {/* Decorative Border Effect on Hover */}
-            <div className="absolute inset-0 border-4 border-gray-900/0 group-hover:border-gray-900/30 transition-all duration-500" />
-          </div>
-        </div>
-      </section>
-
-      {/* Buyback USP Section */}
-      <section className="relative w-full bg-white font-sweet-sans py-8 md:py-12 lg:py-16">
-        {/* Mobile: Image with Overlaid Text */}
-        <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
-          onClick={() => navigate('/buyback')}>
-          {/* Image Background */}
-          <img 
-            src={BUYBACK_IMAGE} 
-            alt="Buyback" 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-          />
-          
-          {/* Dark Overlay for Text Readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
-          
-          {/* Overlaid Text and Button */}
-          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
-            <div className="max-w-sm font-sweet-sans">
-              <h2 className="text-white font-light font-sweet-sans">
-                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-sweet-sans">Trade in.</span>
-                <span className="text-4xl sm:text-5xl block tracking-wide font-sweet-sans">Get Credit.</span>
-              </h2>
-              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed font-sweet-sans">
-                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
-              </p>
-              <button className="mt-6 px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
-                Learn More
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop: Split Layout */}
-        <div className="hidden md:grid md:grid-cols-2 min-h-[500px] lg:min-h-[600px] cursor-pointer group"
-          onClick={() => navigate('/buyback')}>
-          {/* Text Section - Dark Background */}
-          <div className="relative bg-gray-900 flex flex-col justify-center px-12 lg:px-16 py-16 font-sweet-sans">
-            <div className="max-w-xl font-sweet-sans">
-              <h2 className="text-white font-light font-sweet-sans">
-                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-sweet-sans">Trade in.</span>
-                <span className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl block tracking-wide font-sweet-sans">Get Credit.</span>
-              </h2>
-              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed max-w-md font-sweet-sans">
-                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
-              </p>
-              <button className="mt-10 px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
-                Learn More
-              </button>
-            </div>
-          </div>
-          
-          {/* Image Section */}
-          <div className="relative h-auto overflow-hidden">
-            <img 
-              src={BUYBACK_IMAGE} 
-              alt="Buyback" 
-              className="w-full h-full object-cover min-h-[500px] lg:min-h-[600px] group-hover:scale-105 transition-transform duration-700"
+          <div className="relative w-full lg:w-1/2 aspect-[4/3] overflow-hidden">
+            <video
+              src={isPortrait ? portraitVideo : landscapeVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+              key={isPortrait ? 'portrait' : 'landscape'}
             />
           </div>
         </div>
       </section>
-
-      {/* Anti-Microbial Highlight Section */}
-      {/* <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2]">
-        <div className="max-w-7xl mx-auto">
-          <div className="border border-gray-200 bg-white overflow-hidden cursor-pointer group"
-            onClick={() => navigate('/fabric-protection#anti-microbial')}>
-            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 p-8 md:p-12">
-              <div className="order-2 md:order-1">
-                <div className="relative h-[300px] md:h-[400px] bg-gray-100 group-hover:opacity-90 transition-opacity duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-br from-luxury-rose-gold/20 via-transparent to-purple-200/20" />
-                </div>
-              </div>
-              <div className="order-1 md:order-2">
-                <span className="text-xs uppercase tracking-[0.4em] text-luxury-gold font-light">Premium Protection</span>
-                <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest">
-                  Anti-Microbial Assurance
-                </h2>
-                <p className="mt-6 text-base md:text-lg text-gray-600 font-light tracking-wide leading-relaxed">
-                  Lab-tested finish that actively diminishes microbial growth. Freshness curated for everyday rituals with breathable, hypoallergenic treatment.
-                </p>
-                <button className="mt-8 px-8 py-4 border-2 border-gray-900 text-gray-900 text-sm uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500">
-                  Discover More →
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
 
       {/* Gender Grid Section with Text Outside */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
@@ -488,6 +387,96 @@ const HomePage2 = () => {
           </div>
         </div>
       </section>
+
+      {/* Buyback USP Section */}
+      <section className="relative w-full bg-white font-sweet-sans py-8 md:py-12 lg:py-16">
+        {/* Mobile: Image with Overlaid Text */}
+        <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
+          onClick={() => navigate('/buyback')}>
+          {/* Image Background */}
+          <img 
+            src={BUYBACK_IMAGE} 
+            alt="Buyback" 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+          
+          {/* Dark Overlay for Text Readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+          
+          {/* Overlaid Text and Button */}
+          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
+            <div className="max-w-sm font-sweet-sans">
+              <h2 className="text-white font-light font-sweet-sans">
+                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-sweet-sans">Trade in.</span>
+                <span className="text-4xl sm:text-5xl block tracking-wide font-sweet-sans">Get Credit.</span>
+              </h2>
+              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed font-sweet-sans">
+                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
+              </p>
+              <button className="mt-6 px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Split Layout */}
+        <div className="hidden md:grid md:grid-cols-2 min-h-[500px] lg:min-h-[600px] cursor-pointer group"
+          onClick={() => navigate('/buyback')}>
+          {/* Text Section - Dark Background */}
+          <div className="relative bg-gray-900 flex flex-col justify-center px-12 lg:px-16 py-16 font-sweet-sans">
+            <div className="max-w-xl font-sweet-sans">
+              <h2 className="text-white font-light font-sweet-sans">
+                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-sweet-sans">Trade in.</span>
+                <span className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl block tracking-wide font-sweet-sans">Get Credit.</span>
+              </h2>
+              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed max-w-md font-sweet-sans">
+                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
+              </p>
+              <button className="mt-10 px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
+                Learn More
+              </button>
+            </div>
+          </div>
+          
+          {/* Image Section */}
+          <div className="relative h-auto overflow-hidden">
+            <img 
+              src={BUYBACK_IMAGE} 
+              alt="Buyback" 
+              className="w-full h-full object-cover min-h-[500px] lg:min-h-[600px] group-hover:scale-105 transition-transform duration-700"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Anti-Microbial Highlight Section */}
+      {/* <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2]">
+        <div className="max-w-7xl mx-auto">
+          <div className="border border-gray-200 bg-white overflow-hidden cursor-pointer group"
+            onClick={() => navigate('/fabric-protection#anti-microbial')}>
+            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 p-8 md:p-12">
+              <div className="order-2 md:order-1">
+                <div className="relative h-[300px] md:h-[400px] bg-gray-100 group-hover:opacity-90 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-br from-luxury-rose-gold/20 via-transparent to-purple-200/20" />
+                </div>
+              </div>
+              <div className="order-1 md:order-2">
+                <span className="text-xs uppercase tracking-[0.4em] text-luxury-gold font-light">Premium Protection</span>
+                <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest">
+                  Anti-Microbial Assurance
+                </h2>
+                <p className="mt-6 text-base md:text-lg text-gray-600 font-light tracking-wide leading-relaxed">
+                  Lab-tested finish that actively diminishes microbial growth. Freshness curated for everyday rituals with breathable, hypoallergenic treatment.
+                </p>
+                <button className="mt-8 px-8 py-4 border-2 border-gray-900 text-gray-900 text-sm uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500">
+                  Discover More →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section> */}
 
       {/* Trending New Arrivals */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2] font-sweet-sans">
