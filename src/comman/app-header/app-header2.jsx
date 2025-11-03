@@ -27,21 +27,32 @@ const HeaderWithSidebar2 = () => {
 
   const topBannerItems = [
     {
-      icon: "♻️",
-      label: t("navbar.topbar.buyback." + i18n.language),
+      label: "Buy Back",
+      icon: "→",
       to: "/buyback"
     },
     {
-      icon: "🛡️",
-      label: "Anti-Viral Finish",
-      to: "/fabric-protection#anti-viral"
+      label: "Sale",
+      icon: "→",
+      to: "/products"
     },
     {
-      icon: "🧼",
-      label: "Anti-Microbial Fabric",
+      label: "Anti Microbial",
+      icon: "→",
       to: "/fabric-protection#anti-microbial"
     }
   ];
+
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  
+  // Rotate banner items
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % topBannerItems.length);
+    }, 3000); // Change every 3 seconds
+    
+    return () => clearInterval(interval);
+  }, [topBannerItems.length]);
 
   // Check authentication status
   useEffect(() => {
@@ -197,28 +208,36 @@ const HeaderWithSidebar2 = () => {
         className="relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-100/50 font-sweet-sans"
       >
 
-        <div
-          className="bg-black text-white relative overflow-hidden font-sweet-sans"
-        >
-          <div className="top-banner">
-            <div className="top-banner__track">
-              {[0, 1].map((repeat) => (
-                <React.Fragment key={`banner-segment-${repeat}`}>
-                  {topBannerItems.map((item, index) => {
-                    const key = `banner-item-${repeat}-${index}`;
-                    return (
-                      <Link
-                        key={key}
-                        to={item.to}
-                        className="top-banner__item top-banner__item--link"
-                      >
-                        <span aria-hidden="true">{item.icon}</span>
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </React.Fragment>
+        <div className="bg-black text-white relative overflow-hidden font-sweet-sans">
+          <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3">
+            {/* Left: Rotating Banner Items */}
+            <div className="flex items-center min-h-[20px] md:min-h-[24px] relative">
+              {topBannerItems.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.to}
+                  className={`absolute flex items-center gap-1.5 md:gap-2 transition-all duration-500 ${
+                    currentBannerIndex === index
+                      ? 'opacity-100 translate-x-0'
+                      : 'opacity-0 -translate-x-4 pointer-events-none'
+                  }`}
+                >
+                  <span className="text-xs md:text-sm text-white font-normal tracking-wide whitespace-nowrap">
+                    {item.label}
+                  </span>
+                  <span className="text-xs md:text-sm text-white whitespace-nowrap">{item.icon}</span>
+                </Link>
               ))}
+            </div>
+            
+            {/* Right: Login Link */}
+            <div>
+              <Link
+                to="/login"
+                className="text-xs md:text-sm text-white font-normal tracking-wide hover:opacity-70 transition-opacity duration-300"
+              >
+                Login
+              </Link>
             </div>
           </div>
         </div>
