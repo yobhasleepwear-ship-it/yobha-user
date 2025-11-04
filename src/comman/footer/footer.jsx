@@ -114,6 +114,14 @@ const [newsletter , setNewsletter]=useState("")
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/careers"
+                  className="text-text-medium hover:text-black transition-colors duration-300"
+                >
+                  Careers
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -21,6 +21,7 @@ const TermsConditions = lazy(() => import("./pages/terms-conditions/terms-condit
 const ReturnPolicy = lazy(() => import("./pages/return-policy/return-policy"));
 const Buyback = lazy(() => import("./pages/buyback/buyback"))
 const FabricProtection = lazy(() => import("./pages/fabric-protection/fabric-protection"));
+const Careers = lazy(() => import("./pages/careers/careers"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -42,7 +43,8 @@ const Router = () => {
     { path: '/terms-conditions', element: <TermsConditions /> },
     { path: '/return-policy', element: <ReturnPolicy /> },
     {path:'/buyback',element:<Buyback/>},
-    {path:'/fabric-protection', element:<FabricProtection />}
+    {path:'/fabric-protection', element:<FabricProtection />},
+    { path: '/careers', element: <Careers /> }
   ];
 
   return (
