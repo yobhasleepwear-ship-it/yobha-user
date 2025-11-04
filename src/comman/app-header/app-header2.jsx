@@ -284,12 +284,12 @@ const HeaderWithSidebar2 = () => {
             {/* Right Side - Wishlist & Cart (Mobile) */}
             <div className="flex items-center gap-1">
               {/* Wishlist Icon - Mobile */}
-                  <Link
+                  {/* <Link
                 to="/login"
                 className="flex items-center justify-center w-7 h-7 text-black hover:text-gray-700 transition-colors duration-300 relative"               
               >
                 <User size={18} strokeWidth={1.8} />
-              </Link>
+              </Link> */}
               <Link
                 to="/wishlist"
                 className="flex items-center justify-center w-7 h-7 text-black hover:text-gray-700 transition-colors duration-300 relative"
@@ -440,7 +440,7 @@ const HeaderWithSidebar2 = () => {
               </Link>
 
               {/* Account Icon - Luxury Design */}
-              {isAuthenticated ? (
+              {isAuthenticated && (
                 <div className="relative group">
                   <button
                     className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
@@ -472,15 +472,6 @@ const HeaderWithSidebar2 = () => {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <Link
-                  to="/login"
-                  className="flex items-center gap-2 px-3 py-2 text-black hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
-                  title={t("navbar.account.login." + i18n.language)}
-                >
-                  <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
-                  <span className="hidden sm:inline font-normal text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.login." + i18n.language)}</span>
-                </Link>
               )}
 
               {/* Cart Icon - Luxury Design */}
