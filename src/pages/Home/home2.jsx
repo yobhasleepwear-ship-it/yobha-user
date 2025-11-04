@@ -28,6 +28,7 @@ const HomePage2 = () => {
   const [accStartX, setAccStartX] = useState(0);
   const [accScrollLeft, setAccScrollLeft] = useState(0);
   const [isAccUserInteracting, setIsAccUserInteracting] = useState(false);
+  const [isAccHovered, setIsAccHovered] = useState(false);
 
   // Video URLs
   const portraitVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
@@ -142,6 +143,7 @@ const HomePage2 = () => {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
+  const [isNewArrivalsHovered, setIsNewArrivalsHovered] = useState(false);
 
   // Auto-rotate images for each product
   useEffect(() => {
@@ -196,6 +198,58 @@ const HomePage2 = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isAccDragging, accStartX, accScrollLeft]);
+
+  // Auto-scroll carousel with seamless reset
+  useEffect(() => {
+    if (!accessoriesRef.current || isAccUserInteracting) return;
+
+    const carousel = accessoriesRef.current;
+    let animationFrameId;
+    let lastTime = performance.now();
+
+    const getScrollSpeed = () => {
+      const scrollWidth = carousel.scrollWidth;
+      const duration = window.innerWidth < 640 ? 40000 : window.innerWidth < 768 ? 50000 : 70000;
+      return scrollWidth / duration; // pixels per millisecond
+    };
+
+    const animate = (currentTime) => {
+      if (!accessoriesRef.current || isAccUserInteracting) {
+        return;
+      }
+
+      const scrollWidth = carousel.scrollWidth;
+      const scrollTarget = scrollWidth / 2; // Half way (end of first set)
+
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+
+      const currentScroll = carousel.scrollLeft;
+      const scrollSpeed = getScrollSpeed();
+      const newScroll = currentScroll + scrollSpeed * deltaTime;
+
+      // If we've reached or passed the target (50% of scroll width), reset seamlessly
+      if (newScroll >= scrollTarget) {
+        carousel.scrollLeft = newScroll - scrollTarget;
+      } else {
+        carousel.scrollLeft = newScroll;
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    // Small delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      animationFrameId = requestAnimationFrame(animate);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [isAccUserInteracting]);
   const handleAccMouseDown = (e) => {
     if (!accessoriesRef.current) return;
     setIsAccDragging(true);
@@ -203,6 +257,31 @@ const HomePage2 = () => {
     setAccStartX(e.pageX - accessoriesRef.current.offsetLeft);
     setAccScrollLeft(accessoriesRef.current.scrollLeft);
     e.preventDefault();
+  };
+
+  // Navigation handlers for accessories carousel
+  const handleAccPrev = (e) => {
+    e.stopPropagation();
+    if (!accessoriesRef.current) return;
+    setIsAccUserInteracting(true);
+    const scrollAmount = accessoriesRef.current.clientWidth * 0.6;
+    accessoriesRef.current.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth'
+    });
+    setTimeout(() => setIsAccUserInteracting(false), 4000);
+  };
+
+  const handleAccNext = (e) => {
+    e.stopPropagation();
+    if (!accessoriesRef.current) return;
+    setIsAccUserInteracting(true);
+    const scrollAmount = accessoriesRef.current.clientWidth * 0.6;
+    accessoriesRef.current.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+    setTimeout(() => setIsAccUserInteracting(false), 4000);
   };
 
   // Handle drag to scroll
@@ -243,6 +322,83 @@ const HomePage2 = () => {
 
   const handleMouseLeave = () => {
     setIsDragging(false);
+  };
+
+  // Auto-scroll carousel with seamless reset for New Arrivals
+  useEffect(() => {
+    if (!carouselRef.current || isUserInteracting) return;
+
+    const carousel = carouselRef.current;
+    let animationFrameId;
+    let lastTime = performance.now();
+
+    const getScrollSpeed = () => {
+      const scrollWidth = carousel.scrollWidth;
+      const duration = window.innerWidth < 640 ? 40000 : window.innerWidth < 768 ? 50000 : 60000;
+      return scrollWidth / duration; // pixels per millisecond
+    };
+
+    const animate = (currentTime) => {
+      if (!carouselRef.current || isUserInteracting) {
+        return;
+      }
+
+      const scrollWidth = carousel.scrollWidth;
+      const scrollTarget = scrollWidth / 2; // Half way (end of first set)
+
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+
+      const currentScroll = carousel.scrollLeft;
+      const scrollSpeed = getScrollSpeed();
+      const newScroll = currentScroll + scrollSpeed * deltaTime;
+
+      // If we've reached or passed the target (50% of scroll width), reset seamlessly
+      if (newScroll >= scrollTarget) {
+        carousel.scrollLeft = newScroll - scrollTarget;
+      } else {
+        carousel.scrollLeft = newScroll;
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    // Small delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      animationFrameId = requestAnimationFrame(animate);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [isUserInteracting]);
+
+  // Navigation handlers for New Arrivals carousel
+  const handleNewArrivalsPrev = (e) => {
+    e.stopPropagation();
+    if (!carouselRef.current) return;
+    setIsUserInteracting(true);
+    const scrollAmount = carouselRef.current.clientWidth * 0.6;
+    carouselRef.current.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth'
+    });
+    setTimeout(() => setIsUserInteracting(false), 5000);
+  };
+
+  const handleNewArrivalsNext = (e) => {
+    e.stopPropagation();
+    if (!carouselRef.current) return;
+    setIsUserInteracting(true);
+    const scrollAmount = carouselRef.current.clientWidth * 0.6;
+    carouselRef.current.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+    setTimeout(() => setIsUserInteracting(false), 5000);
   };
 
   return (
@@ -342,16 +498,53 @@ const HomePage2 = () => {
             </div>
 
             {/* Auto-scrolling Carousel Container */}
-            <div className="relative overflow-hidden w-full">
-              {/* Gradient overlays for fade effect on edges */}
+            
+            <div 
+              className="relative overflow-hidden w-full group"
+              onMouseEnter={() => setIsAccHovered(true)}
+              onMouseLeave={() => setIsAccHovered(false)}
+            >
               <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
               <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+              {/* Navigation Buttons */}
+              <button
+                onClick={handleAccPrev}
+                className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
+                  isAccHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+                aria-label="Previous"
+              >
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <button
+                onClick={handleAccNext}
+                className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
+                  isAccHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+                aria-label="Next"
+              >
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
 
               {/* Scrolling container */}
               <div
                 ref={accessoriesRef}
-                className={`flex gap-5 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 ${!isAccUserInteracting ? 'carousel-auto-scroll' : ''
-                  }`}
+                className="flex gap-5 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide pb-2"
                 style={{ cursor: isAccDragging ? 'grabbing' : 'grab' }}
                 onMouseDown={handleAccMouseDown}
                 onMouseLeave={() => setIsAccDragging(false)}
@@ -539,11 +732,54 @@ const HomePage2 = () => {
               <div className="w-12 h-12 border-4 border-luxury-gold/20 animate-spin" />
             </div>
           ) : displayProducts.length > 0 ? (
-            <div className="relative overflow-hidden">
+            <div 
+              className="relative overflow-hidden group"
+              onMouseEnter={() => setIsNewArrivalsHovered(true)}
+              onMouseLeave={() => setIsNewArrivalsHovered(false)}
+            >
+              {/* Gradient overlays */}
+              <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-[#FAF6F2] to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-[#FAF6F2] to-transparent z-10 pointer-events-none" />
+
+              {/* Navigation Buttons */}
+              <button
+                onClick={handleNewArrivalsPrev}
+                className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
+                  isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+                aria-label="Previous"
+              >
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <button
+                onClick={handleNewArrivalsNext}
+                className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
+                  isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+                aria-label="Next"
+              >
+                <svg
+                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
               {/* Carousel Container - Scrollable */}
               <div
                 ref={carouselRef}
-                className={`flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth pb-2 ${!isUserInteracting ? 'new-arrivals-carousel' : ''}`}
+                className="flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide pb-2"
                 style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
                 onMouseDown={handleMouseDown}
                 onMouseLeave={handleMouseLeave}
@@ -765,7 +1001,7 @@ const HomePage2 = () => {
               href="https://www.instagram.com/yobha.world"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 font-sweet-sans"
+              className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 font-sweet-sans rounded-full"
             >
               {/* Instagram Icon */}
               <div className="relative">

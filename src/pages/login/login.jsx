@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaInstagram, FaFacebookF, FaTwitter } from "react-icons/fa";
 import { LoginUser, RegisterUser, sendOtp, verifyOtp } from "../../service/login";
-import HeaderWithSidebar from "../../comman/app-header/app-header";
+import HeaderWithSidebar from "../../comman/app-header/app-header2";
 import Footer from "../../comman/footer/footer";
 import logoImage from "../../assets/yobhaLogo.png"
 import * as localStorageService from "../../service/localStorageService";
