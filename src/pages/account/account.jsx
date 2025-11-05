@@ -260,376 +260,367 @@ const AccountPage = () => {
   // };
 
   return (
-    <div
-      className="min-h-screen bg-premium-cream pt-4 lg:pt-4 pb-12 font-sweet-sans"
-    >
-      <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8 lg:py-12">
-
-        {/* Page Header */}
-        <div className="mb-8 sm:mb-12">
-          <div className="border-b border-text-light/10 pb-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-3 uppercase tracking-widest">
+    <div className="relative min-h-screen bg-[#FAF6F2] font-sweet-sans">
+      {/* Main Content */}
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
+        <div className="max-w-7xl mx-auto">
+          {/* Page Header */}
+          <div className="mb-8 md:mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-2 font-sweet-sans">
               My Account
             </h1>
-            <p className="text-base sm:text-lg text-text-medium uppercase tracking-wider">
+            <p className="text-gray-600 text-sm md:text-base font-light tracking-wide">
               Manage your profile and preferences
             </p>
           </div>
-        </div>
 
-        {/* Grid Layout */}
-        <div className="space-y-6 lg:space-y-8">
-
-          {/* First Row - Profile & Address */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-
-            {/* Profile Details */}
-            <div className="bg-white border border-text-light/10 shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
-              <div className="bg-white px-6 sm:px-8 py-6 border-b border-text-light/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-black flex items-center justify-center">
-                    <User size={20} className="text-white" />
+          {/* Grid Layout */}
+          <div className="space-y-6 md:space-y-8">
+            {/* First Row - Profile & Address */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+              {/* Profile Details */}
+              <div className="bg-white border border-gray-200/50 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500">
+                <div className="px-6 md:px-8 py-6 border-b border-gray-200/50">
+                  <div className="flex items-center gap-3">
+                    <User size={20} className="text-gray-600" />
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
+                      Profile Information
+                    </h2>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest font-sweet-sans">
-                    Profile Information
-                  </h2>
+                </div>
+                <div className="p-6 md:p-8 space-y-6">
+                  {/* Name */}
+                  <div className="group">
+                    <label className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light mb-3 block">
+                      Full Name
+                    </label>
+                    {editingField === "name" ? (
+                      <div className="flex gap-3">
+                        <input
+                          type="text"
+                          value={tempData.name || ""}
+                          onChange={(e) => setTempData({ ...tempData, name: e.target.value })}
+                          placeholder={LocalUserData.fullName || "Enter your full name"}
+                          className="flex-1 px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light placeholder:text-gray-400 text-sm md:text-base"
+                        />
+                        <button
+                          onClick={saveEdit}
+                          disabled={savingName}
+                          className="px-4 py-3 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900 disabled:hover:text-gray-900"
+                        >
+                          {savingName ? (
+                            <div className="w-4 h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+                          ) : (
+                            <Save size={16} />
+                          )}
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="px-4 py-3 border border-gray-200/50 text-gray-600 hover:bg-gray-100 hover:border-gray-300 transition-all duration-300"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="group/item flex items-center justify-between p-4 bg-gray-50/50 border border-gray-200/30 hover:border-gray-300/50 transition-all duration-300">
+                        <span className="text-gray-900 font-light text-base md:text-lg">
+                          {LocalUserData.fullName || ""}
+                        </span>
+                        <button
+                          onClick={() => startEdit("name")}
+                          className="opacity-0 group-hover/item:opacity-100 text-gray-600 hover:text-gray-900 transition-all duration-300 p-2 hover:bg-gray-100 rounded"
+                        >
+                          <Edit3 size={16} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Email - Read Only */}
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light mb-3 block flex items-center gap-2">
+                      <Mail size={14} />
+                      Email Address
+                    </label>
+                    <div className="flex items-center justify-between p-4 bg-gray-50/50 border border-gray-200/30">
+                      <span className="text-gray-900 font-light text-base md:text-lg">
+                        {LocalUserData.email || ""}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Phone - Read Only */}
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light mb-3 block flex items-center gap-2">
+                      <Phone size={14} />
+                      Phone Number
+                    </label>
+                    <div className="flex items-center justify-between p-4 bg-gray-50/50 border border-gray-200/30">
+                      <span className="text-gray-900 font-light text-base md:text-lg">
+                        {LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber || ""}
+                      </span>
+                      {(LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber) && (
+                        <span className="text-xs uppercase tracking-[0.15em] px-2 py-1 bg-gray-100 text-gray-600 font-light border border-gray-200/50">
+                          Verified
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="p-6 sm:p-8 space-y-6">
 
-                {/* Name */}
-                <div className="group">
-                  <label className="text-xs font-semibold text-text-medium mb-3 block uppercase tracking-[0.2em]">Full Name</label>
-                  {editingField === "name" ? (
-                    <div className="flex gap-3">
+              {/* Address Column */}
+              <div className="bg-white border border-gray-200/50 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500">
+                <div className="px-6 md:px-8 py-6 border-b border-gray-200/50">
+                  <div className="flex items-center gap-3">
+                    <MapPin size={20} className="text-gray-600" />
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
+                      Addresses
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="p-6 md:p-8">
+                  {editingField === "address" ? (
+                    <div className="space-y-4">
                       <input
                         type="text"
-                        value={tempData.name || ""}
-                        onChange={(e) => setTempData({ ...tempData, name: e.target.value })}
-                        placeholder={LocalUserData.fullName || "Enter your full name"}
-                        className="flex-1 px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white transition-colors font-medium"
+                        placeholder={LocalUserData.fullName || LocalUserData.name || "Full Name"}
+                        value={tempData.fullName || ""}
+                        onChange={(e) => setTempData({ ...tempData, fullName: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
                       />
-                      <button
-                        onClick={saveEdit}
-                        disabled={savingName}
-                        className="p-4 bg-black hover:bg-text-dark text-white transition-all duration-200 hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
-                      >
-                        {savingName ? (
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        ) : (
-                          <Save size={18} />
-                        )}
-                      </button>
-                      <button onClick={cancelEdit} className="p-4 bg-text-light/10 hover:bg-text-light/20 text-black transition-all duration-200">
-                        <X size={18} />
-                      </button>
+                      <input
+                        type="text"
+                        placeholder="Address Line 1"
+                        value={tempData.line1 || ""}
+                        onChange={(e) => setTempData({ ...tempData, line1: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Address Line 2"
+                        value={tempData.line2 || ""}
+                        onChange={(e) => setTempData({ ...tempData, line2: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Mobile Number"
+                        value={tempData.MobileNumnber || ""}
+                        onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
+                      />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input
+                          type="text"
+                          placeholder="City"
+                          value={tempData.city || ""}
+                          onChange={(e) => setTempData({ ...tempData, city: e.target.value })}
+                          className="px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
+                        />
+                        <input
+                          type="text"
+                          placeholder="State"
+                          value={tempData.state || ""}
+                          onChange={(e) => setTempData({ ...tempData, state: e.target.value })}
+                          className="px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input
+                          type="text"
+                          placeholder="ZIP"
+                          value={tempData.zip || ""}
+                          onChange={(e) => setTempData({ ...tempData, zip: e.target.value })}
+                          className="px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Country"
+                          value={tempData.country || ""}
+                          onChange={(e) => setTempData({ ...tempData, country: e.target.value })}
+                          className="px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
+                        />
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button
+                          onClick={saveEdit}
+                          disabled={savingAddress}
+                          className="flex-1 px-6 py-3 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900 disabled:hover:text-gray-900"
+                        >
+                          {savingAddress ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+                              <span>Processing...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save size={16} />
+                              {editingAddressId ? "Update Address" : "Save Address"}
+                            </>
+                          )}
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          disabled={savingAddress}
+                          className="px-6 py-3 border border-gray-200/50 text-gray-600 hover:bg-gray-100 hover:border-gray-300 transition-all duration-300 text-xs uppercase tracking-[0.2em] font-light disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   ) : (
-                    <div className="group/item flex items-center justify-between p-5 bg-premium-beige border border-text-light/10 hover:border-text-light/20 transition-all duration-200">
-                      <span className="text-black font-medium text-lg">
-                        {LocalUserData.fullName || ""}
-                      </span>
-                      <button onClick={() => startEdit("name")} className="opacity-0 group-hover/item:opacity-100 text-black hover:text-text-medium transition-all duration-200 p-2 hover:bg-text-light/10">
-                        <Edit3 size={18} />
+                    <div>
+                      <div className="space-y-4 mb-6">
+                        {userData && userData.length > 0 ? (
+                          userData.map((addr) => (
+                            <div
+                              key={addr.id}
+                              className="group/item p-5 bg-gray-50/50 border border-gray-200/30 relative hover:border-gray-300/50 transition-all duration-300"
+                            >
+                              {/* Action Icons */}
+                              <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover/item:opacity-100 transition-all duration-300">
+                                <button
+                                  onClick={() => startEdit("address", addr.id)}
+                                  className="text-gray-600 hover:text-gray-900 transition-all duration-300 p-2 hover:bg-gray-100 rounded"
+                                  title="Edit Address"
+                                >
+                                  <Edit3 size={16} />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteAddress(addr.id)}
+                                  className="text-gray-600 hover:text-gray-900 transition-all duration-300 p-2 hover:bg-gray-100 rounded"
+                                  title="Delete Address"
+                                >
+                                  <X size={16} />
+                                </button>
+                              </div>
+
+                              <div className="pr-16 sm:pr-20">
+                                <p className="text-gray-900 font-light mb-2 text-base md:text-lg">{addr.fullName}</p>
+                                <p className="text-gray-600 font-light mb-1 text-sm">
+                                  {addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}
+                                </p>
+                                <p className="text-gray-600 font-light mb-1 text-sm">
+                                  {addr.city}, {addr.state} - {addr.zip}
+                                </p>
+                                <p className="text-gray-600 font-light mt-1 text-sm">
+                                  {addr.mobileNumner || "No mobile number"}
+                                </p>
+                                <p className="text-gray-600 font-light text-sm">{addr.country}</p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center py-12">
+                            <MapPin size={48} className="mx-auto text-gray-300 mb-4" />
+                            <p className="text-gray-600 text-base font-light">No addresses found</p>
+                            <p className="text-gray-500 text-sm font-light mt-1">Add your first address to get started</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => startEdit("address")}
+                        className="w-full px-6 py-3.5 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <Edit3 size={16} />
+                        Add Address
                       </button>
                     </div>
                   )}
                 </div>
-
-                {/* Email - Read Only */}
-                <div>
-                  <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
-                    <Mail size={14} />
-                    Email Address
-                  </label>
-                  <div className="flex items-center justify-between p-5 bg-premium-beige border border-text-light/10">
-                    <span className="text-black font-medium text-lg">
-                      {LocalUserData.email || ""}
-                    </span>
-                    {/* {(LocalUserData.email ) && (
-                      <span className="text-xs text-text-medium uppercase tracking-[0.2em] px-3 py-1 bg-black text-white">Verified</span>
-                    )} */}
-                  </div>
-                </div>
-
-                {/* Phone - Read Only */}
-                <div>
-                  <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
-                    <Phone size={14} />
-                    Phone Number
-                  </label>
-                  <div className="flex items-center justify-between p-5 bg-premium-beige border border-text-light/10">
-                    <span className="text-black font-medium text-lg">
-                      {LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber || ""}
-                    </span>
-                    {(LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber) && (
-                      <span className="text-xs text-text-medium uppercase tracking-[0.2em] px-3 py-1 bg-black text-white">Verified</span>
-                    )}
-                  </div>
-                </div>
-
               </div>
             </div>
 
-            {/* Address Column */}
-            <div className="bg-white border border-text-light/10 shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
-              <div className="bg-white px-6 sm:px-8 py-6 border-b border-text-light/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-black flex items-center justify-center">
-                    <MapPin size={20} className="text-white" />
-                  </div>
-                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest font-sweet-sans">
-                    Addresses
-                  </h2>
-                </div>
+            {/* Refer & Earn Section */}
+            <div className="mt-8 md:mt-12">
+              <div className="mb-6 md:mb-8">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-2 font-sweet-sans">
+                  Refer & Earn
+                </h2>
+                <p className="text-gray-600 text-sm md:text-base font-light tracking-wide">
+                  Invite your friends and earn exciting rewards
+                </p>
               </div>
 
-              <div className="p-6 sm:p-8">
-                {editingField === "address" ? (
-                  <div className="space-y-5">
-                    <input
-                      type="text"
-                      placeholder={LocalUserData.fullName || LocalUserData.name || "Full Name"}
-                      value={tempData.fullName || ""}
-                      onChange={(e) => setTempData({ ...tempData, fullName: e.target.value })}
-                      className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Address Line 1"
-                      value={tempData.line1 || ""}
-                      onChange={(e) => setTempData({ ...tempData, line1: e.target.value })}
-                      className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Address Line 2"
-                      value={tempData.line2 || ""}
-                      onChange={(e) => setTempData({ ...tempData, line2: e.target.value })}
-                      className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                    />
-
-                    <input
-                      type="text"
-                      placeholder="Mobile Number"
-                      value={tempData.MobileNumnber || ""}
-                      onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
-                      className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        placeholder="City"
-                        value={tempData.city || ""}
-                        onChange={(e) => setTempData({ ...tempData, city: e.target.value })}
-                        className="px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                      />
-                      <input
-                        type="text"
-                        placeholder="State"
-                        value={tempData.state || ""}
-                        onChange={(e) => setTempData({ ...tempData, state: e.target.value })}
-                        className="px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        placeholder="ZIP"
-                        value={tempData.zip || ""}
-                        onChange={(e) => setTempData({ ...tempData, zip: e.target.value })}
-                        className="px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Country"
-                        value={tempData.country || ""}
-                        onChange={(e) => setTempData({ ...tempData, country: e.target.value })}
-                        className="px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-medium"
-                      />
-                    </div>
-                    <div className="flex gap-4 pt-4">
-                      <button
-                        onClick={saveEdit}
-                        disabled={savingAddress}
-                        className="flex-1 bg-black hover:bg-text-dark text-white font-bold py-4 transition-all duration-200 flex items-center justify-center gap-3 uppercase tracking-wider hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
-                      >
-                        {savingAddress ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            <span>Processing...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Save size={18} />
-                            {editingAddressId ? "Update Address" : "Save Address"}
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={cancelEdit}
-                        disabled={savingAddress}
-                        className="px-8 bg-text-light/10 hover:bg-text-light/20 text-black font-semibold py-4 transition-all duration-200 uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+              {/* Referral Card */}
+              <div className="bg-white border border-gray-200/50 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500">
+                <div className="px-6 md:px-8 py-6 border-b border-gray-200/50">
+                  <div className="flex items-center gap-3">
+                    <Gift size={20} className="text-gray-600" />
+                    <h3 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
+                      Refer Your Friend
+                    </h3>
                   </div>
-                ) : (
+                </div>
+
+                <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+                  {/* Email */}
                   <div>
-                    <div className="space-y-4 mb-6">
-                      {userData && userData.length > 0 ? (
-                        userData.map((addr) => (
-                          <div
-                            key={addr.id}
-                            className="group/item p-5 bg-premium-beige border border-text-light/10 relative hover:border-text-light/30 transition-all duration-200"
-                          >
-                            {/* Action Icons */}
-                            <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover/item:opacity-100 transition-all duration-200">
-                              <button
-                                onClick={() => startEdit("address", addr.id)}
-                                className="text-black hover:text-text-medium transition-all duration-200 p-2 hover:bg-text-light/10"
-                                title="Edit Address"
-                              >
-                                <Edit3 size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteAddress(addr.id)}
-                                className="text-black hover:text-text-medium transition-all duration-200 p-2 hover:bg-text-light/10"
-                                title="Delete Address"
-                              >
-                                <X size={16} />
-                              </button>
-                            </div>
+                    <label className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light mb-3 block flex items-center gap-2">
+                      <Mail size={14} /> Friend's Email
+                    </label>
+                    <input
+                      type="email"
+                      name="friendEmail"
+                      value={formData.friendEmail}
+                      onChange={handleChange}
+                      placeholder="Enter your friend's email"
+                      className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light placeholder:text-gray-400 text-sm md:text-base"
+                    />
+                  </div>
 
-                            <div className="pr-20">
-                              <p className="text-black font-semibold mb-2 text-lg">{addr.fullName}</p>
-                              <p className="text-text-medium mb-1">
-                                {addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}
-                              </p>
-                              <p className="text-text-medium mb-1">
-                                {addr.city}, {addr.state} - {addr.zip}
-                              </p>
-                              <p className="text-text-medium mt-1">
-                                📞 {addr.mobileNumner || "No mobile number"}
-                              </p>
+                  {/* Phone */}
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light mb-3 block flex items-center gap-2">
+                      <Phone size={14} /> Friend's Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      name="friendPhone"
+                      value={formData.friendPhone}
+                      onChange={handleChange}
+                      placeholder="Enter your friend's phone number"
+                      className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light placeholder:text-gray-400 text-sm md:text-base"
+                    />
+                  </div>
 
-                              <p className="text-text-medium">{addr.country}</p>
-                            </div>
-                          </div>
-
-                        ))
-                      ) : (
-                        <div className="text-center py-12">
-                          <MapPin size={48} className="mx-auto text-text-light/40 mb-4" />
-                          <p className="text-text-medium text-lg">No addresses found</p>
-                          <p className="text-text-light text-sm mt-1">Add your first address to get started</p>
-                        </div>
-                      )}
-                    </div>
+                  {/* Submit Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="flex-1 px-6 py-3.5 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900 disabled:hover:text-gray-900"
+                    >
+                      <Send size={16} />
+                      {loading ? "Sending..." : "Send Invite"}
+                    </button>
 
                     <button
-                      onClick={() => startEdit("address")}
-                      className="w-full bg-black hover:bg-text-dark text-white font-bold py-4 transition-all duration-200 flex items-center justify-center gap-3 uppercase tracking-wider hover:scale-[1.02]"
+                      type="button"
+                      onClick={handleShare}
+                      className="flex-1 px-6 py-3.5 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 flex items-center justify-center gap-2"
                     >
-                      <Edit3 size={18} />
-                      Add Address
+                      Share
                     </button>
                   </div>
-                )}
+                </form>
+              </div>
+
+              {/* Country Selector */}
+              <div className="mt-6">
+                <label className="text-xs uppercase tracking-[0.2em] text-gray-500 font-light mb-3 block flex items-center gap-2">
+                  <MapPin size={14} />
+                  Country
+                </label>
+                <CountryDropdown />
               </div>
             </div>
-
           </div>
-
         </div>
-
-        <div className="mb-8 sm:mb-12 border-b border-text-light/10 pb-6 mt-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-3 uppercase tracking-widest">
-            Refer & Earn
-          </h1>
-          <p className="text-base sm:text-lg text-text-medium uppercase tracking-wider">
-            Invite your friends and earn exciting rewards
-          </p>
-        </div>
-
-        {/* Card */}
-        <div className="bg-white border border-text-light/10 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
-          <div className="bg-white px-6 sm:px-8 py-6 border-b border-text-light/10 flex items-center gap-3">
-            <div className="w-10 h-10 bg-black flex items-center justify-center">
-              <Gift size={20} className="text-white" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-light text-black uppercase tracking-[0.15em] font-sweet-sans">
-              Refer Your Friend
-            </h2>
-          </div>
-
-          <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-
-
-            {/* Email */}
-            <div>
-              <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
-                <Mail size={14} /> Friend’s Email
-              </label>
-              <input
-                type="email"
-                name="friendEmail"
-                value={formData.friendEmail}
-                onChange={handleChange}
-                placeholder="Enter your friend's email"
-                className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white transition-colors font-medium"
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
-                <Phone size={14} /> Friend’s Phone Number
-              </label>
-              <input
-                type="text"
-                name="friendPhone"
-                value={formData.friendPhone}
-                onChange={handleChange}
-                placeholder="Enter your friend's phone number"
-                className="w-full px-5 py-4 border-2 border-text-light/20 focus:border-black focus:outline-none text-black bg-white transition-colors font-medium"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                disabled={loading}
-                className={`flex-1 bg-black hover:bg-text-dark text-white font-bold py-4 transition-all duration-200 flex items-center justify-center gap-3 uppercase tracking-wider hover:scale-[1.02] ${loading ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
-              >
-                <Send size={18} />
-                {loading ? "Sending..." : "Send Invite"}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleShare}
-                className="flex-1 bg-black hover:bg-text-dark text-white font-bold py-4 transition-all duration-200 flex items-center justify-center gap-3 uppercase tracking-wider hover:scale-[1.02]"
-              >
-                Share
-              </button>
-            </div>
-
-          </form>
-        </div>
-        {/* Country Selector */}
-        <div className="mt-6">
-          <label className="text-xs font-semibold text-text-medium mb-3 block flex items-center gap-2 uppercase tracking-[0.2em]">
-            <MapPin size={14} />
-            Country
-          </label>
-          <CountryDropdown />
-        </div>
-
-      </div>
+      </section>
     </div>
   );
 };

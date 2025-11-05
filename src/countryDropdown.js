@@ -45,9 +45,9 @@ export const CountrySelector = ({
     onSelect?.(code);
   };
 
-  const baseButtonClasses = "w-full flex items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-left text-xs font-light uppercase tracking-[0.28em] text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-luxury-gold/30 focus:border-luxury-gold/40 hover:bg-white";
-  const baseMenuClasses = "absolute z-50 mt-2 w-full bg-white border border-gray-200 shadow-xl";
-  const baseOptionClasses = "block w-full text-left px-5 py-3 text-xs uppercase tracking-[0.28em] text-black hover:bg-premium-cream/60 transition-colors";
+  const baseButtonClasses = "w-full flex items-center justify-between gap-3 border border-gray-200/50 bg-white px-4 py-3 text-left text-sm md:text-base font-light text-gray-900 transition-all duration-300 focus:outline-none focus:border-gray-900 hover:border-gray-300 shadow-sm hover:shadow-md";
+  const baseMenuClasses = "absolute z-50 mt-2 w-full bg-white border border-gray-200/50 shadow-lg";
+  const baseOptionClasses = "block w-full text-left px-4 py-3 text-sm font-light text-gray-900 hover:bg-gray-50 transition-colors";
   const menuAlignmentClass = align === "right" ? "right-0" : "left-0";
 
   return (
@@ -350,9 +350,9 @@ const CountryDropdown = ({ onConfirmed }) => {
       value={selectedCountry?.code}
       onSelect={handleSelectCountry}
       placeholder="Select your country"
-      buttonClassName="min-w-[200px] text-text-dark text-sm tracking-[0.25em]"
+      buttonClassName="text-gray-900"
       menuClassName="bg-white"
-      optionClassName="text-sm tracking-[0.22em]"
+      optionClassName="text-gray-900"
     />
   );
 };
