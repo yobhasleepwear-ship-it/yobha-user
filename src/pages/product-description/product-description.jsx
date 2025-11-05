@@ -56,12 +56,25 @@ const ProductDetailPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // UI State
+   const countryOptions = [
+    { code: "IN", label: "India" },
+    { code: "AE", label: "United Arab Emirates (UAE)" },
+    { code: "SA", label: "Saudi Arabia" },
+    { code: "QA", label: "Qatar" },
+    { code: "KW", label: "Kuwait" },
+    { code: "OM", label: "Oman" },
+    { code: "BH", label: "Bahrain" },
+    { code: "JO", label: "Jordan" },
+    { code: "LB", label: "Lebanon" },
+    { code: "EG", label: "Egypt" },
+    { code: "IQ", label: "Iraq" },
+  ];
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = savedCountry ? JSON.parse(savedCountry) : countryOptions[0];
 
   // const [selectedCountry] = useState(parsedCountry);
   const [cartItem, setCartItems] = useState([])
-  const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
+  const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
@@ -96,19 +109,7 @@ const ProductDetailPage = () => {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
-  const countryOptions = [
-    { code: "IN", label: "India" },
-    { code: "AE", label: "United Arab Emirates (UAE)" },
-    { code: "SA", label: "Saudi Arabia" },
-    { code: "QA", label: "Qatar" },
-    { code: "KW", label: "Kuwait" },
-    { code: "OM", label: "Oman" },
-    { code: "BH", label: "Bahrain" },
-    { code: "JO", label: "Jordan" },
-    { code: "LB", label: "Lebanon" },
-    { code: "EG", label: "Egypt" },
-    { code: "IQ", label: "Iraq" },
-  ];
+ 
 
   const fetchProductDetail = useCallback(async (productId) => {
     setIsLoading(true)

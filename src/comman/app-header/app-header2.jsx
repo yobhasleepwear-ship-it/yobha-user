@@ -106,7 +106,7 @@ const HeaderWithSidebar2 = () => {
 
   // Logout function
   const handleLogout = () => {
-    localStorageService.clearAllExcept(["selectedCountry"]);
+    localStorageService.clearAllExcept(["selectedCountry" , "cart"]);
     setIsAuthenticated(false);
     navigate("/login");
   };

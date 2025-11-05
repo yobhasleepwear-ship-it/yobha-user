@@ -117,9 +117,9 @@ const CheckoutPage = () => {
         const product = item || {};
         
         // If lineTotal is already calculated (from buyNow), use it directly
-        if (item.lineTotal && typeof item.lineTotal === 'number') {
-          return sum + item.lineTotal;
-        }
+        // if (item.lineTotal && typeof item.lineTotal === 'number') {
+        //   return sum + item.lineTotal;
+        // }
         
         // Otherwise, calculate from priceList or unitPrice
         const priceList = product?.priceList || [];
@@ -129,10 +129,7 @@ const CheckoutPage = () => {
         );
         
         // Try multiple fallback options
-        const unitPrice = matchingPrice?.priceAmount || 
-                          product?.unitPrice || 
-                          item?.unitPrice || 
-                          0;
+        const unitPrice = matchingPrice?.priceAmount 
         
         return sum + (unitPrice * (item.quantity || 1));
       }, 0);
@@ -208,6 +205,7 @@ fetchCoupons(subTotal)
         );
 
         const correctPrice = matchingPrice ? matchingPrice.priceAmount : 0
+        console.log(correctPrice,"cp")
         return sum + (correctPrice * item.quantity);
       }, 0);
 

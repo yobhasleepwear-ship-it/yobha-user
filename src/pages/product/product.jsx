@@ -22,7 +22,7 @@ const ProductsPage = () => {
   const location = useLocation();
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = JSON.parse(savedCountry);
-  const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
+  const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code || "IN");
   console.log(selectedCountry,"s")
   const navigate = useNavigate();
   const passedProducts = location.state?.products || [];

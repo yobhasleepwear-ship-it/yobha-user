@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Upload, Loader2, ArrowLeft, X } from "lucide-react";
 import { getAllJobs, applyForJob } from "../../service/careers";
 import { message } from "../../comman/toster-message/ToastContainer";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from "../../firebase";
+
 
 const CareerApply = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+   const { ids } = location.state || {};
+   console.log(ids,"id")
   const [job, setJob] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -93,53 +99,65 @@ const CareerApply = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!job) return;
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!job) return;
 
-    // Validate required fields
-    if (!formData.fullName || !formData.email || !formData.mobileNumber || !formData.resume) {
-      message.error("Please fill in all required fields");
-      return;
+  if (!formData.fullName || !formData.email || !formData.mobileNumber || !formData.resume) {
+    message.error("Please fill in all required fields");
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const storageRef = ref(storage, `resumes/${Date.now()}_${formData.resume.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, formData.resume);
+
+    const downloadURL = await new Promise((resolve, reject) => {
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => reject(error),
+        async () => {
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(url);
+        }
+      );
+    });
+
+    const applicationPayload = {
+      fullName: formData.fullName,
+      email: formData.email,
+      mobileNumber: formData.mobileNumber,
+      currentCity: formData.currentCity || "",
+      positionAppliedFor: formData.positionAppliedFor || job.jobTitle,
+      relevantExperienceYears: formData.relevantExperienceYears || "0",
+      currentCTC: formData.currentCTC || "0",
+      expectedCTC: formData.expectedCTC || "0",
+      noticePeriodInDays: formData.noticePeriodInDays || "0",
+      resumeUrl: downloadURL,
+      portfolioUrl: formData.portfolioUrl || "",
+      whyYobha: formData.whyYobha || "",
+      howDidYouHear: formData.howDidYouHear || "",
+    };
+
+    const response = await applyForJob("J-105", applicationPayload);
+
+    if (response) {
+      message.success("Application submitted successfully!");
+      navigate("/career");
+    } else {
+      message.error(message);
     }
+  } catch (error) {
+    console.error("Application error:", error);
+    message.error(error||"Failed to submit application. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
-    setIsSubmitting(true);
-    try {
-      const applicationPayload = new FormData();
-      applicationPayload.append("fullName", formData.fullName);
-      applicationPayload.append("email", formData.email);
-      applicationPayload.append("mobileNumber", formData.mobileNumber);
-      applicationPayload.append("currentCity", formData.currentCity || "");
-      applicationPayload.append("positionAppliedFor", formData.positionAppliedFor || job.jobTitle);
-      applicationPayload.append("relevantExperienceYears", formData.relevantExperienceYears || "0");
-      applicationPayload.append("currentCTC", formData.currentCTC || "0");
-      applicationPayload.append("expectedCTC", formData.expectedCTC || "0");
-      applicationPayload.append("noticePeriodInDays", formData.noticePeriodInDays || "0");
-      applicationPayload.append("resume", formData.resume);
-      if (formData.portfolioUrl) {
-        applicationPayload.append("portfolioUrl", formData.portfolioUrl);
-      }
-      if (formData.whyYobha) {
-        applicationPayload.append("whyYobha", formData.whyYobha);
-      }
-      if (formData.howDidYouHear) {
-        applicationPayload.append("howDidYouHear", formData.howDidYouHear);
-      }
-
-      const response = await applyForJob(jobId, applicationPayload);
-      if (response && response.success) {
-        message.success("Application submitted successfully!");
-        navigate("/career");
-      } else {
-        message.error("Failed to submit application. Please try again.");
-      }
-    } catch (error) {
-      console.error("Application error:", error);
-      message.error("Failed to submit application. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   if (isLoading) {
     return (
@@ -308,7 +326,7 @@ const CareerApply = () => {
                 <div className="relative">
                   <input
                     type="file"
-                    accept=".pdf,.doc,.docx"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                     onChange={handleFileChange}
                     required
                     className="hidden"

@@ -51,9 +51,11 @@ const CareerDetails = () => {
     }
   };
 
-  const handleApplyClick = () => {
-    navigate(`/career/applyNow/${jobId}`);
-  };
+const handleApplyClick = (id) => {
+  console.log(id,"ites")
+  navigate(`/career/applyNow/${jobId}`, { state: { ids: id } });
+};
+
 
   if (isLoading) {
     return (
@@ -215,7 +217,7 @@ const CareerDetails = () => {
             </div>
 
             <button
-              onClick={handleApplyClick}
+              onClick={()=>handleApplyClick(job.jobId)}
               className="px-8 py-3 bg-gray-900 text-white text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-800 transition-all duration-500"
             >
               Apply Now

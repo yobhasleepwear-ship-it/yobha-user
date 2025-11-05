@@ -91,7 +91,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const handleLogout = () => {
-    localStorageService.clearAllExcept(["selectedCountry"]);
+    localStorageService.clearAllExcept(["selectedCountry","cart"]);
     setIsAuthenticated(false);
     onClose();
     navigate("/login");

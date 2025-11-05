@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "../../firebase" // adjust path
+import { storage } from "../../firebase";
 
 const ImageUploader = ({ productId, onUploadComplete }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);

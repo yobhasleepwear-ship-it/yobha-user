@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = JSON.parse(savedCountry);
-  const [selectedCountry, setSelectedCountry] = useState(parsedCountry.code);
+  const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code || "IN");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);

@@ -34,9 +34,10 @@ const setupAxiosInterceptors = (navigate) => {
       const status = error?.response?.status;
       if (status === 401) {
         cancelAllRequests("Access token expired. Logging out.");
-        localStorageService.clearAll();
+        localStorageService.clearAllExcept(["selectedCountry" , "cart"]);
 
         const currentPath = window.location.pathname + window.location.search;
+        console.log(currentPath,"cuurr")
         localStorageService.setValue("redirectAfterLogin", currentPath);
 
         navigate("/login");
