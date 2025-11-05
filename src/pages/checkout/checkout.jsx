@@ -60,6 +60,10 @@ const CheckoutPage = () => {
   const [isLoadingCoupons, setIsLoadingCoupons] = useState(false);
   const [loyaltyDiscountAmount, setLoyaltyDiscountAmount] = useState(0);
 
+  // Terms & Gift Wrap State
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [giftWrapEnabled, setGiftWrapEnabled] = useState(false);
+
   // Payment Methods
   const paymentMethods = [
     {
@@ -106,23 +110,31 @@ const CheckoutPage = () => {
 
 
     if (checkoutProd && checkoutProd.length > 0 || pageProps == 'buynow') {
-      const items = checkoutProd.items
+      const items = checkoutProd.items || []
       console.log(items,"items")
-      setCartItems(checkoutProd.items)
+      setCartItems(items)
       const subTotal = items.reduce((sum, item) => {
         const product = item || {};
+        
+        // If lineTotal is already calculated (from buyNow), use it directly
+        if (item.lineTotal && typeof item.lineTotal === 'number') {
+          return sum + item.lineTotal;
+        }
+        
+        // Otherwise, calculate from priceList or unitPrice
         const priceList = product?.priceList || [];
-
-       console.log(priceList,"pp2")
-
-        // Find matching price based on currency and size
         const matchingPrice = priceList.find(price =>
-          price.country === product.country &&
-          price.size === product.size
+          price.country === (item.country || product.country) &&
+          price.size === (item.size || product.size)
         );
-        console.log(matchingPrice,"matching")
-        const correctPrice = matchingPrice ? matchingPrice.priceAmount : (product?.unitPrice || 0);
-        return sum + (correctPrice * item.quantity);
+        
+        // Try multiple fallback options
+        const unitPrice = matchingPrice?.priceAmount || 
+                          product?.unitPrice || 
+                          item?.unitPrice || 
+                          0;
+        
+        return sum + (unitPrice * (item.quantity || 1));
       }, 0);
       console.log(subTotal,"55")
 fetchCoupons(subTotal)
@@ -396,6 +408,11 @@ fetchCoupons(subTotal)
       return;
     }
 
+    if (!acceptedTerms) {
+      message.error("Please accept the Terms and Conditions to place your order");
+      return;
+    }
+
     // console.log(user,"user")
     // const userId = user.id || "anonymous";
     // console.log(userId)
@@ -485,6 +502,33 @@ fetchCoupons(subTotal)
       cartSummary.subTotal >= coupon.minOrderAmount
     );
   }
+
+  // Get gift wrap amount based on country
+  const getGiftWrapAmount = (country) => {
+    // Currently returns 5 for all countries, can be extended later
+    const giftWrapPrices = {
+      'India': 5,
+      'United Arab Emirates (UAE)': 5,
+      'Saudi Arabia': 5,
+      'Qatar': 5,
+      'Kuwait': 5,
+      'Oman': 5,
+      'Bahrain': 5,
+      'Jordan': 5,
+      'Lebanon': 5,
+      'Egypt': 5,
+      'Iraq': 5,
+    };
+    return giftWrapPrices[country] || 5;
+  };
+
+  // Calculate gift wrap amount
+  const calculateGiftWrapAmount = () => {
+    if (!giftWrapEnabled) return 0;
+    const country = address.country || 'India';
+    return getGiftWrapAmount(country);
+  };
+
   // Get currency from cart items (assuming all items have the same currency)
   const getCurrency = () => {
     if (!cartItems || cartItems.length === 0) return 'INR';
@@ -1120,9 +1164,17 @@ fetchCoupons(subTotal)
                   )}
                 </div>
 
+                {/* Gift Wrap Amount */}
+                {giftWrapEnabled && (
+                  <div className="flex justify-between text-xs md:text-sm pt-2 border-t border-text-light/10">
+                    <span className="text-text-medium">Gift Wrap</span>
+                    <span className="text-black font-semibold">{formatPrice(calculateGiftWrapAmount(), getCurrency())}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between pt-4 pb-4 md:pb-6 border-t border-text-light/20">
                   <span className="text-base md:text-lg font-light text-black uppercase tracking-wider font-sweet-sans">Total</span>
-                  <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(cartSummary.grandTotal - calculateTotalDiscount(), getCurrency())}</span>
+                  <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(cartSummary.subTotal - calculateTotalDiscount() + cartSummary.shipping + cartSummary.tax + calculateGiftWrapAmount(), getCurrency())}</span>
                 </div>
 
                 {cartSummary.shipping === 0 && (
@@ -1143,10 +1195,60 @@ fetchCoupons(subTotal)
                   </div>
                 )}
 
+                {/* Gift Wrap Checkbox */}
+                <div className="mt-6 pt-4 border-t border-text-light/20">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={giftWrapEnabled}
+                      onChange={(e) => setGiftWrapEnabled(e.target.checked)}
+                      className="mt-1 w-4 h-4 border-2 border-gray-300 rounded focus:ring-2 focus:ring-black focus:ring-offset-0 text-black cursor-pointer accent-black"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Gift size={16} className="text-gray-600 flex-shrink-0" strokeWidth={1.5} />
+                        <span className="text-sm md:text-base font-medium text-black">Add Gift Wrap</span>
+                        <span className="text-xs md:text-sm text-text-medium">
+                          ({formatPrice(getGiftWrapAmount(address.country || 'India'), getCurrency())})
+                        </span>
+                      </div>
+                      <p className="text-xs md:text-sm text-text-medium mt-1 ml-6">
+                        Add premium gift wrapping to make your order special
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Terms and Conditions Checkbox */}
+                <div className="mt-4 pt-4 border-t border-text-light/20">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={acceptedTerms}
+                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                      className="mt-1 w-4 h-4 border-2 border-gray-300 rounded focus:ring-2 focus:ring-black focus:ring-offset-0 text-black cursor-pointer accent-black"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs md:text-sm text-text-medium">
+                        I accept the{" "}
+                        <button
+                          type="button"
+                          className="text-black underline hover:text-gray-700 font-medium bg-transparent border-0 p-0 cursor-pointer"
+                          onClick={(e) => {
+                            navigate('/terms-conditions');
+                          }}
+                        >
+                          Terms and Conditions
+                        </button>
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
                 <button
                   onClick={handlePlaceOrder}
-                  disabled={isProcessing}
-                  className="w-full bg-black text-white py-3 md:py-4 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center justify-center gap-3 disabled:bg-text-light disabled:cursor-not-allowed mt-6"
+                  disabled={isProcessing || !acceptedTerms}
+                  className="w-full bg-black text-white py-3 md:py-4 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
                 >
                   {isProcessing ? (
                     <>
