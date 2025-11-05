@@ -222,7 +222,7 @@ const CartPage = () => {
                             <button
                               type="button"
                               onClick={() => handleAddToWishlist(item.id, item)}
-                              className={`transition-colors ${isWishlisted ? "text-yellow-500 hover:text-yellow-400" : "text-text-medium hover:text-black"}`}
+                              className={`transition-colors ${isWishlisted ? "text-black-500 hover:text-premium-beige-600" : "text-text-medium hover:text-premium-beige-500"}`}
                               aria-label="Add to wishlist"
                             >
                               <Heart size={18} strokeWidth={1.5} fill={isWishlisted ? "currentColor" : "none"} />

@@ -11,7 +11,7 @@ module.exports = {
       },
       colors: {
         'luxury': {
-          'gold': '#d4af37',
+          'gold': '#36454F',
           'rose-gold': '#b76e79',
           'cream': '#f8ecc2',
           'warm': '#cfa66b',

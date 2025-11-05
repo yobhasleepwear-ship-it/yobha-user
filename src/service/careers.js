@@ -14,7 +14,7 @@ export const applyForJob = async (jobId, applicationData) => {
   try {
     const response = await axiosService.Post(`/careers/${jobId}/apply`, applicationData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     });
     return response.data;

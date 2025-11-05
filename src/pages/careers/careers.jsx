@@ -153,70 +153,54 @@ const Careers = () => {
 
   return (
     <div className="relative min-h-screen bg-[#FAF6F2] font-sweet-sans">
-      {/* Hero Section */}
-      <section className="relative w-full bg-white border-b border-gray-100/50 pt-12 md:pt-16 lg:pt-20 overflow-hidden">
-        {/* Decorative Background Elements */}
-        <div className="absolute inset-0 opacity-[0.02]">
-          <div className="absolute top-10 left-10 w-32 h-32 border border-gray-900 rotate-45"></div>
-          <div className="absolute top-20 right-16 w-24 h-24 border border-gray-900 rotate-12"></div>
-          <div className="absolute bottom-16 left-16 w-28 h-28 border border-gray-900 -rotate-12"></div>
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-12 md:pb-16 lg:pb-20">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8 leading-tight">
+      {/* Compact Header Section with Integrated Search/Filters */}
+      <section className="relative w-full bg-white border-b border-gray-100/50 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 md:py-8">
+          {/* Compact Heading */}
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-2">
               Join Our Team
             </h1>
-            <div className="w-20 md:w-24 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mx-auto mb-6 md:mb-8" />
-            <p className="text-gray-600 text-base md:text-lg lg:text-xl font-light tracking-wide leading-relaxed max-w-2xl mx-auto">
-              Discover opportunities to grow your career with us. We're looking for passionate individuals who share our vision of premium quality and innovation.
+            <p className="text-gray-600 text-sm md:text-base font-light tracking-wide">
+              Discover opportunities to grow your career with us
             </p>
           </div>
-        </div>
-      </section>
 
-      {/* Main Content */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-10 md:py-14 lg:py-16">
-        <div className="max-w-7xl mx-auto">
-          {/* Search and Filters Section */}
-          <div className="mb-10 md:mb-12 space-y-6">
-            {/* Search Box - Enhanced */}
-            <div className="relative group">
-              <div className="absolute inset-0 bg-white border border-gray-200/80 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          {/* Search and Filters Section - Integrated */}
+          <div className="space-y-4">
+            {/* Search Box - Compact */}
+            <div className="relative">
               <div className="relative bg-white border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center">
                   <div className="pl-4 pr-2">
-                    <Search className="text-gray-400 group-hover:text-gray-600 transition-colors duration-300" size={20} />
+                    <Search className="text-gray-400" size={18} />
                   </div>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={handleSearchChange}
                     placeholder="Search jobs by title, description, skills, location..."
-                    className="w-full pl-2 pr-12 py-4 focus:outline-none bg-transparent text-gray-900 font-light placeholder:text-gray-400 text-sm md:text-base"
+                    className="w-full pl-2 pr-10 py-3 md:py-3.5 focus:outline-none bg-transparent text-gray-900 font-light placeholder:text-gray-400 text-sm md:text-base"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors duration-200 p-1 hover:bg-gray-100 rounded"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors duration-200 p-1 hover:bg-gray-100 rounded"
                     >
-                      <X size={18} />
+                      <X size={16} />
                     </button>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Filters - Enhanced */}
-            <div className="flex flex-wrap gap-4 items-end">
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-xs uppercase tracking-[0.15em] text-gray-500 font-light mb-2">
-                  Country
-                </label>
+            {/* Filters - Compact Horizontal Layout */}
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+              <div className="flex-1 min-w-0">
                 <select
                   value={selectedCountry}
                   onChange={handleCountryChange}
-                  className="w-full px-4 py-3 border border-gray-200/50 focus:outline-none focus:border-gray-900 transition-all duration-300 bg-white text-gray-900 font-light shadow-sm hover:shadow-md cursor-pointer"
+                  className="w-full px-4 py-2.5 md:py-3 border border-gray-200/50 focus:outline-none focus:border-gray-900 transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
                 >
                   <option value="">All Countries</option>
                   {getUniqueCountries().map((country) => (
@@ -227,14 +211,11 @@ const Careers = () => {
                 </select>
               </div>
 
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-xs uppercase tracking-[0.15em] text-gray-500 font-light mb-2">
-                  Job Type
-                </label>
+              <div className="flex-1 min-w-0">
                 <select
                   value={selectedJobType}
                   onChange={handleJobTypeChange}
-                  className="w-full px-4 py-3 border border-gray-200/50 focus:outline-none focus:border-gray-900 transition-all duration-300 bg-white text-gray-900 font-light shadow-sm hover:shadow-md cursor-pointer"
+                  className="w-full px-4 py-2.5 md:py-3 border border-gray-200/50 focus:outline-none focus:border-gray-900 transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
                 >
                   <option value="">All Job Types</option>
                   {getUniqueJobTypes().map((jobType) => (
@@ -248,32 +229,33 @@ const Careers = () => {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="px-6 py-3 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="px-4 md:px-6 py-2.5 md:py-3 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap"
                 >
                   Clear Filters
                 </button>
               )}
             </div>
 
-            {/* Results count - Enhanced */}
+            {/* Results count - Compact */}
             {!isLoading && (
-              <div className="flex items-center justify-between pt-2 border-t border-gray-200/50">
-                <div className="text-sm text-gray-600 font-light">
+              <div className="flex items-center justify-between pt-3 border-t border-gray-200/30">
+                <div className="text-xs md:text-sm text-gray-600 font-light">
                   <span className="text-gray-900 font-medium">{filteredJobs.length}</span> of <span className="text-gray-900 font-medium">{jobs.length}</span> job{jobs.length !== 1 ? 's' : ''} {hasActiveFilters && 'found'}
                 </div>
-                {hasActiveFilters && (
-                  <div className="flex items-center gap-2">
-                    {searchQuery && (
-                      <span className="px-2 py-1 text-xs uppercase tracking-wide text-gray-600 bg-gray-100/50 font-light">
-                        Search: "{searchQuery}"
-                      </span>
-                    )}
-                  </div>
+                {hasActiveFilters && searchQuery && (
+                  <span className="px-2 py-1 text-xs uppercase tracking-wide text-gray-600 bg-gray-100/50 font-light">
+                    "{searchQuery}"
+                  </span>
                 )}
               </div>
             )}
           </div>
+        </div>
+      </section>
 
+      {/* Main Content */}
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
+        <div className="max-w-7xl mx-auto">
           {/* Jobs List */}
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-24">
