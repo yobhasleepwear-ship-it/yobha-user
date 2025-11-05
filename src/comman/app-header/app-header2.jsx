@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { LogOut, Menu, X, User, Heart, Package, Search, Loader2 } from "lucide-react";
+import { Menu, X, User, Heart, Package, Search, Loader2 } from "lucide-react";
 import { BsBag } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
@@ -209,35 +209,44 @@ const HeaderWithSidebar2 = () => {
       >
 
         <div className="bg-black text-white relative overflow-hidden font-sweet-sans">
-          <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3">
-            {/* Left: Rotating Banner Items */}
-            <div className="flex items-center min-h-[20px] md:min-h-[24px] relative">
+          <div className="max-w-[1600px] mx-auto flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3 relative">
+            {/* Center: Rotating Banner Items */}
+            <div className="flex items-center justify-center min-h-[20px] md:min-h-[24px] relative w-full">
               {topBannerItems.map((item, index) => (
                 <Link
                   key={index}
                   to={item.to}
-                  className={`absolute flex items-center gap-1.5 md:gap-2 transition-all duration-500 ${
+                  className={`absolute left-1/2 flex items-center gap-1.5 md:gap-2 transition-all duration-500 -translate-x-1/2 ${
                     currentBannerIndex === index
-                      ? 'opacity-100 translate-x-0'
-                      : 'opacity-0 -translate-x-4 pointer-events-none'
+                      ? 'opacity-100'
+                      : 'opacity-0 pointer-events-none'
                   }`}
                 >
-                  <span className="text-xs md:text-sm text-white font-normal tracking-wide whitespace-nowrap">
+                  <span className="text-base md:text-lg lg:text-xl text-white  tracking-wide whitespace-nowrap items-center">
                     {item.label}
                   </span>
-                  <span className="text-xs md:text-sm text-white whitespace-nowrap">{item.icon}</span>
+                  <span className="text-base md:text-lg lg:text-xl text-white  whitespace-nowrap">{item.icon}</span>
                 </Link>
               ))}
             </div>
             
-            {/* Right: Login Link */}
-            <div>
-              <Link
-                to="/login"
-                className="text-xs md:text-sm text-white font-normal tracking-wide hover:opacity-70 transition-opacity duration-300"
-              >
-                Login
-              </Link>
+            {/* Right: Login/Logout Link */}
+            <div className="absolute right-4 font-sweetsans sm:right-6 md:right-8 lg:right-12 xl:right-16">
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="text-base md:text-lg lg:text-xl text-white tracking-wide whitespace-nowrap hover:opacity-70 transition-opacity duration-300 cursor-pointer"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-base md:text-lg lg:text-xl text-white tracking-wide whitespace-nowrap hover:opacity-70 transition-opacity duration-300"
+                >
+                  Login
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -309,7 +318,7 @@ const HeaderWithSidebar2 = () => {
                   className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
                 />
                 {cartCount > 0 && (
-                  <span className={`absolute -top-0.5 -right-0.5 bg-luxury-gold text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
                     {cartCount}
                   </span>
                 )}
@@ -433,7 +442,7 @@ const HeaderWithSidebar2 = () => {
               {/* Wishlist Icon - Desktop Only */}
               <Link
                 to="/wishlist"
-                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 rounded-full hover:bg-gray-200"
                 title={t("navbar.wishlist.tooltip." + i18n.language)}
               >
                 <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
@@ -443,7 +452,7 @@ const HeaderWithSidebar2 = () => {
               {isAuthenticated && (
                 <div className="relative group">
                   <button
-                    className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
+                    className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 rounded-full hover:bg-gray-200"
                     title={t("navbar.account.myAccount." + i18n.language)}
                     onClick={() => navigate('/account')}
                   >
@@ -477,7 +486,7 @@ const HeaderWithSidebar2 = () => {
               {/* Cart Icon - Luxury Design */}
               <Link
                 to="/cart"
-                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 relative rounded-full hover:bg-luxury-gold/10 overflow-visible"
+                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 relative rounded-full hover:bg-gray-200 overflow-visible"
                 title={t("header.cart")}
               >
                 <BsBag
@@ -485,14 +494,14 @@ const HeaderWithSidebar2 = () => {
                   className={`md:w-5 md:h-5 transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
                 />
                 {cartCount > 0 && (
-                  <span className={`absolute -top-0.5 -right-0.5 bg-luxury-gold text-white text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
                     {cartCount}
                   </span>
                 )}
               </Link>
 
               {/* Logout Button - Luxury Design */}
-              {isAuthenticated && (
+              {/* {isAuthenticated && (
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 px-3 py-2 text-black hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
@@ -501,7 +510,7 @@ const HeaderWithSidebar2 = () => {
                   <LogOut size={16} className="md:w-4 md:h-4" strokeWidth={1.5} />
                   <span className="hidden sm:inline font-normal text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.logout." + i18n.language)}</span>
                 </button>
-              )}
+              )} */}
 
               {/* Language Switcher */}
               <div className="flex items-center">

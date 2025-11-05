@@ -38,7 +38,7 @@ const LanguageSwitcher = () => {
       <button
         onClick={() => setOpen(!open)}
         type="button"
-        className="inline-flex w-full items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-xs font-light uppercase tracking-[0.28em] text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-luxury-gold/30 focus:border-luxury-gold/40 hover:bg-white"
+        className="inline-flex w-full items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-xs font-light uppercase tracking-[0.28em] text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400 hover:bg-white"
       >
         <span className="flex-1 truncate text-left">{currentLabel}</span>
         <svg
