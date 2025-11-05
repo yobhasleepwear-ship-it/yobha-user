@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import AppLayout from "./comman/app-layout/app-layout";
 import logoImage from "./assets/yobhaLogo.png"
 // Lazy load pages
@@ -22,6 +22,8 @@ const ReturnPolicy = lazy(() => import("./pages/return-policy/return-policy"));
 const Buyback = lazy(() => import("./pages/buyback/buyback"))
 const FabricProtection = lazy(() => import("./pages/fabric-protection/fabric-protection"));
 const Careers = lazy(() => import("./pages/careers/careers"));
+const CareerDetails = lazy(() => import("./pages/careers/career-details"));
+const CareerApply = lazy(() => import("./pages/careers/career-apply"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -44,6 +46,9 @@ const Router = () => {
     { path: '/return-policy', element: <ReturnPolicy /> },
     {path:'/buyback',element:<Buyback/>},
     {path:'/fabric-protection', element:<FabricProtection />},
+    { path: '/career', element: <Careers /> },
+    { path: '/career/:jobId', element: <CareerDetails /> },
+    { path: '/career/applyNow/:jobId', element: <CareerApply /> },
     { path: '/careers', element: <Careers /> }
   ];
 
