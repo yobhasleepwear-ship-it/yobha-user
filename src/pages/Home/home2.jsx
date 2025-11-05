@@ -438,7 +438,7 @@ const HomePage2 = () => {
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 md:mb-20 lg:mb-24">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8 font-sweet-sans">
               Indulge in Luxury
             </h2>
             <div className="w-16 md:w-20 h-px bg-gray-300 mx-auto mb-6 md:mb-8" />
@@ -478,7 +478,7 @@ const HomePage2 = () => {
 
                 {/* Text Outside - Enhanced Typography */}
                 <div className="mt-6 md:mt-8 lg:mt-10 text-center">
-                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-gray-900 uppercase tracking-[0.2em] md:tracking-[0.25em] group-hover:text-gray-700 transition-colors duration-500">
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-gray-900 uppercase tracking-[0.2em] md:tracking-[0.25em] group-hover:text-gray-700 transition-colors duration-500 font-sweet-sans">
                     {category.title}
                   </h3>
                   {/* Minimal decorative line */}
@@ -579,7 +579,7 @@ const HomePage2 = () => {
                       </div>
                     </div>
                     <div className="mt-5 md:mt-6 text-center">
-                      <h4 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300">
+                      <h4 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300 font-sweet-sans">
                         {accessory.title}
                       </h4>
                       <div className="mt-2 h-px w-0 mx-auto bg-gray-300 group-hover:w-10 transition-all duration-500" />
@@ -613,7 +613,7 @@ const HomePage2 = () => {
                       </div>
                     </div>
                     <div className="mt-5 md:mt-6 text-center">
-                      <h4 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300">
+                      <h4 className="text-base md:text-lg font-light text-gray-900 uppercase tracking-[0.15em] group-hover:text-gray-800 transition-all duration-300 font-sweet-sans">
                         {accessory.title}
                       </h4>
                       <div className="mt-2 h-px w-0 mx-auto bg-gray-300 group-hover:w-10 transition-all duration-500" />
@@ -719,7 +719,7 @@ const HomePage2 = () => {
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2] font-sweet-sans">
         <div className=" mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4 font-sweet-sans">
               New Arrivals
             </h2>
             <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">

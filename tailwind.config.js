@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'helvetica': ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        'helvetica': ['SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
         'sweet-sans': ['SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
       },
       colors: {

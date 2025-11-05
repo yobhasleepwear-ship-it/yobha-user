@@ -126,7 +126,7 @@ const Contact = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-black uppercase tracking-wide mb-4 sm:mb-6">
+              <h2 className="text-2xl sm:text-3xl font-light text-black uppercase tracking-wide mb-4 sm:mb-6 font-sweet-sans">
                 Message Sent Successfully!
               </h2>
               <p className="text-text-dark text-base sm:text-lg mb-6 sm:mb-8 max-w-md mx-auto px-4">
@@ -142,7 +142,7 @@ const Contact = () => {
           ) : (
             <>
               <div className="mb-8 sm:mb-12">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black uppercase tracking-widest mb-3 sm:mb-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-black uppercase tracking-widest mb-3 sm:mb-4 font-sweet-sans">
                   Send Us a Message
                 </h2>
                 <p className="text-text-dark text-base sm:text-lg leading-relaxed max-w-2xl">

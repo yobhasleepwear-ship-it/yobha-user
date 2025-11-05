@@ -20,7 +20,7 @@ const PrivacyPolicy = () => {
 
         {/* Table of Contents */}
         <div className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm mb-8 md:mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+          <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
             Contents
           </h2>
           <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -62,7 +62,7 @@ const PrivacyPolicy = () => {
           
           {/* Privacy Policy Introduction */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Privacy Policy
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -97,7 +97,7 @@ const PrivacyPolicy = () => {
 
           {/* About Us Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               About Us
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -119,7 +119,7 @@ const PrivacyPolicy = () => {
 
           {/* Definitions Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Definitions
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -144,7 +144,7 @@ const PrivacyPolicy = () => {
 
           {/* Purpose of Collecting Personal Information Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Purpose of Collecting Personal Information and Its Use
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -191,7 +191,7 @@ const PrivacyPolicy = () => {
 
           {/* Information Collected Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Information Collected
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -242,7 +242,7 @@ const PrivacyPolicy = () => {
 
           {/* How Do We Collect Personal Data Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               How Do We Collect Personal Data?
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -267,7 +267,7 @@ const PrivacyPolicy = () => {
 
           {/* Cookies and Tracking Technologies Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Cookies and Tracking Technologies
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -289,7 +289,7 @@ const PrivacyPolicy = () => {
 
           {/* YOBHA Website Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               YOBHA Website
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -302,7 +302,7 @@ const PrivacyPolicy = () => {
 
           {/* How We Use and Handle This Information Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               How We Use and Handle This Information
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -321,7 +321,7 @@ const PrivacyPolicy = () => {
 
           {/* Disclosure Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Disclosure
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -356,7 +356,7 @@ const PrivacyPolicy = () => {
 
           {/* Data Retention Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Data Retention
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -372,7 +372,7 @@ const PrivacyPolicy = () => {
 
           {/* Data Security Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Data Security
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -388,7 +388,7 @@ const PrivacyPolicy = () => {
 
           {/* Business Transfers Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Business Transfers
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -401,7 +401,7 @@ const PrivacyPolicy = () => {
 
           {/* Third-Party Service Providers Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Third-Party Service Providers
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -426,7 +426,7 @@ const PrivacyPolicy = () => {
 
           {/* Third Party Websites Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Third Party Websites
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -439,7 +439,7 @@ const PrivacyPolicy = () => {
 
           {/* Confidentiality Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Confidentiality
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -458,7 +458,7 @@ const PrivacyPolicy = () => {
 
           {/* Information Storage, Destruction & Security Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Information Storage, Destruction & Security
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -477,7 +477,7 @@ const PrivacyPolicy = () => {
 
           {/* Email Marketing Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Email Marketing
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -490,7 +490,7 @@ const PrivacyPolicy = () => {
 
           {/* Changes to Our Privacy Policy Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Changes to Our Privacy Policy
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -503,7 +503,7 @@ const PrivacyPolicy = () => {
 
           {/* Governing Law and Jurisdiction Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Governing Law and Jurisdiction
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -522,7 +522,7 @@ const PrivacyPolicy = () => {
 
           {/* Indemnification Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Indemnification
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -541,7 +541,7 @@ const PrivacyPolicy = () => {
 
           {/* Intellectual Property Rights Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Intellectual Property Rights
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -566,7 +566,7 @@ const PrivacyPolicy = () => {
 
           {/* Miscellaneous Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Miscellaneous
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -606,7 +606,7 @@ const PrivacyPolicy = () => {
 
           {/* Managing Your Privacy Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Managing Your Privacy
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -647,7 +647,7 @@ const PrivacyPolicy = () => {
 
           {/* Consent Declaration Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Consent Declaration
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -672,7 +672,7 @@ const PrivacyPolicy = () => {
 
           {/* Thank You Section */}
           <section className="bg-luxury-gold/5 border border-luxury-gold/20 p-6 md:p-8 lg:p-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Thank You for Trusting YOBHA
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>

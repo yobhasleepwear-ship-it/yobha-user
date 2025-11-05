@@ -85,7 +85,7 @@ const CareerDetails = () => {
           <div className="bg-white border border-gray-200/50 p-6 md:p-8 lg:p-10">
             <div className="mb-8">
               <div className="mb-4">
-                <h2 className="text-3xl md:text-4xl font-light text-gray-900 uppercase tracking-wide mb-2">
+                <h2 className="text-3xl md:text-4xl font-light text-gray-900 uppercase tracking-wide mb-2 font-sweet-sans">
                   {job.jobTitle}
                 </h2>
                 {job.jobId && (
@@ -144,7 +144,7 @@ const CareerDetails = () => {
               <div className="text-gray-700 font-light leading-relaxed space-y-6">
                 {job.jobDescription && (
                   <div>
-                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3">Job Description</h3>
+                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3 font-sweet-sans">Job Description</h3>
                     <p className="text-base leading-relaxed whitespace-pre-line">
                       {job.jobDescription}
                     </p>
@@ -153,7 +153,7 @@ const CareerDetails = () => {
 
                 {job.responsibilities && job.responsibilities.length > 0 && (
                   <div>
-                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3">Responsibilities</h3>
+                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3 font-sweet-sans">Responsibilities</h3>
                     <ul className="list-none space-y-2">
                       {job.responsibilities.map((resp, index) => (
                         <li key={index} className="flex items-start gap-2">
@@ -167,7 +167,7 @@ const CareerDetails = () => {
 
                 {job.skillsRequired && job.skillsRequired.length > 0 && (
                   <div>
-                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3">Required Skills</h3>
+                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3 font-sweet-sans">Required Skills</h3>
                     <div className="flex flex-wrap gap-2">
                       {job.skillsRequired.map((skill, index) => (
                         <span
@@ -183,7 +183,7 @@ const CareerDetails = () => {
 
                 {job.qualification && (
                   <div>
-                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3">Qualification</h3>
+                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3 font-sweet-sans">Qualification</h3>
                     <p className="text-base leading-relaxed">
                       {job.qualification}
                     </p>
@@ -192,7 +192,7 @@ const CareerDetails = () => {
 
                 {job.experienceRequired && (
                   <div>
-                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3">Experience Required</h3>
+                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3 font-sweet-sans">Experience Required</h3>
                     <p className="text-base leading-relaxed">
                       {job.experienceRequired.min} - {job.experienceRequired.max} {job.experienceRequired.unit}
                     </p>
@@ -201,7 +201,7 @@ const CareerDetails = () => {
 
                 {job.applicationDeadline && (
                   <div>
-                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3">Application Deadline</h3>
+                    <h3 className="text-lg uppercase tracking-wide text-gray-900 font-light mb-3 font-sweet-sans">Application Deadline</h3>
                     <p className="text-base leading-relaxed">
                       {new Date(job.applicationDeadline).toLocaleDateString('en-US', {
                         year: 'numeric',

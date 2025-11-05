@@ -170,7 +170,7 @@ const CareerApply = () => {
           {/* Application Form */}
           <div className="bg-white border border-gray-200/50 p-6 md:p-8 lg:p-10">
             <div className="mb-8">
-              <h2 className="text-2xl md:text-3xl font-light text-gray-900 uppercase tracking-wide">
+              <h2 className="text-2xl md:text-3xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
                 Apply for {job.jobTitle}
               </h2>
             </div>

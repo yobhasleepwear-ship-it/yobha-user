@@ -633,7 +633,7 @@ const ProductDetailPage = () => {
 
             {/* Product Name */}
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 leading-tight font-sweet-sans">
                 {product.name}
               </h1>
 
@@ -1067,7 +1067,7 @@ const ProductDetailPage = () => {
         </div>
         {/* Review Form Section */}
         <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
-          <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-widest mb-5 md:mb-6">
+          <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-widest mb-5 md:mb-6 font-sweet-sans">
             Customer Reviews
           </h2>
 
@@ -1215,9 +1215,9 @@ const ProductDetailPage = () => {
         )} */}
         {newProducts?.length > 0 && (
           <div className="space-y-5 pt-6 md:pt-8 border-t border-text-light/10">
-            <h3 className="text-xs md:text-sm font-light text-black mb-4 uppercase tracking-widest">
-              Hot Picks Just For You
-            </h3>
+              <h3 className="text-xs md:text-sm font-light text-black mb-4 uppercase tracking-widest font-sweet-sans">
+                Hot Picks Just For You
+              </h3>
 
             <div className="relative px-0 py-4">
               {/* Carousel Container */}
@@ -1315,7 +1315,7 @@ const ProductDetailPage = () => {
             >
               ✕
             </button>
-            <h3 className="text-sm md:text-base uppercase tracking-[0.3em] text-black mb-4">Size Guide</h3>
+            <h3 className="text-sm md:text-base uppercase tracking-[0.3em] text-black mb-4 font-light font-sweet-sans">Size Guide</h3>
             <div className="space-y-4 text-xs md:text-sm text-text-medium leading-relaxed">
               <p>
                 Discover your perfect fit. Refer to the measurement chart curated for our signature silhouettes. If you are in-between sizes, we recommend choosing the larger size for a more relaxed drape.

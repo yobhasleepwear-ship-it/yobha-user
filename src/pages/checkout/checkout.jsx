@@ -531,7 +531,7 @@ fetchCoupons(subTotal)
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsDeliveryExpanded(!isDeliveryExpanded)}
               >
-                <h2 className="text-base md:text-lg font-bold text-black uppercase tracking-wider flex items-center gap-2">
+                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
                   <MapPin size={20} strokeWidth={1.5} />
                   Delivery Address
                 </h2>
@@ -592,7 +592,7 @@ fetchCoupons(subTotal)
                                   onChange={() => setAddress(addr)}
                                   className="accent-black"
                                 />
-                                <h3 className="font-semibold text-black text-sm md:text-base">
+                                <h3 className="font-light text-black text-sm md:text-base font-sweet-sans">
                                   {addr.fullName}
                                 </h3>
                               </div>
@@ -803,7 +803,7 @@ fetchCoupons(subTotal)
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsCouponsExpanded(!isCouponsExpanded)}
               >
-                <h2 className="text-base md:text-lg font-bold text-black uppercase tracking-wider flex items-center gap-2">
+                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
                   <Gift size={20} strokeWidth={1.5} />
                   Coupons & Loyalty Points
                 </h2>
@@ -822,7 +822,7 @@ fetchCoupons(subTotal)
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <Star size={20} className="text-luxury-gold" strokeWidth={1.5} />
-                          <h3 className="text-sm md:text-base font-bold text-black uppercase tracking-wider">
+                          <h3 className="text-sm md:text-base font-light text-black uppercase tracking-wider font-sweet-sans">
                             Loyalty Points
                           </h3>
                         </div>
@@ -850,7 +850,7 @@ fetchCoupons(subTotal)
 
                   {/* Coupons Section */}
                   <div>
-                    <h3 className="text-sm md:text-base font-bold text-black uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <h3 className="text-sm md:text-base font-light text-black uppercase tracking-wider mb-4 flex items-center gap-2 font-sweet-sans">
                       <Tag size={18} strokeWidth={1.5} />
                       Available Coupons
                     </h3>
@@ -942,7 +942,7 @@ fetchCoupons(subTotal)
                   {/* Applied Discounts Summary */}
                   {calculateTotalDiscount() > 0 && (
                     <div className="bg-luxury-pale-gold/30 border border-luxury-gold/30 p-4 md:p-5">
-                      <h4 className="text-sm font-bold text-black uppercase tracking-wider mb-3">
+                      <h4 className="text-sm font-light text-black uppercase tracking-wider mb-3 font-sweet-sans">
                         Applied Discounts
                       </h4>
                       <div className="space-y-2">
@@ -980,7 +980,7 @@ fetchCoupons(subTotal)
             {/* Payment Section */}
             <div className="bg-white border border-text-light/20">
               <div className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20">
-                <h2 className="text-base md:text-lg font-bold text-black uppercase tracking-wider flex items-center gap-2">
+                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
                   <CreditCard size={20} strokeWidth={1.5} />
                   Payment Method
                 </h2>
@@ -1032,7 +1032,7 @@ fetchCoupons(subTotal)
           <div className="lg:col-span-1">
             <div className="bg-white border border-text-light/20 lg:sticky lg:top-24">
               <div className="p-4 md:p-6 border-b border-text-light/20">
-                <h2 className="text-base md:text-lg font-bold text-black uppercase tracking-wider mb-1">
+                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider mb-1 font-sweet-sans">
                   Order Summary
                 </h2>
                 <p className="text-xs md:text-sm text-text-medium">{cartSummary.distinctItems} {cartSummary.distinctItems === 1 ? 'item' : 'items'}</p>
@@ -1121,8 +1121,8 @@ fetchCoupons(subTotal)
                 </div>
 
                 <div className="flex justify-between pt-4 pb-4 md:pb-6 border-t border-text-light/20">
-                  <span className="text-base md:text-lg font-bold text-black uppercase tracking-wider">Total</span>
-                  <span className="text-xl md:text-2xl font-bold text-black">{formatPrice(cartSummary.grandTotal - calculateTotalDiscount(), getCurrency())}</span>
+                  <span className="text-base md:text-lg font-light text-black uppercase tracking-wider font-sweet-sans">Total</span>
+                  <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(cartSummary.grandTotal - calculateTotalDiscount(), getCurrency())}</span>
                 </div>
 
                 {cartSummary.shipping === 0 && (

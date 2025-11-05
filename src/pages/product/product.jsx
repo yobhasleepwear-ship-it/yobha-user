@@ -459,7 +459,7 @@ const ProductsPage = () => {
           <div className="absolute left-0 top-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl overflow-y-auto animate-slideInLeft">
             <div className="sticky top-0 bg-white z-10 px-6 py-5 border-b border-text-light/20">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-black uppercase tracking-wider text-sm">
+                <h2 className="font-light text-black uppercase tracking-wider text-sm font-sweet-sans">
                   Filters
                 </h2>
                 <button
@@ -498,7 +498,7 @@ const ProductsPage = () => {
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl animate-slideUp">
             <div className="px-6 py-5 border-b border-text-light/20">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-black uppercase tracking-wider text-sm">
+                <h2 className="font-light text-black uppercase tracking-wider text-sm font-sweet-sans">
                   Sort By
                 </h2>
                 <button
@@ -539,7 +539,7 @@ const ProductsPage = () => {
 
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 font-sweet-sans">
             {category
               ? `${category.replace(/([A-Z])/g, " $1").trim()} Collection`
               : "All Products"}
@@ -685,7 +685,7 @@ const ProductsPage = () => {
               <div className="w-24 h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <span className="text-4xl text-text-light">✕</span>
               </div>
-              <h3 className="text-2xl font-bold text-black mb-3 uppercase tracking-wider">
+              <h3 className="text-2xl font-light text-black mb-3 uppercase tracking-wider font-sweet-sans">
                 No Products Found
               </h3>
               <p className="text-text-medium mb-8">

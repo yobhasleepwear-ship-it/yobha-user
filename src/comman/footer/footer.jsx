@@ -59,7 +59,7 @@ const [newsletter , setNewsletter]=useState("")
 
           {/* Brand & About */}
           <div className="space-y-5">
-            <div className="text-3xl font-bold text-black tracking-wider">
+            <div className="text-3xl font-light text-black tracking-wider">
               <Link
                 to="/"
                 className="flex items-center"
@@ -78,7 +78,7 @@ const [newsletter , setNewsletter]=useState("")
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-semibold mb-6 text-black uppercase tracking-wider">
+            <h3 className="text-sm font-light mb-6 text-black uppercase tracking-wider">
               Quick Links
             </h3>
             <ul className="space-y-3 text-sm">
@@ -127,7 +127,7 @@ const [newsletter , setNewsletter]=useState("")
 
           {/* Policies */}
           <div>
-            <h3 className="text-sm font-semibold mb-6 text-black uppercase tracking-wider">
+            <h3 className="text-sm font-light mb-6 text-black uppercase tracking-wider">
               Policies
             </h3>
             <ul className="space-y-3 text-sm">
@@ -180,7 +180,7 @@ const [newsletter , setNewsletter]=useState("")
                               />
                             </div>
             <div>
-              <h3 className="text-sm font-semibold mb-6 text-black uppercase tracking-wider">
+              <h3 className="text-sm font-light mb-6 text-black uppercase tracking-wider">
                 Newsletter
               </h3>
               <p className="text-text-medium text-sm mb-4">
@@ -201,7 +201,7 @@ const [newsletter , setNewsletter]=useState("")
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold mb-4 text-black uppercase tracking-wider">
+              <h3 className="text-sm font-light mb-4 text-black uppercase tracking-wider">
                 Follow Us
               </h3>
               <div className="flex items-center gap-5">

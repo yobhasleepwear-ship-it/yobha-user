@@ -171,7 +171,7 @@ const CartPage = () => {
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <ShoppingBag size={40} className="text-text-light md:w-12 md:h-12" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl md:text-2xl font-bold text-black mb-3 md:mb-4 uppercase tracking-wider">Your Cart is Empty</h2>
+              <h2 className="text-xl md:text-2xl font-light text-black mb-3 md:mb-4 uppercase tracking-wider font-sweet-sans">Your Cart is Empty</h2>
               <p className="text-sm md:text-base text-text-medium mb-6 md:mb-8">Discover our premium collection of luxury sleepwear</p>
               <button onClick={() => navigate("/products")} className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm">
                 Start Shopping <ArrowRight size={18} strokeWidth={1.5} />
@@ -202,7 +202,7 @@ const CartPage = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between gap-2 mb-3">
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-black text-base md:text-lg mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight"
+                            <h3 className="font-light text-black text-base md:text-lg mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight font-sweet-sans"
                               onClick={() => navigate(`/productDetail/${product.id}`)}>
                               {product.name}
                             </h3>
@@ -277,7 +277,7 @@ const CartPage = () => {
             <div className="lg:col-span-1">
               <div className="bg-white border border-text-light/20 lg:sticky lg:top-24">
                 <div className="p-4 md:p-6 border-b border-text-light/20">
-                  <h2 className="text-lg md:text-xl font-bold text-black uppercase tracking-wider mb-1">Order Summary</h2>
+                  <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-wider mb-1 font-sweet-sans">Order Summary</h2>
                   <p className="text-xs md:text-sm text-text-medium">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</p>
                 </div>
 
@@ -299,8 +299,8 @@ const CartPage = () => {
                   </div>
 
                   <div className="flex justify-between pt-4 pb-4 md:pb-6 border-b border-text-light/20">
-                    <span className="text-base md:text-lg font-bold text-black uppercase tracking-wider">Total</span>
-                    <span className="text-xl md:text-2xl font-bold text-black">{formatPrice(totals.grandTotal, getCurrency())}</span>
+                    <span className="text-base md:text-lg font-light text-black uppercase tracking-wider font-sweet-sans">Total</span>
+                    <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(totals.grandTotal, getCurrency())}</span>
                   </div>
 
                   {totals.shipping === 0 && (

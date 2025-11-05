@@ -20,7 +20,7 @@ const TermsConditions = () => {
 
         {/* Table of Contents */}
         <div className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm mb-8 md:mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+          <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
             Contents
           </h2>
           <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -52,7 +52,7 @@ const TermsConditions = () => {
           
           {/* Terms and Conditions Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Terms and Conditions
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -71,7 +71,7 @@ const TermsConditions = () => {
 
           {/* About Us Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               About Us
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -99,7 +99,7 @@ const TermsConditions = () => {
 
           {/* Agreement and Acceptance of Terms Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Agreement and Acceptance of Terms
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -121,7 +121,7 @@ const TermsConditions = () => {
 
           {/* Eligibility for Purchase Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Eligibility for Purchase
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -129,7 +129,7 @@ const TermsConditions = () => {
               
               {/* General Eligibility */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   a. General Eligibility
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -148,7 +148,7 @@ const TermsConditions = () => {
 
               {/* Legal Capacity to Contract */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   b. Legal Capacity to Contract
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -161,7 +161,7 @@ const TermsConditions = () => {
 
               {/* Use by Minors */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   c. Use by Minors
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -180,7 +180,7 @@ const TermsConditions = () => {
 
               {/* Corporate, Institutional, and Group Users */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   d. Corporate, Institutional, and Group Users
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -198,7 +198,7 @@ const TermsConditions = () => {
 
               {/* Right to Restrict or Cancel Orders */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   e. Right to Restrict or Cancel Orders
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -216,7 +216,7 @@ const TermsConditions = () => {
 
               {/* Representations and Warranties by the User */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   f. Representations and Warranties by the User
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -237,7 +237,7 @@ const TermsConditions = () => {
 
           {/* Product Accuracy and Appearance Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Product Accuracy and Appearance
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -245,7 +245,7 @@ const TermsConditions = () => {
               
               {/* Representation of Products */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   a. Representation of Products
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -258,7 +258,7 @@ const TermsConditions = () => {
 
               {/* Display Limitations */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   b. Display Limitations
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -277,7 +277,7 @@ const TermsConditions = () => {
 
               {/* Minor Variations */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   c. Minor Variations
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -287,7 +287,7 @@ const TermsConditions = () => {
 
               {/* Product Modifications and Updates */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   d. Product Modifications and Updates
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -308,7 +308,7 @@ const TermsConditions = () => {
 
           {/* Stock and Availability Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Stock and Availability
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -316,7 +316,7 @@ const TermsConditions = () => {
               
               {/* Product Availability */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   a. Product Availability
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -326,7 +326,7 @@ const TermsConditions = () => {
 
               {/* Right to Limit Sales */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   b. Right to Limit Sales
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -344,7 +344,7 @@ const TermsConditions = () => {
 
               {/* Out of Stock Policy */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   c. Out of Stock Policy
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -360,7 +360,7 @@ const TermsConditions = () => {
 
           {/* Order Placement and Acceptance Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Order Placement and Acceptance
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -368,7 +368,7 @@ const TermsConditions = () => {
               
               {/* Order Submission */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   a. Order Submission
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -378,7 +378,7 @@ const TermsConditions = () => {
 
               {/* Verification of Orders */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   b. Verification of Orders
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -397,7 +397,7 @@ const TermsConditions = () => {
 
               {/* Right to Refuse or Cancel Orders */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   c. Right to Refuse or Cancel Orders
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -417,7 +417,7 @@ const TermsConditions = () => {
 
               {/* Order Acceptance and Formation of Contract */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   d. Order Acceptance and Formation of Contract
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -435,7 +435,7 @@ const TermsConditions = () => {
 
               {/* Order Modifications and Cancellations by Customer */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   e. Order Modifications and Cancellations by Customer
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -445,7 +445,7 @@ const TermsConditions = () => {
 
               {/* Customer Acknowledgment */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   f. Customer Acknowledgment
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -463,7 +463,7 @@ const TermsConditions = () => {
 
           {/* Pricing and Errors Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Pricing and Errors
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -471,7 +471,7 @@ const TermsConditions = () => {
               
               {/* Pricing Accuracy */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   a. Pricing Accuracy
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -481,7 +481,7 @@ const TermsConditions = () => {
 
               {/* Correction of Errors */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   b. Correction of Errors
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -503,7 +503,7 @@ const TermsConditions = () => {
 
               {/* Right to Amend, Revise, or Discontinue */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   c. Right to Amend, Revise, or Discontinue
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -533,7 +533,7 @@ const TermsConditions = () => {
 
           {/* Pricing and Payment Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Pricing and Payment
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -541,7 +541,7 @@ const TermsConditions = () => {
               
               {/* Display Prices */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   a. Display Prices
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -551,7 +551,7 @@ const TermsConditions = () => {
 
               {/* Price Confirmation */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   b. Price Confirmation
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -561,7 +561,7 @@ const TermsConditions = () => {
 
               {/* Inclusion of Additional Charges */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   c. Inclusion of Additional Charges
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -571,7 +571,7 @@ const TermsConditions = () => {
 
               {/* Payment */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   d. Payment
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -592,7 +592,7 @@ const TermsConditions = () => {
 
               {/* Payment Authorization */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   e. Payment Authorization
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -602,7 +602,7 @@ const TermsConditions = () => {
 
               {/* Taxes, Duties, and Levies */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   f. Taxes, Duties, and Levies
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -612,7 +612,7 @@ const TermsConditions = () => {
 
               {/* Payment Disputes */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   g. Payment Disputes
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -622,7 +622,7 @@ const TermsConditions = () => {
 
               {/* Non-Payment or Failed Transactions */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   h. Non-Payment or Failed Transactions
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -632,7 +632,7 @@ const TermsConditions = () => {
 
               {/* Refunds */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   i. Refunds
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -645,7 +645,7 @@ const TermsConditions = () => {
 
           {/* Shipping, Delivery, and Risk of Loss Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Shipping, Delivery, and Risk of Loss
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -653,7 +653,7 @@ const TermsConditions = () => {
               
               {/* Estimated Delivery */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   a. Estimated Delivery
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -672,7 +672,7 @@ const TermsConditions = () => {
 
               {/* No Liability for Delay */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   b. No Liability for Delay
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -682,7 +682,7 @@ const TermsConditions = () => {
 
               {/* Shipping and Handling */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   c. Shipping and Handling
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -695,7 +695,7 @@ const TermsConditions = () => {
 
               {/* Risk of Loss and Transfer of Title */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   d. Risk of Loss and Transfer of Title
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -720,7 +720,7 @@ const TermsConditions = () => {
 
           {/* Intellectual Property Rights Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Intellectual Property Rights
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -739,7 +739,7 @@ const TermsConditions = () => {
 
           {/* Indemnification Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Indemnification
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -755,7 +755,7 @@ const TermsConditions = () => {
 
           {/* Governing Law, Dispute Resolution, and Jurisdiction Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Governing Law, Dispute Resolution, and Jurisdiction
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -780,7 +780,7 @@ const TermsConditions = () => {
 
           {/* Miscellaneous Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Miscellaneous
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -802,7 +802,7 @@ const TermsConditions = () => {
 
           {/* Thank You Section */}
           <section className="bg-gradient-to-br from-luxury-gold/5 to-luxury-rose-gold/5 border border-luxury-gold/20 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Thank You for Trusting YOBHA
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>

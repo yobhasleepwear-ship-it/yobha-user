@@ -23,7 +23,7 @@ const ReturnPolicy = () => {
           
           {/* Introduction Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Return Policy Introduction
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -45,7 +45,7 @@ const ReturnPolicy = () => {
 
           {/* Applicability of Policy Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               I. Applicability of Policy
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -61,7 +61,7 @@ const ReturnPolicy = () => {
 
           {/* Terms for Cancellation, Return, Refund, and Exchange Section */}
           <section className="bg-white border border-text-light/10 p-6 md:p-8 lg:p-10 shadow-sm">
-            <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+            <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
               Terms for Cancellation, Return, Refund, and Exchange of Orders
             </h2>
             <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>
@@ -69,7 +69,7 @@ const ReturnPolicy = () => {
               
               {/* 1. Cancellation of Products */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   1. Cancellation of Products
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -82,7 +82,7 @@ const ReturnPolicy = () => {
 
               {/* 2. Return of Products */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   2. Return of Products
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -138,7 +138,7 @@ const ReturnPolicy = () => {
 
               {/* 3. Refunds */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   3. Refunds
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -157,7 +157,7 @@ const ReturnPolicy = () => {
 
               {/* 4. Exchange of Products */}
               <div className="space-y-4 md:space-y-6">
-                <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-wide font-sweet-sans">
                   4. Exchange of Products
                 </h3>
                 <p className="text-text-medium text-sm md:text-base leading-relaxed">
@@ -205,7 +205,7 @@ const ReturnPolicy = () => {
 
         {/* Thank You Section */}
         <section className="bg-gradient-to-br from-luxury-gold/5 to-luxury-rose-gold/5 border border-luxury-gold/20 p-6 md:p-8 lg:p-10 shadow-sm">
-          <h2 className="text-2xl md:text-3xl font-bold text-black uppercase tracking-wide mb-4 md:mb-6">
+          <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-wide mb-4 md:mb-6 font-sweet-sans">
             Thank You
           </h2>
           <div className="w-16 h-0.5 bg-luxury-gold mb-6"></div>

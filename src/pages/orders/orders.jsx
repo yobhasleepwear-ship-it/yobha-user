@@ -177,7 +177,7 @@ const OrdersPage = () => {
         className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center max-w-md px-4">
-          <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
+          <h2 className="text-2xl font-light text-black mb-4 uppercase tracking-wider font-sweet-sans">
             Something Went Wrong
           </h2>
           <p className="text-text-medium mb-8">{error}</p>
@@ -215,7 +215,7 @@ const OrdersPage = () => {
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <Package size={40} className="text-text-light md:w-12 md:h-12" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl md:text-2xl font-bold text-black mb-3 md:mb-4 uppercase tracking-wider">
+              <h2 className="text-xl md:text-2xl font-light text-black mb-3 md:mb-4 uppercase tracking-wider font-sweet-sans">
                 No Orders Yet
               </h2>
               <p className="text-sm md:text-base text-text-medium mb-6 md:mb-8">
@@ -249,7 +249,7 @@ const OrdersPage = () => {
                       {/* Order ID and Status - Stack on mobile */}
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-black text-sm md:text-base uppercase tracking-wider mb-2">
+                          <h3 className="font-light text-black text-sm md:text-base uppercase tracking-wider mb-2 font-sweet-sans">
                             Order ID: {order.id}
                           </h3>
                           <p className="text-xs md:text-sm text-text-medium">
@@ -283,7 +283,7 @@ const OrdersPage = () => {
                       
                       {/* Items - 2/3 width on desktop */}
                       <div className="lg:col-span-2">
-                        <h4 className="text-xs font-semibold text-text-medium uppercase tracking-wider mb-4">
+                        <h4 className="text-xs font-light text-text-medium uppercase tracking-wider mb-4 font-sweet-sans">
                           Items ({totalItems})
                         </h4>
                         <div className="space-y-3">
@@ -336,7 +336,7 @@ const OrdersPage = () => {
 
                       {/* Order Summary - 1/3 width on desktop */}
                       <div className="lg:col-span-1">
-                        <h4 className="text-xs font-semibold text-text-medium uppercase tracking-wider mb-4">
+                        <h4 className="text-xs font-light text-text-medium uppercase tracking-wider mb-4 font-sweet-sans">
                           Order Summary
                         </h4>
                         <div className="bg-premium-beige p-4 space-y-2">

@@ -290,7 +290,7 @@ const AccountPage = () => {
                   <div className="w-10 h-10 bg-black flex items-center justify-center">
                     <User size={20} className="text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest">
+                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest font-sweet-sans">
                     Profile Information
                   </h2>
                 </div>
@@ -378,7 +378,7 @@ const AccountPage = () => {
                   <div className="w-10 h-10 bg-black flex items-center justify-center">
                     <MapPin size={20} className="text-white" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest">
+                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 uppercase tracking-widest font-sweet-sans">
                     Addresses
                   </h2>
                 </div>
@@ -559,7 +559,7 @@ const AccountPage = () => {
             <div className="w-10 h-10 bg-black flex items-center justify-center">
               <Gift size={20} className="text-white" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-black uppercase tracking-[0.15em]">
+            <h2 className="text-xl sm:text-2xl font-light text-black uppercase tracking-[0.15em] font-sweet-sans">
               Refer Your Friend
             </h2>
           </div>
