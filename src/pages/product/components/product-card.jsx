@@ -215,21 +215,24 @@ const ProductCard = ({ product }) => {
       <div className="p-4 sm:p-6 flex flex-col flex-1 bg-white group/content shadow-sm">
         {/* Product Name - Elegant Typography with Fixed Height */}
         <div className="h-12 sm:h-14 mb-3 sm:mb-4 flex items-start overflow-hidden">
-          <h3 className="text-gray-900 font-light text-sm sm:text-lg line-clamp-2 tracking-wide uppercase group-hover:text-[#ea5430] transition-all duration-700 leading-relaxed transform group-hover:translate-x-1">
+          <h3 className="text-gray-900 font-light text-sm sm:text-lg line-clamp-2 tracking-wide uppercase group-hover:text-gray-500 transition-all duration-700 leading-relaxed transform group-hover:translate-x-1">
             {productName}
           </h3>
         </div>
 
         {/* Size Information - Minimal Design with Flexible Height */}
-        <div className="min-h-[1.25rem] sm:min-h-[1.5rem] flex items-center">
+        <div className="min-h-[1.25rem] sm:min-h-[1.5rem] mb-2 sm:mb-3 flex items-center">
           {availableSizes.length > 0 && (
             <p className="text-gray-500 text-xs tracking-widest uppercase font-light transition-all duration-700 transform group-hover:translate-x-1 group-hover:text-gray-700 leading-tight">
-              Sizes: <span className="text-gray-700 font-medium transition-colors duration-500 group-hover:text-[#ea5430]">{availableSizes.join(', ')}</span>
+              Sizes: <span className="text-gray-700 font-medium transition-colors duration-500 group-hover:text-gray-500">{availableSizes.join(', ')}</span>
             </p>
           )}
         </div>
-        <div>
-          {currency} {productPrice}
+        {/* Price - Consistent Typography with Fixed Height */}
+        <div className="h-6 sm:h-7 flex items-center mt-auto">
+          <p className="text-gray-900 text-sm sm:text-base font-light tracking-wide uppercase font-sweet-sans">
+            {currency} {productPrice}
+          </p>
         </div>
         {/* Subtle shimmer effect on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out opacity-0 group-hover:opacity-100"></div>
