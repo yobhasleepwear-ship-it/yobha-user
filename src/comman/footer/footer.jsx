@@ -169,7 +169,7 @@ const [newsletter , setNewsletter]=useState("")
           {/* Newsletter & Social */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
              <div className=" border-b border-gray-200 bg-premium-cream/70">
-                              <p className="text-[11px] uppercase tracking-[0.28em] text-black/70">Ship To</p>
+                              <p className="text-[11px] uppercase tracking-[0.28em] text-black/70 mb-3">Ship To</p>
                               <CountrySelector
                                 value={selectedSidebarCountry?.code}
                                 onSelect={handleSidebarCountryChange}

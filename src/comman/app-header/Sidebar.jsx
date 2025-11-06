@@ -130,7 +130,9 @@ const Sidebar = ({ isOpen, onClose }) => {
           <aside className="absolute left-0 top-0 h-full w-80 md:w-96 max-w-[90vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-sweet-sans">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-              <img src={logoImage} alt="YOBHA Logo" className="h-10" />
+              <Link to="/home" onClick={onClose}>
+                <img src={logoImage} alt="YOBHA Logo" className="h-10 cursor-pointer" />
+              </Link>
               <button
                 className="text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
                 onClick={onClose}

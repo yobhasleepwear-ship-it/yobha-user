@@ -16,6 +16,8 @@ import TOWELS_IMAGE from "../../assets/towel.jpg";
 import SALE_BANNER_IMAGE from "../../assets/sale-banner.jpg";
 import BUYBACK_IMAGE from "../../assets/buyback-image.jpg";
 import { getFilteredProducts } from "../../service/productAPI";
+import { SubscribeNewsletter } from "../../service/notification";
+import { message } from "../../comman/toster-message/ToastContainer";
 
 const HomePage2 = () => {
   const navigate = useNavigate();
@@ -29,6 +31,8 @@ const HomePage2 = () => {
   const [accScrollLeft, setAccScrollLeft] = useState(0);
   const [isAccUserInteracting, setIsAccUserInteracting] = useState(false);
   const [isAccHovered, setIsAccHovered] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   // Video URLs
   const portraitVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
@@ -399,6 +403,40 @@ const HomePage2 = () => {
       behavior: 'smooth'
     });
     setTimeout(() => setIsUserInteracting(false), 5000);
+  };
+
+  // Newsletter subscription handler
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!newsletterEmail || !newsletterEmail.trim()) {
+      message.error("Please enter a valid email address");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newsletterEmail)) {
+      message.error("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      const payload = {
+        email: newsletterEmail.trim(),
+        countryCode: "",
+        phoneNumber: ""
+      };
+      await SubscribeNewsletter(payload);
+      message.success("Subscribed successfully!");
+      setNewsletterEmail("");
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      message.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (
@@ -1027,6 +1065,99 @@ const HomePage2 = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
               </svg>
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 lg:py-20 bg-[#FAF6F2] font-sweet-sans overflow-hidden">
+        {/* Subtle decorative background elements */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-[0.015] pointer-events-none">
+          <div className="absolute top-20 left-10 w-48 h-48 md:w-64 md:h-64 border border-gray-900/30 rounded-full"></div>
+          <div className="absolute bottom-20 right-10 w-64 h-64 md:w-96 md:h-96 border border-gray-900/30 rounded-full"></div>
+        </div>
+
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          {/* Decorative line above heading */}
+          <div className="flex items-center justify-center mb-5 md:mb-6">
+            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
+            <div className="mx-2 md:mx-3 w-1 h-1 rounded-full bg-gray-400/60"></div>
+            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 md:mb-4 font-sweet-sans">
+            Newsletter
+          </h2>
+          
+          <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto font-light tracking-wide mb-8 md:mb-10 font-sweet-sans leading-relaxed">
+            Subscribe to receive updates, access to exclusive deals, and more
+          </p>
+
+          {/* Enhanced form container */}
+          <form onSubmit={handleNewsletterSubmit} className="max-w-2xl mx-auto">
+            <div className="relative group">
+              {/* Form wrapper with elegant border and shadow */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 items-stretch sm:items-center">
+                {/* Email input wrapper */}
+                <div className="flex-1 relative bg-white border border-gray-200/80 hover:border-gray-300 transition-all duration-500 shadow-sm hover:shadow-md rounded-sm">
+                  <input
+                    type="email"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    className="w-full px-5 md:px-6 py-3.5 md:py-4 text-sm md:text-base border-0 focus:outline-none bg-transparent text-gray-900 placeholder:text-gray-400/70 font-light font-sweet-sans"
+                    disabled={isSubscribing}
+                  />
+                  {/* Focus indicator line */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gray-900 transform scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500 origin-left"></div>
+                </div>
+
+                {/* Divider - visible on desktop */}
+                <div className="hidden sm:block w-px h-10 bg-gray-200/60 mx-3"></div>
+
+                {/* Submit button wrapper */}
+                <div className="sm:bg-white sm:border sm:border-gray-200/80 sm:hover:border-gray-300 sm:transition-all sm:duration-500 sm:shadow-sm sm:hover:shadow-md sm:rounded-sm">
+                  <button
+                    type="submit"
+                    disabled={isSubscribing}
+                    className="w-full sm:w-auto px-6 md:px-8 py-3.5 md:py-4 bg-gray-900 hover:bg-gray-800 text-white text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.25em] font-light transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed font-sweet-sans whitespace-nowrap relative overflow-hidden group/btn rounded-sm sm:rounded-sm"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {isSubscribing ? (
+                        <>
+                          <span>Subscribing...</span>
+                          <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        </>
+                      ) : (
+                        <>
+                          <span>Subscribe</span>
+                          <svg className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </>
+                      )}
+                    </span>
+                    {/* Button hover effect */}
+                    <div className="absolute inset-0 bg-gray-800 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-500 origin-left"></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional info text */}
+            <p className="mt-5 md:mt-6 text-xs md:text-sm text-gray-500/80 font-light tracking-wide font-sweet-sans">
+              Join our community and stay updated with the latest collections
+            </p>
+          </form>
+
+          {/* Decorative line below form */}
+          <div className="flex items-center justify-center mt-8 md:mt-10">
+            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
+            <div className="mx-2 md:mx-3 w-1 h-1 rounded-full bg-gray-400/60"></div>
+            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
           </div>
         </div>
       </section>
