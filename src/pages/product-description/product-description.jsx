@@ -70,7 +70,7 @@ const parseRange = (rangeStr) => {
 const convertRange = (rangeStr, fromUnit, toUnit) => {
   const [min, max] = parseRange(rangeStr);
   if (fromUnit === toUnit) return rangeStr;
-  
+
   if (fromUnit === 'inches' && toUnit === 'cm') {
     return `${inchesToCm(min)}-${inchesToCm(max)}`;
   } else if (fromUnit === 'cm' && toUnit === 'inches') {
@@ -144,7 +144,7 @@ const ProductDetailPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // UI State
-   const countryOptions = [
+  const countryOptions = [
     { code: "IN", label: "India" },
     { code: "AE", label: "United Arab Emirates (UAE)" },
     { code: "SA", label: "Saudi Arabia" },
@@ -205,7 +205,7 @@ const ProductDetailPage = () => {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
- 
+
 
   const fetchProductDetail = useCallback(async (productId) => {
     setIsLoading(true)
@@ -902,11 +902,12 @@ const ProductDetailPage = () => {
                   <button
                     type="button"
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.28em] text-black/70 hover:text-black transition-colors"
+                    className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-black/80 backdrop-blur-sm transition-all hover:border-black/30 hover:bg-black hover:text-white hover:shadow-md hover:shadow-black/10"
                   >
-                    <span className="h-1.5 w-1.5 rounded-full bg-black/40"></span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-black/60 to-black/90"></span>
                     Size Guide
                   </button>
+
                 </div>
                 <div className="flex gap-1.5 overflow-x-auto pb-1 pt-1 scrollbar-hide px-1 -mx-1">
                   {product.sizeOfProduct.map((size) => (
@@ -1360,9 +1361,9 @@ const ProductDetailPage = () => {
         )} */}
         {newProducts?.length > 0 && (
           <div className="space-y-5 pt-6 md:pt-8 border-t border-text-light/10">
-              <h3 className="text-xs md:text-sm font-light text-black mb-4 uppercase tracking-widest font-sweet-sans">
-                Hot Picks Just For You
-              </h3>
+            <h3 className="text-xs md:text-sm font-light text-black mb-4 uppercase tracking-widest font-sweet-sans">
+              Hot Picks Just For You
+            </h3>
 
             <div className="relative px-0 py-4">
               {/* Carousel Container */}
@@ -1460,7 +1461,7 @@ const ProductDetailPage = () => {
             >
               ✕
             </button>
-            
+
             <h3 className="text-sm sm:text-base md:text-lg uppercase tracking-[0.3em] text-black mb-4 sm:mb-6 font-light font-sweet-sans pr-8">
               Size Guide
             </h3>
@@ -1472,46 +1473,42 @@ const ProductDetailPage = () => {
                 <div className="flex items-center bg-premium-beige/30 rounded-full p-1">
                   <button
                     onClick={() => handleUnitToggle('inches')}
-                    className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all rounded-full ${
-                      sizeGuideUnit === 'inches'
+                    className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all rounded-full ${sizeGuideUnit === 'inches'
                         ? 'bg-black text-white'
                         : 'text-black/70 hover:text-black'
-                    }`}
+                      }`}
                   >
                     Inches
                   </button>
                   <button
                     onClick={() => handleUnitToggle('cm')}
-                    className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all rounded-full ${
-                      sizeGuideUnit === 'cm'
+                    className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all rounded-full ${sizeGuideUnit === 'cm'
                         ? 'bg-black text-white'
                         : 'text-black/70 hover:text-black'
-                    }`}
+                      }`}
                   >
                     CM
                   </button>
                 </div>
               </div>
-              
+
               {/* Tab Toggle */}
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowFindSize(false)}
-                  className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all border ${
-                    !showFindSize
+                  className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all border ${!showFindSize
                       ? 'border-black bg-black text-white'
                       : 'border-text-light/20 text-black/70 hover:border-black/40'
-                  }`}
+                    }`}
                 >
                   Size Chart
                 </button>
                 <button
                   onClick={() => setShowFindSize(true)}
-                  className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all border ${
-                    showFindSize
+                  className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all border ${showFindSize
                       ? 'border-black bg-black text-white'
                       : 'border-text-light/20 text-black/70 hover:border-black/40'
-                  }`}
+                    }`}
                 >
                   Find Your Size
                 </button>
@@ -1574,7 +1571,7 @@ const ProductDetailPage = () => {
                     <p className="text-xs sm:text-sm">
                       Enter your measurements below to find your perfect size. We'll recommend the best size based on your bust, waist, and hip measurements.
                     </p>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                       <div>
                         <label className="block text-xs font-light text-black uppercase tracking-widest mb-2">
@@ -1589,7 +1586,7 @@ const ProductDetailPage = () => {
                           className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-xs font-light text-black uppercase tracking-widest mb-2">
                           Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
@@ -1603,7 +1600,7 @@ const ProductDetailPage = () => {
                           className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="block text-xs font-light text-black uppercase tracking-widest mb-2">
                           Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})

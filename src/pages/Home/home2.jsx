@@ -773,8 +773,8 @@ const HomePage2 = () => {
           <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
             <div className="max-w-sm font-sweet-sans">
               <h2 className="text-white font-light font-sweet-sans">
-                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-sweet-sans">Trade in.</span>
-                <span className="text-4xl sm:text-5xl block tracking-wide font-sweet-sans">Get Credit.</span>
+                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-sweet-sans">YOBHA</span>
+                <span className="text-4xl sm:text-5xl block tracking-wide font-sweet-sans">Renew Program</span>
               </h2>
               <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed font-sweet-sans">
                 We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
@@ -793,8 +793,8 @@ const HomePage2 = () => {
           <div className="relative bg-black flex flex-col justify-center px-12 lg:px-16 py-16 font-sweet-sans">
             <div className="max-w-xl font-sweet-sans">
               <h2 className="text-white font-light font-sweet-sans">
-                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-sweet-sans pb-2">YOBHA BUY BACK</span>
-                <span className="text-3xl md:text-3xl lg:text-3xl xl:text-5xl tracking-wide font-light font-sweet-sans">GET CREDIT</span>
+                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-sweet-sans pb-2">YOBHA </span>
+                <span className="text-3xl md:text-3xl lg:text-3xl xl:text-5xl tracking-wide font-light font-sweet-sans"> Renew Program</span>
               </h2>
               <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed max-w-md font-sweet-sans">
                 We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.

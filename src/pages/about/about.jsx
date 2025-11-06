@@ -8,7 +8,7 @@ const About = () => {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-black uppercase tracking-widest mb-4">
-              About YOBHA
+            Why YOBHA
             </h1>
             <p className="text-text-medium text-lg font-light tracking-wide">
               Redefining the essence of modern comfort
