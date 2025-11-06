@@ -27,19 +27,19 @@ const HeaderWithSidebar2 = () => {
 
   const topBannerItems = [
     {
-      label: "Buy Back",
+      label: "BUY BACK",
       icon: "→",
       to: "/buyback"
     },
     {
-      label: "Sale",
+      label: "SALE",
       icon: "→",
       to: "/products"
     },
     {
-      label: "Anti Microbial",
+      label: "ANTI MICROBIAL",
       icon: "→",
-      to: "/fabric-protection#anti-microbial"
+      to: "/fabric-protection"
     }
   ];
 
@@ -211,7 +211,7 @@ const HeaderWithSidebar2 = () => {
         <div className="bg-black text-white relative overflow-hidden font-sweet-sans">
           <div className="max-w-[1600px] mx-auto flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3 relative">
             {/* Center: Rotating Banner Items */}
-            <div className="flex items-center justify-center min-h-[20px] md:min-h-[24px] relative w-full">
+            <div className="flex items-center justify-center min-h-[20px] md:min-h-[24px] relative w-full font-light">
               {topBannerItems.map((item, index) => (
                 <Link
                   key={index}
@@ -231,20 +231,20 @@ const HeaderWithSidebar2 = () => {
             </div>
             
             {/* Right: Login/Logout Link */}
-            <div className="absolute right-4 font-sweetsans sm:right-6 md:right-8 lg:right-12 xl:right-16">
+            <div className="absolute right-4 font-sweetsans sm:right-6 md:right-8 lg:right-12 xl:right-16 font-sweet-sans font-light">
               {isAuthenticated ? (
                 <button
                   onClick={handleLogout}
                   className="text-base md:text-lg lg:text-xl text-white tracking-wide whitespace-nowrap hover:opacity-70 transition-opacity duration-300 cursor-pointer"
                 >
-                  Logout
+                  LOGOUT
                 </button>
               ) : (
                 <Link
                   to="/login"
                   className="text-base md:text-lg lg:text-xl text-white tracking-wide whitespace-nowrap hover:opacity-70 transition-opacity duration-300"
                 >
-                  Login
+                  LOGIN
                 </Link>
               )}
             </div>

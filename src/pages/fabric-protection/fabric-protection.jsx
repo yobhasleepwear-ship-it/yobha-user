@@ -1,23 +1,7 @@
-import React, { useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import React from "react";
 
-const sectionData = [
-  {
-    id: "anti-viral",
-    title: "Anti-Viral Protection",
-    subtitle: "Engineered Defense, Everyday Luxury",
-    description:
-      "Our anti-viral treatment is designed to create a protective barrier that neutralises commonly encountered viruses on contact. While the science works silently, you enjoy the same indulgent softness, graceful drape, and breathable comfort YOBHA is known for.",
-    highlights: [
-      "Advanced multi-layer micro-coating that is gentle on skin",
-      "Designed to withstand repeated washes without compromising the finish",
-      "Maintains the natural sheen and hand-feel of our signature fabrics"
-    ],
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce fermentum augue vitae vehicula placerat. Phasellus tellus nibh, suscipit at interdum in, efficitur vel ligula. Integer velit ante, sodales id bibendum congue, convallis eu leo. Vestibulum viverra hendrerit nisl, ut aliquet mi efficitur ac. Praesent et tincidunt lorem. Nunc dignissim ultrices augue quis facilisis. Cras ac varius erat, nec blandit dolor. Donec nec consequat lacus. Maecenas faucibus, turpis vel dictum tincidunt, metus dolor condimentum risus, vel tincidunt ante nunc ac ipsum."
-  },
-  {
-    id: "anti-microbial",
+const FabricProtection = () => {
+  const antiMicrobialData = {
     title: "Anti-Microbial Assurance",
     subtitle: "Freshness Curated For Everyday Rituals",
     description:
@@ -27,88 +11,69 @@ const sectionData = [
       "Breathable, hypoallergenic treatment that respects sensitive skin",
       "Durable performance paired with effortless maintenance"
     ],
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel efficitur arcu. Integer arcu diam, egestas eget felis a, lacinia consequat velit. Proin suscipit lacinia sem id pellentesque. Integer aliquet arcu massa, vitae sagittis orci luctus at. Nunc porttitor nunc nec est sollicitudin, ac tempus libero congue. Quisque interdum turpis vitae sapien tempus, id laoreet sem varius. Suspendisse nibh dolor, tempor sed quam eu, feugiat pulvinar nulla. Vivamus a gravida mauris, sed cursus risus."
-  }
-];
-
-const FabricProtection = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    const scrollToHash = () => {
-      if (location.hash) {
-        const targetId = location.hash.replace("#", "");
-        const element = document.getElementById(targetId);
-        if (element) {
-          setTimeout(() => {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 150);
-        }
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+    features: [
+      {
+        title: "Advanced Protection",
+        description: "Our lab-tested finish actively reduces microbial growth, ensuring your garments stay fresher longer with every wear."
+      },
+      {
+        title: "Skin-Friendly",
+        description: "Breathable and hypoallergenic treatment designed to respect sensitive skin while maintaining fabric integrity."
+      },
+      {
+        title: "Long-Lasting",
+        description: "Durable performance that withstands repeated washes without compromising the protective finish or fabric quality."
+      },
+      {
+        title: "Effortless Care",
+        description: "Maintain the natural sheen and hand-feel of our signature fabrics with simple, everyday care routines."
       }
-    };
-
-    scrollToHash();
-  }, [location.hash]);
+    ]
+  };
 
   return (
-    <div className="bg-[#FAF6F2] min-h-screen font-sweet-sans">
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#f9ede5] via-[#fef8f5] to-[#f4e6dc] opacity-90" />
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-10 left-16 h-32 w-32 border border-luxury-gold/20 rotate-12" />
-          <div className="absolute bottom-12 right-10 h-40 w-40 border border-luxury-gold/20 -rotate-6" />
-        </div>
-
-        <div className="relative mx-auto max-w-6xl px-6 sm:px-10 md:px-12 lg:px-16 py-16 sm:py-20 md:py-24 text-center text-gray-900">
-          <p className="uppercase tracking-[0.45em] text-[10px] sm:text-xs text-luxury-gold mb-4">The Yobha Ritual</p>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] leading-tight font-light uppercase mb-5">Fabric Protection Lab</h1>
-          <p className="mx-auto max-w-2xl text-sm sm:text-base md:text-lg text-gray-600 font-light tracking-wide">
-            Discover the invisible craftsmanship behind every indulgent layer. Our advanced treatments preserve the elegance of silk while adding a quiet assurance of purity.
-          </p>
-
-          <div className="mt-10 flex flex-wrap justify-center gap-3 sm:gap-4">
-            {sectionData.map((section) => (
-              <Link
-                key={section.id}
-                to={`#${section.id}`}
-                className="px-4 sm:px-6 py-2 sm:py-3 border border-luxury-gold/60 rounded-full text-xs sm:text-sm tracking-[0.35em] uppercase text-gray-900 bg-white/70 hover:bg-white transition-all duration-300"
-              >
-                {section.title}
-              </Link>
-            ))}
+    <div className="min-h-screen bg-premium-cream font-sweet-sans">
+      {/* Hero Section */}
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-12 lg:py-16 bg-white font-sweet-sans">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8 md:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-4 md:mb-6 font-sweet-sans">
+              Fabric Protection
+            </h1>
+            <div className="w-16 md:w-20 h-px bg-gray-300 mx-auto mb-4 md:mb-6" />
+            <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
+              Discover the invisible craftsmanship behind every indulgent layer. Our advanced treatments preserve the elegance of silk while adding a quiet assurance of purity.
+            </p>
           </div>
         </div>
       </section>
 
-      {sectionData.map((section, index) => (
-        <section
-          key={section.id}
-          id={section.id}
-          className={`relative ${index % 2 === 0 ? "bg-white" : "bg-[#fdf7f2]"} py-16 sm:py-20 md:py-24`}
-        >
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-8 left-12 h-20 w-20 border border-luxury-gold/20 rotate-45" />
-            <div className="absolute bottom-10 right-12 h-24 w-24 border border-luxury-gold/20 -rotate-12" />
-          </div>
-
-          <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 sm:px-10 md:px-12 lg:px-16 lg:flex-row lg:items-start">
-            <div className="lg:w-5/12">
-              <span className="uppercase tracking-[0.4em] text-[10px] sm:text-xs text-luxury-gold">Signature Process</span>
-              <h2 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-light uppercase text-gray-900 leading-snug">
-                {section.title}
+      {/* Anti-Microbial Section */}
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-premium-cream font-sweet-sans">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 lg:gap-20">
+            {/* Left Column - Content */}
+            <div className="flex flex-col justify-center">
+              <span className="text-xs uppercase tracking-[0.4em] text-gray-500 mb-4 font-light">
+                Signature Process
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 font-sweet-sans">
+                {antiMicrobialData.title}
               </h2>
-              <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 font-light tracking-wide">
-                {section.subtitle}
+              <p className="text-sm md:text-base lg:text-lg text-gray-700 font-light tracking-wide mb-8 leading-relaxed">
+                {antiMicrobialData.subtitle}
+              </p>
+              
+              <p className="text-sm md:text-base lg:text-lg text-gray-600 font-light tracking-wide leading-relaxed mb-10">
+                {antiMicrobialData.description}
               </p>
 
-              <div className="mt-8 space-y-4">
-                {section.highlights.map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-luxury-gold/40 text-[11px] text-luxury-gold">•</span>
-                    <p className="text-sm sm:text-base text-gray-700 font-light tracking-wide leading-relaxed">
+              {/* Highlights */}
+              <div className="space-y-4">
+                {antiMicrobialData.highlights.map((item, index) => (
+                  <div key={index} className="flex items-start gap-4 border-b border-gray-200 pb-4 last:border-0">
+                    <div className="w-1 h-1 bg-gray-900 mt-2 flex-shrink-0" />
+                    <p className="text-sm md:text-base text-gray-700 font-light tracking-wide leading-relaxed">
                       {item}
                     </p>
                   </div>
@@ -116,40 +81,38 @@ const FabricProtection = () => {
               </div>
             </div>
 
-            <div className="lg:w-7/12">
-              <div className="rounded-[2.75rem] sm:rounded-[3rem] border border-gray-200/60 bg-white/80 p-6 sm:p-8 md:p-10 shadow-[0_25px_80px_rgba(0,0,0,0.08)] backdrop-blur">
-                <div className="h-1 w-20 bg-gradient-to-r from-luxury-gold via-amber-300 to-luxury-gold/80"></div>
-                <p className="mt-6 text-sm sm:text-base md:text-lg text-gray-600 font-light tracking-wide leading-relaxed">
-                  {section.description}
-                </p>
-                <p className="mt-6 text-sm sm:text-base md:text-lg text-gray-600 font-light tracking-wide leading-relaxed">
-                  {section.content}
-                </p>
-
-                <div className="mt-10 grid gap-6 sm:grid-cols-2">
-                  {[1, 2, 3, 4].map((slot) => (
-                    <div
-                      key={`${section.id}-card-${slot}`}
-                      className="rounded-3xl border border-gray-100 bg-white/90 p-5 shadow-[0_12px_30px_rgba(0,0,0,0.05)] transition-transform duration-300 hover:-translate-y-1"
-                    >
-                      <p className="text-xs uppercase tracking-[0.35em] text-gray-400 mb-3">Material Insight</p>
-                      <p className="text-sm sm:text-base text-gray-700 font-light leading-relaxed">
-                        Placeholder copy for key benefit #{slot}. Curate a concise note here describing how this treatment elevates everyday comfort while preserving couture standards.
-                      </p>
-                    </div>
-                  ))}
+            {/* Right Column - Feature Cards */}
+            <div className="space-y-6">
+              {antiMicrobialData.features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="border border-gray-200 bg-white p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-[0.2em] mb-3 font-sweet-sans">
+                    {feature.title}
+                  </h3>
+                  <div className="w-12 h-px bg-gray-300 mb-4" />
+                  <p className="text-sm md:text-base text-gray-600 font-light tracking-wide leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
-        </section>
-      ))}
+        </div>
+      </section>
 
-      <section className="bg-[#f9ede5] py-16 sm:py-20">
-        <div className="mx-auto max-w-5xl px-6 sm:px-10 md:px-12 lg:px-16 text-center">
-          <p className="uppercase tracking-[0.4em] text-[10px] sm:text-xs text-luxury-gold">Care Philosophy</p>
-          <h3 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-light uppercase text-gray-900">Crafted For Conscious Luxury</h3>
-          <p className="mt-6 text-sm sm:text-base md:text-lg text-gray-600 font-light tracking-wide leading-relaxed">
+      {/* Philosophy Section */}
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
+        <div className="max-w-5xl mx-auto text-center">
+          <span className="text-xs uppercase tracking-[0.4em] text-gray-500 mb-4 font-light">
+            Care Philosophy
+          </span>
+          <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8 font-sweet-sans">
+            Crafted For Conscious Luxury
+          </h3>
+          <div className="w-16 md:w-20 h-px bg-gray-300 mx-auto mb-6 md:mb-8" />
+          <p className="text-sm md:text-base lg:text-lg text-gray-600 font-light tracking-wide leading-relaxed max-w-3xl mx-auto">
             Each finish is meticulously tested to harmonise science with comfort, ensuring every piece you embrace embodies the poise and purity of the YOBHA universe.
           </p>
         </div>
@@ -159,4 +122,3 @@ const FabricProtection = () => {
 };
 
 export default FabricProtection;
-

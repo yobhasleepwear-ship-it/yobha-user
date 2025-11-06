@@ -78,14 +78,9 @@ const HeaderWithSidebar = () => {
       to: "/buyback"
     },
     {
-      icon: "🛡️",
-      label: "Anti-Viral Finish",
-      to: "/fabric-protection#anti-viral"
-    },
-    {
       icon: "🧼",
       label: "Anti-Microbial Fabric",
-      to: "/fabric-protection#anti-microbial"
+      to: "/fabric-protection"
     }
   ];
 

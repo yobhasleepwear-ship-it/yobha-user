@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Send, Gift, User, Mail, Phone, MapPin, Edit3, Save, X } from "lucide-react";
+import { Send, Gift, User, Mail, Phone, MapPin, Edit3, X, CheckCircle } from "lucide-react";
 import { addAddress, updateAddress, deleteAddress, getAddresses, createReferral } from "../../service/address";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { updateUserName } from "../../service/user";
@@ -311,7 +311,7 @@ const AccountPage = () => {
                           {savingName ? (
                             <div className="w-4 h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
                           ) : (
-                            <Save size={16} />
+                            <CheckCircle size={16} />
                           )}
                         </button>
                         <button
@@ -456,7 +456,7 @@ const AccountPage = () => {
                             </>
                           ) : (
                             <>
-                              <Save size={16} />
+                              <CheckCircle size={16} />
                               {editingAddressId ? "Update Address" : "Save Address"}
                             </>
                           )}
