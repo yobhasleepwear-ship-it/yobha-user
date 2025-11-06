@@ -91,7 +91,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const handleLogout = () => {
-    localStorageService.clearAllExcept(["selectedCountry","cart"]);
+    localStorageService.clearAllExcept(["selectedCountry", "cart"]);
     setIsAuthenticated(false);
     onClose();
     navigate("/login");
@@ -99,9 +99,6 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const mainNavigationItems = [
     { label: "What's New", nav: "whats-new", special: true },
-    { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
-    { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
-    { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
     { label: "Men", nav: "Men" },
     { label: "Women", nav: "Women" },
     { label: t("navbar.collectionsItems.petWear." + i18n.language), nav: "PetWear" },
@@ -114,6 +111,9 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Cushions", nav: "cushions" },
     { label: "Bathrobe", nav: "bathrobe" },
     { label: "Towels", nav: "towels" },
+    { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
+    { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
+    { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
     { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "petaccessories" },
   ];
 
@@ -121,127 +121,127 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   return typeof document !== "undefined"
     ? createPortal(
-        <div className="fixed inset-0 z-[99999]">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300"
-            onClick={onClose}
-          ></div>
+      <div className="fixed inset-0 z-[99999]">
+        <div
+          className="absolute inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300"
+          onClick={onClose}
+        ></div>
 
-          <aside className="absolute left-0 top-0 h-full w-80 md:w-96 max-w-[90vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-sweet-sans">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-              <Link to="/home" onClick={onClose}>
-                <img src={logoImage} alt="YOBHA Logo" className="h-10 cursor-pointer" />
-              </Link>
-              <button
-                className="text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
+        <aside className="absolute left-0 top-0 h-full w-80 md:w-96 max-w-[90vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-sweet-sans">
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+            <Link to="/home" onClick={onClose}>
+              <img src={logoImage} alt="YOBHA Logo" className="h-10 cursor-pointer" />
+            </Link>
+            <button
+              className="text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
+              onClick={onClose}
+            >
+              <X size={22} />
+            </button>
+          </div>
+
+          {/* Ship To Section */}
+          {selectedSidebarCountry && (
+            <div className="px-6 py-5 border-b border-gray-100">
+              <p className="text-[11px] uppercase tracking-[0.4em] text-gray-700 mb-3 font-light">Ship To</p>
+              <CountrySelector
+                value={selectedSidebarCountry?.code}
+                onSelect={handleSidebarCountryChange}
+                placeholder="Select country"
+                buttonClassName="bg-white border border-gray-200"
+                menuClassName="bg-white"
+                optionClassName=""
+              />
+            </div>
+          )}
+
+          {/* Main Navigation */}
+          <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-6 space-y-0">
+            {mainNavigationItems.map((item, index) => (
+              <Link
+                key={item.label}
+                to={item.special ? `/products?sort=latest` : `/products/${item.nav.replace(/\s/g, "-")}`}
+                className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
                 onClick={onClose}
               >
-                <X size={22} />
+                <span className="group-hover:border-b border-gray-800 transition-all duration-300">{item.label}</span>
+              </Link>
+            ))}
+
+            {/* Account Section */}
+            <div className="pt-6 border-t border-gray-100 mt-2">
+              <button
+                onClick={() => toggleAccordion("account")}
+                className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+              >
+                <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.myAccount." + i18n.language)}</span>
+                {expandedSections.account ? (
+                  <ChevronDown size={18} className="text-gray-700" />
+                ) : (
+                  <ChevronRight size={18} className="text-gray-700" />
+                )}
               </button>
-            </div>
-
-            {/* Ship To Section */}
-            {selectedSidebarCountry && (
-              <div className="px-6 py-5 border-b border-gray-100">
-                <p className="text-[11px] uppercase tracking-[0.4em] text-gray-700 mb-3 font-light">Ship To</p>
-                <CountrySelector
-                  value={selectedSidebarCountry?.code}
-                  onSelect={handleSidebarCountryChange}
-                  placeholder="Select country"
-                  buttonClassName="bg-white border border-gray-200"
-                  menuClassName="bg-white"
-                  optionClassName=""
-                />
-              </div>
-            )}
-
-            {/* Main Navigation */}
-            <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-6 space-y-0">
-              {mainNavigationItems.map((item, index) => (
-                <Link
-                  key={item.label}
-                  to={item.special ? `/products?sort=latest` : `/products/${item.nav.replace(/\s/g, "-")}`}
-                  className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
-                  onClick={onClose}
-                >
-                  <span className="group-hover:border-b border-gray-800 transition-all duration-300">{item.label}</span>
-                </Link>
-              ))}
-
-              {/* Account Section */}
-              <div className="pt-6 border-t border-gray-100 mt-2">
-                <button
-                  onClick={() => toggleAccordion("account")}
-                  className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
-                >
-                  <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.myAccount." + i18n.language)}</span>
-                  {expandedSections.account ? (
-                    <ChevronDown size={18} className="text-gray-700" />
+              {expandedSections.account && (
+                <div className="mt-2 animate-slideDown">
+                  {!isAuthenticated ? (
+                    <Link
+                      to="/login"
+                      className="block py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                      onClick={onClose}
+                    >
+                      <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.login." + i18n.language)}</span>
+                    </Link>
                   ) : (
-                    <ChevronRight size={18} className="text-gray-700" />
-                  )}
-                </button>
-                {expandedSections.account && (
-                  <div className="mt-2 animate-slideDown">
-                    {!isAuthenticated ? (
+                    <>
                       <Link
-                        to="/login"
-                        className="block py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                        to="/account"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
                         onClick={onClose}
                       >
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.login." + i18n.language)}</span>
+                        <User size={16} />
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.myAccount." + i18n.language)}</span>
                       </Link>
-                    ) : (
-                      <>
-                        <Link
-                          to="/account"
-                          className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
-                          onClick={onClose}
-                        >
-                          <User size={16} />
-                          <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.myAccount." + i18n.language)}</span>
-                        </Link>
-                        <Link
-                          to="/buyback"
-                          className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
-                          onClick={onClose}
-                        >
-                          <Recycle size={16} />
-                          <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.buyback." + i18n.language)}</span>
-                        </Link>
-                        <Link
-                          to="/orders"
-                          className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
-                          onClick={onClose}
-                        >
-                          <Package size={16} />
-                          <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.orders." + i18n.language)}</span>
-                        </Link>
-                        <button
-                          onClick={() => {
-                            onClose();
-                            handleLogout();
-                          }}
-                          className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group text-left w-full"
-                        >
-                          <LogOut size={16} />
-                          <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.logout." + i18n.language)}</span>
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
+                      <Link
+                        to="/buyback"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                        onClick={onClose}
+                      >
+                        <Recycle size={16} />
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.buyback." + i18n.language)}</span>
+                      </Link>
+                      <Link
+                        to="/orders"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                        onClick={onClose}
+                      >
+                        <Package size={16} />
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.orders." + i18n.language)}</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          onClose();
+                          handleLogout();
+                        }}
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group text-left w-full"
+                      >
+                        <LogOut size={16} />
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.logout." + i18n.language)}</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
-              {/* Language Switcher */}
-              <div className="pt-6 border-t border-gray-100 mt-2">
-                <LanguageSwitcher />
-              </div>
-            </nav>
-          </aside>
+            {/* Language Switcher */}
+            <div className="pt-6 border-t border-gray-100 mt-2">
+              <LanguageSwitcher />
+            </div>
+          </nav>
+        </aside>
 
-          <style jsx>{`
+        <style jsx>{`
             @keyframes slideInLeft {
               0% {
                 transform: translateX(-100%);
@@ -267,9 +267,9 @@ const Sidebar = ({ isOpen, onClose }) => {
               animation: slideDown 0.3s ease-out forwards;
             }
           `}</style>
-        </div>,
-        document.body
-      )
+      </div>,
+      document.body
+    )
     : null;
 };
 

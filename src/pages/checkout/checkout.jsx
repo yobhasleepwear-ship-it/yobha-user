@@ -111,30 +111,30 @@ const CheckoutPage = () => {
 
     if (checkoutProd && checkoutProd.length > 0 || pageProps == 'buynow') {
       const items = checkoutProd.items || []
-      console.log(items,"items")
+      console.log(items, "items")
       setCartItems(items)
       const subTotal = items.reduce((sum, item) => {
         const product = item || {};
-        
+
         // If lineTotal is already calculated (from buyNow), use it directly
         // if (item.lineTotal && typeof item.lineTotal === 'number') {
         //   return sum + item.lineTotal;
         // }
-        
+
         // Otherwise, calculate from priceList or unitPrice
         const priceList = product?.priceList || [];
         const matchingPrice = priceList.find(price =>
           price.country === (item.country || product.country) &&
           price.size === (item.size || product.size)
         );
-        
+
         // Try multiple fallback options
-        const unitPrice = matchingPrice?.priceAmount 
-        
+        const unitPrice = matchingPrice?.priceAmount
+
         return sum + (unitPrice * (item.quantity || 1));
       }, 0);
-      console.log(subTotal,"55")
-fetchCoupons(subTotal)
+      console.log(subTotal, "55")
+      fetchCoupons(subTotal)
 
       let totalShipping = 0;
       items.forEach(item => {
@@ -157,7 +157,7 @@ fetchCoupons(subTotal)
         discount,
         grandTotal,
         // currency: items.priceList((e)=>e.country===items.country && e.size===items.size).currency
-        currency:'INR'
+        currency: 'INR'
       });
     } else {
       fetchCart();
@@ -192,28 +192,33 @@ fetchCoupons(subTotal)
     try {
       const response = await JSON.parse(localStorage.getItem("cart")) || [];
       const items = response || [];
-      setCartItems(items);
-
-      // Calculate summary dynamically using same logic as cart page
+      setCartItems(items)
       const subTotal = items.reduce((sum, item) => {
         const product = item || {};
-        const priceList = product?.priceList || [];
 
+        // If lineTotal is already calculated (from buyNow), use it directly
+        // if (item.lineTotal && typeof item.lineTotal === 'number') {
+        //   return sum + item.lineTotal;
+        // }
+
+        // Otherwise, calculate from priceList or unitPrice
+        const priceList = product?.priceList || [];
         const matchingPrice = priceList.find(price =>
-          price.country === product.country &&
-          price.size === product.size
+          price.country === (item.country || product.country) &&
+          price.size === (item.size || product.size)
         );
 
-        const correctPrice = matchingPrice ? matchingPrice.priceAmount : 0
-        console.log(correctPrice,"cp")
-        return sum + (correctPrice * item.quantity);
-      }, 0);
+        // Try multiple fallback options
+        const unitPrice = matchingPrice?.priceAmount
 
+        return sum + (unitPrice * (item.quantity || 1));
+      }, 0);
+      console.log(subTotal, "55")
       fetchCoupons(subTotal)
 
       let totalShipping = 0;
       items.forEach(item => {
-        const countryPrice = item?.countryPrice;
+        const countryPrice = item?.product?.countryPrice;
         if (countryPrice && countryPrice.priceAmount !== undefined) {
           totalShipping += countryPrice.priceAmount;
         }
@@ -231,10 +236,8 @@ fetchCoupons(subTotal)
         tax,
         discount,
         grandTotal,
-         currency:items.priceList.find(price =>
-          price.country === items.country &&
-          price.size === items.size
-        ).currency
+        // currency: items.priceList((e)=>e.country===items.country && e.size===items.size).currency
+        currency: 'INR'
       });
     } catch (err) {
       console.log(err || "Failed to fetch cart");
@@ -278,7 +281,7 @@ fetchCoupons(subTotal)
         state: address.state,
         zip: address.pincode,
         country: address.country,
-        isDefault:  false
+        isDefault: false
       };
 
       // Log the address object being sent
@@ -1077,7 +1080,7 @@ fetchCoupons(subTotal)
                 <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider mb-1 font-sweet-sans">
                   Order Summary
                 </h2>
-                <p className="text-xs md:text-sm text-text-medium">{cartSummary.distinctItems} {cartSummary.distinctItems === 1 ? 'item' : 'items'}</p>
+                {/* <p className="text-xs md:text-sm text-text-medium">{cartSummary.distinctItems} {cartSummary.distinctItems === 1 ? 'item' : 'items'}</p> */}
               </div>
 
               <div className="p-4 md:p-6 space-y-3">
@@ -1106,7 +1109,7 @@ fetchCoupons(subTotal)
                         <p className="text-xs text-text-medium">{item.quantity} × {formatPrice(unitPrice, currency)}</p>
                         {monogramText && (
                           <div className="inline-flex items-center gap-2  border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-luxury-gold">
-                           
+
                             <span className="font-semibold tracking-[0.2em] text-black text-[11px]">{monogramText}</span>
                           </div>
                         )}

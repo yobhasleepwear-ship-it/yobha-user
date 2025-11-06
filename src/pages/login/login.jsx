@@ -38,7 +38,7 @@ const LoginPage = () => {
       localStorageService.setValue(LocalStorageKeys.RefreshToken, refreshToken);
       localStorageService.setValue(LocalStorageKeys.User, JSON.stringify(user));
 
-       const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/";
+       const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/home";
       localStorageService.removeValue("redirectAfterLogin");
       navigate(redirectTo, { replace: true });
     } catch (err) {
@@ -56,7 +56,6 @@ const LoginPage = () => {
 
 
       const { token, refreshToken, user } = response.data;
-      console.log(token, "token");
 
 
       localStorageService.setValue(LocalStorageKeys.AuthToken, token);
@@ -64,7 +63,7 @@ const LoginPage = () => {
       localStorageService.setValue(LocalStorageKeys.User, JSON.stringify(user));
 
       message.success("Welcome to YOBHA")
-      const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/";
+      const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/home";
       localStorageService.removeValue("redirectAfterLogin");
       navigate(redirectTo, { replace: true });
     } catch (err) {
@@ -402,7 +401,7 @@ const LoginPage = () => {
 
 
                     setShowOtpModal(false);
-                    const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/";
+                    const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/home";
                     localStorageService.removeValue("redirectAfterLogin");
                     navigate(redirectTo, { replace: true });
                   } catch (err) {

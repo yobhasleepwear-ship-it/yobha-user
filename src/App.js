@@ -14,6 +14,7 @@ import * as localStorageService from "./service/localStorageService";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import CountryDropdown from "./countryDropdown";
+import LoginModal from "./pages/login/loginModal";
 
 function AppContent() {
   const dispatch = useDispatch();
@@ -69,6 +70,8 @@ function App() {
     <Provider store={store}>
       <BrowserRouter>
         <AxiosInterceptorProvider>
+          {/* <LoginModal /> */}
+
           <AppContent />
           <ToastContainer />
         </AxiosInterceptorProvider>

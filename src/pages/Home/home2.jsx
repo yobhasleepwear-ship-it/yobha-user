@@ -13,7 +13,7 @@ import eyemask from "../../assets/EYEMASKS.jpg";
 import cushions from "../../assets/CUSHIONS.jpg";
 import BATHROBE_IMAGE from "../../assets/bathrobe.jpg";
 import TOWELS_IMAGE from "../../assets/towel.jpg";
-import SALE_BANNER_IMAGE from "../../assets/sale-banner.jpg";
+import SALE_BANNER_IMAGE from "../../assets/heroImage.jpg";
 import BUYBACK_IMAGE from "../../assets/buyback-image.jpg";
 import { getFilteredProducts } from "../../service/productAPI";
 import { SubscribeNewsletter } from "../../service/notification";
@@ -42,13 +42,13 @@ const HomePage2 = () => {
       id: 1,
       portrait: "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4",
       landscape: "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4",
-  
+
     },
     {
       id: 2,
       portrait: "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4",
       landscape: "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4",
-      
+
     }
     // Add more videos here as needed
     // {
@@ -433,7 +433,7 @@ const HomePage2 = () => {
   // Newsletter subscription handler
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!newsletterEmail || !newsletterEmail.trim()) {
       message.error("Please enter a valid email address");
       return;
@@ -471,26 +471,33 @@ const HomePage2 = () => {
         {/* Mobile: Stacked Layout - Banner above, Video below */}
         {/* Desktop/Laptop: 2 Column Grid - Banner left, Video right */}
         <div className="flex flex-col lg:flex-row w-full">
-          {/* Sale Banner - Left on desktop, Top on mobile */}
-          <div className="relative w-full lg:w-1/2 aspect-[4/3] overflow-hidden">
-            {/* Background Image */}
+          {/* Sale Banner */}
+          <div className="relative w-full lg:w-1/2 h-[250px] sm:h-[350px] md:h-[450px] lg:h-auto overflow-hidden">
             <img
               src={SALE_BANNER_IMAGE}
               alt="Sale Banner"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-center"
             />
+
+            {/* Shop Now Button */}
+            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
+              {/* <button className="px-6 py-2 bg-black text-white text-sm sm:text-base rounded-full hover:bg-gray-800 transition-all duration-300">
+                Shop Now
+              </button> */}
+            </div>
           </div>
 
-          {/* Video Section - Right on desktop, Bottom on mobile */}
-          <div className="relative w-full lg:w-1/2 aspect-[4/3] overflow-hidden">
+
+          {/* Video Section */}
+          <div className="relative w-full lg:w-1/2 h-[250px] sm:h-[350px] md:h-[450px] lg:h-auto overflow-hidden">
             <video
               src={isPortrait ? portraitVideo : landscapeVideo}
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
-              key={isPortrait ? 'portrait' : 'landscape'}
+              className="w-full h-full object-cover object-center"
+              key={isPortrait ? "portrait" : "landscape"}
             />
           </div>
         </div>
@@ -511,7 +518,7 @@ const HomePage2 = () => {
           </div>
 
           {/* Auto-scrolling Carousel Container */}
-          <div 
+          <div
             className="relative overflow-hidden w-full group"
             onMouseEnter={() => setIsAccHovered(true)}
             onMouseLeave={() => setIsAccHovered(false)}
@@ -521,9 +528,8 @@ const HomePage2 = () => {
             {/* Navigation Buttons */}
             <button
               onClick={handleAccPrev}
-              className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
-                isAccHovered ? 'opacity-100' : 'opacity-0'
-              }`}
+              className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${isAccHovered ? 'opacity-100' : 'opacity-0'
+                }`}
               aria-label="Previous"
             >
               <svg
@@ -538,9 +544,8 @@ const HomePage2 = () => {
 
             <button
               onClick={handleAccNext}
-              className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
-                isAccHovered ? 'opacity-100' : 'opacity-0'
-              }`}
+              className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${isAccHovered ? 'opacity-100' : 'opacity-0'
+                }`}
               aria-label="Next"
             >
               <svg
@@ -656,7 +661,7 @@ const HomePage2 = () => {
 
         {/* Video Carousel Container - Full Width */}
         {manufacturingVideos.length > 0 && (
-          <div 
+          <div
             className="relative w-full aspect-[21/9] overflow-hidden bg-gray-50 group"
             onMouseEnter={() => setIsVideoHovered(true)}
             onMouseLeave={() => setIsVideoHovered(false)}
@@ -671,9 +676,8 @@ const HomePage2 = () => {
                   loop
                   muted
                   playsInline
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                    index === currentVideoIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-                  }`}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${index === currentVideoIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                    }`}
                   style={{ display: index === currentVideoIndex ? 'block' : 'none' }}
                 />
               ))}
@@ -683,12 +687,11 @@ const HomePage2 = () => {
             {manufacturingVideos.length > 1 && (
               <>
                 <button
-                  onClick={() => setCurrentVideoIndex((prev) => 
+                  onClick={() => setCurrentVideoIndex((prev) =>
                     prev === 0 ? manufacturingVideos.length - 1 : prev - 1
                   )}
-                  className={`absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 ${
-                    isVideoHovered ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className={`absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 ${isVideoHovered ? 'opacity-100' : 'opacity-0'
+                    }`}
                   aria-label="Previous video"
                 >
                   <svg
@@ -702,12 +705,11 @@ const HomePage2 = () => {
                 </button>
 
                 <button
-                  onClick={() => setCurrentVideoIndex((prev) => 
+                  onClick={() => setCurrentVideoIndex((prev) =>
                     (prev + 1) % manufacturingVideos.length
                   )}
-                  className={`absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 ${
-                    isVideoHovered ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className={`absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 ${isVideoHovered ? 'opacity-100' : 'opacity-0'
+                    }`}
                   aria-label="Next video"
                 >
                   <svg
@@ -729,11 +731,10 @@ const HomePage2 = () => {
                   <button
                     key={video.id}
                     onClick={() => setCurrentVideoIndex(index)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      index === currentVideoIndex
+                    className={`h-2 rounded-full transition-all duration-300 ${index === currentVideoIndex
                         ? 'w-8 bg-white shadow-lg scale-110'
                         : 'w-2 bg-white/50 hover:bg-white/80 hover:scale-110'
-                    }`}
+                      }`}
                     aria-label={`Go to video ${index + 1}`}
                   />
                 ))}
@@ -889,7 +890,7 @@ const HomePage2 = () => {
               <div className="w-12 h-12 border-4 border-luxury-gold/20 animate-spin" />
             </div>
           ) : displayProducts.length > 0 ? (
-            <div 
+            <div
               className="relative overflow-hidden group"
               onMouseEnter={() => setIsNewArrivalsHovered(true)}
               onMouseLeave={() => setIsNewArrivalsHovered(false)}
@@ -901,9 +902,8 @@ const HomePage2 = () => {
               {/* Navigation Buttons */}
               <button
                 onClick={handleNewArrivalsPrev}
-                className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
-                  isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
-                }`}
+                className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
+                  }`}
                 aria-label="Previous"
               >
                 <svg
@@ -918,9 +918,8 @@ const HomePage2 = () => {
 
               <button
                 onClick={handleNewArrivalsNext}
-                className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${
-                  isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
-                }`}
+                className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
+                  }`}
                 aria-label="Next"
               >
                 <svg
@@ -1108,14 +1107,14 @@ const HomePage2 = () => {
 
               {/* Desktop: Centered Grid */}
               <div className={`hidden md:grid gap-6 ${recentVisited.length === 1
-                  ? 'grid-cols-1 justify-items-center'
-                  : recentVisited.length === 2
-                    ? 'grid-cols-2 max-w-2xl mx-auto'
-                    : recentVisited.length === 3
-                      ? 'grid-cols-3 max-w-4xl mx-auto'
-                      : recentVisited.length === 4
-                        ? 'grid-cols-4 max-w-5xl mx-auto'
-                        : 'grid-cols-4 lg:grid-cols-6'
+                ? 'grid-cols-1 justify-items-center'
+                : recentVisited.length === 2
+                  ? 'grid-cols-2 max-w-2xl mx-auto'
+                  : recentVisited.length === 3
+                    ? 'grid-cols-3 max-w-4xl mx-auto'
+                    : recentVisited.length === 4
+                      ? 'grid-cols-4 max-w-5xl mx-auto'
+                      : 'grid-cols-4 lg:grid-cols-6'
                 }`}>
                 {recentVisited.map((item) => (
                   <article
@@ -1207,7 +1206,7 @@ const HomePage2 = () => {
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 md:mb-4 font-sweet-sans">
             Newsletter
           </h2>
-          
+
           <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto font-light tracking-wide mb-8 md:mb-10 font-sweet-sans leading-relaxed">
             Subscribe to receive updates, access to exclusive deals, and more
           </p>
