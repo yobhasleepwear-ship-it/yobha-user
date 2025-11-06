@@ -4,7 +4,7 @@ import { message } from "../../comman/toster-message/ToastContainer";
 import FAQ from "../../comman/faq/faq";
 
 const Contact = () => {
-  const whatsappNumber = "+916200830664";
+  const whatsappNumber = "+917827051829";
   const whatsappText = "Hello, I'd like to get in touch regarding your products.";
 
   // Contact form state
