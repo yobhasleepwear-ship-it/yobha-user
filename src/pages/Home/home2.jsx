@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 import MEN_IMAGE from "../../assets/Men.png";
 import WOMEN_IMAGE from "../../assets/Women.png";
 import KID_IMAGE from "../../assets/kids-hero.jpg";
@@ -17,6 +18,9 @@ import BUYBACK_IMAGE from "../../assets/buyback-image.jpg";
 import { getFilteredProducts } from "../../service/productAPI";
 import { SubscribeNewsletter } from "../../service/notification";
 import { message } from "../../comman/toster-message/ToastContainer";
+import { addToWishlist } from "../../service/wishlist";
+import { LocalStorageKeys } from "../../constants/localStorageKeys";
+import * as localStorageService from "../../service/localStorageService";
 
 const HomePage2 = () => {
   const navigate = useNavigate();
@@ -34,6 +38,9 @@ const HomePage2 = () => {
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isVideoHovered, setIsVideoHovered] = useState(false);
+  const [wishlistedIds, setWishlistedIds] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState({});
+  const giftShopRef = useRef(null);
 
   // Video URLs - Add your manufacturing/packaging video URLs here
   const manufacturingVideos = [
@@ -164,120 +171,89 @@ const HomePage2 = () => {
       category: p.category || "Luxury Collection"
     }));
 
-  // Image carousel state for each product
-  const [productImageIndices, setProductImageIndices] = useState({});
-  const carouselRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [isUserInteracting, setIsUserInteracting] = useState(false);
-  const [isNewArrivalsHovered, setIsNewArrivalsHovered] = useState(false);
+  const handleWishlistClick = async (event, product) => {
+    event.stopPropagation();
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
 
-  // Auto-rotate images for each product
-  useEffect(() => {
-    if (displayProducts.length === 0) return;
-
-    const interval = setInterval(() => {
-      setProductImageIndices(prev => {
-        const newIndices = { ...prev };
-        displayProducts.forEach(product => {
-          if (product.images && product.images.length > 1) {
-            const currentIndex = prev[product.id] || 0;
-            newIndices[product.id] = (currentIndex + 1) % product.images.length;
-          }
-        });
-        return newIndices;
-      });
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [displayProducts]);
-
-  useEffect(() => {
-    if (displayProducts.length > 0) {
-      const initialIndices = {};
-      displayProducts.forEach(product => {
-        initialIndices[product.id] = 0;
-      });
-      setProductImageIndices(initialIndices);
+    if (!token) {
+      message.info("Please log in to add items to your wishlist.");
+      navigate("/login");
+      return;
     }
-  }, []);
+
+    if (wishlistLoading[product.id]) {
+      return;
+    }
+
+    try {
+      setWishlistLoading((prev) => ({ ...prev, [product.id]: true }));
+
+      const payload = {
+        productId: product.slug || product.id,
+        size: "",
+        desiredQuantity: 1,
+        desiredSize: "",
+        desiredColor: "",
+        notifyWhenBackInStock: false,
+      };
+
+      await addToWishlist(product.id, payload);
+      message.success("Added to wishlist");
+      setWishlistedIds((prev) => (prev.includes(product.id) ? prev : [...prev, product.id]));
+    } catch (error) {
+      console.error("Failed to add to wishlist:", error);
+      message.error("Unable to add to wishlist right now.");
+    } finally {
+      setWishlistLoading((prev) => {
+        const updated = { ...prev };
+        delete updated[product.id];
+        return updated;
+      });
+    }
+  };
+
+  // Image carousel state for each product
+
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!isAccDragging || !accessoriesRef.current) return;
-      e.preventDefault();
-      const x = e.pageX - accessoriesRef.current.offsetLeft;
-      const walk = (x - accStartX) * 2;
-      accessoriesRef.current.scrollLeft = accScrollLeft - walk;
-    };
+    if (isAccUserInteracting && accessoriesRef.current) {
+      const handleMouseMove = (e) => {
+        if (!accessoriesRef.current) return;
+        const currentX = e.pageX - accessoriesRef.current.offsetLeft;
+        const diffX = currentX - accStartX;
+        accessoriesRef.current.scrollLeft = accScrollLeft - diffX;
+      };
 
-    const handleMouseUp = () => {
-      setIsAccDragging(false);
-      setTimeout(() => setIsAccUserInteracting(false), 4000);
-    };
+      const handleMouseUp = () => {
+        setIsAccDragging(false);
+        setIsAccUserInteracting(false);
+      };
 
-    if (isAccDragging) {
+      const handleTouchMove = (e) => {
+        if (!accessoriesRef.current) return;
+        const currentX = e.touches[0].pageX - accessoriesRef.current.offsetLeft;
+        const diffX = currentX - accStartX;
+        accessoriesRef.current.scrollLeft = accScrollLeft - diffX;
+      };
+
+      const handleTouchEnd = () => {
+        setIsAccDragging(false);
+        setIsAccUserInteracting(false);
+      };
+
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchend', handleTouchEnd);
+
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
     }
+  }, [isAccUserInteracting, accStartX, accScrollLeft]);
 
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isAccDragging, accStartX, accScrollLeft]);
-
-  // Auto-scroll carousel with seamless reset
-  useEffect(() => {
-    if (!accessoriesRef.current || isAccUserInteracting) return;
-
-    const carousel = accessoriesRef.current;
-    let animationFrameId;
-    let lastTime = performance.now();
-
-    const getScrollSpeed = () => {
-      const scrollWidth = carousel.scrollWidth;
-      const duration = window.innerWidth < 640 ? 40000 : window.innerWidth < 768 ? 50000 : 70000;
-      return scrollWidth / duration; // pixels per millisecond
-    };
-
-    const animate = (currentTime) => {
-      if (!accessoriesRef.current || isAccUserInteracting) {
-        return;
-      }
-
-      const scrollWidth = carousel.scrollWidth;
-      const scrollTarget = scrollWidth / 2; // Half way (end of first set)
-
-      const deltaTime = currentTime - lastTime;
-      lastTime = currentTime;
-
-      const currentScroll = carousel.scrollLeft;
-      const scrollSpeed = getScrollSpeed();
-      const newScroll = currentScroll + scrollSpeed * deltaTime;
-
-      // If we've reached or passed the target (50% of scroll width), reset seamlessly
-      if (newScroll >= scrollTarget) {
-        carousel.scrollLeft = newScroll - scrollTarget;
-      } else {
-        carousel.scrollLeft = newScroll;
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    // Small delay to ensure DOM is ready
-    const timeoutId = setTimeout(() => {
-      animationFrameId = requestAnimationFrame(animate);
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, [isAccUserInteracting]);
   const handleAccMouseDown = (e) => {
     if (!accessoriesRef.current) return;
     setIsAccDragging(true);
@@ -287,7 +263,6 @@ const HomePage2 = () => {
     e.preventDefault();
   };
 
-  // Navigation handlers for accessories carousel
   const handleAccPrev = (e) => {
     e.stopPropagation();
     if (!accessoriesRef.current) return;
@@ -310,123 +285,6 @@ const HomePage2 = () => {
       behavior: 'smooth'
     });
     setTimeout(() => setIsAccUserInteracting(false), 4000);
-  };
-
-  // Handle drag to scroll
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!isDragging || !carouselRef.current) return;
-      e.preventDefault();
-      const x = e.pageX - carouselRef.current.offsetLeft;
-      const walk = (x - startX) * 2; // Scroll speed multiplier
-      carouselRef.current.scrollLeft = scrollLeft - walk;
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      // Reset interaction state after 5 seconds
-      setTimeout(() => setIsUserInteracting(false), 5000);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, startX, scrollLeft]);
-
-  const handleMouseDown = (e) => {
-    if (!carouselRef.current) return;
-    setIsDragging(true);
-    setIsUserInteracting(true);
-    setStartX(e.pageX - carouselRef.current.offsetLeft);
-    setScrollLeft(carouselRef.current.scrollLeft);
-    e.preventDefault();
-  };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  // Auto-scroll carousel with seamless reset for New Arrivals
-  useEffect(() => {
-    if (!carouselRef.current || isUserInteracting) return;
-
-    const carousel = carouselRef.current;
-    let animationFrameId;
-    let lastTime = performance.now();
-
-    const getScrollSpeed = () => {
-      const scrollWidth = carousel.scrollWidth;
-      const duration = window.innerWidth < 640 ? 40000 : window.innerWidth < 768 ? 50000 : 60000;
-      return scrollWidth / duration; // pixels per millisecond
-    };
-
-    const animate = (currentTime) => {
-      if (!carouselRef.current || isUserInteracting) {
-        return;
-      }
-
-      const scrollWidth = carousel.scrollWidth;
-      const scrollTarget = scrollWidth / 2; // Half way (end of first set)
-
-      const deltaTime = currentTime - lastTime;
-      lastTime = currentTime;
-
-      const currentScroll = carousel.scrollLeft;
-      const scrollSpeed = getScrollSpeed();
-      const newScroll = currentScroll + scrollSpeed * deltaTime;
-
-      // If we've reached or passed the target (50% of scroll width), reset seamlessly
-      if (newScroll >= scrollTarget) {
-        carousel.scrollLeft = newScroll - scrollTarget;
-      } else {
-        carousel.scrollLeft = newScroll;
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    // Small delay to ensure DOM is ready
-    const timeoutId = setTimeout(() => {
-      animationFrameId = requestAnimationFrame(animate);
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, [isUserInteracting]);
-
-  // Navigation handlers for New Arrivals carousel
-  const handleNewArrivalsPrev = (e) => {
-    e.stopPropagation();
-    if (!carouselRef.current) return;
-    setIsUserInteracting(true);
-    const scrollAmount = carouselRef.current.clientWidth * 0.6;
-    carouselRef.current.scrollBy({
-      left: -scrollAmount,
-      behavior: 'smooth'
-    });
-    setTimeout(() => setIsUserInteracting(false), 5000);
-  };
-
-  const handleNewArrivalsNext = (e) => {
-    e.stopPropagation();
-    if (!carouselRef.current) return;
-    setIsUserInteracting(true);
-    const scrollAmount = carouselRef.current.clientWidth * 0.6;
-    carouselRef.current.scrollBy({
-      left: scrollAmount,
-      behavior: 'smooth'
-    });
-    setTimeout(() => setIsUserInteracting(false), 5000);
   };
 
   // Newsletter subscription handler
@@ -481,15 +339,114 @@ const HomePage2 = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-black/30 pointer-events-none" />
 
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
-            <button className="px-8 py-3 bg-white/90 text-black text-sm sm:text-base md:text-lg font-medium rounded-full uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]">
+            <button
+              onClick={() => {
+                if (giftShopRef.current) {
+                  giftShopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
+              className="px-8 py-3 bg-white/90 text-black text-sm sm:text-base md:text-lg font-medium rounded-full uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]"
+            >
               Gifts
             </button>
           </div>
         </div>
       </section>
 
-      {/* Accessories Section - The Gift Shop */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-4 font-sweet-sans">
+              Curated By YOBHA
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base lg:text-lg font-light tracking-wide leading-relaxed">
+              New Winter Collection
+            </p>
+          </div>
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-12 h-12 border-4 border-luxury-gold/20 animate-spin" />
+            </div>
+          ) : displayProducts.length > 0 ? (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+                {displayProducts.map((product, index) => {
+                  const hideOnMobile = index >= 6;
+                  const isWishlisted = wishlistedIds.includes(product.id);
+                  return (
+                    <div key={product.id} className={hideOnMobile ? "hidden md:block" : "block"}>
+                      <article
+                        className="group relative bg-white border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer flex flex-col h-full"
+                        onClick={() => navigate(`/productDetail/${product.id}`)}
+                      >
+                        <div className="relative aspect-[3/4] overflow-hidden">
+                          <img
+                            src={product.image || "https://via.placeholder.com/400x600?text=YOBHA"}
+                            alt={product.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            onError={(e) => {
+                              e.target.src = "https://via.placeholder.com/400x600?text=YOBHA";
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={(event) => handleWishlistClick(event, product)}
+                            className="absolute top-3 right-3 flex items-center justify-center w-9 h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-md hover:bg-white transition-all duration-300"
+                            aria-label="Add to wishlist"
+                          >
+                            <Heart
+                              size={18}
+                              strokeWidth={1.8}
+                              className={isWishlisted ? "text-black" : "text-gray-700"}
+                              fill={isWishlisted ? "currentColor" : "none"}
+                            />
+                          </button>
+                          {wishlistLoading[product.id] && (
+                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center text-xs uppercase tracking-[0.3em] text-gray-700">
+                              Adding...
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col flex-1 px-4 py-4 text-center space-y-2">
+                          <p className="text-[11px] uppercase tracking-[0.35em] text-gray-500">
+                            {product.category}
+                          </p>
+                          <h3 className="text-sm sm:text-base font-light text-gray-900 uppercase tracking-[0.28em] leading-snug line-clamp-2 min-h-[2.5rem]">
+                            {product.title}
+                          </h3>
+                          <p className="text-sm text-gray-700 tracking-wide mt-auto">
+                            {product.price}
+                          </p>
+                        </div>
+                      </article>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-12 text-center">
+                <button
+                  onClick={() => navigate("/products")}
+                  className="px-10 py-3 bg-black text-white text-sm md:text-base uppercase tracking-[0.3em] rounded-full hover:bg-gray-900 transition-all duration-300 shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
+                >
+                  Explore All
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-sm md:text-base">New arrivals are coming soon. Stay tuned!</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Accessories Section - The Gift Shop */}
+      <section
+        className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans"
+        ref={giftShopRef}
+      >
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-12 md:mb-16">
@@ -816,7 +773,7 @@ const HomePage2 = () => {
           </div>
 
           {/* Gender Categories Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12">
             {genderCategories.map((category, index) => (
               <div
                 key={category.id}
@@ -855,198 +812,6 @@ const HomePage2 = () => {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Trending New Arrivals */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-premium-white font-sweet-sans">
-        <div className=" mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4 font-sweet-sans">
-              New Arrivals
-            </h2>
-            <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
-              Discover our latest collection of premium essentials
-            </p>
-          </div>
-
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="w-12 h-12 border-4 border-luxury-gold/20 animate-spin" />
-            </div>
-          ) : displayProducts.length > 0 ? (
-            <div
-              className="relative overflow-hidden group"
-              onMouseEnter={() => setIsNewArrivalsHovered(true)}
-              onMouseLeave={() => setIsNewArrivalsHovered(false)}
-            >
-              {/* Gradient overlays */}
-              <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-[#FAF6F2] to-transparent z-10 pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-[#FAF6F2] to-transparent z-10 pointer-events-none" />
-
-              {/* Navigation Buttons */}
-              <button
-                onClick={handleNewArrivalsPrev}
-                className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
-                  }`}
-                aria-label="Previous"
-              >
-                <svg
-                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-
-              <button
-                onClick={handleNewArrivalsNext}
-                className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white border border-gray-300/50 hover:border-gray-400 shadow-md hover:shadow-lg flex items-center justify-center transition-all duration-300 ${isNewArrivalsHovered ? 'opacity-100' : 'opacity-0'
-                  }`}
-                aria-label="Next"
-              >
-                <svg
-                  className="w-5 h-5 md:w-6 md:h-6 text-gray-900"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-
-              {/* Carousel Container - Scrollable */}
-              <div
-                ref={carouselRef}
-                className="flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden scrollbar-hide pb-2"
-                style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
-                onMouseDown={handleMouseDown}
-                onMouseLeave={handleMouseLeave}
-                onTouchStart={(e) => setIsUserInteracting(true)}
-                onTouchEnd={() => setTimeout(() => setIsUserInteracting(false), 5000)}
-                onWheel={() => setIsUserInteracting(true)}
-              >
-                {/* First set of products */}
-                {displayProducts.map((product) => (
-                  <article
-                    key={`product-1-${product.id}`}
-                    className="group cursor-pointer flex-shrink-0 w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
-                    onClick={() => navigate(`/productDetail/${product.id}`)}
-                  >
-                    <div className="relative h-[280px] md:h-[380px] lg:h-[420px] overflow-hidden bg-white border border-gray-200/30 shadow-sm group-hover:shadow-2xl group-hover:border-gray-300/50 transition-all duration-700">
-                      {/* Product Image Carousel */}
-                      <div className="relative w-full h-full">
-                        {product.images && product.images.length > 0 ? (
-                          product.images.map((image, imgIndex) => (
-                            <img
-                              key={imgIndex}
-                              src={image}
-                              alt={`${product.title} - ${imgIndex + 1}`}
-                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
-                                } group-hover:scale-110 transition-transform duration-700`}
-                            />
-                          ))
-                        ) : (
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          />
-                        )}
-
-                        {/* Subtle overlay on hover */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      </div>
-
-                      {/* Badge */}
-                      {product.badge && (
-                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm border border-gray-200/50">
-                          <span className="text-xs uppercase tracking-[0.2em] text-gray-900 font-light">
-                            {product.badge}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="mt-4 space-y-2">
-                      <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2.5rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
-                        {product.title}
-                      </h3>
-                    </div>
-                  </article>
-                ))}
-
-                {/* Duplicate set for seamless loop */}
-                {displayProducts.map((product) => (
-                  <article
-                    key={`product-2-${product.id}`}
-                    className="group cursor-pointer flex-shrink-0 w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
-                    onClick={() => navigate(`/productDetail/${product.id}`)}
-                  >
-                    <div className="relative h-[280px] md:h-[380px] lg:h-[420px] overflow-hidden bg-white border border-gray-200/30 shadow-sm group-hover:shadow-2xl group-hover:border-gray-300/50 transition-all duration-700">
-                      {/* Product Image Carousel */}
-                      <div className="relative w-full h-full">
-                        {product.images && product.images.length > 0 ? (
-                          product.images.map((image, imgIndex) => (
-                            <img
-                              key={imgIndex}
-                              src={image}
-                              alt={`${product.title} - ${imgIndex + 1}`}
-                              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${productImageIndices[product.id] === imgIndex ? 'opacity-100' : 'opacity-0'
-                                } group-hover:scale-110 transition-transform duration-700`}
-                            />
-                          ))
-                        ) : (
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          />
-                        )}
-
-                        {/* Subtle overlay on hover */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      </div>
-
-                      {/* Badge */}
-                      {product.badge && (
-                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm border border-gray-200/50">
-                          <span className="text-xs uppercase tracking-[0.2em] text-gray-900 font-light">
-                            {product.badge}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="mt-4 space-y-2">
-                      <h3 className="text-sm md:text-base font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2.5rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
-                        {product.title}
-                      </h3>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-20">
-              <p className="text-gray-600 text-lg">No products available at the moment.</p>
-            </div>
-          )}
-
-          {displayProducts.length > 0 && (
-            <div className="text-center mt-12 md:mt-16">
-              <button
-                onClick={() => navigate('/products', { state: { sortBy: 'latest' } })}
-                className="px-10 py-3.5 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.25em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-500 bg-transparent font-sweet-sans"
-              >
-                View All New Arrivals →
-              </button>
-            </div>
-          )}
         </div>
       </section>
 
