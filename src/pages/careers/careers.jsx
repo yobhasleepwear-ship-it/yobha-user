@@ -328,7 +328,7 @@ const Careers = () => {
                             <MapPin size={16} className="text-gray-400 flex-shrink-0" />
                               <span className="font-light">
                                 {job.location.remote 
-                                ? <span className="text-gray-500 italic">Remote</span>
+                                ? <span className="text-gray-500 ">Remote</span>
                                   : `${job.location.city || ''}${job.location.state ? `, ${job.location.state}` : ''}${job.location.country ? `, ${job.location.country}` : ''}`}
                               </span>
                             </div>
