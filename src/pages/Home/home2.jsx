@@ -370,14 +370,13 @@ const HomePage2 = () => {
                   giftShopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
                 }
               }}
-              className="px-8 py-3 bg-white/90 text-black text-sm sm:text-base md:text-lg font-medium rounded-full uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]"
+              className="px-8 py-3 bg-black text-white text-sm sm:text-base md:text-lg font-light rounded-full uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]"
             >
               Gifts
             </button>
           </div>
         </div>
       </section>
-
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
@@ -443,7 +442,7 @@ const HomePage2 = () => {
                           {/* <p className="text-xs uppercase tracking-[0.25em] text-gray-500">
                             Code: <span className="tracking-normal text-gray-700">{product.code || "—"}</span>
                           </p> */}
-                          <p className="text-base font-medium text-gray-900 tracking-wide">
+                          <p className="text-base font-light text-gray-900 tracking-wide">
                             {product.price}
                           </p>
                           {/* {product.colors.length > 0 && (
@@ -478,6 +477,113 @@ const HomePage2 = () => {
               <p className="text-gray-500 text-sm md:text-base">New arrivals are coming soon. Stay tuned!</p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Buyback USP Section */}
+      <section className="relative w-full bg-white font-futura py-8 md:py-12 lg:py-16">
+        <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
+          onClick={() => navigate('/buyback')}>
+          {/* Image Background */}
+          <img
+            src={BUYBACK_IMAGE}
+            alt="Buyback"
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+          />
+
+          {/* Dark Overlay for Text Readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+
+          {/* Overlaid Text and Button */}
+          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
+            <div className="max-w-sm font-futura">
+              <h2 className="text-white font-light font-futura">
+                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-light font-futura">Recycle</span>
+                <span className="text-4xl sm:text-5xl block tracking-wide font-light font-futura">Renew</span>
+                <span className="text-3xl sm:text-4xl block mt-1 tracking-wide font-light font-futura">Reuse</span>
+              </h2>
+              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed font-futura">
+                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
+              </p>
+              <button className="mt-6 self-start px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="hidden md:block cursor-pointer group"
+          onClick={() => navigate('/buyback')}
+        >
+          <div
+            className="relative min-h-[500px] lg:min-h-[600px] flex flex-col justify-center px-12 lg:px-16 py-16 font-futura bg-cover bg-center overflow-hidden"
+            style={{ backgroundImage: `url(${BUYBACK_IMAGE})` }}
+          >
+            <div className="absolute inset-0 bg-black/65" />
+            <div className="relative z-10 max-w-2xl">
+              <h2 className="text-white font-light font-futura">
+                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-light font-futura pb-2">Recycle</span>
+                <span className="text-4xl md:text-5xl lg:text-6xl xl:text-6xl block tracking-wide font-light font-futura">Renew</span>
+                <span className="text-4xl md:text-5xl lg:text-6xl block mt-2 tracking-wide font-light font-futura">Reuse</span>
+              </h2>
+              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed font-futura">
+                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
+              </p>
+              <button className="mt-10 self-start px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Shop by Category */}
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 md:mb-20 lg:mb-24">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8 font-sweet-sans">
+              Shop by Category
+            </h2>
+            <div className="w-16 md:w-20 h-px bg-gray-300 mx-auto mb-6 md:mb-8" />
+            <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
+              Discover timeless elegance across our curated collections
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12">
+            {genderCategories.map((category) => (
+              <div
+                key={category.id}
+                className="group cursor-pointer"
+                onClick={() => navigate(`/products/${category.id}`)}
+              >
+                <div className="relative h-[220px] sm:h-[280px] md:h-[380px] lg:h-[420px] xl:h-[480px] overflow-hidden bg-gray-50/50 border border-gray-100 group-hover:border-gray-200 transition-all duration-700 ease-out">
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                    <div className="absolute inset-0 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]" />
+                  </div>
+
+                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/5 via-transparent to-black/5 group-hover:from-white/10 group-hover:via-transparent group-hover:to-black/10 transition-all duration-700" />
+
+                  <img
+                    src={category.image}
+                    alt={category.title}
+                    className={`h-full w-full object-cover transition-all duration-[1000ms] ease-out group-hover:scale-[1.05] group-hover:brightness-[1.03] ${category.id === "couple" ? "object-[center_top]" : ""}`}
+                    style={category.id === "couple" ? { objectPosition: "center top" } : {}}
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                </div>
+
+                <div className="mt-6 md:mt-8 lg:mt-10 text-center">
+                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-gray-900 uppercase tracking-[0.2em] md:tracking-[0.25em] group-hover:text-gray-700 transition-colors duration-500 font-sweet-sans">
+                    {category.title}
+                  </h3>
+                  <div className="mt-3 md:mt-4 h-[1px] w-0 mx-auto bg-gray-400 group-hover:w-10 md:group-hover:w-12 transition-all duration-700 ease-out" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -736,124 +842,6 @@ const HomePage2 = () => {
         )}
       </section>
 
-      {/* Buyback USP Section */}
-      <section className="relative w-full bg-white font-sweet-sans py-8 md:py-12 lg:py-16">
-        <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
-          onClick={() => navigate('/buyback')}>
-          {/* Image Background */}
-          <img
-            src={BUYBACK_IMAGE}
-            alt="Buyback"
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-          />
-
-          {/* Dark Overlay for Text Readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
-
-          {/* Overlaid Text and Button */}
-          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
-            <div className="max-w-sm font-sweet-sans">
-              <h2 className="text-white font-light font-sweet-sans">
-                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-sweet-sans">YOBHA</span>
-                <span className="text-4xl sm:text-5xl block tracking-wide font-sweet-sans">Renew Program</span>
-              </h2>
-              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed font-sweet-sans">
-                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
-              </p>
-              <button className="mt-6 px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
-                Learn More
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop: Split Layout */}
-        <div className="hidden md:grid md:grid-cols-2 min-h-[500px] lg:min-h-[600px] cursor-pointer group"
-          onClick={() => navigate('/buyback')}>
-          {/* Text Section - Dark Background */}
-          <div className="relative bg-black flex flex-col justify-center px-12 lg:px-16 py-16 font-sweet-sans">
-            <div className="max-w-xl font-sweet-sans">
-              <h2 className="text-white font-light font-sweet-sans">
-                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-sweet-sans pb-2">YOBHA </span>
-                <span className="text-3xl md:text-3xl lg:text-3xl xl:text-5xl tracking-wide font-light font-sweet-sans"> Renew Program</span>
-              </h2>
-              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed max-w-md font-sweet-sans">
-                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
-              </p>
-              <button className="mt-10 px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-sweet-sans">
-                Learn More
-              </button>
-            </div>
-          </div>
-
-          {/* Image Section */}
-          <div className="relative h-full min-h-[500px] lg:min-h-[600px] overflow-hidden">
-            <img
-              src={BUYBACK_IMAGE}
-              alt="Buyback"
-              className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Gender Grid Section with Text Outside */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
-        <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-16 md:mb-20 lg:mb-24">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8 font-sweet-sans">
-              Shop by Category
-            </h2>
-            <div className="w-16 md:w-20 h-px bg-gray-300 mx-auto mb-6 md:mb-8" />
-            <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
-              Discover timeless elegance across our curated collections
-            </p>
-          </div>
-
-          {/* Gender Categories Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12">
-            {genderCategories.map((category, index) => (
-              <div
-                key={category.id}
-                className="group cursor-pointer"
-                onClick={() => navigate(`/products/${category.id}`)}
-              >
-                <div className="relative h-[220px] sm:h-[280px] md:h-[380px] lg:h-[420px] xl:h-[480px] overflow-hidden bg-gray-50/50 border border-gray-100 group-hover:border-gray-200 transition-all duration-700 ease-out">
-                  {/* Subtle shadow on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    <div className="absolute inset-0 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]" />
-                  </div>
-
-                  {/* Refined gradient overlay */}
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/5 via-transparent to-black/5 group-hover:from-white/10 group-hover:via-transparent group-hover:to-black/10 transition-all duration-700" />
-
-                  <img
-                    src={category.image}
-                    alt={category.title}
-                    className={`h-full w-full object-cover transition-all duration-[1000ms] ease-out group-hover:scale-[1.05] group-hover:brightness-[1.03] ${category.id === "couple" ? "object-[center_top]" : ""
-                      }`}
-                    style={category.id === "couple" ? { objectPosition: "center top" } : {}}
-                  />
-
-                  {/* Elegant gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                </div>
-
-                {/* Text Outside - Enhanced Typography */}
-                <div className="mt-6 md:mt-8 lg:mt-10 text-center">
-                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-gray-900 uppercase tracking-[0.2em] md:tracking-[0.25em] group-hover:text-gray-700 transition-colors duration-500 font-sweet-sans">
-                    {category.title}
-                  </h3>
-                  {/* Minimal decorative line */}
-                  <div className="mt-3 md:mt-4 h-[1px] w-0 mx-auto bg-gray-400 group-hover:w-10 md:group-hover:w-12 transition-all duration-700 ease-out" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Recently Viewed Section */}
       {recentVisited.length > 0 && (
         <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white font-sweet-sans">
@@ -875,10 +863,10 @@ const HomePage2 = () => {
                 {recentVisited.map((item) => (
                   <article
                     key={item.id}
-                    className="group cursor-pointer flex-shrink-0 w-[calc((100%-16px)/2)]"
+                    className="group cursor-pointer flex-shrink-0 w-[calc((100%-16px)/2)] max-w-[180px]"
                     onClick={() => navigate(`/productDetail/${item.id}`)}
                   >
-                    <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300 transition-all duration-300 mb-2">
+                    <div className="relative h-40 w-full overflow-hidden bg-gray-50 border border-gray-200/50 rounded-lg group-hover:border-gray-300 transition-all duration-300 mb-2">
                       <img
                         src={item.images?.[0]}
                         alt={item.name}
@@ -895,23 +883,23 @@ const HomePage2 = () => {
               </div>
 
               {/* Desktop: Centered Grid */}
-              <div className={`hidden md:grid gap-6 ${recentVisited.length === 1
-                ? 'grid-cols-1 justify-items-center'
+              <div className={`hidden md:grid gap-6 justify-items-center mx-auto ${recentVisited.length === 1
+                ? 'grid-cols-1 max-w-xs'
                 : recentVisited.length === 2
-                  ? 'grid-cols-2 max-w-2xl mx-auto'
+                  ? 'grid-cols-2 max-w-xl'
                   : recentVisited.length === 3
-                    ? 'grid-cols-3 max-w-4xl mx-auto'
+                    ? 'grid-cols-3 max-w-3xl'
                     : recentVisited.length === 4
-                      ? 'grid-cols-4 max-w-5xl mx-auto'
-                      : 'grid-cols-4 lg:grid-cols-6'
+                      ? 'grid-cols-4 max-w-4xl'
+                      : 'grid-cols-4 lg:grid-cols-6 max-w-5xl'
                 }`}>
                 {recentVisited.map((item) => (
                   <article
                     key={item.id}
-                    className="group cursor-pointer"
+                    className="group cursor-pointer w-full max-w-[200px]"
                     onClick={() => navigate(`/productDetail/${item.id}`)}
                   >
-                    <div className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-200/50 group-hover:border-gray-300 group-hover:shadow-lg transition-all duration-300 mb-3">
+                    <div className="relative h-48 w-full overflow-hidden bg-gray-50 border border-gray-200/50 rounded-xl group-hover:border-gray-300 group-hover:shadow-lg transition-all duration-300 mb-3">
                       <img
                         src={item.images?.[0]}
                         alt={item.name}

@@ -6,8 +6,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'helvetica': ['SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
-        'sweet-sans': ['SweetSans', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
+        'helvetica': ['Futura', 'Futura PT', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'sweet-sans': ['Futura', 'Futura PT', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'futura': ['Futura', 'Futura PT', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       colors: {
         'luxury': {
@@ -22,10 +23,10 @@ module.exports = {
         'premium': {
           'white': '#ffffff',
           'cream': '#ffffff',
-          'beige': '#f5f2ed',
-          'light-beige': '#faf8f5',
-          'warm-white': '#fdfbf7',
-          'soft-beige': '#f7f4f0',
+          'beige': '#ffffff',
+          'light-beige': '#ffffff',
+          'warm-white': '#ffffff',
+          'soft-beige': '#ffffff',
         },
         'text': {
           'dark': '#2c2c2c',

@@ -152,9 +152,9 @@ const Careers = () => {
   const hasActiveFilters = searchQuery || selectedCountry || selectedJobType;
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6F2] font-sweet-sans">
+    <div className="relative min-h-screen bg-white font-sweet-sans">
       {/* Compact Header Section with Integrated Search/Filters */}
-      <section className="relative w-full bg-white border-b border-gray-100/50 sticky top-0 z-50 shadow-sm">
+      <section className="relative w-full bg-white border-b border-gray-100/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 md:py-8">
           {/* Compact Heading */}
           <div className="mb-6 md:mb-8">
@@ -195,12 +195,12 @@ const Careers = () => {
             </div>
 
             {/* Filters - Compact Horizontal Layout */}
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-              <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-3 md:gap-4">
+              <div className="flex-1 min-w-[200px]">
                 <select
                   value={selectedCountry}
                   onChange={handleCountryChange}
-                  className="w-full px-4 py-2.5 md:py-3 border border-gray-200/50 focus:outline-none focus:border-gray-900 transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 rounded-md transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
                 >
                   <option value="">All Countries</option>
                   {getUniqueCountries().map((country) => (
@@ -211,11 +211,11 @@ const Careers = () => {
                 </select>
               </div>
 
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-[200px]">
                 <select
                   value={selectedJobType}
                   onChange={handleJobTypeChange}
-                  className="w-full px-4 py-2.5 md:py-3 border border-gray-200/50 focus:outline-none focus:border-gray-900 transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 rounded-md transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
                 >
                   <option value="">All Job Types</option>
                   {getUniqueJobTypes().map((jobType) => (
@@ -229,7 +229,7 @@ const Careers = () => {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="px-4 md:px-6 py-2.5 md:py-3 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap"
+                  className="px-5 py-3 border border-gray-900/40 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap rounded-md"
                 >
                   Clear Filters
                 </button>
@@ -288,9 +288,9 @@ const Careers = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {filteredJobs.map((job, index) => (
-                    <div
-                      key={job.id}
-                  className="group cursor-pointer bg-white border border-gray-200/50 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500 flex flex-col h-full transform hover:-translate-y-1"
+            <div
+              key={job.id}
+              className="group cursor-pointer bg-white border border-gray-200 shadow-sm hover:border-gray-900/40 hover:shadow-xl transition-all duration-500 flex flex-col h-full transform hover:-translate-y-1"
                   onClick={() => handleJobClick(job.id)}
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
@@ -300,7 +300,7 @@ const Careers = () => {
                     
                     <div className="relative z-10 flex flex-col h-full">
                       {/* Header Section */}
-                      <div className="mb-5">
+                      <div className="mb-5 min-h-[120px] flex flex-col justify-between">
                           {job.department && (
                           <div className="mb-3">
                             <span className="inline-block px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-500 bg-gray-100/50 font-light border border-gray-200/50">
@@ -313,13 +313,16 @@ const Careers = () => {
                           )}
                           </div>
                         )}
-                        <h3 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide mb-2 group-hover:text-gray-700 transition-colors duration-300 leading-tight">
+                        <h3
+                          className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide group-hover:text-gray-700 transition-colors duration-300 leading-tight"
+                          style={{ display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", minHeight: "72px" }}
+                        >
                           {job.jobTitle}
                         </h3>
                         </div>
 
                       {/* Info Section */}
-                      <div className="space-y-2.5 mb-6">
+                      <div className="space-y-2.5 mb-6 min-h-[80px] flex flex-col justify-between">
                           {job.location && (
                           <div className="flex items-center gap-2.5 text-sm text-gray-600">
                             <MapPin size={16} className="text-gray-400 flex-shrink-0" />
@@ -339,25 +342,32 @@ const Careers = () => {
                         </div>
 
                       {/* Description Section */}
-                      <div className="flex-grow min-h-0 mb-6">
-                          {job.jobDescription && (
-                          <p className="text-sm text-gray-600 font-light leading-relaxed line-clamp-3">
-                              {job.jobDescription.substring(0, 150) + "..."}
-                            </p>
-                          )}
-                        </div>
+                      <div className="flex-grow mb-6">
+                        <p
+                          className="text-sm text-gray-600 font-light leading-relaxed overflow-hidden"
+                          style={{ display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", minHeight: "96px" }}
+                        >
+                          {job.jobDescription && job.jobDescription.length > 0
+                            ? job.jobDescription
+                            : "Detailed role information will be shared during the interview process."}
+                        </p>
+                      </div>
 
                       {/* Salary Section */}
-                        {job.salaryRange && (
-                        <div className="mb-6 pb-6 border-b border-gray-100">
+                      <div className="mb-6 pb-6 border-b border-gray-100 min-h-[80px] flex items-center">
+                        {job.salaryRange ? (
                           <div className="text-sm text-gray-600 font-light">
                             <span className="text-xs uppercase tracking-[0.15em] text-gray-500 block mb-1">Salary Range</span>
                             <span className="text-base font-medium text-gray-900">
                               {job.salaryRange.currency} {job.salaryRange.min?.toLocaleString()} - {job.salaryRange.max?.toLocaleString()}
                             </span>
                           </div>
-                            </div>
-                          )}
+                        ) : (
+                          <span className="text-sm text-gray-400 italic">
+                            Compensation details will be discussed during the hiring process.
+                          </span>
+                        )}
+                      </div>
 
                       {/* Action Button */}
                       <button

@@ -96,26 +96,23 @@ const LoginPage = () => {
   return (
     <>
       <HeaderWithSidebar />
-      <div
-        className="min-h-screen flex flex-col md:flex-row bg-premium-cream pt-16"
-        style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
-      >
+      <div className="min-h-screen flex flex-col md:flex-row bg-premium-cream pt-16 font-futura">
         {/* Left Side - Brand Section */}
         <div className="hidden md:flex w-1/2 p-16 lg:p-20 flex-col justify-center items-start space-y-8 bg-white">
-          <h1 className="text-5xl lg:text-6xl font-bold text-black tracking-wider uppercase">
+          <h1 className="text-5xl lg:text-6xl font-light text-black tracking-wider uppercase font-futura">
             Welcome Back
           </h1>
-          <p className="text-text-medium max-w-md text-base lg:text-lg leading-relaxed">
+          <p className="text-text-medium max-w-md text-base lg:text-lg leading-relaxed font-futura">
             Discover the ultimate luxury in sleepwear with YOBHA. Sign in to continue and indulge in exclusivity.
           </p>
-          <div className="flex space-x-6 text-black text-2xl">
-            <button className="hover:text-text-medium transition-colors" aria-label="Instagram">
+          <div className="flex space-x-6 text-black text-2xl font-futura">
+            <button className="hover:text-text-medium transition-colors font-futura" aria-label="Instagram">
               <FaInstagram />
             </button>
-            <button className="hover:text-text-medium transition-colors" aria-label="Facebook">
+            <button className="hover:text-text-medium transition-colors font-futura" aria-label="Facebook">
               <FaFacebookF />
             </button>
-            <button className="hover:text-text-medium transition-colors" aria-label="Twitter">
+            <button className="hover:text-text-medium transition-colors font-futura" aria-label="Twitter">
               <FaTwitter />
             </button>
           </div>
@@ -123,7 +120,7 @@ const LoginPage = () => {
 
         {/* Right Side - Login/Signup Form */}
         <div className="flex w-full md:w-1/2 justify-center items-center p-6 md:p-12 lg:p-20">
-          <div className="w-full md:max-w-md bg-white border border-text-light/20 shadow-lg p-8 md:p-12">
+          <div className="w-full md:max-w-md bg-white border border-text-light/20 shadow-lg p-8 md:p-12 font-futura">
             {/* Brand */}
             <div className="flex justify-center items-center mb-10 md:mb-12">
               <Link to="/" className="flex items-center">
