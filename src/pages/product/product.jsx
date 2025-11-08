@@ -237,7 +237,7 @@ const ProductsPage = () => {
         onClick={onToggle}
         className="w-full flex items-center justify-between py-5 px-6 hover:bg-black/[0.02] transition-colors duration-200"
       >
-        <span className="text-black text-sm uppercase tracking-widest font-medium">
+        <span className="text-black text-sm uppercase tracking-widest font-light">
           {title}
         </span>
         {isOpen ? (
@@ -259,13 +259,13 @@ const ProductsPage = () => {
     <div className="bg-white overflow-hidden">
       {showHeader && (
         <div className="px-6 py-5 border-b border-text-light/10 flex items-center justify-between">
-          <h2 className="text-black text-sm uppercase tracking-widest font-medium">
+          <h2 className="text-black text-sm uppercase tracking-widest font-light">
             Filters
           </h2>
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="text-xs text-black hover:text-text-medium font-medium uppercase tracking-wider underline transition-colors"
+              className="text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline transition-colors"
             >
               Clear All
             </button>
@@ -293,7 +293,7 @@ const ProductsPage = () => {
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
               <span className={`ml-3 text-sm tracking-wide transition-colors ${filters.segment === segment
-                ? "text-black font-medium"
+                ? "text-black font-light"
                 : "text-text-medium group-hover:text-black"
                 }`}>
                 {segment}
@@ -322,7 +322,7 @@ const ProductsPage = () => {
               />
               <span
                 className={`ml-3 text-sm tracking-wide transition-colors ${filters.fabric === fabric.id
-                    ? "text-black font-medium"
+                    ? "text-black font-light"
                     : "text-text-medium group-hover:text-black"
                   }`}
               >
@@ -353,7 +353,7 @@ const ProductsPage = () => {
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer rounded-none"
               />
               <span className={`ml-3 text-sm tracking-wide transition-colors ${filters.categories.includes(cat.id)
-                ? "text-black font-medium"
+                ? "text-black font-light"
                 : "text-text-medium group-hover:text-black"
                 }`}>
                 {cat.name}
@@ -427,7 +427,7 @@ const ProductsPage = () => {
                 />
                 <span
                   className={`ml-3 text-sm tracking-wide transition-colors ${filters.country === code
-                      ? "text-black font-medium"
+                      ? "text-black font-light"
                       : "text-gray-600 group-hover:text-black"
                     }`}
                 >
@@ -476,7 +476,7 @@ const ProductsPage = () => {
                     clearAllFilters();
                     setShowMobileFilters(false);
                   }}
-                  className="mt-3 text-xs text-black hover:text-text-medium font-medium uppercase tracking-wider underline"
+                  className="mt-3 text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline"
                 >
                   Clear All
                 </button>
@@ -520,7 +520,7 @@ const ProductsPage = () => {
                       updateFilter('sortBy', option.id);
                       setShowMobileSort(false);
                     }}
-                    className={`w-full text-left py-4 px-0 text-sm font-medium transition-colors ${filters.sortBy === option.id
+                    className={`w-full text-left py-4 px-0 text-sm font-light transition-colors ${filters.sortBy === option.id
                         ? 'text-black'
                         : 'text-text-medium hover:text-black'
                       }`}
@@ -560,14 +560,14 @@ const ProductsPage = () => {
                 className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
               >
                 <SlidersHorizontal size={18} strokeWidth={1.5} />
-                <span className="uppercase text-sm tracking-wider font-medium border-b-2 border-black group-hover:border-text-medium transition-colors">
+                <span className="uppercase text-sm tracking-wider font-light border-b-2 border-black group-hover:border-text-medium transition-colors">
                   Filters
                 </span>
               </button>
 
               {/* Sorting Options - Desktop/Tablet */}
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-black uppercase tracking-wider">Sort By:</span>
+                <span className="text-sm font-light text-black uppercase tracking-wider">Sort By:</span>
                 <div className="flex flex-wrap gap-2">
                   {filterOptions.sortOptions.map((option) => (
                     <button
@@ -600,7 +600,7 @@ const ProductsPage = () => {
                 className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
               >
                 <SlidersHorizontal size={18} strokeWidth={1.5} />
-                <span className="uppercase text-sm tracking-wider font-medium border-b-2 border-black group-hover:border-text-medium transition-colors">
+                <span className="uppercase text-sm tracking-wider font-light border-b-2 border-black group-hover:border-text-medium transition-colors">
                   Filters
                 </span>
               </button>
@@ -610,7 +610,7 @@ const ProductsPage = () => {
                 onClick={() => setShowMobileSort(true)}
                 className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
               >
-                <span className="text-sm font-medium text-black uppercase tracking-wider">
+                <span className="text-sm font-light text-black uppercase tracking-wider">
                   Sort by {filterOptions.sortOptions.find(opt => opt.id === filters.sortBy)?.name || 'Featured'}
                 </span>
                 <ChevronDown size={16} strokeWidth={1.5} />
@@ -643,7 +643,7 @@ const ProductsPage = () => {
             )}
 
             {filters.categories.map((catId) => (
-              <div key={catId} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-medium">
+              <div key={catId} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
                 <span>{getCategoryName(catId)}</span>
                 <button
                   onClick={() => toggleCategory(catId)}
@@ -657,7 +657,7 @@ const ProductsPage = () => {
 
             <button
               onClick={clearAllFilters}
-              className="text-xs text-black hover:text-text-medium font-medium underline uppercase tracking-wider"
+              className="text-xs text-black hover:text-text-medium font-light underline uppercase tracking-wider"
             >
               Clear All
             </button>
@@ -694,7 +694,7 @@ const ProductsPage = () => {
               {hasActiveFilters && (
                 <button
                   onClick={clearAllFilters}
-                  className="bg-black text-white px-8 py-3 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
+                  className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
                 >
                   Clear All Filters
                 </button>

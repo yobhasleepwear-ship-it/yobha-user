@@ -253,7 +253,7 @@ const HeaderWithSidebar2 = () => {
                   className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
                 />
                 {cartCount > 0 && (
-                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-light shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
                     {cartCount}
                   </span>
                 )}
@@ -352,9 +352,9 @@ const HeaderWithSidebar2 = () => {
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-black text-sm leading-tight truncate">{product.name}</h4>
+                            <h4 className="font-light text-black text-sm leading-tight truncate">{product.name}</h4>
                             <p className="text-gray-500 text-xs uppercase tracking-wide">{product.category}</p>
-                            <p className="text-luxury-gold font-semibold text-sm">Rs. {product.price} INR</p>
+                            <p className="text-luxury-gold font-light text-sm">Rs. {product.price} INR</p>
                           </div>
                         </div>
                       ))}
@@ -403,7 +403,7 @@ const HeaderWithSidebar2 = () => {
                   className={`md:w-5 md:h-5 transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
                 />
                 {cartCount > 0 && (
-                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center font-bold shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center font-light shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
                     {cartCount}
                   </span>
                 )}
@@ -508,9 +508,9 @@ const HeaderWithSidebar2 = () => {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-black text-sm leading-tight truncate">{product.name}</h4>
+                          <h4 className="font-light text-black text-sm leading-tight truncate">{product.name}</h4>
                           <p className="text-gray-600 text-xs">{product.category}</p>
-                          <p className="text-black font-medium text-sm">Rs. {product.price} INR</p>
+                          <p className="text-black font-light text-sm">Rs. {product.price} INR</p>
                         </div>
                       </div>
                     ))}

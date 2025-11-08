@@ -224,7 +224,7 @@ const ProductCard = ({ product }) => {
         <div className="min-h-[1.25rem] sm:min-h-[1.5rem] mb-2 sm:mb-3 flex items-center">
           {availableSizes.length > 0 && (
             <p className="text-gray-500 text-xs tracking-widest uppercase font-light transition-all duration-700 transform group-hover:translate-x-1 group-hover:text-gray-700 leading-tight">
-              Sizes: <span className="text-gray-700 font-medium transition-colors duration-500 group-hover:text-gray-500">{availableSizes.join(', ')}</span>
+              Sizes: <span className="text-gray-700 font-light transition-colors duration-500 group-hover:text-gray-500">{availableSizes.join(', ')}</span>
             </p>
           )}
         </div>

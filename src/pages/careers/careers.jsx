@@ -240,7 +240,7 @@ const Careers = () => {
             {!isLoading && (
               <div className="flex items-center justify-between pt-3 border-t border-gray-200/30">
                 <div className="text-xs md:text-sm text-gray-600 font-light">
-                  <span className="text-gray-900 font-medium">{filteredJobs.length}</span> of <span className="text-gray-900 font-medium">{jobs.length}</span> job{jobs.length !== 1 ? 's' : ''} {hasActiveFilters && 'found'}
+                  <span className="text-gray-900 font-light">{filteredJobs.length}</span> of <span className="text-gray-900 font-light">{jobs.length}</span> job{jobs.length !== 1 ? 's' : ''} {hasActiveFilters && 'found'}
                 </div>
                 {hasActiveFilters && searchQuery && (
                   <span className="px-2 py-1 text-xs uppercase tracking-wide text-gray-600 bg-gray-100/50 font-light">
@@ -358,7 +358,7 @@ const Careers = () => {
                         {job.salaryRange ? (
                           <div className="text-sm text-gray-600 font-light">
                             <span className="text-xs uppercase tracking-[0.15em] text-gray-500 block mb-1">Salary Range</span>
-                            <span className="text-base font-medium text-gray-900">
+                            <span className="text-base font-light text-gray-900">
                               {job.salaryRange.currency} {job.salaryRange.min?.toLocaleString()} - {job.salaryRange.max?.toLocaleString()}
                             </span>
                           </div>

@@ -120,13 +120,13 @@ const WishlistPage = () => {
         className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center max-w-md px-4">
-          <h2 className="text-2xl font-bold text-black mb-4 uppercase tracking-wider">
+          <h2 className="text-2xl font-light text-black mb-4 uppercase tracking-wider">
             Something Went Wrong
           </h2>
           <p className="text-text-medium mb-8">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-black text-white px-8 py-3 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
+            className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
           >
             Try Again
           </button>
@@ -155,7 +155,7 @@ const WishlistPage = () => {
             {wishlistItems.length > 0 && (
               <button
                 onClick={() => navigate("/products")}
-                className="flex items-center gap-2 text-black hover:text-text-medium transition-colors border-b-2 border-black hover:border-text-medium uppercase text-sm tracking-wider font-medium"
+                className="flex items-center gap-2 text-black hover:text-text-medium transition-colors border-b-2 border-black hover:border-text-medium uppercase text-sm tracking-wider font-light"
               >
                 Continue Shopping
                 <ArrowRight size={18} strokeWidth={1.5} />
@@ -171,7 +171,7 @@ const WishlistPage = () => {
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <Heart size={40} className="text-text-light md:w-12 md:h-12" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl md:text-2xl font-bold text-black mb-3 md:mb-4 uppercase tracking-wider">
+              <h2 className="text-xl md:text-2xl font-light text-black mb-3 md:mb-4 uppercase tracking-wider">
                 Your Wishlist is Empty
               </h2>
               <p className="text-sm md:text-base text-text-medium mb-6 md:mb-8">
@@ -179,7 +179,7 @@ const WishlistPage = () => {
               </p>
               <button
                 onClick={() => navigate("/products")}
-                className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm"
+                className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm"
               >
                 Explore Products
                 <ArrowRight size={18} strokeWidth={1.5} />
@@ -226,14 +226,14 @@ const WishlistPage = () => {
 
                     {/* Discount Badge */}
                     {discountPercent > 0 && (
-                      <div className="absolute top-3 left-3 bg-black text-white px-2.5 py-1 text-xs font-medium uppercase tracking-wider">
+                      <div className="absolute top-3 left-3 bg-black text-white px-2.5 py-1 text-xs font-light uppercase tracking-wider">
                         {discountPercent}% OFF
                       </div>
                     )}
 
                     {/* Free Shipping Badge */}
                     {product.freeShipping && (
-                      <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-black px-2.5 py-1 text-xs font-medium uppercase tracking-wider">
+                      <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-black px-2.5 py-1 text-xs font-light uppercase tracking-wider">
                         Free Shipping
                       </div>
                     )}
@@ -242,7 +242,7 @@ const WishlistPage = () => {
                   {/* Product Info */}
                   <div className="p-4 flex flex-col flex-1">
                     <h3
-                      className="font-semibold text-black text-base mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight"
+                      className="font-light text-black text-base mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight"
                       onClick={() => navigate(`/productDetail/${product.productObjectId}`)}
                     >
                       {product.name}
@@ -251,10 +251,10 @@ const WishlistPage = () => {
                     {/* Variant Info */}
                     <div className="flex flex-wrap gap-2 text-xs text-text-medium mb-3">
                       {item.desiredColor && (
-                        <span className="capitalize">Color: <span className="text-black font-medium">{item.desiredColor}</span></span>
+                        <span className="capitalize">Color: <span className="text-black font-light">{item.desiredColor}</span></span>
                       )}
                       {item.desiredSize && (
-                        <span>Size: <span className="text-black font-medium">{item.desiredSize}</span></span>
+                        <span>Size: <span className="text-black font-light">{item.desiredSize}</span></span>
                       )}
                     </div>
 
@@ -267,7 +267,7 @@ const WishlistPage = () => {
 
                     {/* Price */}
                     <div className="flex flex-wrap items-baseline gap-2 mb-4">
-                      <span className="text-xl font-bold text-black">
+                      <span className="text-xl font-light text-black">
                         {formatPrice(product.unitPrice, product.currency)}
                       </span>
                       {product.compareAtPrice && (
@@ -283,7 +283,7 @@ const WishlistPage = () => {
                       <button
                         disabled
                         className="w-full py-3 bg-premium-beige text-black border border-text-light/30 
-               font-semibold text-xs uppercase tracking-wider flex items-center 
+               font-light text-xs uppercase tracking-wider flex items-center 
                justify-center gap-2 cursor-not-allowed opacity-60"
                       >
                         <Bell size={14} strokeWidth={1.5} />

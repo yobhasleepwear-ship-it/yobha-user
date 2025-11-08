@@ -183,7 +183,7 @@ const OrdersPage = () => {
           <p className="text-text-medium mb-8">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-black text-white px-8 py-3 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
+            className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
           >
             Try Again
           </button>
@@ -223,7 +223,7 @@ const OrdersPage = () => {
               </p>
               <button
                 onClick={() => navigate("/products")}
-                className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm"
+                className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm"
               >
                 Browse Products
                 <ChevronRight size={18} strokeWidth={1.5} />
@@ -260,7 +260,7 @@ const OrdersPage = () => {
 
                         <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 border ${statusInfo.borderColor} ${statusInfo.bgColor} self-start`}>
                           <StatusIcon size={14} className={statusInfo.color} strokeWidth={2} />
-                          <span className={`text-xs font-semibold ${statusInfo.color} uppercase tracking-wider`}>
+                          <span className={`text-xs font-light ${statusInfo.color} uppercase tracking-wider`}>
                             {statusInfo.text}
                           </span>
                         </div>
@@ -269,7 +269,7 @@ const OrdersPage = () => {
                       {/* View Details Button - Full width on mobile */}
                       <button
                         onClick={() => viewOrderDetails(order.id)}
-                        className="w-full sm:w-auto sm:self-end flex items-center justify-center gap-2 border-2 border-text-light/30 px-4 md:px-6 py-2 md:py-3 hover:border-black transition-colors text-xs md:text-sm font-semibold uppercase tracking-wider"
+                        className="w-full sm:w-auto sm:self-end flex items-center justify-center gap-2 border-2 border-text-light/30 px-4 md:px-6 py-2 md:py-3 hover:border-black transition-colors text-xs md:text-sm font-light uppercase tracking-wider"
                       >
                         View Details
                         <ChevronRight size={16} strokeWidth={2} />
@@ -307,19 +307,19 @@ const OrdersPage = () => {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <h5 
-                                  className="font-semibold text-black text-sm md:text-base mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight"
+                                  className="font-light text-black text-sm md:text-base mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight"
                                   onClick={() => navigate(`/productDetail/${item.productId}`)}
                                 >
                                   {item.productName}
                                 </h5>
                                 <p className="text-xs md:text-sm text-text-medium mb-2">
-                                  Quantity: <span className="font-medium text-black">{item.quantity}</span>
+                                  Quantity: <span className="font-light text-black">{item.quantity}</span>
                                   {item.variantSku && (
-                                    <span className="ml-3">SKU: <span className="font-medium text-black">{item.variantSku}</span></span>
+                                    <span className="ml-3">SKU: <span className="font-light text-black">{item.variantSku}</span></span>
                                   )}
                                 </p>
                                 <div className="flex items-baseline gap-2">
-                                  <span className="text-base md:text-lg font-bold text-black">
+                                  <span className="text-base md:text-lg font-light text-black">
                                     {formatPrice(item.lineTotal, item.currency)}
                                   </span>
                                   {item.compareAtPrice && (
@@ -342,7 +342,7 @@ const OrdersPage = () => {
                         <div className="bg-premium-beige p-4 space-y-2">
                           <div className="flex justify-between text-xs md:text-sm">
                             <span className="text-text-medium">Subtotal</span>
-                            <span className="text-black font-semibold">
+                            <span className="text-black font-light">
                               {formatPrice(order.subTotal)}
                             </span>
                           </div>
@@ -350,7 +350,7 @@ const OrdersPage = () => {
                           {order.discount > 0 && (
                             <div className="flex justify-between text-xs md:text-sm">
                               <span className="text-text-medium">Discount</span>
-                              <span className="text-luxury-rose-gold font-semibold">
+                              <span className="text-luxury-rose-gold font-light">
                                 -{formatPrice(order.discount)}
                               </span>
                             </div>
@@ -359,9 +359,9 @@ const OrdersPage = () => {
                           <div className="flex justify-between text-xs md:text-sm">
                             <span className="text-text-medium">Shipping</span>
                             {order.shipping === 0 ? (
-                              <span className="text-black font-semibold">FREE</span>
+                              <span className="text-black font-light">FREE</span>
                             ) : (
-                              <span className="text-black font-semibold">
+                              <span className="text-black font-light">
                                 {formatPrice(order.shipping)}
                               </span>
                             )}
@@ -370,17 +370,17 @@ const OrdersPage = () => {
                           {order.tax > 0 && (
                             <div className="flex justify-between text-xs md:text-sm">
                               <span className="text-text-medium">Tax</span>
-                              <span className="text-black font-semibold">
+                              <span className="text-black font-light">
                                 {formatPrice(order.tax)}
                               </span>
                             </div>
                           )}
 
                           <div className="flex justify-between pt-3 border-t border-text-light/20">
-                            <span className="text-sm md:text-base font-bold text-black uppercase tracking-wider">
+                            <span className="text-sm md:text-base font-light text-black uppercase tracking-wider">
                               Total
                             </span>
-                            <span className="text-lg md:text-xl font-bold text-black">
+                            <span className="text-lg md:text-xl font-light text-black">
                               {formatPrice(order.total)}
                             </span>
                           </div>

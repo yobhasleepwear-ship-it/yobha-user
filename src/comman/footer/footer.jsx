@@ -78,14 +78,14 @@ const [newsletter , setNewsletter]=useState("")
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-light mb-6 text-black uppercase tracking-wider">
+            <h3 className="text-sm font-bold mb-6 text-black uppercase tracking-wider">
               Quick Links
             </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
                   to="/"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Home
                 </Link>
@@ -93,7 +93,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/products"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Collections
                 </Link>
@@ -101,7 +101,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/about"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   About
                 </Link>
@@ -109,7 +109,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/contact"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Contact
                 </Link>
@@ -117,7 +117,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/careers"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Careers
                 </Link>
@@ -127,7 +127,7 @@ const [newsletter , setNewsletter]=useState("")
 
           {/* Policies */}
           <div>
-            <h3 className="text-sm font-light mb-6 text-black uppercase tracking-wider">
+            <h3 className="text-sm font-bold mb-6 text-black uppercase tracking-wider">
               Policies
             </h3>
             <ul className="space-y-3 text-sm">
@@ -194,7 +194,7 @@ const [newsletter , setNewsletter]=useState("")
                   onChange={(e)=>setNewsletter(e.target.value)}
                   className="flex-1 px-4 py-3 text-sm border border-text-light/30 focus:outline-none focus:border-black transition-colors bg-white rounded-none min-w-0"
                 />
-                <button className="px-6 py-3 bg-black text-white text-sm font-medium hover:bg-text-dark transition-colors duration-300 uppercase tracking-wider whitespace-nowrap flex-shrink-0" onClick={handleNewsSubscribe}>
+                <button className="px-6 py-3 bg-black text-white text-sm font-light hover:bg-text-dark transition-colors duration-300 uppercase tracking-wider whitespace-nowrap flex-shrink-0" onClick={handleNewsSubscribe}>
                   Subscribe
                 </button>
               </div>

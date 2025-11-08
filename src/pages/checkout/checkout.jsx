@@ -601,7 +601,7 @@ const CheckoutPage = () => {
                             onChange={() => setUseSavedAddress(true)}
                             className="accent-black"
                           />
-                          <span className="font-medium">Use Saved Address</span>
+                        <span className="font-light">Use Saved Address</span>
                         </label>
                         <label className="flex items-center gap-2 text-sm cursor-pointer">
                           <input
@@ -610,7 +610,7 @@ const CheckoutPage = () => {
                             onChange={() => setUseSavedAddress(false)}
                             className="accent-black"
                           />
-                          <span className="font-medium">Enter Manually</span>
+                        <span className="font-light">Enter Manually</span>
                         </label>
                       </div>
                     </div>
@@ -668,7 +668,7 @@ const CheckoutPage = () => {
                       {/* Form Header */}
                       {isEditingAddress && (
                         <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 ">
-                          <p className="text-sm text-blue-800 font-medium">Editing Address</p>
+                          <p className="text-sm text-blue-800 font-light">Editing Address</p>
                           <button
                             onClick={handleCancelEdit}
                             className="text-xs text-blue-600 hover:text-blue-800 underline"
@@ -681,7 +681,7 @@ const CheckoutPage = () => {
                       {/* Form Fields */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">Full Name *</label>
                           <input
                             type="text"
                             name="fullName"
@@ -697,7 +697,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">Phone Number *</label>
                           <input
                             type="tel"
                             name="phone"
@@ -713,7 +713,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1 *</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">Address Line 1 *</label>
                           <input
                             type="text"
                             name="addressLine1"
@@ -729,7 +729,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">Address Line 2</label>
                           <input
                             type="text"
                             name="addressLine2"
@@ -741,7 +741,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">City *</label>
                           <input
                             type="text"
                             name="city"
@@ -757,7 +757,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">State *</label>
                           <input
                             type="text"
                             name="state"
@@ -773,7 +773,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Pincode *</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">Pincode *</label>
                           <input
                             type="text"
                             name="pincode"
@@ -790,7 +790,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Landmark</label>
+                          <label className="block text-sm font-light text-gray-700 mb-1">Landmark</label>
                           <input
                             type="text"
                             name="landmark"
@@ -811,7 +811,7 @@ const CheckoutPage = () => {
                         <button
                           onClick={isEditingAddress ? handleUpdateAddress : handleAddAddress}
                           disabled={isAddingAddress}
-                          className="flex-1 bg-black text-white py-3 px-6 font-semibold hover:bg-gray-800 transition-colors uppercase tracking-wider text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed "
+                          className="flex-1 bg-black text-white py-3 px-6 font-light hover:bg-gray-800 transition-colors uppercase tracking-wider text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed "
                         >
                           {isAddingAddress ? (
                             <>
@@ -830,7 +830,7 @@ const CheckoutPage = () => {
                           <button
                             onClick={handleCancelEdit}
                             disabled={isAddingAddress}
-                            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors uppercase tracking-wider text-sm disabled:opacity-50 disabled:cursor-not-allowed "
+                            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-light hover:bg-gray-50 transition-colors uppercase tracking-wider text-sm disabled:opacity-50 disabled:cursor-not-allowed "
                           >
                             Cancel
                           </button>
@@ -873,17 +873,17 @@ const CheckoutPage = () => {
                         </div>
                         <div className="text-right">
                           <p className="text-xs md:text-sm text-text-medium">Available Points</p>
-                          <p className="text-lg md:text-xl font-bold text-luxury-gold">{loyaltyPoints}</p>
+                          <p className="text-lg md:text-xl font-light text-luxury-gold">{loyaltyPoints}</p>
                         </div>
                       </div>
                       <div className="bg-white/50 border border-luxury-gold/20 p-3 md:p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-xs md:text-sm font-medium text-black">Redeemable Amount</p>
+                            <p className="text-xs md:text-sm font-light text-black">Redeemable Amount</p>
                             <p className="text-xs text-text-medium">Convert {loyaltyPoints} points to discount</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm md:text-base font-bold text-luxury-rose-gold">
+                            <p className="text-sm md:text-base font-light text-luxury-rose-gold">
                               {formatPrice(loyaltyDiscountAmount, getCurrency())}
                             </p>
                             <p className="text-xs text-text-medium">({loyaltyDiscountAmount * 10} points used)</p>
@@ -926,16 +926,16 @@ const CheckoutPage = () => {
                                     className="accent-luxury-rose-gold"
                                   />
                                   <div className="flex items-center gap-2">
-                                    <span className="text-sm md:text-base font-bold text-black uppercase tracking-wider">
+                                    <span className="text-sm md:text-base font-light text-black uppercase tracking-wider">
                                       {coupon.code}
                                     </span>
                                     {coupon.firstOrderOnly && (
-                                      <span className="px-2 py-1 text-xs bg-luxury-gold text-white rounded-full font-medium">
+                                      <span className="px-2 py-1 text-xs bg-luxury-gold text-white rounded-full font-light">
                                         First Order
                                       </span>
                                     )}
                                     {coupon.first100UsersOnly && (
-                                      <span className="px-2 py-1 text-xs bg-luxury-rose-gold text-white rounded-full font-medium">
+                                      <span className="px-2 py-1 text-xs bg-luxury-rose-gold text-white rounded-full font-light">
                                         Limited
                                       </span>
                                     )}
@@ -945,14 +945,14 @@ const CheckoutPage = () => {
                                   {coupon.description}
                                 </p>
                                 <div className="flex items-center gap-4 ml-6">
-                                  <div className="text-sm font-semibold text-luxury-rose-gold">
+                                  <div className="text-sm font-light text-luxury-rose-gold">
                                     Save {formatPrice(calculateCouponDiscount(coupon), getCurrency())}
                                   </div>
                                   {coupon.isActive && cartSummary.subTotal >= coupon.minOrderAmount && (
-                                    <span className="text-xs text-green-600 font-medium">✓ Valid for your order</span>
+                                    <span className="text-xs text-green-600 font-light">✓ Valid for your order</span>
                                   )}
                                   {cartSummary.subTotal < coupon.minOrderAmount && (
-                                    <span className="text-xs text-orange-600 font-medium">Min order ₹{coupon.minOrderAmount}</span>
+                                    <span className="text-xs text-orange-600 font-light">Min order ₹{coupon.minOrderAmount}</span>
                                   )}
                                 </div>
                               </div>
@@ -994,7 +994,7 @@ const CheckoutPage = () => {
                         {selectedCoupon && (
                           <div className="flex justify-between text-sm">
                             <span className="text-text-medium">Coupon: {selectedCoupon.code}</span>
-                            <span className="text-luxury-rose-gold font-semibold">
+                            <span className="text-luxury-rose-gold font-light">
                               -{formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency())}
                             </span>
                           </div>
@@ -1002,13 +1002,13 @@ const CheckoutPage = () => {
                         {loyaltyDiscountAmount > 0 && (
                           <div className="flex justify-between text-sm">
                             <span className="text-text-medium">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
-                            <span className="text-luxury-gold font-semibold">
+                            <span className="text-luxury-gold font-light">
                               -{formatPrice(loyaltyDiscountAmount, getCurrency())}
                             </span>
                           </div>
                         )}
                         <div className="border-t border-luxury-gold/20 pt-2 mt-3">
-                          <div className="flex justify-between text-sm font-bold">
+                          <div className="flex justify-between text-sm font-light">
                             <span className="text-black">Total Discount</span>
                             <span className="text-luxury-rose-gold">
                               -{formatPrice(calculateTotalDiscount(), getCurrency())}
@@ -1054,7 +1054,7 @@ const CheckoutPage = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-semibold text-black text-sm md:text-base">{method.name}</span>
+                            <span className="font-light text-black text-sm md:text-base">{method.name}</span>
                           </div>
                           <p className="text-xs md:text-sm text-text-medium mt-1">{method.description}</p>
                         </div>
@@ -1102,7 +1102,7 @@ const CheckoutPage = () => {
                     <div key={`${item.id}_${item.size || "nosize"}`} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
                       <img src={imageSrc} alt={product.name} className="w-16 h-16 object-cover rounded" />
                       <div className="flex-1 min-w-0 space-y-1">
-                        <p className="text-sm font-semibold text-black truncate">{product.name}</p>
+                        <p className="text-sm font-light text-black truncate">{product.name}</p>
                         {item.size && (
                           <p className="text-xs uppercase tracking-widest text-text-medium">Size • <span className="text-black tracking-normal">{item.size}</span></p>
                         )}
@@ -1110,11 +1110,11 @@ const CheckoutPage = () => {
                         {monogramText && (
                           <div className="inline-flex items-center gap-2  border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-luxury-gold">
 
-                            <span className="font-semibold tracking-[0.2em] text-black text-[11px]">{monogramText}</span>
+                            <span className="font-light tracking-[0.2em] text-black text-[11px]">{monogramText}</span>
                           </div>
                         )}
                       </div>
-                      <div className="text-sm font-semibold text-black whitespace-nowrap">{formatPrice(itemTotal, currency)}</div>
+                      <div className="text-sm font-light text-black whitespace-nowrap">{formatPrice(itemTotal, currency)}</div>
                     </div>
                   );
                 })}
@@ -1122,14 +1122,14 @@ const CheckoutPage = () => {
                 <div className="pt-4 border-t border-text-light/20 space-y-2">
                   <div className="flex justify-between text-xs md:text-sm">
                     <span className="text-text-medium">Subtotal</span>
-                    <span className="text-black font-semibold">{formatPrice(cartSummary.subTotal, getCurrency())}</span>
+                    <span className="text-black font-light">{formatPrice(cartSummary.subTotal, getCurrency())}</span>
                   </div>
 
                   {/* Coupon Discount */}
                   {selectedCoupon && (
                     <div className="flex justify-between text-xs md:text-sm">
                       <span className="text-text-medium">Coupon: {selectedCoupon.code}</span>
-                      <span className="text-luxury-rose-gold font-semibold">-{formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency())}</span>
+                      <span className="text-luxury-rose-gold font-light">-{formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency())}</span>
                     </div>
                   )}
 
@@ -1137,30 +1137,30 @@ const CheckoutPage = () => {
                   {loyaltyDiscountAmount > 0 && (
                     <div className="flex justify-between text-xs md:text-sm">
                       <span className="text-text-medium">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
-                      <span className="text-luxury-gold font-semibold">-{formatPrice(loyaltyDiscountAmount, getCurrency())}</span>
+                      <span className="text-luxury-gold font-light">-{formatPrice(loyaltyDiscountAmount, getCurrency())}</span>
                     </div>
                   )}
 
                   {/* Total Discount */}
                   {calculateTotalDiscount() > 0 && (
                     <div className="flex justify-between text-xs md:text-sm border-t border-text-light/10 pt-2">
-                      <span className="text-text-medium font-medium">Total Discount</span>
-                      <span className="text-luxury-rose-gold font-bold">-{formatPrice(calculateTotalDiscount(), getCurrency())}</span>
+                      <span className="text-text-medium font-light">Total Discount</span>
+                      <span className="text-luxury-rose-gold font-light">-{formatPrice(calculateTotalDiscount(), getCurrency())}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-xs md:text-sm">
                     <span className="text-text-medium">Shipping</span>
                     {cartSummary.shipping === 0 ? (
-                      <span className="text-black font-semibold">FREE</span>
+                      <span className="text-black font-light">FREE</span>
                     ) : (
-                      <span className="text-black font-semibold">{formatPrice(cartSummary.shipping, getCurrency())}</span>
+                      <span className="text-black font-light">{formatPrice(cartSummary.shipping, getCurrency())}</span>
                     )}
                   </div>
                   {cartSummary.tax > 0 && (
                     <div className="flex justify-between text-xs md:text-sm">
                       <span className="text-text-medium">Tax</span>
-                      <span className="text-black font-semibold">{formatPrice(cartSummary.tax, getCurrency())}</span>
+                      <span className="text-black font-light">{formatPrice(cartSummary.tax, getCurrency())}</span>
                     </div>
                   )}
                 </div>
@@ -1169,7 +1169,7 @@ const CheckoutPage = () => {
                 {giftWrapEnabled && (
                   <div className="flex justify-between text-xs md:text-sm pt-2 border-t border-text-light/10">
                     <span className="text-text-medium">Gift Wrap</span>
-                    <span className="text-black font-semibold">{formatPrice(calculateGiftWrapAmount(), getCurrency())}</span>
+                    <span className="text-black font-light">{formatPrice(calculateGiftWrapAmount(), getCurrency())}</span>
                   </div>
                 )}
 
@@ -1183,13 +1183,13 @@ const CheckoutPage = () => {
                     <div className="flex items-start gap-3">
                       <Truck size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs md:text-sm font-medium text-black">Free Shipping</p>
+                        <p className="text-xs md:text-sm font-light text-black">Free Shipping</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <RotateCcw size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs md:text-sm font-medium text-black">Easy Returns</p>
+                        <p className="text-xs md:text-sm font-light text-black">Easy Returns</p>
                         <p className="text-xs text-text-medium">30-day return policy</p>
                       </div>
                     </div>
@@ -1208,7 +1208,7 @@ const CheckoutPage = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Gift size={16} className="text-gray-600 flex-shrink-0" strokeWidth={1.5} />
-                        <span className="text-sm md:text-base font-medium text-black">Add Gift Wrap</span>
+                        <span className="text-sm md:text-base font-light text-black">Add Gift Wrap</span>
                         <span className="text-xs md:text-sm text-text-medium">
                           ({formatPrice(getGiftWrapAmount(address.country || 'India'), getCurrency())})
                         </span>
@@ -1234,7 +1234,7 @@ const CheckoutPage = () => {
                         I accept the{" "}
                         <button
                           type="button"
-                          className="text-black underline hover:text-gray-700 font-medium bg-transparent border-0 p-0 cursor-pointer"
+                          className="text-black underline hover:text-gray-700 font-light bg-transparent border-0 p-0 cursor-pointer"
                           onClick={(e) => {
                             navigate('/terms-conditions');
                           }}
@@ -1249,7 +1249,7 @@ const CheckoutPage = () => {
                 <button
                   onClick={handlePlaceOrder}
                   disabled={isProcessing || !acceptedTerms}
-                  className="w-full bg-black text-white py-3 md:py-4 font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
+                  className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
                 >
                   {isProcessing ? (
                     <>

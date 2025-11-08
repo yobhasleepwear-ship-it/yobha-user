@@ -1100,14 +1100,14 @@ const ProductDetailPage = () => {
               <div className="flex items-start gap-3">
                 <Truck size={20} className="text-text-medium mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <p className="text-sm font-medium text-black">Free Shipping</p>
+                  <p className="text-sm font-light text-black">Free Shipping</p>
                   <p className="text-xs text-text-medium">Estimated delivery: 3-5 business days</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <RotateCcw size={20} className="text-text-medium mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <p className="text-sm font-medium text-black">Easy Returns</p>
+                  <p className="text-sm font-light text-black">Easy Returns</p>
                   <p className="text-xs text-text-medium">30-day return policy</p>
                 </div>
               </div>
@@ -1542,7 +1542,7 @@ const ProductDetailPage = () => {
                         <tbody className="text-black/80">
                           {sizeGuideData.map((row, idx) => (
                             <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-premium-beige/20'}>
-                              <td className="px-3 sm:px-4 py-2 uppercase tracking-[0.25em] text-[10px] sm:text-[11px] font-medium">
+                              <td className="px-3 sm:px-4 py-2 uppercase tracking-[0.25em] text-[10px] sm:text-[11px] font-light">
                                 {row.size}
                               </td>
                               <td className="px-3 sm:px-4 py-2 text-[11px] sm:text-xs">
@@ -1641,7 +1641,7 @@ const ProductDetailPage = () => {
 
                     <div className="bg-premium-beige/20 p-3 sm:p-4 rounded-sm">
                       <p className="text-[10px] sm:text-[11px] text-text-medium font-light leading-relaxed">
-                        <strong className="font-medium uppercase tracking-widest">How to measure:</strong> Use a soft measuring tape. For bust, measure around the fullest part. For waist, measure around the narrowest part. For hip, measure around the fullest part of your hips.
+                        <strong className="font-light uppercase tracking-widest">How to measure:</strong> Use a soft measuring tape. For bust, measure around the fullest part. For waist, measure around the narrowest part. For hip, measure around the fullest part of your hips.
                       </p>
                     </div>
                   </div>
