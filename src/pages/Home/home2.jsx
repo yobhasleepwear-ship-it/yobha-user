@@ -157,6 +157,28 @@ const HomePage2 = () => {
     { id: "towels", title: "Towels", image: TOWELS_IMAGE },
   ];
 
+  const normalizeOption = (option) => {
+    if (typeof option === "string") return option;
+    if (!option || typeof option !== "object") return null;
+    return (
+      option.name ||
+      option.label ||
+      option.value ||
+      option.color ||
+      option.size ||
+      option.title ||
+      null
+    );
+  };
+
+  const formatOptions = (options) => {
+    if (!Array.isArray(options)) return [];
+    return options
+      .map((opt) => normalizeOption(opt))
+      .filter(Boolean)
+      .map((opt) => opt.toString());
+  };
+
   const displayProducts = products
     .filter((p) => p.available)
     .slice(0, 8)
@@ -168,7 +190,10 @@ const HomePage2 = () => {
       images: p.images || [],
       badge: p.productMainCategory || "New",
       slug: p.productId,
-      category: p.category || "Luxury Collection"
+      category: p.category || "Luxury Collection",
+      code: p.productId || p.productCode || p.sku || p.id,
+      colors: formatOptions(p.availableColors),
+      sizes: formatOptions(p.availableSizes),
     }));
 
   const handleWishlistClick = async (event, product) => {
@@ -408,16 +433,30 @@ const HomePage2 = () => {
                             </div>
                           )}
                         </div>
-                        <div className="flex flex-col flex-1 px-4 py-4 text-center space-y-2">
+                        <div className="flex flex-col flex-1 px-4 py-4 text-center space-y-3">
                           <p className="text-[11px] uppercase tracking-[0.35em] text-gray-500">
                             {product.category}
                           </p>
                           <h3 className="text-sm sm:text-base font-light text-gray-900 uppercase tracking-[0.28em] leading-snug line-clamp-2 min-h-[2.5rem]">
                             {product.title}
                           </h3>
-                          <p className="text-sm text-gray-700 tracking-wide mt-auto">
+                          {/* <p className="text-xs uppercase tracking-[0.25em] text-gray-500">
+                            Code: <span className="tracking-normal text-gray-700">{product.code || "—"}</span>
+                          </p> */}
+                          <p className="text-base font-medium text-gray-900 tracking-wide">
                             {product.price}
                           </p>
+                          {/* {product.colors.length > 0 && (
+                            <p className="text-xs uppercase tracking-[0.25em] text-gray-500">
+                              Colors: <span className="tracking-normal text-gray-700">{product.colors.join(", ")}</span>
+                            </p>
+                          )} */}
+                          {/* {product.sizes.length > 0 && (
+                            <p className="text-xs uppercase tracking-[0.25em] text-gray-500">
+                              Sizes: <span className="tracking-normal text-gray-700">{product.sizes.join(" • ")}</span>
+                            </p>
+                          )} */}
+                          <div className="mt-auto" />
                         </div>
                       </article>
                     </div>
