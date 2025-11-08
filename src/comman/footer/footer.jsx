@@ -134,7 +134,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/privacy-policy"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Privacy Policy
                 </Link>
@@ -142,7 +142,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/terms-conditions"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Terms of Service
                 </Link>
@@ -150,7 +150,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/return-policy"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Shipping & Returns
                 </Link>
@@ -158,7 +158,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/faq"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   FAQs
                 </Link>
