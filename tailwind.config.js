@@ -21,7 +21,7 @@ module.exports = {
         },
         'premium': {
           'white': '#ffffff',
-          'cream': '#fefcf8',
+          'cream': '#ffffff',
           'beige': '#f5f2ed',
           'light-beige': '#faf8f5',
           'warm-white': '#fdfbf7',

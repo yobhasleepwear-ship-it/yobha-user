@@ -13,7 +13,6 @@ import eyemask from "../../assets/EYEMASKS.jpg";
 import cushions from "../../assets/CUSHIONS.jpg";
 import BATHROBE_IMAGE from "../../assets/bathrobe.jpg";
 import TOWELS_IMAGE from "../../assets/towel.jpg";
-import SALE_BANNER_IMAGE from "../../assets/heroImage.jpg";
 import BUYBACK_IMAGE from "../../assets/buyback-image.jpg";
 import { getFilteredProducts } from "../../service/productAPI";
 import { SubscribeNewsletter } from "../../service/notification";
@@ -466,39 +465,25 @@ const HomePage2 = () => {
 
   return (
     <div className="relative min-h-screen bg-[#FAF6F2]">
-      {/* Hero Section with Banner and Video - Two Parts with Equal Height */}
+      {/* Hero Section - Full Width Video */}
       <section className="relative w-full">
-        {/* Mobile: Stacked Layout - Banner above, Video below */}
-        {/* Desktop/Laptop: 2 Column Grid - Banner left, Video right */}
-        <div className="flex flex-col lg:flex-row w-full">
-          {/* Sale Banner */}
-          <div className="relative w-full lg:w-1/2 h-[250px] sm:h-[350px] md:h-[450px] lg:h-auto overflow-hidden">
-            <img
-              src={SALE_BANNER_IMAGE}
-              alt="Sale Banner"
-              className="w-full h-full object-cover object-center"
-            />
+        <div className="relative w-full h-[320px] sm:h-[420px] md:h-[520px] lg:h-[640px] overflow-hidden">
+          <video
+            src={isPortrait ? portraitVideo : landscapeVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover object-center"
+            key={isPortrait ? "portrait" : "landscape"}
+          />
 
-            {/* Shop Now Button */}
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
-              {/* <button className="px-6 py-2 bg-black text-white text-sm sm:text-base rounded-full hover:bg-gray-800 transition-all duration-300">
-                Shop Now
-              </button> */}
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-black/30 pointer-events-none" />
 
-
-          {/* Video Section */}
-          <div className="relative w-full lg:w-1/2 h-[250px] sm:h-[350px] md:h-[450px] lg:h-auto overflow-hidden">
-            <video
-              src={isPortrait ? portraitVideo : landscapeVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover object-center"
-              key={isPortrait ? "portrait" : "landscape"}
-            />
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
+            <button className="px-8 py-3 bg-white/90 text-black text-sm sm:text-base md:text-lg font-medium rounded-full uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]">
+              Gifts
+            </button>
           </div>
         </div>
       </section>
@@ -874,7 +859,7 @@ const HomePage2 = () => {
       </section>
 
       {/* Trending New Arrivals */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-[#FAF6F2] font-sweet-sans">
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-premium-white font-sweet-sans">
         <div className=" mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4 font-sweet-sans">
@@ -1188,7 +1173,7 @@ const HomePage2 = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 lg:py-20 bg-[#FAF6F2] font-sweet-sans overflow-hidden">
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 lg:py-20 bg-premium-white font-sweet-sans overflow-hidden">
         {/* Subtle decorative background elements */}
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.015] pointer-events-none">
           <div className="absolute top-20 left-10 w-48 h-48 md:w-64 md:h-64 border border-gray-900/30 rounded-full"></div>

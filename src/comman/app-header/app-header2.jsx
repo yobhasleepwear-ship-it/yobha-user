@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Menu, X, User, Heart, Package, Search, Loader2 } from "lucide-react";
+import { Menu, X, User, Heart, Search, Loader2, LogOut } from "lucide-react";
 import { BsBag } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 import logoImage from "../../assets/yobhaLogo.png";
 import { useSelector } from "react-redux";
-import LanguageSwitcher from "../../LanguageSwitcher";
 import { getFilteredProducts } from "../../service/productAPI";
 import { useTranslation } from "react-i18next";
 import Sidebar from "./Sidebar";
@@ -23,36 +22,9 @@ const HeaderWithSidebar2 = () => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const searchRef = useRef(null);
+  const mobileAccountRef = useRef(null);
+  const [mobileAccountOpen, setMobileAccountOpen] = useState(false);
   const navigate = useNavigate();
-
-  const topBannerItems = [
-    {
-      label: "BUY BACK",
-      icon: "→",
-      to: "/buyback"
-    },
-    {
-      label: "SALE",
-      icon: "→",
-      to: "/products"
-    },
-    {
-      label: "ANTI MICROBIAL",
-      icon: "→",
-      to: "/fabric-protection"
-    }
-  ];
-
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
-  
-  // Rotate banner items
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBannerIndex((prev) => (prev + 1) % topBannerItems.length);
-    }, 3000); // Change every 3 seconds
-    
-    return () => clearInterval(interval);
-  }, [topBannerItems.length]);
 
   // Check authentication status
   useEffect(() => {
@@ -188,6 +160,9 @@ const HeaderWithSidebar2 = () => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearchResults(false);
       }
+      if (mobileAccountRef.current && !mobileAccountRef.current.contains(event.target)) {
+        setMobileAccountOpen(false);
+      }
     };
 
     if (searchOpen) {
@@ -199,55 +174,31 @@ const HeaderWithSidebar2 = () => {
     };
   }, [searchOpen]);
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setMobileAccountOpen(false);
+    }
+  }, [isAuthenticated]);
+
   return (
     <>
 
 
 
       <header
-        className="relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-100/50 font-sweet-sans"
+        className="relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"
       >
 
-        <div className="bg-black text-white relative overflow-hidden font-sweet-sans">
-          <div className="max-w-[1600px] mx-auto flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3 relative">
-            {/* Center: Rotating Banner Items */}
-            <div className="flex items-center justify-center min-h-[20px] md:min-h-[24px] relative w-full font-light">
-              {topBannerItems.map((item, index) => (
-                <Link
-                  key={index}
-                  to={item.to}
-                  className={`absolute left-1/2 flex items-center gap-1.5 md:gap-2 transition-all duration-500 -translate-x-1/2 ${
-                    currentBannerIndex === index
-                      ? 'opacity-100'
-                      : 'opacity-0 pointer-events-none'
-                  }`}
-                >
-                  <span className="text-base md:text-lg lg:text-xl text-white  tracking-wide whitespace-nowrap items-center">
-                    {item.label}
-                  </span>
-                  <span className="text-base md:text-lg lg:text-xl text-white  whitespace-nowrap">{item.icon}</span>
-                </Link>
-              ))}
-            </div>
-            
-            {/* Right: Login/Logout Link */}
-            <div className="absolute right-4 font-sweetsans sm:right-6 md:right-8 lg:right-12 xl:right-16 font-sweet-sans font-light">
-              {isAuthenticated ? (
-                <button
-                  onClick={handleLogout}
-                  className="text-base md:text-lg lg:text-xl text-white tracking-wide whitespace-nowrap hover:opacity-70 transition-opacity duration-300 cursor-pointer"
-                >
-                  LOGOUT
-                </button>
-              ) : (
-                <Link
-                  to="/login"
-                  className="text-base md:text-lg lg:text-xl text-white tracking-wide whitespace-nowrap hover:opacity-70 transition-opacity duration-300"
-                >
-                  LOGIN
-                </Link>
-              )}
-            </div>
+        <div className="bg-black text-white font-sweet-sans">
+          <div className="max-w-[1600px] mx-auto flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3">
+            <Link to="/home" className="flex items-center justify-center">
+              <img
+                src={logoImage}
+                alt="YOBHA Logo"
+                className="h-7 md:h-8 lg:h-9"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+            </Link>
           </div>
         </div>
         <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5">
@@ -278,27 +229,11 @@ const HeaderWithSidebar2 = () => {
               </button>
             </div>
 
-            {/* Center - Logo (Mobile) */}
-            <Link
-              to="/home"
-              className="flex items-center"
-            >
-              <img
-                src={logoImage}
-                alt="YOBHA Logo"
-                className="h-7"
-              />
-            </Link>
+            <div className="flex-1" />
 
-            {/* Right Side - Wishlist & Cart (Mobile) */}
-            <div className="flex items-center gap-1">
+            {/* Right Side - Wishlist, Cart & Account (Mobile) */}
+            <div className="flex items-center gap-3 relative" ref={mobileAccountRef}>
               {/* Wishlist Icon - Mobile */}
-                  {/* <Link
-                to="/login"
-                className="flex items-center justify-center w-7 h-7 text-black hover:text-gray-700 transition-colors duration-300 relative"               
-              >
-                <User size={18} strokeWidth={1.8} />
-              </Link> */}
               <Link
                 to="/wishlist"
                 className="flex items-center justify-center w-7 h-7 text-black hover:text-gray-700 transition-colors duration-300 relative"
@@ -323,13 +258,53 @@ const HeaderWithSidebar2 = () => {
                   </span>
                 )}
               </Link>
+
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    navigate('/login');
+                  } else {
+                    setMobileAccountOpen((prev) => !prev);
+                  }
+                }}
+                className="flex items-center gap-1 px-2 py-1 text-black hover:text-gray-700 transition-colors duration-300 text-[11px] uppercase tracking-wider"
+                title={isAuthenticated ? "Account" : "Login"}
+              >
+                <User size={16} strokeWidth={1.8} />
+                <span className={isAuthenticated ? "" : "hidden"}>{isAuthenticated ? "Account" : ""}</span>
+              </button>
+
+              {isAuthenticated && mobileAccountOpen && (
+                <div className="absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl rounded-lg overflow-hidden text-xs uppercase tracking-widest">
+                  <button
+                    onClick={() => {
+                      navigate('/account');
+                      setMobileAccountOpen(false);
+                    }}
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300"
+                  >
+                    <User size={16} />
+                    <span>My Account</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileAccountOpen(false);
+                      handleLogout();
+                    }}
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300"
+                  >
+                    <LogOut size={16} />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Desktop/Tablet Layout - Luxury Minimal Design */}
-          <div className="hidden md:flex items-center w-full">
-            {/* Left Section - Logo & Navigation */}
-            <div className="flex items-center space-x-4 md:space-x-5 lg:space-x-6 flex-shrink-0">
+          <div className="hidden md:flex items-center w-full justify-between gap-6">
+            {/* Left Section - Navigation */}
+            <div className="flex items-center gap-5 lg:gap-6 flex-shrink-0">
               {/* Hamburger Menu Icon */}
               <button
                 className="flex items-center justify-center w-8 h-8 focus:outline-none text-black hover:text-gray-700 transition-colors duration-300"
@@ -338,53 +313,12 @@ const HeaderWithSidebar2 = () => {
                 <Menu size={20} />
               </button>
 
-              {/* YOBHA Logo */}
-              <Link
-                to="/home"
-                className="flex items-center group"
-              >
-                <img
-                  src={logoImage}
-                  alt="YOBHA Logo"
-                  className="h-7 md:h-8 lg:h-9 transition-transform duration-300 group-hover:scale-105"
-                />
-              </Link>
-
               {/* Navigation Menu - Premium Typography */}
-              <nav className="flex items-center space-x-4 md:space-x-5 lg:space-x-6">
-                <Link
-                  to="/products/Sleepwear"
-                  className="text-black hover:text-gray-900 transition-all duration-500 font-light text-xs md:text-sm tracking-widest uppercase relative group whitespace-nowrap"
-                >
-                  Sleepwear
-                  <span className="absolute -bottom-2 left-0 h-px bg-gray-900 transition-all duration-500 ease-out w-0 group-hover:w-full"></span>
-                </Link>
-                <Link
-                  to="/products/Loungewear"
-                  className="text-black hover:text-gray-900 transition-all duration-500 font-light text-xs md:text-sm tracking-widest uppercase relative group whitespace-nowrap"
-                >
-                  Loungewear
-                  <span className="absolute -bottom-2 left-0 h-px bg-gray-900 transition-all duration-500 ease-out w-0 group-hover:w-full"></span>
-                </Link>
-                <Link
-                  to="/products/Homewear"
-                  className="text-black hover:text-gray-900 transition-all duration-500 font-light text-xs md:text-sm tracking-widest uppercase relative group whitespace-nowrap"
-                >
-                  Homewear
-                  <span className="absolute -bottom-2 left-0 h-px bg-gray-900 transition-all duration-500 ease-out w-0 group-hover:w-full"></span>
-                </Link>
-                    <button
-                  onClick={() => setSidebarOpen(true)}
-                  className="text-black hover:text-gray-900 transition-all duration-500 font-light text-xs md:text-sm tracking-widest uppercase relative group whitespace-nowrap"
-                    >
-                  Explore
-                  <span className="absolute -bottom-2 left-0 h-px bg-gray-900 transition-all duration-500 ease-out w-0 group-hover:w-full"></span>
-                    </button>
-              </nav>
+
             </div>
 
             {/* Center Section - Search */}
-            <div className="flex-1 mx-4 md:mx-6 lg:mx-8 min-w-0">
+            <div className="flex-1 max-w-xl">
               <div className="relative" ref={searchRef}>
                 <div className="relative">
                   <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -439,6 +373,16 @@ const HeaderWithSidebar2 = () => {
 
             {/* Right Section - Utilities */}
             <div className="flex items-center space-x-2 md:space-x-3 lg:space-x-4 flex-shrink-0">
+              {isAuthenticated && (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-3 py-2 text-black hover:text-gray-900 transition-all duration-300 rounded-full hover:bg-gray-200 uppercase tracking-widest text-[11px] md:text-xs"
+                >
+                  <LogOut size={16} strokeWidth={1.5} />
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
+              )}
+
               {/* Wishlist Icon - Desktop Only */}
               <Link
                 to="/wishlist"
@@ -447,41 +391,6 @@ const HeaderWithSidebar2 = () => {
               >
                 <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
               </Link>
-
-              {/* Account Icon - Luxury Design */}
-              {isAuthenticated && (
-                <div className="relative group">
-                  <button
-                    className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 rounded-full hover:bg-gray-200"
-                    title={t("navbar.account.myAccount." + i18n.language)}
-                    onClick={() => navigate('/account')}
-                  >
-                    <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
-                  </button>
-
-                  {/* User Dropdown - Luxury Design */}
-                  <div className="absolute top-12 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="bg-white shadow-2xl border border-gray-100 p-3 min-w-[220px]">
-                      <div className="space-y-1">
-                        <Link
-                          to="/account"
-                          className="flex items-center gap-3 px-4 py-3 hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
-                        >
-                          <User size={16} />
-                          <span>{t("navbar.account.myAccount." + i18n.language)}</span>
-                        </Link>
-                        <Link
-                          to="/orders"
-                          className="flex items-center gap-3 px-4 py-3 hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
-                        >
-                          <Package size={16} />
-                          <span>{t("navbar.account.orders." + i18n.language)}</span>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Cart Icon - Luxury Design */}
               <Link
@@ -500,6 +409,41 @@ const HeaderWithSidebar2 = () => {
                 )}
               </Link>
 
+              <div className="relative group">
+                <button
+                  className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 rounded-full hover:bg-gray-200"
+                  title={isAuthenticated ? t("navbar.account.myAccount." + i18n.language) : "Login"}
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      navigate('/login');
+                    }
+                  }}
+                >
+                  <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
+                </button>
+
+                {isAuthenticated && (
+                  <div className="absolute top-12 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div className="bg-white shadow-2xl border border-gray-100 py-2 min-w-[200px]">
+                      <button
+                        onClick={() => navigate('/account')}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-300"
+                      >
+                        <User size={16} />
+                        <span>My Account</span>
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-300"
+                      >
+                        <LogOut size={16} />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Logout Button - Luxury Design */}
               {/* {isAuthenticated && (
                 <button
@@ -512,10 +456,6 @@ const HeaderWithSidebar2 = () => {
                 </button>
               )} */}
 
-              {/* Language Switcher */}
-              <div className="flex items-center">
-                <LanguageSwitcher />
-              </div>
             </div>
           </div>
         </div>

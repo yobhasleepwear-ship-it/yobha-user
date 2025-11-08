@@ -241,7 +241,7 @@ const [newsletter , setNewsletter]=useState("")
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-text-light/20 bg-premium-beige">
+      <div className="border-t border-text-light/20 bg-premium-white">
         <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-text-medium">
             <p>© 2025 YOBHA. All rights reserved.</p>

@@ -19,7 +19,7 @@ const FAQ = lazy(() => import("./pages/faq/faq"))
 const PrivacyPolicy = lazy(() => import("./pages/privacy-policy/privacy-policy"));
 const TermsConditions = lazy(() => import("./pages/terms-conditions/terms-conditions"));
 const ReturnPolicy = lazy(() => import("./pages/return-policy/return-policy"));
-const Buyback = lazy(() => import("./pages/buyback/buyback"))
+const Buyback = lazy(() => import("./pages/buyback2/buyback2"))
 const FabricProtection = lazy(() => import("./pages/fabric-protection/fabric-protection"));
 const Careers = lazy(() => import("./pages/careers/careers"));
 const CareerDetails = lazy(() => import("./pages/careers/career-details"));
