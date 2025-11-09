@@ -327,7 +327,7 @@ const HeaderWithSidebar2 = () => {
                     placeholder={t("navbar.placeholders.search." + i18n.language)}
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="w-full pl-10 md:pl-12 pr-4 py-2 md:py-3 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 text-xs md:text-sm bg-gray-50/50 transition-all duration-300 hover:bg-white"
+                    className="w-full pl-10 md:pl-12 pr-4 py-2 md:py-3 border border-black rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 text-xs md:text-sm bg-gray-50/50 transition-all duration-300 hover:bg-white"
                   />
                   {searchLoading && (
                     <Loader2 size={16} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 animate-spin" />

@@ -670,12 +670,12 @@ const ProductDetailPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-premium-cream font-sweet-sans"
+      className="min-h-screen bg-white font-futura"
     >
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-10">
 
         {/* Breadcrumb */}
-        <div className="mb-6 md:mb-8 text-xs text-text-medium font-light tracking-widest">
+        <div className="mb-6 md:mb-8 text-sm  font-light tracking-widest">
           <a href="/" className="hover:text-black transition-colors">Home</a>
           <span className="mx-2">/</span>
           <a href="/products" className="hover:text-black transition-colors">Products</a>
@@ -778,11 +778,12 @@ const ProductDetailPage = () => {
 
             {/* Product Name */}
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 leading-tight font-sweet-sans">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 leading-tight font-futura">
                 {product.name}
               </h1>
+              
 
-              {/* Rating */}
+              {/* Rating
               {product.reviewCount > 0 && (
                 <div className="flex items-center gap-2 mb-3">
                   <div className="flex items-center gap-0.5">
@@ -803,7 +804,7 @@ const ProductDetailPage = () => {
                     {averageProdRating} ({product.reviews.length} review{product.reviewCount !== 1 ? 's' : ''})
                   </span>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Country Selector */}
@@ -827,8 +828,10 @@ const ProductDetailPage = () => {
             </div> */}
 
             {/* Debug or use selected country */}
-            <div className="text-xs text-text-light font-light">
-              Selected Country: <span className="font-normal">{selectedCountry}</span>
+            <div className="text-sm text-text-medium font-semibold text-black">
+              Product ID: <span className="font-semibold text-black">{product.productId}</span><br />
+              Selected Country: <span className="font-semibold text-black">{selectedCountry}</span>
+
             </div>
             {/* Price - Based on selectedCountry and selectedSize */}
             <div className="py-4 border-y border-text-light/10">
@@ -856,10 +859,10 @@ const ProductDetailPage = () => {
             {product?.availableColors?.length > 0 && (
               <div className="bg-white border border-text-light/10 p-3 rounded-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                  <h3 className="text-xs font-bold text-black uppercase tracking-widest">
                     Color
                   </h3>
-                  <span className="text-xs text-text-medium font-light">
+                  <span className="text-xs text-text-medium font-semibold">
                     {selectedColor}
                   </span>
                 </div>
@@ -891,7 +894,7 @@ const ProductDetailPage = () => {
               <div className="bg-white border border-text-light/10 p-3 rounded-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <div>
-                    <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                    <h3 className="text-xs font-bold text-black uppercase tracking-widest">
                       Size
                     </h3>
                     <span className="text-xs text-text-medium font-light">
@@ -934,7 +937,7 @@ const ProductDetailPage = () => {
 
             {/* Quantity */}
             <div>
-              <h3 className="text-xs font-light text-black mb-3 uppercase tracking-widest">
+              <h3 className="text-xs font-bold text-black mb-3 uppercase tracking-widest">
                 Quantity
               </h3>
               <div className="flex items-center gap-3">
@@ -966,14 +969,14 @@ const ProductDetailPage = () => {
             {/* Personalisation */}
             <div className="bg-white border border-text-light/10 p-4 rounded-sm space-y-2">
               <div className="flex items-center justify-between gap-3">
-                <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                <h3 className="text-xs font-bold text-black uppercase tracking-widest">
                   Add Monogram
                 </h3>
                 <span className="text-[11px] text-text-medium">
                   {monogram.length}/{MONOGRAM_CHAR_LIMIT}
                 </span>
               </div>
-              <p className="text-[11px] text-text-medium font-light leading-relaxed">
+              <p className="text-sm text-text-medium font-light leading-relaxed">
                 Personalise this piece with refined initials or a short note.
               </p>
               <input
@@ -1133,7 +1136,7 @@ const ProductDetailPage = () => {
                       onClick={() => setExpandedSections(prev => ({ ...prev, keyFeatures: !prev.keyFeatures }))}
                       className="flex items-center justify-between w-full text-left mb-2.5"
                     >
-                      <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                      <h3 className="text-xs font-bold text-black uppercase tracking-widest">
                         Key Features
                       </h3>
                       {expandedSections.keyFeatures ? (
@@ -1147,7 +1150,7 @@ const ProductDetailPage = () => {
                         {product.keyFeatures.map((feature, index) => (
                           <li key={index} className="text-xs text-text-medium flex items-start font-light leading-relaxed">
                             <span className="mr-2 mt-1">•</span>
-                            <span>{feature}</span>
+                            <span className="font-light">{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -1162,7 +1165,7 @@ const ProductDetailPage = () => {
                       onClick={() => setExpandedSections(prev => ({ ...prev, fabric: !prev.fabric }))}
                       className="flex items-center justify-between w-full text-left mb-2.5"
                     >
-                      <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                      <h3 className="text-xs font-bold text-black uppercase tracking-widest">
                         Fabric
                       </h3>
                       {expandedSections.fabric ? (
@@ -1186,7 +1189,7 @@ const ProductDetailPage = () => {
                       onClick={() => setExpandedSections(prev => ({ ...prev, careInstructions: !prev.careInstructions }))}
                       className="flex items-center justify-between w-full text-left mb-2.5"
                     >
-                      <h3 className="text-xs font-light text-black uppercase tracking-widest">
+                      <h3 className="text-xs font-bold text-black uppercase tracking-widest">
                         Care Instructions
                       </h3>
                       {expandedSections.careInstructions ? (
@@ -1200,7 +1203,7 @@ const ProductDetailPage = () => {
                         {product.careInstructions.map((instruction, index) => (
                           <li key={index} className="text-xs text-text-medium flex items-start font-light leading-relaxed">
                             <span className="mr-2 mt-1">•</span>
-                            <span>{instruction}</span>
+                            <span className="font-light">{instruction}</span>
                           </li>
                         ))}
                       </ul>
@@ -1212,7 +1215,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
         {/* Review Form Section */}
-        <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
+        { false && <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
           <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-widest mb-5 md:mb-6 font-sweet-sans">
             Customer Reviews
           </h2>
@@ -1306,7 +1309,7 @@ const ProductDetailPage = () => {
               </form>
             </div>
           )}
-        </div>
+        </div> }
 
         {/* Existing Reviews Section - Commented out */}
         {/* {product.reviews.length > 0 && (
@@ -1361,7 +1364,7 @@ const ProductDetailPage = () => {
         )} */}
         {newProducts?.length > 0 && (
           <div className="space-y-5 pt-6 md:pt-8 border-t border-text-light/10">
-            <h3 className="text-xs md:text-sm font-light text-black mb-4 uppercase tracking-widest font-sweet-sans">
+            <h3 className="text-xs md:text-sm font-bold text-black mb-4 uppercase tracking-widest font-sweet-sans">
               Hot Picks Just For You
             </h3>
 
@@ -1395,7 +1398,7 @@ const ProductDetailPage = () => {
 
                       {/* Info Section */}
                       <div className="p-3 text-center space-y-1 flex flex-col justify-between min-h-[70px] flex-grow">
-                        <p className="text-xs font-light text-black uppercase tracking-widest line-clamp-1">{variant.name}</p>
+                        <p className="text-xs font-semibold text-black uppercase tracking-widest line-clamp-1">{variant.name}</p>
                         <p className="text-xs text-text-medium line-clamp-2 font-light">
                           {variant.description}
                         </p>

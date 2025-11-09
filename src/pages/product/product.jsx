@@ -539,12 +539,12 @@ const ProductsPage = () => {
 
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 font-sweet-sans">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 font-futura">
             {category
               ? `${category.replace(/([A-Z])/g, " $1").trim()} Collection`
               : "All Products"}
           </h1>
-          <p className="text-text-medium text-sm md:text-base">
+          <p className="text-text-medium font-light text-sm md:text-base">
             Timeless essentials crafted for serene nights and refined comfort
           </p>
         </div>
@@ -688,7 +688,7 @@ const ProductsPage = () => {
               <h3 className="text-2xl font-light text-black mb-3 uppercase tracking-wider font-sweet-sans">
                 No Products Found
               </h3>
-              <p className="text-text-medium mb-8">
+              <p className="text-text-medium  font-light font-futura mb-8">
                 Try adjusting your filters to find what you're looking for
               </p>
               {hasActiveFilters && (

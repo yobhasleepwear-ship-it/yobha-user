@@ -141,21 +141,6 @@ const Sidebar = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {/* Ship To Section */}
-          {selectedSidebarCountry && (
-            <div className="px-6 py-5 border-b border-gray-100">
-              <p className="text-[11px] uppercase tracking-[0.4em] text-gray-700 mb-3 font-light">Ship To</p>
-              <CountrySelector
-                value={selectedSidebarCountry?.code}
-                onSelect={handleSidebarCountryChange}
-                placeholder="Select country"
-                buttonClassName="bg-white border border-gray-200"
-                menuClassName="bg-white"
-                optionClassName=""
-              />
-            </div>
-          )}
-
           {/* Main Navigation */}
           <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-6 space-y-0">
             {mainNavigationItems.map((item, index) => (
@@ -233,9 +218,24 @@ const Sidebar = ({ isOpen, onClose }) => {
                 </div>
               )}
             </div>
-
-            {/* Language Switcher */}
+            
+            {/* Ship To Section */}
+          {selectedSidebarCountry && (
             <div className="pt-6 border-t border-gray-100 mt-2">
+              <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 hover:text-black border-b border-gray-50 font-bold group">Ship To</p>
+              <CountrySelector
+                value={selectedSidebarCountry?.code}
+                onSelect={handleSidebarCountryChange}
+                placeholder="Select country"
+                buttonClassName="bg-white border border-gray-200"
+                menuClassName="bg-white"
+                optionClassName=""
+              />
+            </div>
+          )}
+              {/* Language Switcher */}
+            <div className="pt-6 border-t border-gray-100 mt-2">
+            <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 hover:text-black border-b border-gray-50 font-bold group">Choose Language</p>  
               <LanguageSwitcher />
             </div>
           </nav>

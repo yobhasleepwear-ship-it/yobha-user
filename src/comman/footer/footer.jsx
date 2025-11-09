@@ -71,7 +71,7 @@ const [newsletter , setNewsletter]=useState("")
                 />
               </Link>
             </div>
-            <p className="text-text-medium text-sm leading-relaxed">
+            <p className="text-text-medium text-sm leading-relaxed font-light">
               Premium comfortwear for your ultimate comfort. Designed with care, elegance, and style.
             </p>
           </div>
@@ -169,7 +169,7 @@ const [newsletter , setNewsletter]=useState("")
           {/* Newsletter & Social */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
              <div className=" border-b border-gray-200 bg-premium-cream/70">
-                              <p className="text-[11px] uppercase tracking-[0.28em] text-black/70 mb-3">Ship To</p>
+                              <p className="text-medium uppercase tracking-wider text-black font-bold mb-3">Ship To</p>
                               <CountrySelector
                                 value={selectedSidebarCountry?.code}
                                 onSelect={handleSidebarCountryChange}
@@ -180,10 +180,10 @@ const [newsletter , setNewsletter]=useState("")
                               />
                             </div>
             <div>
-              <h3 className="text-sm font-light mb-6 text-black uppercase tracking-wider">
+              <h3 className="text-sm font-bold mb-4 text-black uppercase tracking-wider">
                 Newsletter
               </h3>
-              <p className="text-text-medium text-sm mb-4">
+              <p className="text-text-medium font-light text-sm mb-4">
                 Subscribe to receive updates, access to exclusive deals, and more.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 max-w-md lg:max-w-none">
@@ -201,7 +201,7 @@ const [newsletter , setNewsletter]=useState("")
             </div>
 
             <div>
-              <h3 className="text-sm font-light mb-4 text-black uppercase tracking-wider">
+              <h3 className="text-sm font-bold mb-4 text-black uppercase tracking-wider">
                 Follow Us
               </h3>
               <div className="flex items-center gap-5">
