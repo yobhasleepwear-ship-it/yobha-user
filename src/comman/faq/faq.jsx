@@ -52,14 +52,14 @@ const FAQ = () => {
   ];
 
   return (
-    <section id="faq" className="bg-white py-12 sm:py-20 font-['Helvetica Neue','Helvetica',sans-serif]">
+    <section id="faq" className="bg-white py-12 sm:py-20 font-futura">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Heading */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black uppercase tracking-widest mb-4 sm:mb-5">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-black uppercase tracking-widest mb-4 sm:mb-5">
             Frequently Asked Questions
           </h2>
-          <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-gradient-to-r from-luxury-gold to-[#e4c988] mx-auto rounded-full"></div>
+          <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-black mx-auto rounded-full"></div>
           <p className="mt-3 sm:mt-4 text-text-dark text-xs sm:text-sm tracking-wide uppercase">
             Calm • Connection • Conscious Living
           </p>

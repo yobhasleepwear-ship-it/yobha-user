@@ -145,7 +145,7 @@ const Contact = () => {
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-black uppercase tracking-widest mb-3 sm:mb-4 font-sweet-sans">
                   Send Us a Message
                 </h2>
-                <p className="text-text-dark text-base sm:text-lg leading-relaxed max-w-2xl">
+                <p className="text-text-dark font-light text-base sm:text-lg leading-relaxed max-w-2xl">
                   Have a question or need assistance? Fill out the form below and we'll get back to you within 24 hours.
                 </p>
               </div>

@@ -2,15 +2,15 @@ import React from "react";
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-premium-cream">
+    <div className="min-h-screen bg-white font-futura">
       {/* Hero Section - Compact */}
       <section className="relative py-8 bg-gradient-to-br from-premium-beige via-premium-cream to-premium-warm-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-black uppercase tracking-widest mb-4">
+            <h1 className="text-5xl md:text-6xl font-light font-futura  text-black uppercase tracking-widest mb-4">
             Why YOBHA
             </h1>
-            <p className="text-text-medium text-lg font-light tracking-wide">
+            <p className="text-text-medium text-lg font-light tracking-wide font-futura">
               Redefining the essence of modern comfort
             </p>
           </div>
@@ -23,7 +23,7 @@ const About = () => {
           {/* Content */}
           <div className="space-y-6">
             <div className="text-center lg:text-left">
-              <h2 className="text-4xl md:text-5xl font-bold text-black uppercase tracking-widest mb-6">
+              <h2 className="text-4xl md:text-5xl font-light  text-black uppercase tracking-widest mb-6">
                 YOBHA
               </h2>
             </div>
@@ -63,7 +63,7 @@ const About = () => {
       <section className="bg-white py-8">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-black uppercase tracking-wide mb-3">
+            <h2 className="text-3xl font-semibold text-black uppercase tracking-wide mb-3">
               Our Philosophy
             </h2>
             <div className="w-16 h-1 bg-luxury-gold mx-auto"></div>
@@ -71,7 +71,7 @@ const About = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-bold text-black uppercase tracking-wide mb-3">
+              <h3 className="text-xl font-semibold text-black uppercase tracking-wide mb-3">
                 Beyond Sleep
               </h3>
               <p className="text-text-dark text-base leading-relaxed font-light">
@@ -80,7 +80,7 @@ const About = () => {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-black uppercase tracking-wide mb-3">
+              <h3 className="text-xl font-semibold text-black uppercase tracking-wide mb-3">
                 Home as State of Mind
               </h3>
               <p className="text-text-dark text-base leading-relaxed font-light">
@@ -95,7 +95,7 @@ const About = () => {
       <section className="bg-premium-beige py-8">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-black uppercase tracking-wide mb-3">
+            <h2 className="text-3xl font-semibold text-black uppercase tracking-wide mb-3">
               Our Values
             </h2>
             <div className="w-16 h-1 bg-luxury-gold mx-auto"></div>

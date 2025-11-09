@@ -260,7 +260,7 @@ const AccountPage = () => {
   // };
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6F2] font-sweet-sans">
+    <div className="relative min-h-screen bg-white font-sweet-sans">
       {/* Main Content */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
         <div className="max-w-7xl mx-auto">
@@ -279,8 +279,8 @@ const AccountPage = () => {
             {/* First Row - Profile & Address */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
               {/* Profile Details */}
-              <div className="bg-white border border-gray-200/50 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500">
-                <div className="px-6 md:px-8 py-6 border-b border-gray-200/50">
+              <div className="bg-white border border-gray-500 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500">
+                <div className="px-6 md:px-8 py-6 border-b border-gray-400">
                   <div className="flex items-center gap-3">
                     <User size={20} className="text-gray-600" />
                     <h2 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
@@ -301,7 +301,7 @@ const AccountPage = () => {
                           value={tempData.name || ""}
                           onChange={(e) => setTempData({ ...tempData, name: e.target.value })}
                           placeholder={LocalUserData.fullName || "Enter your full name"}
-                          className="flex-1 px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light placeholder:text-gray-400 text-sm md:text-base"
+                          className="flex-1 px-4 py-3 border border-gray-800 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light placeholder:text-gray-400 text-sm md:text-base"
                         />
                         <button
                           onClick={saveEdit}
@@ -370,8 +370,8 @@ const AccountPage = () => {
               </div>
 
               {/* Address Column */}
-              <div className="bg-white border border-gray-200/50 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500">
-                <div className="px-6 md:px-8 py-6 border-b border-gray-200/50">
+              <div className="bg-white border border-gray-500 hover:border-gray-900/30 hover:shadow-lg transition-all duration-500">
+                <div className="px-6 md:px-8 py-6 border-b border-gray-400">
                   <div className="flex items-center gap-3">
                     <MapPin size={20} className="text-gray-600" />
                     <h2 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">

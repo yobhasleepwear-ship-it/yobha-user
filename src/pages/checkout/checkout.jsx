@@ -559,10 +559,10 @@ const CheckoutPage = () => {
             <ArrowLeft size={20} strokeWidth={1.5} />
             <span className="text-sm uppercase tracking-wider">Back to Cart</span>
           </button>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black uppercase tracking-widest mb-2">
             Checkout
           </h1>
-          <p className="text-text-medium text-sm md:text-base">Complete your order details</p>
+          <p className="text-text-medium font-light text-sm md:text-base">Complete your order details</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
@@ -576,7 +576,7 @@ const CheckoutPage = () => {
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsDeliveryExpanded(!isDeliveryExpanded)}
               >
-                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
                   <MapPin size={20} strokeWidth={1.5} />
                   Delivery Address
                 </h2>
@@ -848,7 +848,7 @@ const CheckoutPage = () => {
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsCouponsExpanded(!isCouponsExpanded)}
               >
-                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
                   <Gift size={20} strokeWidth={1.5} />
                   Coupons & Loyalty Points
                 </h2>
@@ -911,8 +911,8 @@ const CheckoutPage = () => {
                           <div
                             key={coupon.id}
                             className={`p-4 border-2 cursor-pointer transition-all ${selectedCoupon?.id === coupon.id
-                              ? 'border-luxury-rose-gold bg-luxury-light-gold/20'
-                              : 'border-text-light/20 hover:border-luxury-gold/50 bg-white'
+                              ? 'border-gray-700 bg-gray-100'
+                              : 'border-text-light/20 hover:border-black bg-white'
                               }`}
                             onClick={() => handleCouponSelect(coupon)}
                           >
@@ -923,19 +923,19 @@ const CheckoutPage = () => {
                                     type="radio"
                                     checked={selectedCoupon?.id === coupon.id}
                                     onChange={() => handleCouponSelect(coupon)}
-                                    className="accent-luxury-rose-gold"
+                                    className="accent-black"
                                   />
                                   <div className="flex items-center gap-2">
                                     <span className="text-sm md:text-base font-light text-black uppercase tracking-wider">
                                       {coupon.code}
                                     </span>
                                     {coupon.firstOrderOnly && (
-                                      <span className="px-2 py-1 text-xs bg-luxury-gold text-white rounded-full font-light">
+                                      <span className="px-2 py-1 text-xs bg-gray-200 text-white rounded-full font-light">
                                         First Order
                                       </span>
                                     )}
                                     {coupon.first100UsersOnly && (
-                                      <span className="px-2 py-1 text-xs bg-luxury-rose-gold text-white rounded-full font-light">
+                                      <span className="px-2 py-1 text-xs bg-gray-200 text-white rounded-full font-light">
                                         Limited
                                       </span>
                                     )}
@@ -962,7 +962,7 @@ const CheckoutPage = () => {
                                     e.stopPropagation();
                                     handleCouponRemove();
                                   }}
-                                  className="ml-3 px-3 py-1 text-xs bg-luxury-rose-gold text-white hover:bg-luxury-rose-gold/80 transition-colors rounded"
+                                  className="ml-3 px-3 py-1 text-xs bg-gray-700 text-white hover:bg-gray-700 transition-colors rounded"
                                 >
                                   Remove
                                 </button>
@@ -986,7 +986,7 @@ const CheckoutPage = () => {
 
                   {/* Applied Discounts Summary */}
                   {calculateTotalDiscount() > 0 && (
-                    <div className="bg-luxury-pale-gold/30 border border-luxury-gold/30 p-4 md:p-5">
+                    <div className="bg-gray-50 border border-gray-700 p-4 md:p-5">
                       <h4 className="text-sm font-light text-black uppercase tracking-wider mb-3 font-sweet-sans">
                         Applied Discounts
                       </h4>
@@ -1025,11 +1025,11 @@ const CheckoutPage = () => {
             {/* Payment Section */}
             <div className="bg-white border border-text-light/20">
               <div className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20">
-                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
                   <CreditCard size={20} strokeWidth={1.5} />
                   Payment Method
                 </h2>
-                <p className="text-xs md:text-sm text-text-medium mt-1">
+                <p className="text-xs md:text-sm font-light text-text-medium mt-1">
                   Choose your payment option
                 </p>
               </div>
@@ -1054,9 +1054,9 @@ const CheckoutPage = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-light text-black text-sm md:text-base">{method.name}</span>
+                            <span className=" font-semibold text-black text-sm md:text-base">{method.name}</span>
                           </div>
-                          <p className="text-xs md:text-sm text-text-medium mt-1">{method.description}</p>
+                          <p className="text-xs md:text-sm font-light mt-1">{method.description}</p>
                         </div>
                         {selectedPayment?.id === method.id && (
                           <div className="flex-shrink-0">
@@ -1077,7 +1077,7 @@ const CheckoutPage = () => {
           <div className="lg:col-span-1">
             <div className="bg-white border border-text-light/20 lg:sticky lg:top-24">
               <div className="p-4 md:p-6 border-b border-text-light/20">
-                <h2 className="text-base md:text-lg font-light text-black uppercase tracking-wider mb-1 font-sweet-sans">
+                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider mb-1 font-sweet-sans">
                   Order Summary
                 </h2>
                 {/* <p className="text-xs md:text-sm text-text-medium">{cartSummary.distinctItems} {cartSummary.distinctItems === 1 ? 'item' : 'items'}</p> */}

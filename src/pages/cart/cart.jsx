@@ -162,7 +162,7 @@ const CartPage = () => {
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 md:mb-3">
             Shopping Cart
           </h1>
-          <p className="text-text-medium text-sm md:text-base">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
+          <p className="text-text-medium font-light text-sm md:text-base">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
         </div>
 
         {cartItems.length === 0 ? (
@@ -208,7 +208,7 @@ const CartPage = () => {
                             </h3>
                             <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-text-medium mb-2">
                               {product.variantColor && <span>Color: <span className="text-black font-light capitalize">{product.variantColor}</span></span>}
-                              {item.size && <span>Size: <span className="text-black font-light">{item.size}</span></span>}
+                              {item.size && <span className="font-light">Size: <span className="text-black font-light">{item.size}</span></span>}
                             </div>
                              {item.monogram && (
                           <div className="inline-flex items-center gap-2  border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-luxury-gold">
@@ -277,8 +277,8 @@ const CartPage = () => {
             <div className="lg:col-span-1">
               <div className="bg-white border border-text-light/20 lg:sticky lg:top-24">
                 <div className="p-4 md:p-6 border-b border-text-light/20">
-                  <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-wider mb-1 font-sweet-sans">Order Summary</h2>
-                  <p className="text-xs md:text-sm text-text-medium">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</p>
+                  <h2 className="text-lg md:text-xl text-text-medium text-black uppercase tracking-wider mb-1 font-futura">Order Summary</h2>
+                  <p className="text-xs md:text-sm font-light text-text-medium">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</p>
                 </div>
 
                 <div className="p-4 md:p-6 space-y-4">
@@ -299,7 +299,7 @@ const CartPage = () => {
                   </div>
 
                   <div className="flex justify-between pt-4 pb-4 md:pb-6 border-b border-text-light/20">
-                    <span className="text-base md:text-lg font-light text-black uppercase tracking-wider font-sweet-sans">Total</span>
+                    <span className="text-base md:text-lg text-text-medium text-black uppercase tracking-wider font-sweet-sans">Total</span>
                     <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(totals.grandTotal, getCurrency())}</span>
                   </div>
 
@@ -315,7 +315,7 @@ const CartPage = () => {
                         <RotateCcw size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                         <div className="flex-1 min-w-0">
                           <p className="text-xs md:text-sm font-light text-black">Easy Returns</p>
-                          <p className="text-xs text-text-medium">30-day return policy</p>
+                          <p className="text-xs font-light">30-day return policy</p>
                         </div>
                       </div>
                     </div>

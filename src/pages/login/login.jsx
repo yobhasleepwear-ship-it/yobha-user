@@ -96,13 +96,13 @@ const LoginPage = () => {
   return (
     <>
       <HeaderWithSidebar />
-      <div className="min-h-screen flex flex-col md:flex-row bg-premium-cream pt-16 font-futura">
+      <div className="min-h-screen flex flex-col md:flex-row bg-premium-cream pt-14 font-futura">
         {/* Left Side - Brand Section */}
-        <div className="hidden md:flex w-1/2 p-16 lg:p-20 flex-col justify-center items-start space-y-8 bg-white">
+        <div className="hidden md:flex w-1/2 p-16 lg:p-20 bg-gray-200 flex-col justify-center items-start space-y-8 bg-white">
           <h1 className="text-5xl lg:text-6xl font-light text-black tracking-wider uppercase font-futura">
-            Welcome Back
+            Welcome
           </h1>
-          <p className="text-text-medium max-w-md text-base lg:text-lg leading-relaxed font-futura">
+          <p className="font-light max-w-md text-base lg:text-lg leading-relaxed font-futura">
             Discover the ultimate luxury in sleepwear with YOBHA. Sign in to continue and indulge in exclusivity.
           </p>
           <div className="flex space-x-6 text-black text-2xl font-futura">
