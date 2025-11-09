@@ -363,7 +363,7 @@ const ProductsPage = () => {
         </div>
       </FilterAccordion> */}
 
-      <FilterAccordion
+      {/* <FilterAccordion
         title="Price Range"
         isOpen={openAccordion === "price"}
         onToggle={() => toggleAccordion("price")}
@@ -404,7 +404,7 @@ const ProductsPage = () => {
             className="w-full accent-black cursor-pointer"
           />
         </div>
-      </FilterAccordion>
+      </FilterAccordion> */}
       {/* <FilterAccordion
         title="Country"
         isOpen={openAccordion === "country"}
@@ -487,7 +487,7 @@ const ProductsPage = () => {
         </div>
       )}
 
-      {/* Mobile Sort Modal - Bottom Sheet Style */}
+      {/* Mobile Sort Modal - Bottom Sheet Style
       {showMobileSort && (
         <div className="fixed inset-0 z-50">
           <div
@@ -532,7 +532,7 @@ const ProductsPage = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Main Content */}
       <main className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-12">
@@ -566,7 +566,7 @@ const ProductsPage = () => {
               </button>
 
               {/* Sorting Options - Desktop/Tablet */}
-              <div className="flex items-center gap-3">
+              {/* <div className="flex items-center gap-3">
                 <span className="text-sm font-light text-black uppercase tracking-wider">Sort By:</span>
                 <div className="flex flex-wrap gap-2">
                   {filterOptions.sortOptions.map((option) => (
@@ -582,7 +582,7 @@ const ProductsPage = () => {
                     </button>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="text-text-medium text-sm uppercase tracking-wider">
@@ -606,7 +606,7 @@ const ProductsPage = () => {
               </button>
 
               {/* Mobile Sort Button */}
-              <button
+              {/* <button
                 onClick={() => setShowMobileSort(true)}
                 className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
               >
@@ -614,7 +614,7 @@ const ProductsPage = () => {
                   Sort by {filterOptions.sortOptions.find(opt => opt.id === filters.sortBy)?.name || 'Featured'}
                 </span>
                 <ChevronDown size={16} strokeWidth={1.5} />
-              </button>
+              </button> */}
             </div>
 
             {/* Mobile Product Count - Centered */}
