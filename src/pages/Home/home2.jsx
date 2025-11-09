@@ -588,7 +588,9 @@ const HomePage2 = () => {
       </section>
 
       {/* Accessories Section - The Gift Shop */}
-      <section
+
+
+    {false &&  <section
         className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans"
         ref={giftShopRef}
       >
@@ -727,10 +729,12 @@ const HomePage2 = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> }
+
+
 
       {/* Carousel Video Section - Packaging/Manufacturing */}
-      <section className="relative w-full py-8 md:py-12 lg:py-16 bg-white font-sweet-sans">
+     { false && <section className="relative w-full py-8 md:py-12 lg:py-16 bg-white font-sweet-sans">
         <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mb-6 md:mb-8">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
@@ -840,7 +844,7 @@ const HomePage2 = () => {
             )}
           </div>
         )}
-      </section>
+      </section> }
 
       {/* Recently Viewed Section */}
       {recentVisited.length > 0 && (
