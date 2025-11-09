@@ -275,7 +275,7 @@ const ProductsPage = () => {
 
       {/* Gender & Type */}
       <FilterAccordion
-        title="Gender & Type"
+        title="Cateory"
         isOpen={openAccordion === "gender"}
         onToggle={() => toggleAccordion("gender")}
       >
