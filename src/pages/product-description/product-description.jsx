@@ -458,7 +458,8 @@ const ProductDetailPage = () => {
         country: selectedCountry,
         quantity: quantity,
         country: selectedCountry,
-        monogram: monogram
+        monogram: monogram,
+        color:selectedColor
       });
     }
 
@@ -847,6 +848,7 @@ const ProductDetailPage = () => {
                     <>
                       <span className="text-2xl md:text-3xl font-light text-black tracking-tight">
                         {formatPrice(matchedPrice.priceAmount, matchedPrice.currency)}
+                        <p className="text-sm ">(Inc. all taxes)</p>
                       </span>
                     </>
                   ) : (
