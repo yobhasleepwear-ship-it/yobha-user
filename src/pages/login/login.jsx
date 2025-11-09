@@ -96,7 +96,15 @@ const LoginPage = () => {
   return (
     <>
       <HeaderWithSidebar />
-      <div className="min-h-screen flex flex-col md:flex-row bg-premium-cream pt-14 font-futura">
+  <div className="relative min-h-screen flex flex-col md:flex-row bg-premium-cream pt-14 font-futura">
+        {/* Close button placed inside page content so it appears below header */}
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Close login"
+          className="absolute top-6 right-4 md:top-10 md:right-6 z-[1400] w-10 h-10 md:w-11 md:h-11 flex items-center justify-center  bg-white border border-text-light/20 shadow hover:bg-gray-50"
+        >
+          <span className="text-lg md:text-xl font-semibold">✕</span>
+        </button>
         {/* Left Side - Brand Section */}
         <div className="hidden md:flex w-1/2 p-16 lg:p-20 bg-gray-200 flex-col justify-center items-start space-y-8 bg-white">
           <h1 className="text-5xl lg:text-6xl font-light text-black tracking-wider uppercase font-futura">
