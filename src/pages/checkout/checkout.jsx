@@ -73,7 +73,7 @@ const CheckoutPage = () => {
   // Coupons & Loyalty State
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
-  const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [selectedCoupon, setSelectedCoupon] = useState({});
   console.log(selectedCoupon, selectedPayment)
   const [isCouponsExpanded, setIsCouponsExpanded] = useState(false);
   const [isLoadingCoupons, setIsLoadingCoupons] = useState(false);
@@ -187,6 +187,7 @@ const CheckoutPage = () => {
 
 
   const handleOrder = async () => {
+    console.log(selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "", "kkk")
     try {
       const PurchasedProduct = cartItems.map((item, index) => ({
         id: item.id,
@@ -196,8 +197,6 @@ const CheckoutPage = () => {
         color: item.color,
         monogram: item.monogram
       }));
-      console.log(cartItems)
-console.log( cartItems[0].priceList.find((e) => e.country === cartItems[0].country))
       const orderPayload = {
         currency: cartItems[0].priceList.find((e) => e.country === cartItems[0].country).currency,
         productRequests: PurchasedProduct,
@@ -212,14 +211,25 @@ console.log( cartItems[0].priceList.find((e) => e.country === cartItems[0].count
           MobileNumner: address.mobileNumner
         },
         ShippingRemarks: ShippingRemarks,
-        paymentMethod: selectedPayment.id,
-        couponCode: selectedCoupon.code ?? "",
-        couponDiscount: selectedCoupon.maxDiscountAmount ?? "",
+        paymentMethod: selectedPayment ? selectedPayment.id : "",
+        couponCode: selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "",
+        couponDiscount: calculateCouponDiscount(selectedCoupon)?? "",
         loyaltyDiscountAmount: loyaltyDiscountAmount ?? 0,
         email: email,
         orderCountry: cartItems.country,
         giftCardNumber: giftCardNumber
       };
+
+      // this payload is of gift card purchase 
+      const giftCardPurchase = {
+        "currency": "INR",
+        "productRequests": [],
+        "shippingAddress": null,
+        "paymentMethod": "razorpay",
+        "giftCardAmount": 1001.00,
+        "email": "buyer@example.com",
+        "orderCountry": "IN"
+      }
 
 
       const orderRes = await createOrder(orderPayload);
@@ -556,7 +566,7 @@ console.log( cartItems[0].priceList.find((e) => e.country === cartItems[0].count
   }
 
   const handleCouponRemove = () => {
-    setSelectedCoupon(null);
+    setSelectedCoupon({});
     message.info("Coupon removed");
   }
 
@@ -885,7 +895,7 @@ console.log( cartItems[0].priceList.find((e) => e.country === cartItems[0].count
                           {addressErrors.pincode && <p className="text-xs text-red-500 mt-1">{addressErrors.pincode}</p>}
                         </div>
 
-                        <div>
+                        {/* <div>
                           <label className="block text-sm font-light text-gray-700 mb-1">Landmark</label>
                           <input
                             type="text"
@@ -895,7 +905,7 @@ console.log( cartItems[0].priceList.find((e) => e.country === cartItems[0].count
                             placeholder="Nearby landmark (Optional)"
                             className="w-full px-4 py-3 border-2 border-gray-300 focus:border-black hover:border-gray-400 focus:outline-none text-sm  transition-colors"
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   )}
