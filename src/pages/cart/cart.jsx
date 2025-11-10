@@ -285,7 +285,10 @@ const CartPage = () => {
                   <div className="space-y-3 pb-4 border-b border-text-light/10">
                     <div className="flex justify-between text-xs md:text-sm">
                       <span className="text-text-medium">Subtotal</span>
-                      <span className="text-black font-light">{formatPrice(totals.subTotal, getCurrency())}</span>
+                      <span className="text-black font-light">{formatPrice(totals.subTotal, getCurrency())}
+                        
+                      </span>
+                      
                     </div>
 
                     <div className="flex justify-between text-xs md:text-sm">
@@ -300,7 +303,9 @@ const CartPage = () => {
 
                   <div className="flex justify-between pt-4 pb-4 md:pb-6 border-b border-text-light/20">
                     <span className="text-base md:text-lg text-text-medium text-black uppercase tracking-wider font-sweet-sans">Total</span>
-                    <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(totals.grandTotal, getCurrency())}</span>
+                    <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(totals.grandTotal, getCurrency())}
+                      <p className="text-sm">(inc. all taxes)</p>
+                    </span>
                   </div>
 
                   {totals.shipping === 0 && (

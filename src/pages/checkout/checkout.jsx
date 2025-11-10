@@ -6,6 +6,23 @@ import { getCartDetails } from "../../service/productAPI";
 import { CreateOrder } from "../../service/order";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { getCoupons } from "../../service/coupans";
+import { createOrder, updatePayment } from "../../service/orderService";
+import { removeKey } from "../../service/localStorageService";
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 const CheckoutPage = () => {
   const { pageProps } = useParams();
@@ -23,9 +40,10 @@ const CheckoutPage = () => {
     city: '',
     state: '',
     pincode: '',
-    country: 'India',
+    country: '',
     landmark: '',
   });
+  console.log(address, "add")
   const [addressErrors, setAddressErrors] = useState({});
   const [userAddresses, setUserAddresses] = useState([]);
   const [useSavedAddress, setUseSavedAddress] = useState(true);
@@ -55,25 +73,27 @@ const CheckoutPage = () => {
   // Coupons & Loyalty State
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
-  const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [selectedCoupon, setSelectedCoupon] = useState({});
+  console.log(selectedCoupon, selectedPayment)
   const [isCouponsExpanded, setIsCouponsExpanded] = useState(false);
   const [isLoadingCoupons, setIsLoadingCoupons] = useState(false);
   const [loyaltyDiscountAmount, setLoyaltyDiscountAmount] = useState(0);
-
+  const [ShippingRemarks, setShippingRemarks] = useState('')
   // Terms & Gift Wrap State
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [giftWrapEnabled, setGiftWrapEnabled] = useState(false);
-
+  const [email, setEmail] = useState("")
+  const [giftCardNumber, setGiftCardNumber] = useState("")
   // Payment Methods
   const paymentMethods = [
     {
-      id: "prepaid",
+      id: "razorpay",
       name: "Prepaid",
       icon: CreditCard,
       description: "Pay online via card or UPI"
     },
     {
-      id: "cod",
+      id: "COD",
       name: "Cash on Delivery",
       icon: Banknote,
       description: "Pay when you receive"
@@ -165,6 +185,92 @@ const CheckoutPage = () => {
   }, [checkoutProd]);
 
 
+
+  const handleOrder = async () => {
+    console.log(selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "", "kkk")
+    try {
+      const PurchasedProduct = cartItems.map((item, index) => ({
+        id: item.id,
+        size: item.size,
+        quantity: item.quantity,
+        fabric: item.fabricType,
+        color: item.color,
+        monogram: item.monogram
+      }));
+      const orderPayload = {
+        currency: cartItems[0].priceList.find((e) => e.country === cartItems[0].country).currency,
+        productRequests: PurchasedProduct,
+        shippingAddress: {
+          FullName: address.fullName,
+          Line1: address.line1,
+          AddressLine2: address.line2,
+          City: address.city,
+          State: address.state,
+          Zip: address.zip,
+          Country: address.country,
+          MobileNumner: address.mobileNumner
+        },
+        ShippingRemarks: ShippingRemarks,
+        paymentMethod: selectedPayment ? selectedPayment.id : "",
+        couponCode: selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "",
+        couponDiscount: calculateCouponDiscount(selectedCoupon)?? "",
+        loyaltyDiscountAmount: loyaltyDiscountAmount ?? 0,
+        email: email,
+        orderCountry: cartItems.country,
+        giftCardNumber: giftCardNumber
+      };
+
+      // this payload is of gift card purchase 
+      const giftCardPurchase = {
+        "currency": "INR",
+        "productRequests": [],
+        "shippingAddress": null,
+        "paymentMethod": "razorpay",
+        "giftCardAmount": 1001.00,
+        "email": "buyer@example.com",
+        "orderCountry": "IN"
+      }
+
+
+      const orderRes = await createOrder(orderPayload);
+      if (!orderRes.success) {
+        message.error("Order creation failed ❌");
+        return;
+      }
+      if (orderRes.razorpayOrderId == null) {
+        message.success("Order Created Successfully , your orderId is " + orderPayload.orderId)
+        removeKey("cart");
+        setCartItems([])
+        return
+      }
+
+
+      const options = {
+        key: "rzp_test_Rb7lQAPEkEa2Aw",
+        amount: orderRes.total * 100,
+        currency: cartItems[0].priceList.find((e) => e.country === cartItems[0].country).currency,
+        order_id: orderRes.razorpayOrderId,
+        prefill: { email: orderPayload.email },
+        handler: async (response) => {
+          const updateRes = await updatePayment({
+            razorpayOrderId: orderRes.razorpayOrderId,
+            razorpayPaymentId: response.razorpay_payment_id,
+            isSuccess: true,
+          });
+
+          message.success("Payment successful ✅");
+          removeKey("cart");
+          setCartItems([])
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error("handleTestOrder error:", error);
+      message.error("Something went wrong ❌");
+    }
+  };
 
 
   const fetchAddresses = async () => {
@@ -460,7 +566,7 @@ const CheckoutPage = () => {
   }
 
   const handleCouponRemove = () => {
-    setSelectedCoupon(null);
+    setSelectedCoupon({});
     message.info("Coupon removed");
   }
 
@@ -601,7 +707,7 @@ const CheckoutPage = () => {
                             onChange={() => setUseSavedAddress(true)}
                             className="accent-black"
                           />
-                        <span className="font-light">Use Saved Address</span>
+                          <span className="font-light">Use Saved Address</span>
                         </label>
                         <label className="flex items-center gap-2 text-sm cursor-pointer">
                           <input
@@ -610,7 +716,7 @@ const CheckoutPage = () => {
                             onChange={() => setUseSavedAddress(false)}
                             className="accent-black"
                           />
-                        <span className="font-light">Enter Manually</span>
+                          <span className="font-light">Enter Manually</span>
                         </label>
                       </div>
                     </div>
@@ -789,7 +895,7 @@ const CheckoutPage = () => {
                           {addressErrors.pincode && <p className="text-xs text-red-500 mt-1">{addressErrors.pincode}</p>}
                         </div>
 
-                        <div>
+                        {/* <div>
                           <label className="block text-sm font-light text-gray-700 mb-1">Landmark</label>
                           <input
                             type="text"
@@ -799,7 +905,7 @@ const CheckoutPage = () => {
                             placeholder="Nearby landmark (Optional)"
                             className="w-full px-4 py-3 border-2 border-gray-300 focus:border-black hover:border-gray-400 focus:outline-none text-sm  transition-colors"
                           />
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   )}
@@ -1071,6 +1177,36 @@ const CheckoutPage = () => {
                 })}
               </div>
             </div>
+
+          </div>
+          <div className="grid gap-6 pt-4">
+            {/* Shipping Remarks */}
+            <div>
+              <label className="block text-sm md:text-base font-medium text-black/80 mb-2 tracking-wide">
+                Shipping Remarks
+              </label>
+              <textarea
+                value={ShippingRemarks}
+                onChange={(e) => setShippingRemarks(e.target.value)}
+                placeholder="Add any special delivery instructions..."
+                className="w-full border border-black/10 rounded-2xl bg-premium-beige/10 backdrop-blur-sm p-4 text-sm md:text-base text-black/80 placeholder:text-black/40 focus:outline-none focus:ring-[1.5px] focus:ring-black focus:bg-white transition-all duration-300"
+                rows={3}
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm md:text-base font-medium text-black/80 mb-2 tracking-wide">
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email for order updates"
+                className="w-full border border-black/10 rounded-2xl bg-premium-beige/10 backdrop-blur-sm p-4 text-sm md:text-base text-black/80 placeholder:text-black/40 focus:outline-none focus:ring-[1.5px] focus:ring-black focus:bg-white transition-all duration-300"
+              />
+            </div>
           </div>
 
           {/* Right Column - Order Summary */}
@@ -1175,7 +1311,9 @@ const CheckoutPage = () => {
 
                 <div className="flex justify-between pt-4 pb-4 md:pb-6 border-t border-text-light/20">
                   <span className="text-base md:text-lg font-light text-black uppercase tracking-wider font-sweet-sans">Total</span>
-                  <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(cartSummary.subTotal - calculateTotalDiscount() + cartSummary.shipping + cartSummary.tax + calculateGiftWrapAmount(), getCurrency())}</span>
+                  <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(cartSummary.subTotal - calculateTotalDiscount() + cartSummary.shipping + cartSummary.tax + calculateGiftWrapAmount(), getCurrency())}
+                    <p className="text-sm">(inc. all taxes)</p>
+                  </span>
                 </div>
 
                 {cartSummary.shipping === 0 && (
@@ -1247,7 +1385,7 @@ const CheckoutPage = () => {
                 </div>
 
                 <button
-                  onClick={handlePlaceOrder}
+                  onClick={handleOrder}
                   disabled={isProcessing || !acceptedTerms}
                   className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
                 >

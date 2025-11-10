@@ -83,17 +83,17 @@ const Searchbar = ({ onFocusChange }) => {
         // Extract unique categories and subcategories
         const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
         const subCategories = [...new Set(products.map(p => p.subCategory).filter(Boolean))];
-        
+
         // Get popular product names (first few words of most common product names)
         const productNames = products.map(p => p.name?.split(' ').slice(0, 2).join(' ')).filter(Boolean);
         const nameCounts = productNames.reduce((acc, name) => {
             acc[name] = (acc[name] || 0) + 1;
             return acc;
         }, {});
-        
+
         // Get top product name patterns
         const topProductNames = Object.entries(nameCounts)
-            .sort(([,a], [,b]) => b - a)
+            .sort(([, a], [, b]) => b - a)
             .slice(0, 3)
             .map(([name]) => name);
 
@@ -106,7 +106,7 @@ const Searchbar = ({ onFocusChange }) => {
 
         // Remove duplicates and limit to 6 items
         const uniqueSuggestions = [...new Set(suggestions)].slice(0, 6);
-        
+
         // Fallback to generic terms if no dynamic suggestions available
         const finalSuggestions = uniqueSuggestions.length > 0 ? uniqueSuggestions : [
             'Luxury Fashion',
@@ -114,7 +114,7 @@ const Searchbar = ({ onFocusChange }) => {
             'Designer Wear',
             'Exclusive Items'
         ];
-        
+
         setPopularSearches(finalSuggestions);
     };
 
@@ -126,6 +126,43 @@ const Searchbar = ({ onFocusChange }) => {
             timer = setTimeout(() => func(...args), delay);
         };
     };
+
+    const fetchSearchResults = useCallback(
+        debounce(async (query) => {
+            const trimmed = query.trim();
+            if (!trimmed) {
+                setFilteredProducts([]);
+                setShowSuggestions(false);
+                return;
+            }
+
+            setLoading(true);
+            try {
+                const payload = {
+                    q: trimmed, 
+                    category: "",
+                    subCategory: "",
+                    minPrice: null,
+                    maxPrice: null,
+                    pageNumber: 1,
+                    pageSize: 20,
+                    sort: "latest",
+                    country: null,
+                };
+
+                const response = await getFilteredProducts(payload);
+                const products = response?.data?.items || [];
+                setFilteredProducts(products);
+                setShowSuggestions(products.length > 0 && isFocused);
+            } catch (err) {
+                console.error("Search error:", err);
+                setFilteredProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        }, 400),
+        [isFocused]
+    );
 
     const performSearch = (query) => {
         const input = query.toLowerCase().trim();
@@ -167,7 +204,7 @@ const Searchbar = ({ onFocusChange }) => {
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearchQuery(value);
-        debouncedSearch(value);
+        fetchSearchResults(value);
     };
 
     const handleSubmit = (e) => {
@@ -208,7 +245,7 @@ const Searchbar = ({ onFocusChange }) => {
     };
 
     useEffect(() => {
-        fetchProducts();
+  
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [fetchProducts, handleClickOutside]);
@@ -226,20 +263,19 @@ const Searchbar = ({ onFocusChange }) => {
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         placeholder="Search luxury products..."
-                        className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2.5 sm:py-3 md:py-4 text-white placeholder-white/70 rounded-full shadow-lg border transition-all duration-300 text-sm sm:text-base md:text-lg ${
-                            isFocused 
-                                ? 'bg-white/30 border-white/50 shadow-xl' 
+                        className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2.5 sm:py-3 md:py-4 text-white placeholder-white/70 rounded-full shadow-lg border transition-all duration-300 text-sm sm:text-base md:text-lg ${isFocused
+                                ? 'bg-white/30 border-white/50 shadow-xl'
                                 : 'bg-white/20 border-white/30 hover:bg-white/25'
-                        } focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50`}
+                            } focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50`}
                     />
-                    
+
                     {/* Search Icon */}
                     <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2">
                         {loading ? (
                             <Loader2 size={16} className="sm:w-5 sm:h-5 text-white/70 animate-spin" />
                         ) : (
-                            <Search 
-                                size={16} 
+                            <Search
+                                size={16}
                                 className={`sm:w-5 sm:h-5 text-white/70 transition-all duration-300`}
                             />
                         )}
@@ -259,11 +295,10 @@ const Searchbar = ({ onFocusChange }) => {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className={`absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2 rounded-full font-medium transition-all duration-300 touch-manipulation z-10 ${
-                            searchQuery
+                        className={`absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2 rounded-full font-medium transition-all duration-300 touch-manipulation z-10 ${searchQuery
                                 ? 'bg-white/30 text-white hover:bg-white/40 shadow-lg'
                                 : 'bg-white/20 text-white hover:bg-white/30'
-                        }`}
+                            }`}
                     >
                         <span className="hidden sm:inline text-sm md:text-base">Search</span>
                         <Search size={14} className="sm:hidden" />
@@ -293,8 +328,8 @@ const Searchbar = ({ onFocusChange }) => {
                                 style={{ animationDelay: `${index * 50}ms` }}
                             >
                                 <div className="flex-shrink-0">
-                                    <img 
-                                        src={product.thumbnailUrl || product.imageUrl || '/placeholder-product.jpg'} 
+                                    <img
+                                        src={product.thumbnailUrl || product.imageUrl || '/placeholder-product.jpg'}
                                         alt={product.name}
                                         className="w-6 h-6 sm:w-8 sm:h-8 rounded object-cover"
                                         onError={(e) => {
@@ -311,7 +346,7 @@ const Searchbar = ({ onFocusChange }) => {
                                 </div>
                             </div>
                         ))}
-                        
+
                         {filteredProducts.length > 6 && (
                             <div className="px-3 sm:px-4 py-2 text-center text-xs sm:text-sm text-gray-500 bg-gray-50/50">
                                 +{filteredProducts.length - 6} more results
