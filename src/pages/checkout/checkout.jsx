@@ -1178,35 +1178,47 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-          </div>
-          <div className="grid gap-6 pt-4">
-            {/* Shipping Remarks */}
-            <div>
-              <label className="block text-sm md:text-base font-medium text-black/80 mb-2 tracking-wide">
-                Shipping Remarks
-              </label>
-              <textarea
-                value={ShippingRemarks}
-                onChange={(e) => setShippingRemarks(e.target.value)}
-                placeholder="Add any special delivery instructions..."
-                className="w-full border border-black/10 rounded-2xl bg-premium-beige/10 backdrop-blur-sm p-4 text-sm md:text-base text-black/80 placeholder:text-black/40 focus:outline-none focus:ring-[1.5px] focus:ring-black focus:bg-white transition-all duration-300"
-                rows={3}
-              />
+            {/* Contact & Delivery Notes */}
+            <div className="bg-white border border-text-light/20">
+              <div className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20">
+                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                  <Shield size={18} strokeWidth={1.5} />
+                  Order Contact & Notes
+                </h2>
+                <p className="text-xs md:text-sm font-light text-text-medium mt-1">
+                  Keep us posted with your preferred email and delivery notes
+                </p>
+              </div>
+              <div className="p-4 md:p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-xs md:text-sm font-light text-gray-700 mb-2 uppercase tracking-[0.25em]">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email for order updates"
+                      className="w-full border border-text-light/20  bg-gray-50/60 px-4 py-3 text-sm md:text-base text-black/80 placeholder:text-black/40 focus:outline-none focus:border-black focus:bg-white transition-all duration-200"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs md:text-sm font-light text-gray-700 mb-2 uppercase tracking-[0.25em]">
+                    Shipping Remarks
+                  </label>
+                  <textarea
+                    value={ShippingRemarks}
+                    onChange={(e) => setShippingRemarks(e.target.value)}
+                    placeholder="Add any special delivery instructions..."
+                    className="w-full border border-text-light/20 bg-gray-50/60 px-4 py-3 text-sm md:text-base text-black/80 placeholder:text-black/40 focus:outline-none focus:border-black focus:bg-white transition-all duration-200"
+                    rows={4}
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm md:text-base font-medium text-black/80 mb-2 tracking-wide">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email for order updates"
-                className="w-full border border-black/10 rounded-2xl bg-premium-beige/10 backdrop-blur-sm p-4 text-sm md:text-base text-black/80 placeholder:text-black/40 focus:outline-none focus:ring-[1.5px] focus:ring-black focus:bg-white transition-all duration-300"
-              />
-            </div>
           </div>
 
           {/* Right Column - Order Summary */}
