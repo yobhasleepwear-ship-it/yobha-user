@@ -270,12 +270,12 @@ const HeaderWithSidebar2 = () => {
                 className="flex items-center gap-1 px-2 py-1 text-black hover:text-gray-700 transition-colors duration-300 text-[11px] uppercase tracking-wider"
                 title={isAuthenticated ? "Account" : "Login"}
               >
-                <User size={16} strokeWidth={1.8} />
+                <User size={20} strokeWidth={1.8} />
                 {/* <span className={isAuthenticated ? "" : "hidden"}>{isAuthenticated ? "Account" : ""}</span> */}
               </button>
 
               {isAuthenticated && mobileAccountOpen && (
-                <div className="absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl rounded-lg overflow-hidden text-xs uppercase tracking-widest">
+                <div className="absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl  overflow-hidden text-xs uppercase font-futura-pt-light">
                   <button
                     onClick={() => {
                       navigate('/account');
@@ -411,7 +411,7 @@ const HeaderWithSidebar2 = () => {
                     }
                   }}
                 >
-                  <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
+                <User size={22} strokeWidth={1.5} />
                 </button>
 
                 {isAuthenticated && (
