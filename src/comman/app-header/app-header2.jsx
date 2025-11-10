@@ -435,7 +435,7 @@ const HeaderWithSidebar2 = () => {
                   <div className="absolute top-12 right-0 z-50">
                     <div className="bg-white shadow-2xl border border-gray-100 py-2 min-w-[200px] relative">
                       <button
-                        className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                        className="absolute top-2 right-2 text-gray-400 transition-colors duration-200"
                         onClick={() => setAccountDropdownOpen(false)}
                         aria-label="Close account menu"
                       >
@@ -446,7 +446,7 @@ const HeaderWithSidebar2 = () => {
                           setAccountDropdownOpen(false);
                           navigate('/account');
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-300 pt-6"
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest  transition-all duration-300 pt-6"
                       >
                         <User size={16} />
                         <span>My Account</span>
@@ -456,7 +456,7 @@ const HeaderWithSidebar2 = () => {
                           setAccountDropdownOpen(false);
                           handleLogout();
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-300"
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest  transition-all duration-300"
                       >
                         <LogOut size={16} />
                         <span>Logout</span>

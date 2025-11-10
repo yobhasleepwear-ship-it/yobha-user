@@ -46,7 +46,7 @@ export const CountrySelector = ({
   };
 
   const baseButtonClasses = "w-full flex items-center justify-between gap-3 border border-gray-200/50 bg-white px-4 py-3 text-left text-sm md:text-base font-light text-gray-900 transition-all duration-300 focus:outline-none focus:border-gray-900 hover:border-gray-300 shadow-sm hover:shadow-md font-futura-pt-light";
-  const baseMenuClasses = "absolute z-50 mt-2 w-full bg-white border border-gray-200/50 shadow-lg font-futura-pt-light";
+  const baseMenuClasses = "absolute z-50 mt-2 w-full  max-h-auto md:max-h-80 overflow-y-auto bg-white border border-gray-200/50 shadow-lg font-futura-pt-light";
   const baseOptionClasses = "block w-full text-left px-4 py-3 text-sm font-light text-gray-900 hover:bg-gray-50 transition-colors font-futura-pt-light";
   const menuAlignmentClass = align === "right" ? "right-0" : "left-0";
 
@@ -152,63 +152,40 @@ const CountryDropdown = ({ onConfirmed }) => {
   // 🟢 If API fails → show same themed modal with manual selection
   if (apiFailed && !selectedCountry) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm font-futura-pt-light">
         <div
-          className="bg-white rounded-3xl shadow-2xl border border-gray-100/50 p-8 md:p-12 max-w-md mx-4 transform transition-all duration-500 animate-fadeInUp"
-          style={{
-            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-          }}
+          className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-md w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black"
         >
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-luxury-gold to-luxury-rose-gold rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 border border-black/15 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c1.1046 0 2-.8954 2-2s-.8954-2-2-2-2 .8954-2 2 .8954 2 2 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-2xl md:text-3xl font-light text-black tracking-wider uppercase mb-2">
+            <h3 className="text-2xl md:text-3xl font-light uppercase tracking-[0.22em]">
               Welcome to YOBHA
             </h3>
-            <p className="text-text-medium text-sm font-light leading-relaxed">
+            <p className="text-sm font-light leading-relaxed text-black/70 mt-3">
               We couldn’t detect your location.
             </p>
-            <p className="text-text-light text-xs font-light mt-2">
-              Please select your country to continue.
-            </p>
+            <p className="text-xs font-light text-black/60 mt-2 uppercase tracking-[0.25em]">Please select your country to continue</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 text-left">
             <CountrySelector
               value={selectedCountry?.code}
               onSelect={handleSelectCountry}
               placeholder="Select your country"
-              buttonClassName="bg-premium-cream text-text-dark text-sm tracking-[0.25em]"
-              menuClassName="bg-white"
+              buttonClassName="bg-white border-black/15 text-sm tracking-[0.25em]"
+              menuClassName="bg-white border-black/15"
               optionClassName="text-sm tracking-[0.22em]"
             />
           </div>
 
-          {/* Decorative Elements */}
-          <div className="absolute top-4 right-4 w-2 h-2 bg-luxury-gold/30 rounded-full animate-pulse"></div>
-          <div
-            className="absolute bottom-4 left-4 w-1 h-1 bg-luxury-rose-gold/40 rounded-full animate-pulse"
-            style={{ animationDelay: "1s" }}
-          ></div>
+          <div className="mt-6 border-t border-black/10 pt-4 text-xs text-black/60 text-center">
+            Select country to tailor prices and shipping.
+          </div>
         </div>
       </div>
     );
@@ -217,45 +194,27 @@ const CountryDropdown = ({ onConfirmed }) => {
   // 🟢 Show detected confirmation (original)
   if (showConfirmation && detectedCountry) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm font-futura-pt-light">
         <div
-          className="bg-white rounded-3xl shadow-2xl border border-gray-100/50 p-8 md:p-12 max-w-md mx-4 transform transition-all duration-500 animate-fadeInUp"
-          style={{
-            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-          }}
+          className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-md w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black"
         >
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-luxury-gold to-luxury-rose-gold rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 border border-black/15 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c1.1046 0 2-.8954 2-2s-.8954-2-2-2-2 .8954-2 2 .8954 2 2 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-2xl md:text-3xl font-light text-black tracking-wider uppercase mb-2">
+            <h3 className="text-2xl md:text-3xl font-light uppercase tracking-[0.22em]">
               Welcome to YOBHA
             </h3>
-            <p className="text-text-medium text-sm font-light leading-relaxed">
+            <p className="text-sm font-light leading-relaxed text-black/70 mt-3">
               We detected your location as
             </p>
-            <p className="text-luxury-gold font-medium text-lg tracking-wide mt-2">
+            <p className="text-lg font-light tracking-[0.18em] mt-2">
               {detectedCountry.label}
             </p>
-            <p className="text-text-light text-xs font-light mt-2">
+            <p className="text-xs font-light text-black/60 mt-2 uppercase tracking-[0.25em]">
               Is this correct?
             </p>
           </div>
@@ -263,7 +222,7 @@ const CountryDropdown = ({ onConfirmed }) => {
           <div className="space-y-4">
             <button
               onClick={handleConfirm}
-              className="w-full bg-luxury-gold text-white py-4 px-8 font-light text-sm tracking-widest uppercase transition-all duration-300 hover:shadow-xl hover:brightness-95 hover:scale-105 transform focus:outline-none focus:ring-2 focus:ring-luxury-gold/30"
+              className="w-full bg-black text-white py-4 px-8 font-light text-sm tracking-[0.28em] uppercase transition-all duration-200 hover:bg-black/85 focus:outline-none focus:ring-2 focus:ring-black/30"
             >
               Yes, Continue
             </button>
@@ -272,17 +231,15 @@ const CountryDropdown = ({ onConfirmed }) => {
               value={selectedCountry?.code}
               onSelect={handleSelectCountry}
               placeholder="Or select your country"
-              buttonClassName="bg-premium-cream text-text-dark text-sm tracking-[0.25em]"
-              menuClassName="bg-white"
+              buttonClassName="bg-white border-black/15 text-sm tracking-[0.25em]"
+              menuClassName="bg-white border-black/15"
               optionClassName="text-sm tracking-[0.22em]"
             />
           </div>
 
-          <div className="absolute top-4 right-4 w-2 h-2 bg-luxury-gold/30 rounded-full animate-pulse"></div>
-          <div
-            className="absolute bottom-4 left-4 w-1 h-1 bg-luxury-rose-gold/40 rounded-full animate-pulse"
-            style={{ animationDelay: "1s" }}
-          ></div>
+          <div className="mt-6 text-xs text-black/60 border-t border-black/10 pt-4 text-center">
+            Adjust country to update pricing, duties and shipping times.
+          </div>
         </div>
       </div>
     );
@@ -291,54 +248,29 @@ const CountryDropdown = ({ onConfirmed }) => {
   // 🟡 Loading while detecting
   if (!selectedCountry) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm font-futura-pt-light">
         <div
-          className="bg-white rounded-3xl shadow-2xl border border-gray-100/50 p-8 md:p-12 max-w-sm mx-4 transform transition-all duration-500 animate-fadeInUp"
-          style={{
-            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-          }}
+          className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-sm w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black text-center"
         >
           <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-luxury-gold to-luxury-rose-gold rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-              <svg
-                className="w-8 h-8 text-white animate-spin"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
+            <div className="w-16 h-16 border border-black/15 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-black animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v4m0 8v4m8-8h-4M8 12H4" />
               </svg>
             </div>
-            <h3 className="text-xl md:text-2xl font-light text-black tracking-wider uppercase mb-2">
+            <h3 className="text-xl md:text-2xl font-light uppercase tracking-[0.22em] mb-2">
               Detecting Location
             </h3>
-            <p className="text-text-medium text-sm font-light leading-relaxed">
-              Please wait while we detect your country...
+            <p className="text-sm font-light leading-relaxed text-black/70">
+              Please wait while we detect your country.
             </p>
 
             <div className="flex justify-center space-x-2 mt-6">
-              <div className="w-2 h-2 bg-luxury-gold rounded-full animate-bounce"></div>
-              <div
-                className="w-2 h-2 bg-luxury-rose-gold rounded-full animate-bounce"
-                style={{ animationDelay: "0.1s" }}
-              ></div>
-              <div
-                className="w-2 h-2 bg-luxury-gold rounded-full animate-bounce"
-                style={{ animationDelay: "0.2s" }}
-              ></div>
+              <div className="w-2 h-2 bg-black rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-black/70 rounded-full animate-bounce" style={{ animationDelay: "0.12s" }}></div>
+              <div className="w-2 h-2 bg-black/50 rounded-full animate-bounce" style={{ animationDelay: "0.24s" }}></div>
             </div>
           </div>
-
-          <div className="absolute top-4 right-4 w-2 h-2 bg-luxury-gold/30 rounded-full animate-pulse"></div>
-          <div
-            className="absolute bottom-4 left-4 w-1 h-1 bg-luxury-rose-gold/40 rounded-full animate-pulse"
-            style={{ animationDelay: "1s" }}
-          ></div>
         </div>
       </div>
     );

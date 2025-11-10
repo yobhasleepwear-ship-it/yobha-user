@@ -6,9 +6,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'helvetica': ['Futura', 'Futura PT', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        'sweet-sans': ['Futura', 'Futura PT', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        'futura': ['Futura', 'Futura PT', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'helvetica': ['Futura', 'Futura PT', 'Futura PT Light', 'Futura PT-Light', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'sweet-sans': ['Futura', 'Futura PT', 'Futura PT Light', 'Futura PT-Light', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'futura': ['Futura', 'Futura PT', 'Futura PT Light', 'Futura PT-Light', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'futura-pt-light': ['Futura PT Light', 'Futura PT-Light', 'Futura PT', 'Futura', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       colors: {
         'luxury': {
