@@ -366,9 +366,10 @@ const HomePage2 = () => {
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
             <button
               onClick={() => {
-                if (giftShopRef.current) {
-                  giftShopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-                }
+                // if (giftShopRef.current) {
+                //   giftShopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                // }
+                navigate("/giftCard-Personalization")
               }}
               className="px-8 py-3 bg-black text-white text-sm sm:text-base md:text-lg font-light rounded-full uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]"
             >

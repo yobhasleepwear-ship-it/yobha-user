@@ -24,6 +24,7 @@ const FabricProtection = lazy(() => import("./pages/fabric-protection/fabric-pro
 const Careers = lazy(() => import("./pages/careers/careers"));
 const CareerDetails = lazy(() => import("./pages/careers/career-details"));
 const CareerApply = lazy(() => import("./pages/careers/career-apply"));
+const GiftCardPersonalize = lazy(() => import("./pages/giftCard-Personalization/giftCard-Personalization"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -40,6 +41,7 @@ const Router = () => {
     { path: "/account", element: <Account /> },
     { path: '/contact', element: <Contact /> },
     { path: '/about', element: <About /> },
+    { path: '/giftCard-Personalization', element: <GiftCardPersonalize /> },
     { path: '/faq', element: <FAQ /> },
     { path: '/privacy-policy', element: <PrivacyPolicy /> },
     { path: '/terms-conditions', element: <TermsConditions /> },

@@ -8,6 +8,7 @@ import { message } from "../../comman/toster-message/ToastContainer";
 import { getCoupons } from "../../service/coupans";
 import { createOrder, updatePayment } from "../../service/orderService";
 import { removeKey } from "../../service/localStorageService";
+import { useSelector } from "react-redux";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -26,11 +27,14 @@ const loadRazorpayScript = () => {
 
 const CheckoutPage = () => {
   const { pageProps } = useParams();
+  console.log(pageProps, "GiftCardPurchase")
   const location = useLocation();
   const { checkoutProd, selectedCountry, selectedSize, quantity } = location.state || {};
   console.log(checkoutProd, selectedCountry, selectedSize, quantity, "product")
   const navigate = useNavigate();
-
+  const {  giftCardAmount, currency, orderCountry } = useSelector(
+    (state) => state.giftCard
+  );
   // Address State
   const [address, setAddress] = useState({
     fullName: '',
@@ -43,7 +47,6 @@ const CheckoutPage = () => {
     country: '',
     landmark: '',
   });
-  console.log(address, "add")
   const [addressErrors, setAddressErrors] = useState({});
   const [userAddresses, setUserAddresses] = useState([]);
   const [useSavedAddress, setUseSavedAddress] = useState(true);
@@ -74,7 +77,6 @@ const CheckoutPage = () => {
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
   const [selectedCoupon, setSelectedCoupon] = useState({});
-  console.log(selectedCoupon, selectedPayment)
   const [isCouponsExpanded, setIsCouponsExpanded] = useState(false);
   const [isLoadingCoupons, setIsLoadingCoupons] = useState(false);
   const [loyaltyDiscountAmount, setLoyaltyDiscountAmount] = useState(0);
@@ -213,26 +215,28 @@ const CheckoutPage = () => {
         ShippingRemarks: ShippingRemarks,
         paymentMethod: selectedPayment ? selectedPayment.id : "",
         couponCode: selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "",
-        couponDiscount: calculateCouponDiscount(selectedCoupon)?? "",
+        couponDiscount: calculateCouponDiscount(selectedCoupon) ?? "",
         loyaltyDiscountAmount: loyaltyDiscountAmount ?? 0,
         email: email,
         orderCountry: cartItems.country,
-        giftCardNumber: giftCardNumber
+        isGiftWrap: giftWrapEnabled,
+        isDelhiveryShipment: true
       };
 
       // this payload is of gift card purchase 
       const giftCardPurchase = {
-        "currency": "INR",
+        "currency": currency,
         "productRequests": [],
         "shippingAddress": null,
         "paymentMethod": "razorpay",
-        "giftCardAmount": 1001.00,
-        "email": "buyer@example.com",
-        "orderCountry": "IN"
+        "giftCardAmount": giftCardAmount,
+        "email": email,
+        "orderCountry": orderCountry 
+        
       }
 
 
-      const orderRes = await createOrder(orderPayload);
+      const orderRes = await createOrder(pageProps=="GiftCardPurchase"?giftCardPurchase: orderPayload);
       if (!orderRes.success) {
         message.error("Order creation failed ❌");
         return;
@@ -614,17 +618,17 @@ const CheckoutPage = () => {
   const getGiftWrapAmount = (country) => {
     // Currently returns 5 for all countries, can be extended later
     const giftWrapPrices = {
-      'India': 5,
-      'United Arab Emirates (UAE)': 5,
-      'Saudi Arabia': 5,
-      'Qatar': 5,
-      'Kuwait': 5,
-      'Oman': 5,
-      'Bahrain': 5,
-      'Jordan': 5,
-      'Lebanon': 5,
-      'Egypt': 5,
-      'Iraq': 5,
+      'India': 500,
+      'United Arab Emirates (UAE)': 500,
+      'Saudi Arabia': 500,
+      'Qatar': 500,
+      'Kuwait': 500,
+      'Oman': 500,
+      'Bahrain': 500,
+      'Jordan': 500,
+      'Lebanon': 500,
+      'Egypt': 500,
+      'Iraq': 500,
     };
     return giftWrapPrices[country] || 5;
   };

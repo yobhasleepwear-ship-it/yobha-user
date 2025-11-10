@@ -103,7 +103,6 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Women", nav: "Women" },
     { label: t("navbar.collectionsItems.petWear." + i18n.language), nav: "PetWear" },
     { label: "Family", nav: "Family" },
-    { label: "Gifts - Personalised", nav: "gifts-personalised" },
     { label: "Scrunchies", nav: "scrunchies" },
     { label: "Socks", nav: "socks" },
     { label: "Eye Masks", nav: "eyemasks" },
