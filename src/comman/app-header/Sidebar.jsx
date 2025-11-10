@@ -127,7 +127,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           onClick={onClose}
         ></div>
 
-        <aside className="absolute left-0 top-0 h-full w-80 md:w-96 max-w-[90vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-sweet-sans">
+        <aside className="absolute left-0 top-0 h-full w-80 md:w-96 max-w-[90vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-futura-pt-light">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
             <Link to="/home" onClick={onClose}>
@@ -147,10 +147,10 @@ const Sidebar = ({ isOpen, onClose }) => {
               <Link
                 key={item.label}
                 to={item.special ? `/products?sort=latest` : `/products/${item.nav.replace(/\s/g, "-")}`}
-                className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
                 onClick={onClose}
               >
-                <span className="group-hover:border-b border-gray-800 transition-all duration-300">{item.label}</span>
+                <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
               </Link>
             ))}
 
@@ -158,9 +158,9 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="pt-6 border-t border-gray-100 mt-2">
               <button
                 onClick={() => toggleAccordion("account")}
-                className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
               >
-                <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.myAccount." + i18n.language)}</span>
+                <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.myAccount." + i18n.language)}</span>
                 {expandedSections.account ? (
                   <ChevronDown size={18} className="text-gray-700" />
                 ) : (
@@ -172,46 +172,46 @@ const Sidebar = ({ isOpen, onClose }) => {
                   {!isAuthenticated ? (
                     <Link
                       to="/login"
-                      className="block py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                      className="block py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
                       onClick={onClose}
                     >
-                      <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.login." + i18n.language)}</span>
+                      <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.login." + i18n.language)}</span>
                     </Link>
                   ) : (
                     <>
                       <Link
                         to="/account"
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
                         onClick={onClose}
                       >
                         <User size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.myAccount." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.myAccount." + i18n.language)}</span>
                       </Link>
                       <Link
                         to="/buyback"
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
                         onClick={onClose}
                       >
                         <Recycle size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.buyback." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.buyback." + i18n.language)}</span>
                       </Link>
                       <Link
                         to="/orders"
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
                         onClick={onClose}
                       >
                         <Package size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.orders." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.orders." + i18n.language)}</span>
                       </Link>
                       <button
                         onClick={() => {
                           onClose();
                           handleLogout();
                         }}
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group text-left w-full"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light text-left w-full"
                       >
                         <LogOut size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300">{t("navbar.account.logout." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.logout." + i18n.language)}</span>
                       </button>
                     </>
                   )}
@@ -222,7 +222,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             {/* Ship To Section */}
           {selectedSidebarCountry && (
             <div className="pt-6 border-t border-gray-100 mt-2">
-              <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 hover:text-black border-b border-gray-50 font-bold group">Ship To</p>
+              <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-light">Ship To</p>
               <CountrySelector
                 value={selectedSidebarCountry?.code}
                 onSelect={handleSidebarCountryChange}
@@ -235,7 +235,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           )}
               {/* Language Switcher */}
             <div className="pt-6 border-t border-gray-100 mt-2">
-            <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 hover:text-black border-b border-gray-50 font-bold group">Choose Language</p>  
+            <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-light">Choose Language</p>  
               <LanguageSwitcher />
             </div>
           </nav>

@@ -23,7 +23,9 @@ const HeaderWithSidebar2 = () => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const searchRef = useRef(null);
   const mobileAccountRef = useRef(null);
+  const accountDropdownRef = useRef(null);
   const [mobileAccountOpen, setMobileAccountOpen] = useState(false);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   // Check authentication status
@@ -163,20 +165,24 @@ const HeaderWithSidebar2 = () => {
       if (mobileAccountRef.current && !mobileAccountRef.current.contains(event.target)) {
         setMobileAccountOpen(false);
       }
+      if (accountDropdownRef.current && !accountDropdownRef.current.contains(event.target)) {
+        setAccountDropdownOpen(false);
+      }
     };
 
-    if (searchOpen) {
+    if (searchOpen || mobileAccountOpen || accountDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [searchOpen]);
+  }, [searchOpen, mobileAccountOpen, accountDropdownOpen]);
 
   useEffect(() => {
     if (!isAuthenticated) {
       setMobileAccountOpen(false);
+      setAccountDropdownOpen(false);
     }
   }, [isAuthenticated]);
 
@@ -275,13 +281,20 @@ const HeaderWithSidebar2 = () => {
               </button>
 
               {isAuthenticated && mobileAccountOpen && (
-                <div className="absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl  overflow-hidden text-xs uppercase font-futura-pt-light">
+                <div className="absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl overflow-hidden text-xs uppercase font-futura-pt-light min-w-[180px]">
+                  <button
+                    className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                    onClick={() => setMobileAccountOpen(false)}
+                    aria-label="Close account menu"
+                  >
+                    <X size={16} strokeWidth={1.8} />
+                  </button>
                   <button
                     onClick={() => {
                       navigate('/account');
                       setMobileAccountOpen(false);
                     }}
-                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300"
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300 mt-6"
                   >
                     <User size={16} />
                     <span>Account</span>
@@ -401,31 +414,48 @@ const HeaderWithSidebar2 = () => {
                 )}
               </Link>
 
-              <div className="relative group">
+              <div className="relative" ref={accountDropdownRef}>
                 <button
                   className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 rounded-full hover:bg-gray-200"
                   title={isAuthenticated ? t("navbar.account.myAccount." + i18n.language) : "Login"}
                   onClick={() => {
                     if (!isAuthenticated) {
                       navigate('/login');
+                    } else {
+                      setAccountDropdownOpen(prev => !prev);
                     }
                   }}
+                  aria-haspopup="true"
+                  aria-expanded={accountDropdownOpen}
                 >
                 <User size={22} strokeWidth={1.5} />
                 </button>
 
-                {isAuthenticated && (
-                  <div className="absolute top-12 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="bg-white shadow-2xl border border-gray-100 py-2 min-w-[200px]">
+                {isAuthenticated && accountDropdownOpen && (
+                  <div className="absolute top-12 right-0 z-50">
+                    <div className="bg-white shadow-2xl border border-gray-100 py-2 min-w-[200px] relative">
                       <button
-                        onClick={() => navigate('/account')}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-300"
+                        className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                        onClick={() => setAccountDropdownOpen(false)}
+                        aria-label="Close account menu"
+                      >
+                        <X size={16} strokeWidth={1.8} />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAccountDropdownOpen(false);
+                          navigate('/account');
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-300 pt-6"
                       >
                         <User size={16} />
                         <span>My Account</span>
                       </button>
                       <button
-                        onClick={handleLogout}
+                        onClick={() => {
+                          setAccountDropdownOpen(false);
+                          handleLogout();
+                        }}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest hover:bg-gray-100 transition-all duration-300"
                       >
                         <LogOut size={16} />

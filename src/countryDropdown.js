@@ -45,9 +45,9 @@ export const CountrySelector = ({
     onSelect?.(code);
   };
 
-  const baseButtonClasses = "w-full flex items-center justify-between gap-3 border border-gray-200/50 bg-white px-4 py-3 text-left text-sm md:text-base font-light text-gray-900 transition-all duration-300 focus:outline-none focus:border-gray-900 hover:border-gray-300 shadow-sm hover:shadow-md";
-  const baseMenuClasses = "absolute z-50 mt-2 w-full bg-white border border-gray-200/50 shadow-lg";
-  const baseOptionClasses = "block w-full text-left px-4 py-3 text-sm font-light text-gray-900 hover:bg-gray-50 transition-colors";
+  const baseButtonClasses = "w-full flex items-center justify-between gap-3 border border-gray-200/50 bg-white px-4 py-3 text-left text-sm md:text-base font-light text-gray-900 transition-all duration-300 focus:outline-none focus:border-gray-900 hover:border-gray-300 shadow-sm hover:shadow-md font-futura-pt-light";
+  const baseMenuClasses = "absolute z-50 mt-2 w-full bg-white border border-gray-200/50 shadow-lg font-futura-pt-light";
+  const baseOptionClasses = "block w-full text-left px-4 py-3 text-sm font-light text-gray-900 hover:bg-gray-50 transition-colors font-futura-pt-light";
   const menuAlignmentClass = align === "right" ? "right-0" : "left-0";
 
   return (
@@ -59,7 +59,7 @@ export const CountrySelector = ({
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        <span className="truncate text-left flex-1">
+        <span className="truncate text-left flex-1 font-light font-futura-pt-light">
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <svg

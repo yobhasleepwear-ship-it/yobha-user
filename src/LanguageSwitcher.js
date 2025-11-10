@@ -34,13 +34,13 @@ const LanguageSwitcher = () => {
   const currentLabel = currentLanguage ? currentLanguage.label : i18n.language.toUpperCase();
 
   return (
-    <div ref={containerRef} className="relative inline-block text-left w-full">
+    <div ref={containerRef} className="relative inline-block text-left w-full font-futura-pt-light">
       <button
         onClick={() => setOpen(!open)}
         type="button"
-        className="inline-flex w-full items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-xs font-light uppercase tracking-[0.28em] text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400 hover:bg-white"
+        className="inline-flex w-full items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-xs font-light uppercase tracking-[0.28em] text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400 hover:bg-white font-futura-pt-light"
       >
-        <span className="flex-1 truncate text-left">{currentLabel}</span>
+        <span className="flex-1 truncate text-left font-light font-futura-pt-light">{currentLabel}</span>
         <svg
           className={`h-4 w-4 transform transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -54,13 +54,13 @@ const LanguageSwitcher = () => {
       </button>
 
       {open && (
-        <div className="absolute left-0 mt-2 w-full sm:w-36 border border-gray-200 bg-white shadow-xl z-50">
+        <div className="absolute left-0 mt-2 w-full sm:w-36 border border-gray-200 bg-white shadow-xl z-50 font-futura-pt-light">
           {languages.map((lang) => (
             <button
               key={lang.code}
               type="button"
               onClick={() => handleLanguageChange(lang.code)}
-              className={`block w-full text-left px-5 py-3 text-xs uppercase tracking-[0.28em] transition-colors duration-200 ${
+              className={`block w-full text-left px-5 py-3 text-xs uppercase tracking-[0.28em] transition-colors duration-200 font-light font-futura-pt-light ${
                 i18n.language === lang.code
                   ? "bg-premium-cream/60 text-black"
                   : "text-black hover:bg-premium-cream/40"

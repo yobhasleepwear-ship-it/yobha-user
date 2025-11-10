@@ -28,6 +28,8 @@ const HeaderWithSidebar = () => {
   const [activeSecondaryMenu, setActiveSecondaryMenu] = useState(null);
   const searchRef = useRef(null);
   const secondaryHeaderRef = useRef(null);
+  const accountDropdownRef = useRef(null);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -154,6 +156,7 @@ const HeaderWithSidebar = () => {
   useEffect(() => {
     setShowSecondaryHeader(false);
     setActiveSecondaryMenu(null);
+    setIsAccountDropdownOpen(false);
   }, [location.pathname]);
 
   // Disable background scroll when sidebar is open
@@ -315,14 +318,14 @@ const HeaderWithSidebar = () => {
       }
     };
 
-    if (searchOpen || showSecondaryHeader) {
+    if (searchOpen || showSecondaryHeader || isAccountDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [searchOpen, showSecondaryHeader]);
+  }, [searchOpen, showSecondaryHeader, isAccountDropdownOpen]);
 
   return (
     <>
@@ -544,32 +547,48 @@ const HeaderWithSidebar = () => {
                   <button
                     className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-luxury-gold transition-all duration-300 rounded-full hover:bg-luxury-gold/10"
                     title={t("navbar.account.myAccount." + i18n.language)}
-                    onClick={() => navigate('/account')}
+                    onClick={() => setIsAccountDropdownOpen(prev => !prev)}
+                    aria-expanded={isAccountDropdownOpen}
+                    aria-haspopup="true"
                   >
                     <User size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
                   </button>
 
                   {/* User Dropdown - Luxury Design */}
-                  <div className="absolute top-12 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-3 min-w-[220px]">
-                      <div className="space-y-1">
-                        <Link
-                          to="/account"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
+                  {isAccountDropdownOpen && (
+                    <div
+                      ref={accountDropdownRef}
+                      className="absolute top-12 right-0 z-50"
+                    >
+                      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-3 min-w-[220px] relative">
+                        <button
+                          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                          onClick={() => setIsAccountDropdownOpen(false)}
+                          aria-label="Close account menu"
                         >
-                          <User size={16} />
-                          <span>{t("navbar.account.myAccount." + i18n.language)}</span>
-                        </Link>
-                        <Link
-                          to="/orders"
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
-                        >
-                          <Package size={16} />
-                          <span>{t("navbar.account.orders." + i18n.language)}</span>
-                        </Link>
+                          <X size={16} strokeWidth={1.8} />
+                        </button>
+                        <div className="space-y-1 pt-6">
+                          <Link
+                            to="/account"
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
+                            onClick={() => setIsAccountDropdownOpen(false)}
+                          >
+                            <User size={16} />
+                            <span>{t("navbar.account.myAccount." + i18n.language)}</span>
+                          </Link>
+                          <Link
+                            to="/orders"
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
+                            onClick={() => setIsAccountDropdownOpen(false)}
+                          >
+                            <Package size={16} />
+                            <span>{t("navbar.account.orders." + i18n.language)}</span>
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ) : (
                 <Link
