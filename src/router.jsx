@@ -28,6 +28,7 @@ const GiftCardPersonalize = lazy(() => import("./pages/giftCard-Personalization/
 const GiftCardPurchase = lazy(() => import("./pages/gift-card-purchase/gift-card-purchase"));
 const GiftsPersonalization = lazy(() => import("./pages/gifts-personalization/gifts-personalization"));
 const Personalization = lazy(() => import("./pages/personalization/personalization"));
+const Accessories = lazy(() => import("./pages/Accessories/Accessories"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -57,7 +58,8 @@ const Router = () => {
     { path: '/career', element: <Careers /> },
     { path: '/career/:jobId', element: <CareerDetails /> },
     { path: '/career/applyNow/:jobId', element: <CareerApply /> },
-    { path: '/careers', element: <Careers /> }
+    { path: '/careers', element: <Careers /> },
+    { path: '/Accessories', element: <Accessories /> }
   ];
 
   return (

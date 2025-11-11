@@ -411,7 +411,7 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
               {/* Wishlist Icon - Desktop Only */}
               <Link
                 to="/wishlist"
-                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 rounded-full hover:bg-gray-200"
+                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 "
                 title={t("navbar.wishlist.tooltip." + i18n.language)}
               >
                 <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
@@ -420,7 +420,7 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
               {/* Cart Icon - Luxury Design */}
               <Link
                 to="/cart"
-                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 relative rounded-full hover:bg-gray-200 overflow-visible"
+                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 relative  overflow-visible"
                 title={t("header.cart")}
               >
                 <BsBag
@@ -436,7 +436,7 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
 
               <div className="relative" ref={accountDropdownRef}>
                 <button
-                  className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 rounded-full hover:bg-gray-200"
+                  className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 "
                   title={isAuthenticated ? t("navbar.account.myAccount." + i18n.language) : "Login"}
                   onClick={() => {
                     if (!isAuthenticated) {

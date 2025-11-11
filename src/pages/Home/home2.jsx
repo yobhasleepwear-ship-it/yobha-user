@@ -140,6 +140,8 @@ const HomePage2 = () => {
     { id: "pets", title: "Pets", image: PET_IMAGE },
     { id: "couple", title: "Couple", image: COUPLE_IMAGE },
     { id: "family", title: "Family", image: FAMILY_IMAGE },
+    { id: "accessories", title: "Accessories", image: SCRUNCHIES },
+    { id: "others", title: "Others", image: cushions },
   ];
 
   const accessoriesCategories = [
@@ -294,9 +296,9 @@ const HomePage2 = () => {
           </div>
         </div>
       </section>
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
         <div className=" mx-auto">
-          <div className="text-center mb-10 md:mb-12">
+          <div className="text-center mb-6 md:mb-8">
             <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-3 font-futura-pt-light">
               Curated By YOBHA
             </h2>
@@ -325,17 +327,17 @@ const HomePage2 = () => {
                 })}
               </div>
 
-              <div className="mt-12 text-center">
+              <div className="mt-8 text-center">
                 <button
                   onClick={() => navigate("/products")}
-                  className="px-10 py-3 bg-black text-white text-sm md:text-base uppercase tracking-[0.3em] rounded-full hover:bg-gray-900 transition-all duration-300 shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
+                  className="px-10 py-3 bg-black text-white text-sm md:text-base uppercase tracking-[0.3em] rounded-full hover:bg-gray-900 transition-all duration-300 shadow-[0_12px_30px_rgba(0,0,0,0.12)] font-light font-futura-pt-light"
                 >
                   Explore All
                 </button>
               </div>
             </>
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-8">
               <p className="text-gray-500 text-sm md:text-base">New arrivals are coming soon. Stay tuned!</p>
             </div>
           )}
@@ -343,7 +345,7 @@ const HomePage2 = () => {
       </section>
 
       {/* Buyback USP Section */}
-      <section className="relative w-full bg-white font-futura py-8 md:py-12 lg:py-16">
+      <section className="relative w-full bg-white font-futura py-6 md:py-8 lg:py-10">
         <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
           onClick={() => navigate('/buyback')}>
           {/* Image Background */}
@@ -401,9 +403,9 @@ const HomePage2 = () => {
       </section>
 
       {/* Shop by Category */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
         <div className=" mx-auto">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-8 md:mb-10">
             <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
               Shop by Category
             </h2>
@@ -418,7 +420,13 @@ const HomePage2 = () => {
               <div
                 key={category.id}
                 className="group cursor-pointer"
-                onClick={() => navigate(`/products/${category.id}`)}
+                onClick={() => {
+                  if (category.id === "accessories") {
+                    navigate("/Accessories");
+                  } else {
+                    navigate(`/products/${category.id}`);
+                  }
+                }}
               >
                 <div className="relative h-[220px] sm:h-[280px] md:h-[380px] lg:h-[420px] xl:h-[480px] overflow-hidden bg-gray-50/50 border border-gray-100 group-hover:border-gray-200 transition-all duration-700 ease-out">
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
@@ -445,6 +453,109 @@ const HomePage2 = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Promotional Image Section */}
+      <section className="relative w-full bg-white overflow-hidden">
+        <div className="w-full">
+          <img
+            src="https://in.louisvuitton.com/content/dam/lv/online/picture/allcountry/megamenu/new_formen/2025/MM_Men_New_Monogram_Heritage_Nov2025_DI3_jpg.jpg?wid=2400"
+            alt="YOBHA Collection"
+            className="w-full h-auto object-cover object-center block"
+            loading="lazy"
+            onError={(e) => {
+              console.error("Failed to load promotional image");
+              e.target.style.display = 'none';
+            }}
+          />
+        </div>
+      </section>
+
+      {/* YOBHA Services Section - Louis Vuitton Style */}
+      <section className="relative w-full bg-white py-12 md:py-16 lg:py-20 font-futura-light-pt">
+        <div className="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+          {/* Section Header */}
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+              YOBHA Services
+            </h2>
+            <p className="text-gray-600 text-xs md:text-sm max-w-3xl mx-auto font-light leading-relaxed font-futura-pt-light">
+              YOBHA offers an array of tailored services — including comprehensive support, signature gift wrapping, and exclusive personalisation options.
+            </p>
+          </div>
+
+          {/* Services Grid - Vertical Panels with spacing */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
+            {/* Services Panel */}
+            <div
+              className="group cursor-pointer relative overflow-hidden"
+              onClick={() => navigate("/buyback")}
+            >
+              <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
+                <img
+                  src={BUYBACK_IMAGE}
+                  alt="Services"
+                  className="w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.03]"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDQwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNlcnZpY2VzPC90ZXh0Pgo8L3N2Zz4=';
+                  }}
+                />
+              </div>
+              {/* Title below image */}
+              <div className="bg-white py-6 md:py-8 px-6 md:px-8">
+                <h3 className="text-sm md:text-base lg:text-lg font-light text-black uppercase font-futura-pt-light">
+                  Renewal
+                </h3>
+              </div>
+            </div>
+
+            {/* Art of Gifting Panel */}
+            <div
+              className="group cursor-pointer relative overflow-hidden"
+              onClick={() => navigate("/giftCard-Personalization")}
+            >
+              <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
+                <img
+                  src={COUPLE_IMAGE}
+                  alt="Art of Gifting"
+                  className="w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.03]"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDQwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkFydCBvZiBHaWZ0aW5nPC90ZXh0Pgo8L3N2Zz4=';
+                  }}
+                />
+              </div>
+              {/* Title below image */}
+              <div className="bg-white py-6 md:py-8 px-6 md:px-8">
+                <h3 className="text-sm md:text-base lg:text-lg font-light text-black uppercase font-futura-pt-light">
+                  Art of Gifting
+                </h3>
+              </div>
+            </div>
+
+            {/* Personalisation Panel */}
+            <div
+              className="group cursor-pointer relative overflow-hidden"
+              onClick={() => navigate("/personalization")}
+            >
+              <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
+                <img
+                  src={FAMILY_IMAGE}
+                  alt="Personalisation"
+                  className="w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.03]"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDQwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBlcnNvbmFsaXNhdGlvbjwvdGV4dD4KPC9zdmc+';
+                  }}
+                />
+              </div>
+              {/* Title below image */}
+              <div className="bg-white py-6 md:py-8 px-6 md:px-8">
+                <h3 className="text-sm md:text-base lg:text-lg font-light text-black uppercase font-futura-pt-light">
+                  Personalisation
+                </h3>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -710,10 +821,10 @@ const HomePage2 = () => {
 
       {/* Recently Viewed Section */}
       {recentVisited.length > 0 && (
-        <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white font-sweet-sans">
+        <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-10 bg-white font-sweet-sans">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
-            <div className="text-center mb-8 md:mb-10">
+            <div className="text-center mb-6 md:mb-8">
               <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-2 font-futura-pt-light">
                 Recently Viewed
               </h2>
@@ -786,12 +897,12 @@ const HomePage2 = () => {
       )}
 
       {/* Follow Us on Instagram Section */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
+      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-3 font-futura-pt-light">
             Follow Us
           </h2>
-          <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light mb-10 md:mb-12 font-sweet-sans">
+          <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light mb-6 md:mb-8 font-sweet-sans">
             Join our community on Instagram for the latest updates and exclusive content
           </p>
 
