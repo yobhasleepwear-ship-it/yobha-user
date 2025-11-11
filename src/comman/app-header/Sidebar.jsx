@@ -148,7 +148,7 @@ const Sidebar = ({ isOpen, onClose }) => {
               if (item.special) {
                 routePath = `/products?sort=latest`;
               } else if (item.giftCard) {
-                routePath = `/gift-card-purchase`;
+                routePath = `/gifts-personalization`;
               }
               
               return (

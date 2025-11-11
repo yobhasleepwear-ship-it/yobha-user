@@ -26,6 +26,8 @@ const CareerDetails = lazy(() => import("./pages/careers/career-details"));
 const CareerApply = lazy(() => import("./pages/careers/career-apply"));
 const GiftCardPersonalize = lazy(() => import("./pages/giftCard-Personalization/giftCard-Personalization"));
 const GiftCardPurchase = lazy(() => import("./pages/gift-card-purchase/gift-card-purchase"));
+const GiftsPersonalization = lazy(() => import("./pages/gifts-personalization/gifts-personalization"));
+const Personalization = lazy(() => import("./pages/personalization/personalization"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -44,6 +46,8 @@ const Router = () => {
     { path: '/about', element: <About /> },
     { path: '/giftCard-Personalization', element: <GiftCardPersonalize /> },
     { path: '/gift-card-purchase', element: <GiftCardPurchase /> },
+    { path: '/gifts-personalization', element: <GiftsPersonalization /> },
+    { path: '/personalization', element: <Personalization /> },
     { path: '/faq', element: <FAQ /> },
     { path: '/privacy-policy', element: <PrivacyPolicy /> },
     { path: '/terms-conditions', element: <TermsConditions /> },
