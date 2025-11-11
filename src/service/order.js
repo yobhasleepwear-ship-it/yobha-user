@@ -10,6 +10,16 @@ export const getOrders = async () => {
   }
 };
 
+export const getOrderDetails = async (orderId) => {
+  try {
+    const response = await axiosService.Get(`/orders/${orderId}`); 
+    return response.data;
+  } catch (err) {
+    console.error("Fetching order details failed:", err.response?.data || err.message);
+    throw err;
+  }
+};
+
 export const CreateOrder = async (payload) => {
     try {
         const response = await axiosService.Post("/orders", payload);

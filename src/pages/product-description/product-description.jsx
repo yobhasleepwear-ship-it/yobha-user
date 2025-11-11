@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
 import { addToWishlist } from "../../service/wishlist";
 import { message } from "../../comman/toster-message/ToastContainer";
+import ProductCard from "../product/components/product-card";
 
 const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
   if (!Array.isArray(priceList) || priceList.length === 0) return 0;
@@ -1075,10 +1076,6 @@ const ProductDetailPage = () => {
               </button>
             </div>
 
-            {/* Concierge/Contact Info */}
-            <div className="text-xs text-gray-600 font-light font-futura-pt-light leading-relaxed">
-              <p>Our Digital Concierge is available if you have any question on this product. <a href="/contact" className="underline hover:text-black transition-colors">Contact us</a></p>
-            </div>
 
 
             {/* Shipping Info */}
@@ -1359,48 +1356,124 @@ const ProductDetailPage = () => {
           </div>
         )} */}
         {newProducts?.length > 0 && (
-          <div className="space-y-5 pt-6 md:pt-8 border-t border-text-light/10">
-            <h3 className="text-xs md:text-sm font-bold text-black mb-4 uppercase tracking-widest font-sweet-sans">
-              Hot Picks Just For You
-            </h3>
+          <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 border-t border-gray-200">
+            {/* Section Header */}
+            <div className="mb-8 md:mb-10">
+              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+                Hot Picks for You
+              </h2>
+              <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
+              <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
+                Discover more from our curated collection
+              </p>
+            </div>
 
-            <div className="relative px-0 py-4">
-              {/* Carousel Container */}
+            {/* Carousel Container */}
+            <div className="relative">
               <div className="overflow-hidden">
                 <div
-                  className="flex items-stretch transition-transform duration-300 ease-in-out gap-4 md:gap-5"
+                  className="flex items-stretch transition-transform duration-300 ease-in-out gap-3 sm:gap-4 md:gap-5 lg:gap-6"
                   style={{
                     transform: `translateX(-${carouselIndex * (100 / itemsPerView)}%)`
                   }}
                 >
-                  {newProducts.map((variant) => (
-                    <div
-                      key={variant.id}
-                      className="flex-shrink-0 w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-1.33rem)] group border border-text-light/10 overflow-hidden bg-white hover:border-text-light/20 transition-all duration-300 cursor-pointer flex flex-col h-full"
-                      onClick={() => navigate(`/productDetail/${variant?.id}`)}
-                    >
-                      {/* Image Section */}
-                      <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
-                        <img
-                          src={variant.images[0]}
-                          alt={`${variant.color} ${variant.size}`}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          onError={(e) =>
-                          (e.target.src =
-                            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=")
-                          }
-                        />
-                      </div>
+                  {newProducts.map((product) => {
+                    // Extract price using the same logic as ProductCard
+                    const savedCountry = localStorage.getItem('selectedCountry');
+                    const parsedCountry = savedCountry ? JSON.parse(savedCountry) : null;
+                    const selectedCountry = parsedCountry?.code || "IN";
+                    
+                    let productPrice = 0;
+                    let currency = "INR";
+                    
+                    if (product?.priceList && Array.isArray(product.priceList) && product.priceList.length > 0) {
+                      const firstSize = product?.availableSizes?.[0];
+                      let matchedPrice = product.priceList.find(
+                        (e) => e.country === selectedCountry && e.size === firstSize
+                      );
+                      
+                      if (!matchedPrice) {
+                        matchedPrice = product.priceList.find(
+                          (e) => e.country === selectedCountry
+                        );
+                      }
+                      
+                      if (!matchedPrice) {
+                        matchedPrice = product.priceList[0];
+                      }
+                      
+                      productPrice = matchedPrice?.priceAmount || 0;
+                      currency = matchedPrice?.currency || "INR";
+                    }
+                    
+                    if (productPrice === 0 && product?.price && product.price > 0) {
+                      productPrice = product.price;
+                      currency = product?.priceList?.[0]?.currency || "INR";
+                    }
+                    
+                    const productImages = Array.isArray(product?.images) && product.images.length > 0
+                      ? product.images
+                      : [];
+                    
+                    const formatPrice = (price, curr = 'INR') => {
+                      if (typeof price !== 'number' || price === 0) return '';
+                      const symbol = curr === 'INR' ? '₹' : curr === 'USD' ? '$' : curr;
+                      return `${symbol}${price.toLocaleString('en-IN', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                      })}`;
+                    };
 
-                      {/* Info Section */}
-                      <div className="p-3 text-center space-y-1 flex flex-col justify-between min-h-[70px] flex-grow">
-                        <p className="text-xs font-semibold text-black uppercase tracking-widest line-clamp-1">{variant.name}</p>
-                        <p className="text-xs text-text-medium line-clamp-2 font-light">
-                          {variant.description}
-                        </p>
+                    return (
+                      <div
+                        key={product.id}
+                        className="flex-shrink-0 w-[calc(50%-0.375rem)] sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-1.33rem)] group border border-gray-200 overflow-hidden bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer flex flex-col h-full"
+                        onClick={() => {
+                          try {
+                            const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
+                            const filtered = existing.filter((p) => p.id !== product.id);
+                            const updated = [product, ...filtered];
+                            const limited = updated.slice(0, 8);
+                            localStorage.setItem("recentVisited", JSON.stringify(limited));
+                          } catch (err) {
+                            console.error("Error saving recent visited products:", err);
+                          }
+                          navigate(`/productDetail/${product?.id}`);
+                        }}
+                      >
+                        {/* Image Section */}
+                        <div className="aspect-square overflow-hidden bg-gray-50 flex-shrink-0 relative">
+                          <img
+                            src={productImages[0] || product.image || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4="}
+                            alt={product.name || product.title || 'Product'}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onError={(e) => {
+                              e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=";
+                            }}
+                          />
+                        </div>
+
+                        {/* Info Section */}
+                        <div className="p-3 sm:p-4 text-left space-y-1.5 flex flex-col justify-between min-h-[100px] flex-grow bg-white">
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-light text-black uppercase line-clamp-2 mb-1.5 font-futura-pt-light">
+                              {product.name || product.title || 'Untitled Product'}
+                            </h3>
+                            {product.category && (
+                              <p className="text-gray-600 text-xs line-clamp-1 font-light font-futura-pt-light">
+                                {product.category}
+                              </p>
+                            )}
+                          </div>
+                          {/* {productPrice > 0 && (
+                            <p className="text-sm sm:text-base font-light text-black font-futura-pt-light mt-auto pt-1">
+                              {formatPrice(productPrice, currency)}
+                            </p>
+                          )} */}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1410,23 +1483,22 @@ const ProductDetailPage = () => {
                   <button
                     onClick={handleCarouselPrev}
                     disabled={carouselIndex === 0}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-2 shadow-sm hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 hover:border-black p-2.5 shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 z-10"
                     aria-label="Previous products"
                   >
-                    <ChevronLeft size={18} className="text-black" strokeWidth={2} />
+                    <ChevronLeft size={20} className="text-black" strokeWidth={1.5} />
                   </button>
                   <button
                     onClick={handleCarouselNext}
                     disabled={carouselIndex >= Math.max(0, newProducts.length - itemsPerView)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm p-2 shadow-sm hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 hover:border-black p-2.5 shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 z-10"
                     aria-label="Next products"
                   >
-                    <ChevronRight size={18} className="text-black" strokeWidth={2} />
+                    <ChevronRight size={20} className="text-black" strokeWidth={1.5} />
                   </button>
                 </>
               )}
             </div>
-
           </div>
         )}
       </div>

@@ -26,14 +26,11 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const searchRef = useRef(null);
-  const mobileAccountRef = useRef(null);
   const accountDropdownRef = useRef(null);
   const [mobileAccountOpen, setMobileAccountOpen] = useState(false);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
 
-  console.log(isScrolled, "proe")
   const [isHovered, setIsHovered] = useState(false);
-  const [isSCroll , setIsScroll]=useState(false)
   const navigate = useNavigate();
 
   // Check authentication status
@@ -172,10 +169,8 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearchResults(false);
       }
-      if (mobileAccountRef.current && !mobileAccountRef.current.contains(event.target)) {
-        setMobileAccountOpen(false);
-      }
       if (accountDropdownRef.current && !accountDropdownRef.current.contains(event.target)) {
+        setMobileAccountOpen(false);
         setAccountDropdownOpen(false);
       }
     };
@@ -196,6 +191,9 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
     }
   }, [isAuthenticated]);
 
+  // Determine if header is transparent (home page, not scrolled, not hovered)
+  const isHeaderTransparent = isHomePage && !isScrolled && !isHovered;
+
   const headerClasses = `
     fixed top-0 w-full z-[1200] border-b transition-all duration-500
     ${isHomePage
@@ -204,6 +202,9 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
         : "bg-transparent border-transparent")
       : "sticky top-0 relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
   `;
+  
+  // Icon color classes based on header transparency
+  const iconColorClass = isHeaderTransparent ? "text-white hover:text-gray-200" : "text-black hover:text-gray-700";
 
   return (
     <>
@@ -213,95 +214,94 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5 relative">
 
-
-        <div className=" text-black font-sweet-sans  z-[1300] shadow-sm">
-          <div className="max-w-[1600px] mx-auto flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3">
-            <Link to="/home" className="flex items-center justify-center">
-              <img
-                src={logoImage}
-                alt="YOBHA Logo"
-                className="h-7 md:h-8 lg:h-9"
-              // style={{ filter: "brightness(0) invert(1)" }}
-              />
-            </Link>
-          </div>
-        </div>
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5">
-
-          {/* Mobile Layout */}
-          <div className="flex items-center justify-between w-full md:hidden">
-            {/* Left Side - Mobile Menu & Search */}
-            <div className="flex items-center gap-2">
+          {/* Left Side - Menu & Search Icon (All Devices) */}
+          <div className="flex items-center gap-2 md:gap-3 lg:gap-4 flex-shrink-0">
+            {/* Menu Icon */}
               <button
-                className="flex items-center justify-center w-7 h-7 focus:outline-none text-black hover:text-gray-700 transition-colors duration-300"
+              className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 focus:outline-none ${iconColorClass} transition-colors duration-300`}
                 onClick={() => {
                   setSidebarOpen(true);
                   setSearchOpen(false);
                 }}
               >
-                <Menu size={18} />
+              <Menu size={18} className="md:w-5 md:h-5" />
               </button>
 
+            {/* Search Icon */}
               <button
-                className="flex items-center justify-center w-7 h-7 text-black hover:text-gray-700 transition-colors duration-300"
+              className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 ${iconColorClass} transition-colors duration-300`}
                 onClick={() => {
                   setSearchOpen(!searchOpen);
                   setSidebarOpen(false);
                 }}
                 title="Search"
               >
-                <Search size={18} />
+              <Search size={18} className="md:w-5 md:h-5" />
               </button>
             </div>
 
-            <div className="flex-1" />
+          {/* Center - Logo (All Devices) */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10">
+            <Link to="/home" className="flex items-center justify-center">
+              <img
+                src={logoImage}
+                alt="YOBHA Logo"
+                className="h-7 md:h-8 lg:h-9 transition-all duration-300 hover:scale-105"
+                style={{ filter: isHeaderTransparent ? "brightness(0) invert(1)" : "none" }}
+              />
+            </Link>
+          </div>
 
-            {/* Right Side - Wishlist, Cart & Account (Mobile) */}
-            <div className="flex items-center gap-3 relative" ref={mobileAccountRef}>
-              {/* Wishlist Icon - Mobile */}
+          {/* Right Side - Wishlist, Cart & User (All Devices) */}
+          <div className="flex items-center gap-2 md:gap-3 lg:gap-4 relative flex-shrink-0">
+            {/* Wishlist Icon */}
               <Link
                 to="/wishlist"
-                className="flex items-center justify-center w-7 h-7 text-black hover:text-gray-700 transition-colors duration-300 relative"
+              className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 ${iconColorClass} transition-colors duration-300 relative`}
                 title="Wishlist"
               >
-                <Heart size={18} strokeWidth={1.8} />
+              <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.8} />
               </Link>
 
-              {/* Cart Icon - Mobile */}
+            {/* Cart Icon */}
               <Link
                 to="/cart"
-                className="flex items-center justify-center w-7 h-7 text-black hover:text-gray-700 transition-colors duration-300 relative overflow-visible"
+              className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 ${iconColorClass} transition-colors duration-300 relative overflow-visible`}
                 title="Shopping Cart"
               >
                 <BsBag
                   size={18}
-                  className={`transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
+                className={`md:w-5 md:h-5 transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
                 />
                 {cartCount > 0 && (
-                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-light shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
+                <span className={`absolute -top-0.5 -right-0.5 ${isHeaderTransparent ? "bg-white text-black" : "bg-black text-white"} text-[10px] md:text-xs w-3.5 h-3.5 md:w-4 md:h-4 lg:w-5 lg:h-5 rounded-full flex items-center justify-center font-light shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
                     {cartCount}
                   </span>
                 )}
               </Link>
 
+            {/* User Icon */}
+            <div className="relative" ref={accountDropdownRef}>
               <button
                 onClick={() => {
                   if (!isAuthenticated) {
                     navigate('/login');
                   } else {
                     setMobileAccountOpen((prev) => !prev);
+                    setAccountDropdownOpen((prev) => !prev);
                   }
                 }}
-                className="flex items-center gap-1 px-2 py-1 text-black hover:text-gray-700 transition-colors duration-300 text-[11px] uppercase tracking-wider"
+                className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 ${iconColorClass} transition-colors duration-300`}
                 title={isAuthenticated ? "Account" : "Login"}
               >
-                <User size={20} strokeWidth={1.8} />
-                {/* <span className={isAuthenticated ? "" : "hidden"}>{isAuthenticated ? "Account" : ""}</span> */}
+                <User size={18} className="md:w-5 md:h-5 lg:w-6 lg:h-6" strokeWidth={1.8} />
               </button>
 
+              {/* Account Dropdown - Mobile */}
               {isAuthenticated && mobileAccountOpen && (
-                <div className="absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl overflow-hidden text-xs uppercase font-futura-pt-light min-w-[180px]">
+                <div className="md:hidden absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl overflow-hidden text-xs uppercase font-futura-pt-light min-w-[180px]">
                   <button
                     className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
                     onClick={() => setMobileAccountOpen(false)}
@@ -314,7 +314,7 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
                       navigate('/account');
                       setMobileAccountOpen(false);
                     }}
-                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300 mt-6"
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300 mt-6 w-full text-left"
                   >
                     <User size={16} />
                     <span>Account</span>
@@ -324,135 +324,20 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
                       setMobileAccountOpen(false);
                       handleLogout();
                     }}
-                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300"
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300 w-full text-left"
                   >
                     <LogOut size={16} />
                     <span>Logout</span>
                   </button>
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Desktop/Tablet Layout - Luxury Minimal Design */}
-          <div className="hidden md:flex items-center w-full justify-between gap-6">
-            {/* Left Section - Navigation */}
-            <div className="flex items-center gap-5 lg:gap-6 flex-shrink-0">
-              {/* Hamburger Menu Icon */}
-              <button
-                className="flex items-center justify-center w-8 h-8 focus:outline-none text-black hover:text-gray-700 transition-colors duration-300"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <Menu size={20} />
-              </button>
-
-              {/* Navigation Menu - Premium Typography */}
-
-            </div>
-
-            {/* Center Section - Search */}
-            <div className="flex-1 max-w-xl">
-              <div className="relative" ref={searchRef}>
-                <div className="relative">
-                  <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder={t("navbar.placeholders.search." + i18n.language)}
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="w-full pl-10 md:pl-12 pr-4 py-2 md:py-3 border border-black rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold/30 text-xs md:text-sm bg-gray-50/50 transition-all duration-300 hover:bg-white"
-                  />
-                  {searchLoading && (
-                    <Loader2 size={16} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 animate-spin" />
-                  )}
-                </div>
-
-                {/* Search Results - Luxury Design */}
-                {showSearchResults && searchResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-100 shadow-2xl z-50 max-h-96 overflow-y-auto mt-2">
-                    <div className="p-2">
-                      {searchResults.map((product) => (
-                        <div
-                          key={product.id}
-                          onClick={() => handleSearchResultClick(product)}
-                          className="flex items-center gap-4 p-4 hover:bg-luxury-gold/5 cursor-pointer transition-all duration-300"
-                        >
-                          <div className="w-12 h-12 bg-gray-100 flex-shrink-0 overflow-hidden">
-                            <img
-                              src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"}
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-light text-black text-sm leading-tight truncate">{product.name}</h4>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide">{product.category}</p>
-                            <p className="text-luxury-gold font-light text-sm">Rs. {product.price} INR</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* No Results - Luxury Design */}
-                {showSearchResults && searchResults.length === 0 && searchQuery.trim() && !searchLoading && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-100 shadow-2xl z-50 p-6 mt-2">
-                    <p className="text-gray-500 text-sm text-center">placeholder={t("navbar.placeholders.search." + i18n.language)}"{searchQuery}"</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Right Section - Utilities */}
-            <div className="flex items-center space-x-2 md:space-x-3 lg:space-x-4 flex-shrink-0">
-
-
-              {/* Wishlist Icon - Desktop Only */}
-              <Link
-                to="/wishlist"
-                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 "
-                title={t("navbar.wishlist.tooltip." + i18n.language)}
-              >
-                <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.5} />
-              </Link>
-
-              {/* Cart Icon - Luxury Design */}
-              <Link
-                to="/cart"
-                className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 relative  overflow-visible"
-                title={t("header.cart")}
-              >
-                <BsBag
-                  size={18}
-                  className={`md:w-5 md:h-5 transition-all duration-300 ${cartAnimation ? "scale-110" : "scale-100"}`}
-                />
-                {cartCount > 0 && (
-                  <span className={`absolute -top-0.5 -right-0.5 bg-black text-white text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center font-light shadow-lg transition-all duration-300 ${cartAnimation ? "scale-125" : "scale-100"}`}>
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-
-              <div className="relative" ref={accountDropdownRef}>
-                <button
-                  className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 text-black hover:text-black-600 transition-all duration-300 "
-                  title={isAuthenticated ? t("navbar.account.myAccount." + i18n.language) : "Login"}
-                  onClick={() => {
-                    if (!isAuthenticated) {
-                      navigate('/login');
-                    } else {
-                      setAccountDropdownOpen(prev => !prev);
-                    }
-                  }}
-                  aria-haspopup="true"
-                  aria-expanded={accountDropdownOpen}
+              {/* Account Dropdown - Desktop */}
+              {isAuthenticated && accountDropdownOpen && (
+                <div
+                  ref={accountDropdownRef}
+                  className="hidden md:block absolute right-0 top-12 z-50"
                 >
-                  <User size={22} strokeWidth={1.5} />
-                </button>
-
-                {isAuthenticated && accountDropdownOpen && (
-                  <div className="absolute top-12 right-0 z-50">
                     <div className="bg-white shadow-2xl border border-gray-100 py-2 min-w-[200px] relative">
                       <button
                         className="absolute top-2 right-2 text-gray-400 transition-colors duration-200"
@@ -466,7 +351,7 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
                           setAccountDropdownOpen(false);
                           navigate('/account');
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest  transition-all duration-300 pt-6"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest transition-all duration-300 pt-6 text-left"
                       >
                         <User size={16} />
                         <span>My Account</span>
@@ -476,7 +361,7 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
                           setAccountDropdownOpen(false);
                           handleLogout();
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest  transition-all duration-300"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest transition-all duration-300 text-left"
                       >
                         <LogOut size={16} />
                         <span>Logout</span>
@@ -484,65 +369,54 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
                     </div>
                   </div>
                 )}
-              </div>
-
-              {/* Logout Button - Luxury Design */}
-              {/* {isAuthenticated && (
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 px-3 py-2 text-black hover:text-gray-900 transition-all duration-500 rounded-full hover:bg-luxury-gold/10"
-                  title={t("navbar.account.logout." + i18n.language)}
-                >
-                  <LogOut size={16} className="md:w-4 md:h-4" strokeWidth={1.5} />
-                  <span className="hidden sm:inline font-normal text-xs md:text-sm tracking-widest uppercase">{t("navbar.account.logout." + i18n.language)}</span>
-                </button>
-              )} */}
-
             </div>
           </div>
         </div>
 
-        {/* Sidebar Component */}
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-        {/* Search Section - Mobile Only */}
+        {/* Expandable Search Bar (All Devices) */}
         {searchOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200 shadow-lg animate-slideDown">
-            <div className="max-w-[1600px] mx-auto px-4 py-4">
-              {/* Mobile Search Input */}
+          <div className="w-full border-t border-gray-200 bg-white animate-slideDown">
+            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4">
               <div className="relative" ref={searchRef}>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3">
                   <div className="flex-1 relative">
-                    <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
                       placeholder={t("navbar.placeholders.search." + i18n.language)}
                       value={searchQuery}
                       onChange={handleSearchChange}
-                      className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxury-gold focus:border-transparent text-base"
+                      className="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black text-sm md:text-base bg-gray-50 transition-all duration-300 hover:bg-white"
+                      autoFocus
                     />
                     {searchLoading && (
-                      <Loader2 size={18} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 animate-spin" />
+                      <Loader2 size={18} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 animate-spin" />
                     )}
                   </div>
                   <button
-                    onClick={() => setSearchOpen(false)}
-                    className="text-gray-500 hover:text-gray-700 transition-colors duration-300 p-1"
+                    onClick={() => {
+                      setSearchOpen(false);
+                      setSearchQuery("");
+                      setSearchResults([]);
+                      setShowSearchResults(false);
+                    }}
+                    className="flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-700 transition-colors duration-300"
                   >
                     <X size={20} />
                   </button>
                 </div>
 
-                {/* Search Results - Mobile */}
+                {/* Search Results */}
                 {showSearchResults && searchResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 shadow-lg z-50 max-h-80 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 shadow-2xl z-50 max-h-96 overflow-y-auto mt-2 rounded-lg">
+                    <div className="p-2">
                     {searchResults.map((product) => (
                       <div
                         key={product.id}
                         onClick={() => handleSearchResultClick(product)}
-                        className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                          className="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer transition-all duration-300"
                       >
-                        <div className="w-12 h-12 bg-gray-200 flex-shrink-0">
+                          <div className="w-12 h-12 bg-gray-100 flex-shrink-0 overflow-hidden rounded">
                           <img
                             src={product.images?.[0] || "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=100&h=100&fit=crop&crop=center"}
                             alt={product.name}
@@ -551,17 +425,18 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-light text-black text-sm leading-tight truncate">{product.name}</h4>
-                          <p className="text-gray-600 text-xs">{product.category}</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide">{product.category}</p>
                           <p className="text-black font-light text-sm">Rs. {product.price} INR</p>
                         </div>
                       </div>
                     ))}
+                    </div>
                   </div>
                 )}
 
-                {/* No Results - Mobile */}
+                {/* No Results */}
                 {showSearchResults && searchResults.length === 0 && searchQuery.trim() && !searchLoading && (
-                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 shadow-lg z-50 p-4">
+                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 shadow-2xl z-50 p-6 mt-2 rounded-lg">
                     <p className="text-gray-500 text-sm text-center">No products found for "{searchQuery}"</p>
                   </div>
                 )}
@@ -569,6 +444,9 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
             </div>
           </div>
         )}
+
+        {/* Sidebar Component */}
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
 
         <style jsx>{`

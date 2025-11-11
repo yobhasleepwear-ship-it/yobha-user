@@ -55,22 +55,22 @@ const OrdersPage = () => {
     switch ((status || "").toLowerCase()) {
       case "paid":
         return {
-          color: "text-green-600",
-          bg: "bg-green-50",
+          color: "text-black",
+          bg: "bg-gray-100",
           icon: CheckCircle2,
           text: "Paid",
         };
       case "pending":
         return {
-          color: "text-yellow-600",
-          bg: "bg-yellow-50",
+          color: "text-gray-600",
+          bg: "bg-gray-50",
           icon: Clock,
           text: "Pending",
         };
       case "failed":
         return {
-          color: "text-red-600",
-          bg: "bg-red-50",
+          color: "text-gray-700",
+          bg: "bg-gray-100",
           icon: XCircle,
           text: "Failed",
         };
@@ -87,10 +87,10 @@ const OrdersPage = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen bg-white font-futura-pt-light">
         <div className="text-center">
           <div className="w-14 h-14 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-700 text-sm uppercase tracking-widest">
+          <p className="text-gray-600 text-xs md:text-sm font-light font-futura-pt-light">
             Loading Orders...
           </p>
         </div>
@@ -101,13 +101,13 @@ const OrdersPage = () => {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <h2 className="text-lg font-semibold text-red-600 mb-2">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white font-futura-pt-light">
+        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
           {error}
         </h2>
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-black text-white uppercase text-xs tracking-wider hover:bg-gray-800"
+          className="px-6 py-2 bg-black text-white uppercase text-xs tracking-wider hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
         >
           Retry
         </button>
@@ -118,20 +118,20 @@ const OrdersPage = () => {
   // Empty state
   if (orders.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <Package size={48} className="text-gray-400 mb-4" />
-        <h2 className="text-xl font-light text-gray-700 mb-2 uppercase">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white font-futura-pt-light px-4">
+        <Package size={48} className="text-gray-400 mb-4" strokeWidth={1.5} />
+        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
           No Orders Yet
         </h2>
-        <p className="text-gray-500 text-sm mb-6">
+        <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light mb-6">
           Start shopping to see your orders here.
         </p>
         <button
           onClick={() => navigate("/products")}
-          className="flex items-center gap-2 bg-black text-white px-6 py-3 uppercase text-xs tracking-wider hover:bg-gray-800"
+          className="flex items-center gap-2 bg-black text-white px-6 py-3 uppercase text-xs tracking-wider hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
         >
           Browse Products
-          <ChevronRight size={16} />
+          <ChevronRight size={16} strokeWidth={1.5} />
         </button>
       </div>
     );
@@ -139,13 +139,21 @@ const OrdersPage = () => {
 
   // Main UI
   return (
-    <div className="bg-gray-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-light uppercase tracking-widest text-gray-900 mb-8">
-          My Orders
-        </h1>
+    <div className="bg-white min-h-screen font-futura-pt-light">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
+        {/* Page Header */}
+        <div className="mb-8 md:mb-10">
+          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+            My Orders
+          </h1>
+          <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
+          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
+            View and track all your orders
+          </p>
+        </div>
 
-        <div className="space-y-5">
+        {/* Orders List */}
+        <div className="space-y-4">
           {orders.map((order) => {
             const isGiftCard = order?.giftCardNumber;
             const statusInfo = getStatusColor(order?.paymentStatus);
@@ -154,57 +162,51 @@ const OrdersPage = () => {
             return (
               <div
                 key={order.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+                className="bg-white border border-gray-200 hover:border-gray-300 transition-all duration-300"
               >
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 border-b border-gray-100">
-                  <div>
-                    <h2 className="text-sm font-light text-gray-700 uppercase mb-1">
-                      Order ID:{" "}
-                      <span className="font-medium text-black">
-                        {order.orderNo || order.id}
-                      </span>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-5 md:p-6 border-b border-gray-200">
+                  <div className="flex-1">
+                    <h2 className="text-xs sm:text-sm font-light text-black uppercase mb-2 font-futura-pt-light">
+                      Order ID: <span className="font-light">{order.orderNo || order.id}</span>
                     </h2>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-gray-600 text-xs font-light font-futura-pt-light">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
 
-                  <div
-                    className={`mt-3 sm:mt-0 flex items-center gap-2 px-3 py-1 rounded-full ${statusInfo.bg}`}
-                  >
+                  <div className={`mt-3 sm:mt-0 flex items-center gap-2 px-3 py-1.5 ${statusInfo.bg} border border-gray-200`}>
                     <StatusIcon
                       size={14}
-                      className={`${statusInfo.color}`}
+                      className={statusInfo.color}
+                      strokeWidth={1.5}
                     />
-                    <span
-                      className={`text-xs font-medium uppercase ${statusInfo.color}`}
-                    >
+                    <span className={`text-xs font-light uppercase font-futura-pt-light ${statusInfo.color}`}>
                       {statusInfo.text}
                     </span>
                   </div>
                 </div>
 
                 {/* Body */}
-                <div className="p-5 flex flex-col sm:flex-row justify-between gap-4">
-                  <div className="flex items-center gap-4">
+                <div className="p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
                     {isGiftCard ? (
-                      <div className="w-14 h-14 bg-pink-50 flex items-center justify-center rounded-full">
-                        <Gift className="text-pink-500" size={26} />
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                        <Gift className="text-black" size={24} strokeWidth={1.5} />
                       </div>
                     ) : (
-                      <div className="w-14 h-14 bg-gray-100 flex items-center justify-center rounded-full">
-                        <Package className="text-gray-600" size={26} />
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                        <Package className="text-black" size={24} strokeWidth={1.5} />
                       </div>
                     )}
 
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-800">
+                    <div className="flex-1">
+                      <h3 className="text-sm sm:text-base font-light text-black mb-1 font-futura-pt-light">
                         {isGiftCard
                           ? "Gift Card Purchase"
                           : order?.items?.[0]?.productName || "Product Order"}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-gray-600 text-xs font-light font-futura-pt-light">
                         {isGiftCard
                           ? `Gift Card No: ${order.giftCardNumber}`
                           : `${order.items?.length || 0} item(s)`}
@@ -212,24 +214,26 @@ const OrdersPage = () => {
                     </div>
                   </div>
 
-                  <div className="text-right">
-                    <p className="text-sm text-gray-600 uppercase">
-                      Total Amount
-                    </p>
-                    <p className="text-lg font-medium text-black">
-                      {formatPrice(order.totalAmount || order.giftCardAmount)}
-                    </p>
+                  <div className="text-left sm:text-right flex sm:block items-center justify-between sm:justify-end gap-4">
+                    <div>
+                      <p className="text-gray-600 text-xs font-light uppercase font-futura-pt-light mb-1">
+                        Total Amount
+                      </p>
+                      <p className="text-lg sm:text-xl font-light text-black font-futura-pt-light">
+                        {formatPrice(order.totalAmount || order.giftCardAmount)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Footer */}
-                <div className="border-t border-gray-100 px-5 py-3 flex justify-end">
+                <div className="border-t border-gray-200 px-4 sm:px-5 md:px-6 py-3 flex justify-end">
                   <button
                     onClick={() => navigate(`/order-details/${order.id}`)}
-                    className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
+                    className="flex items-center gap-2 text-xs sm:text-sm text-black hover:text-gray-600 transition-colors font-light font-futura-pt-light uppercase tracking-wider"
                   >
                     View Details
-                    <ChevronRight size={16} />
+                    <ChevronRight size={16} strokeWidth={1.5} />
                   </button>
                 </div>
               </div>
