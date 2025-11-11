@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback, memo } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import ProductCard from "../product/components/product-card";
 import { X, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
@@ -27,10 +27,15 @@ const ProductsPage = () => {
   const navigate = useNavigate();
   const passedProducts = location.state?.products || [];
   console.log(passedProducts, "passed")
+  
+  // Get sort from URL query parameter
+  const searchParams = new URLSearchParams(location.search);
+  const urlSort = searchParams.get('sort');
+  
   // UI State
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMobileSort, setShowMobileSort] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState("categories");
+  const [openAccordion, setOpenAccordion] = useState("sortBy");
 
   // Filter State
   const [filters, setFilters] = useState({
@@ -39,8 +44,10 @@ const ProductsPage = () => {
     subCategories: [],
     minPrice: '',
     maxPrice: '',
-    sortBy: '',
+    sortBy: urlSort || '',
     country: 'IN',
+    colors: [],
+    sizes: [],
   });
 
   // API State
@@ -52,11 +59,7 @@ const ProductsPage = () => {
     total: '0',
   });
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500000 });
-
-  // Filter Options (can be fetched from API using setFilterOptions)
-  // TODO: Replace with API call to fetch dynamic filters from backend
-  // Example: useEffect(() => { fetchFilterOptions().then(setFilterOptions); }, []);
-  const [filterOptions] = useState({
+  const [filterOptions, setFilterOptions] = useState({
     segments: ["Women", "Men", "Kids", "Pets", "Couple", "Family", "Scrunchies", "Socks", "Eyemasks", "Headband", "Cushions"],
     categories: [
       { id: "Sleepwear", name: "Sleepwear" },
@@ -94,10 +97,9 @@ const ProductsPage = () => {
       ],
     },
     sortOptions: [
-      { id: "latest", name: "Latest" },
-      { id: "popular", name: "Popular" },
-      { id: "price_asc", name: "Price: Low to High" },
-      { id: "price_desc", name: "Price: High to Low" },
+      { id: "price_desc", name: "Highest to Lowest" },
+      { id: "price_asc", name: "Lowest to Highest" },
+      { id: "novelty", name: "Novelty" },
     ],
     fabricOptions: [
       { id: "cotton", name: "Premium Cotton" },
@@ -110,8 +112,80 @@ const ProductsPage = () => {
       { id: "jersey", name: "Stretch Jersey Knit" },
       { id: "bamboo", name: "Eco-Friendly Bamboo Fabric" },
     ],
-
+    colors: [],
+    sizes: [],
   });
+
+  // Extract unique colors and sizes from products using useMemo to prevent unnecessary recalculations
+  const extractedColorsAndSizes = useMemo(() => {
+    const productsToExtract = products.length > 0 ? products : (passedProducts.length > 0 ? passedProducts : []);
+    
+    if (productsToExtract.length === 0) {
+      return { colors: [], sizes: [] };
+    }
+
+    const allColors = new Set();
+    const allSizes = new Set();
+
+    productsToExtract.forEach((product) => {
+      // Extract colors
+      if (Array.isArray(product.availableColors)) {
+        product.availableColors.forEach((color) => {
+          if (color && color.trim()) {
+            allColors.add(color.trim());
+          }
+        });
+      }
+      // Extract sizes
+      if (Array.isArray(product.availableSizes)) {
+        product.availableSizes.forEach((size) => {
+          if (size && size.trim()) {
+            allSizes.add(size.trim());
+          }
+        });
+      }
+    });
+
+    // Convert to arrays and sort
+    const uniqueColors = Array.from(allColors).sort();
+    const uniqueSizes = Array.from(allSizes).sort((a, b) => {
+      // Sort sizes: XS, S, M, L, XL, XXL, etc.
+      const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+      const aIndex = sizeOrder.indexOf(a.toUpperCase());
+      const bIndex = sizeOrder.indexOf(b.toUpperCase());
+      if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+      if (aIndex !== -1) return -1;
+      if (bIndex !== -1) return 1;
+      return a.localeCompare(b);
+    });
+
+    return { colors: uniqueColors, sizes: uniqueSizes };
+  }, [products, passedProducts]);
+
+  // Update filterOptions only when colors/sizes actually change to prevent infinite loops
+  const prevColorsSizesRef = useRef({ colors: [], sizes: [] });
+  useEffect(() => {
+    const prevColors = prevColorsSizesRef.current.colors;
+    const prevSizes = prevColorsSizesRef.current.sizes;
+    const newColors = extractedColorsAndSizes.colors;
+    const newSizes = extractedColorsAndSizes.sizes;
+
+    // Check if colors or sizes have actually changed
+    const colorsChanged = prevColors.length !== newColors.length || 
+      JSON.stringify(prevColors) !== JSON.stringify(newColors);
+    const sizesChanged = prevSizes.length !== newSizes.length || 
+      JSON.stringify(prevSizes) !== JSON.stringify(newSizes);
+
+    if (colorsChanged || sizesChanged) {
+      setFilterOptions((prev) => ({
+        ...prev,
+        colors: newColors,
+        sizes: newSizes,
+      }));
+      // Update ref with new values
+      prevColorsSizesRef.current = { colors: [...newColors], sizes: [...newSizes] };
+    }
+  }, [extractedColorsAndSizes]);
   useEffect(() => {
     const debouncedFilterUpdate = debounce(() => {
       setFilters(prev => ({
@@ -124,8 +198,9 @@ const ProductsPage = () => {
     debouncedFilterUpdate();
 
   }, [priceRange]);
-  // Fetch products from API
-  const fetchProducts = async () => {
+  
+  // Fetch products from API - memoized to prevent unnecessary re-creation
+  const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     try {
       const payload = {
@@ -138,6 +213,8 @@ const ProductsPage = () => {
         pageSize: pagination.pageSize,
         sort: filters.sortBy || undefined,
         country: null,
+        colors: filters.colors.length > 0 ? filters.colors : undefined,
+        sizes: filters.sizes.length > 0 ? filters.sizes : undefined,
       };
 
       // Remove undefined values
@@ -148,10 +225,7 @@ const ProductsPage = () => {
       const response = await getFilteredProducts(payload);
 
       if (response && response.success && response.data) {
-
         setProducts(response.data.items);
-
-
         setPagination(prev => ({
           ...prev,
           total: response.data.total || 0,
@@ -163,7 +237,7 @@ const ProductsPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [category, filters.segment, filters.minPrice, filters.maxPrice, filters.sortBy, filters.colors, filters.sizes, pagination.pageSize]);
 
   useEffect(() => {
     if (passedProducts.length > 0) {
@@ -181,21 +255,44 @@ const ProductsPage = () => {
     }
 
 
-  }, [category, filters.categories, filters.sortBy, pagination.pageNumber, priceRange, filters.country, filters.subCategories, filters.segment]);
+  }, [category, filters.categories, filters.sortBy, pagination.pageNumber, priceRange, filters.country, filters.subCategories, filters.segment, filters.colors, filters.sizes, fetchProducts, location.state?.products]);
 
-  // Handle filter changes
-  const updateFilter = (key, value) => {
+  // Handle filter changes - memoized to prevent unnecessary re-renders
+  const updateFilter = useCallback((key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     // Reset to page 1 when filters change
     setPagination(prev => ({ ...prev, pageNumber: 1 }));
-  };
+  }, []);
 
-  const toggleCategory = (categoryId) => {
-    const newCategories = filters.categories.includes(categoryId)
-      ? filters.categories.filter(id => id !== categoryId)
-      : [...filters.categories, categoryId];
-    updateFilter('categories', newCategories);
-  };
+  const toggleCategory = useCallback((categoryId) => {
+    setFilters(prev => {
+      const newCategories = prev.categories.includes(categoryId)
+        ? prev.categories.filter(id => id !== categoryId)
+        : [...prev.categories, categoryId];
+      return { ...prev, categories: newCategories };
+    });
+    setPagination(prev => ({ ...prev, pageNumber: 1 }));
+  }, []);
+
+  const toggleColor = useCallback((color) => {
+    setFilters(prev => {
+      const newColors = prev.colors.includes(color)
+        ? prev.colors.filter(c => c !== color)
+        : [...prev.colors, color];
+      return { ...prev, colors: newColors };
+    });
+    setPagination(prev => ({ ...prev, pageNumber: 1 }));
+  }, []);
+
+  const toggleSize = useCallback((size) => {
+    setFilters(prev => {
+      const newSizes = prev.sizes.includes(size)
+        ? prev.sizes.filter(s => s !== size)
+        : [...prev.sizes, size];
+      return { ...prev, sizes: newSizes };
+    });
+    setPagination(prev => ({ ...prev, pageNumber: 1 }));
+  }, []);
 
   const clearAllFilters = () => {
     setFilters({
@@ -206,6 +303,8 @@ const ProductsPage = () => {
       maxPrice: '',
       sortBy: '',
       country: '',
+      colors: [],
+      sizes: [],
     });
     // Clear the category from URL when clearing all filters
     navigate('/products', { replace: true });
@@ -218,26 +317,103 @@ const ProductsPage = () => {
     filters.subCategories.length > 0 ||
     filters.minPrice !== '' ||
     filters.maxPrice !== '' ||
-    filters.sortBy !== '';
+    filters.sortBy !== '' ||
+    filters.colors.length > 0 ||
+    filters.sizes.length > 0;
 
   // Get category name helper
   const getCategoryName = (id) => {
     return filterOptions.categories.find(cat => cat.id === id)?.name || id;
   };
 
-  // Toggle accordion
-  const toggleAccordion = (name) => {
-    setOpenAccordion(openAccordion === name ? null : name);
+  // Helper function to get hex color from color name or hex code
+  const getColorHex = (color) => {
+    if (!color) return '#CCCCCC';
+    
+    // Check if color is already a hex code
+    const isHex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+    if (isHex) {
+      // Normalize 3-digit hex to 6-digit for consistency
+      if (color.length === 4) {
+        return `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`;
+      }
+      return color;
+    }
+    
+    // Map common color names to hex codes
+    const colorNameToHex = {
+      'black': '#000000',
+      'white': '#FFFFFF',
+      'red': '#FF0000',
+      'blue': '#0000FF',
+      'green': '#008000',
+      'yellow': '#FFFF00',
+      'pink': '#FFC0CB',
+      'purple': '#800080',
+      'orange': '#FFA500',
+      'brown': '#A52A2A',
+      'gray': '#808080',
+      'grey': '#808080',
+      'navy': '#000080',
+      'beige': '#F5F5DC',
+      'cream': '#FFFDD0',
+      'tan': '#D2B48C',
+      'maroon': '#800000',
+      'burgundy': '#800020',
+      'ivory': '#FFFFF0',
+      'peach': '#FFE5B4',
+      'coral': '#FF7F50',
+      'rose': '#FF007F',
+      'lavender': '#E6E6FA',
+      'mint': '#98FB98',
+      'teal': '#008080',
+      'cyan': '#00FFFF',
+      'magenta': '#FF00FF',
+      'gold': '#FFD700',
+      'silver': '#C0C0C0',
+      'bronze': '#CD7F32',
+      'copper': '#B87333',
+      'olive': '#808000',
+      'lime': '#00FF00',
+      'aqua': '#00FFFF',
+      'turquoise': '#40E0D0',
+      'indigo': '#4B0082',
+      'violet': '#8A2BE2',
+    };
+    
+    // Normalize color name (lowercase, trim)
+    const normalizedColor = color.toLowerCase().trim();
+    return colorNameToHex[normalizedColor] || '#CCCCCC';
   };
 
-  // Accordion Component - Minimal Gucci-style
-  const FilterAccordion = ({ title, isOpen, onToggle, children }) => (
+  // Helper function to check if color is light (needs stronger border)
+  const isLightColor = (hex) => {
+    if (!hex) return false;
+    const normalizedHex = hex.toLowerCase();
+    const lightColors = ['#ffffff', '#fff', '#fffff0', '#fffdd0', '#f5f5dc', '#ffe5b4', '#e6e6fa', '#98fb98'];
+    return lightColors.includes(normalizedHex);
+  };
+
+  // Toggle accordion - memoized to prevent unnecessary re-renders
+  const toggleAccordion = useCallback((name) => {
+    setOpenAccordion(prev => prev === name ? null : name);
+  }, []);
+
+  // Memoized callbacks for accordion toggles to prevent re-renders
+  const toggleSortBy = useCallback(() => toggleAccordion("sortBy"), [toggleAccordion]);
+  const toggleGender = useCallback(() => toggleAccordion("gender"), [toggleAccordion]);
+  const toggleFabric = useCallback(() => toggleAccordion("fabric"), [toggleAccordion]);
+  const toggleColors = useCallback(() => toggleAccordion("colors"), [toggleAccordion]);
+  const toggleSizes = useCallback(() => toggleAccordion("sizes"), [toggleAccordion]);
+
+  // Accordion Component - Minimal Gucci-style (memoized to prevent unnecessary re-renders)
+  const FilterAccordion = memo(({ title, isOpen, onToggle, children }) => (
     <div className="border-b border-text-light/10">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between py-5 px-6 hover:bg-black/[0.02] transition-colors duration-200"
       >
-        <span className="text-black text-sm uppercase tracking-widest font-light">
+        <span className="text-black text-sm uppercase tracking-widest font-light font-futura-pt-light">
           {title}
         </span>
         {isOpen ? (
@@ -252,20 +428,20 @@ const ProductsPage = () => {
         </div>
       )}
     </div>
-  );
+  ));
 
   // Filter Sidebar Component
   const FilterSidebar = ({ showHeader = true }) => (
     <div className="bg-white overflow-hidden">
       {showHeader && (
         <div className="px-6 py-5 border-b border-text-light/10 flex items-center justify-between">
-          <h2 className="text-black text-sm uppercase tracking-widest font-light">
+          <h2 className="text-black text-sm uppercase tracking-widest font-light font-futura-pt-light">
             Filters
           </h2>
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline transition-colors"
+              className="text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline transition-colors font-futura-pt-light"
             >
               Clear All
             </button>
@@ -273,11 +449,41 @@ const ProductsPage = () => {
         </div>
       )}
 
+      {/* Sort By */}
+      <FilterAccordion
+        title="Sort By"
+        isOpen={openAccordion === "sortBy"}
+        onToggle={toggleSortBy}
+      >
+        <div className="space-y-3">
+          {filterOptions.sortOptions.map((option) => (
+            <label
+              key={option.id}
+              className="flex items-center cursor-pointer group"
+            >
+              <input
+                type="radio"
+                name="sortBy"
+                checked={filters.sortBy === option.id}
+                onChange={() => updateFilter('sortBy', option.id)}
+                className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
+              />
+              <span className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.sortBy === option.id
+                ? "text-black"
+                : "text-text-medium group-hover:text-black"
+                }`}>
+                {option.name}
+              </span>
+            </label>
+          ))}
+        </div>
+      </FilterAccordion>
+
       {/* Gender & Type */}
       <FilterAccordion
-        title="Cateory"
+        title="Categories"
         isOpen={openAccordion === "gender"}
-        onToggle={() => toggleAccordion("gender")}
+        onToggle={toggleGender}
       >
         <div className="space-y-3">
           {filterOptions.segments.map((segment) => (
@@ -292,8 +498,8 @@ const ProductsPage = () => {
                 onChange={() => updateFilter('segment', segment)}
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
-              <span className={`ml-3 text-sm tracking-wide transition-colors ${filters.segment === segment
-                ? "text-black font-light"
+              <span className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.segment === segment
+                ? "text-black"
                 : "text-text-medium group-hover:text-black"
                 }`}>
                 {segment}
@@ -305,7 +511,7 @@ const ProductsPage = () => {
       <FilterAccordion
         title="Fabric Type"
         isOpen={openAccordion === "fabric"}
-        onToggle={() => toggleAccordion("fabric")}
+        onToggle={toggleFabric}
       >
         <div className="space-y-3">
           {filterOptions.fabricOptions.map((fabric) => (
@@ -321,8 +527,8 @@ const ProductsPage = () => {
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
               <span
-                className={`ml-3 text-sm tracking-wide transition-colors ${filters.fabric === fabric.id
-                    ? "text-black font-light"
+                className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.fabric === fabric.id
+                    ? "text-black"
                     : "text-text-medium group-hover:text-black"
                   }`}
               >
@@ -332,6 +538,87 @@ const ProductsPage = () => {
           ))}
         </div>
       </FilterAccordion>
+
+      {/* Colors Filter */}
+      {filterOptions.colors.length > 0 && (
+        <FilterAccordion
+          title="Colors"
+          isOpen={openAccordion === "colors"}
+          onToggle={toggleColors}
+        >
+          <div className="space-y-3">
+            {filterOptions.colors.map((color) => {
+              const displayHex = getColorHex(color);
+              
+              return (
+                <label
+                  key={color}
+                  className="flex items-center cursor-pointer group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={filters.colors.includes(color)}
+                    onChange={() => toggleColor(color)}
+                    className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
+                  />
+                  <div className="ml-3 flex items-center gap-3 flex-1">
+                    <div
+                      className={`w-6 h-6 rounded-full flex-shrink-0 ${
+                        isLightColor(displayHex)
+                          ? 'border-2 border-gray-400'
+                          : 'border border-gray-300'
+                      }`}
+                      style={{ backgroundColor: displayHex }}
+                      title={color}
+                    />
+                    <span
+                      className={`text-sm tracking-wide transition-colors font-light font-futura-pt-light flex-1 ${filters.colors.includes(color)
+                          ? "text-black"
+                          : "text-text-medium group-hover:text-black"
+                        }`}
+                    >
+                      {color}
+                    </span>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+        </FilterAccordion>
+      )}
+
+      {/* Sizes Filter */}
+      {filterOptions.sizes.length > 0 && (
+        <FilterAccordion
+          title="Sizes"
+          isOpen={openAccordion === "sizes"}
+          onToggle={toggleSizes}
+        >
+          <div className="space-y-3">
+            {filterOptions.sizes.map((size) => (
+              <label
+                key={size}
+                className="flex items-center cursor-pointer group"
+              >
+                <input
+                  type="checkbox"
+                  checked={filters.sizes.includes(size)}
+                  onChange={() => toggleSize(size)}
+                  className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
+                />
+                <span
+                  className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.sizes.includes(size)
+                      ? "text-black"
+                      : "text-text-medium group-hover:text-black"
+                    }`}
+                >
+                  {size}
+                </span>
+              </label>
+            ))}
+          </div>
+        </FilterAccordion>
+      )}
 
 
       {/* Categories */}
@@ -459,7 +746,7 @@ const ProductsPage = () => {
           <div className="absolute left-0 top-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl overflow-y-auto animate-slideInLeft">
             <div className="sticky top-0 bg-white z-10 px-6 py-5 border-b border-text-light/20">
               <div className="flex items-center justify-between">
-                <h2 className="font-light text-black uppercase tracking-wider text-sm font-sweet-sans">
+                <h2 className="font-light text-black uppercase tracking-wider text-sm font-futura-pt-light">
                   Filters
                 </h2>
                 <button
@@ -476,7 +763,7 @@ const ProductsPage = () => {
                     clearAllFilters();
                     setShowMobileFilters(false);
                   }}
-                  className="mt-3 text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline"
+                  className="mt-3 text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline font-futura-pt-light"
                 >
                   Clear All
                 </button>
@@ -629,6 +916,19 @@ const ProductsPage = () => {
         {/* Active Filters */}
         {hasActiveFilters && (
           <div className="flex items-center gap-2 flex-wrap mb-8">
+            {filters.sortBy !== '' && (
+              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs uppercase tracking-wider">
+                <span>Sort: {filterOptions.sortOptions.find(opt => opt.id === filters.sortBy)?.name || ''}</span>
+                <button
+                  onClick={() => updateFilter('sortBy', '')}
+                  className="hover:bg-white/20 transition-colors"
+                  aria-label="Remove sort filter"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+
             {filters.segment !== '' && (
               <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs uppercase tracking-wider">
                 <span>{filters.segment}</span>
@@ -649,6 +949,40 @@ const ProductsPage = () => {
                   onClick={() => toggleCategory(catId)}
                   className="hover:bg-black/5 transition-colors"
                   aria-label={`Remove ${getCategoryName(catId)} filter`}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+
+            {filters.colors.map((color) => {
+              const displayHex = getColorHex(color);
+              
+              return (
+                <div key={color} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+                  <div
+                    className="w-3 h-3 rounded-full border border-gray-300 flex-shrink-0"
+                    style={{ backgroundColor: displayHex }}
+                  />
+                  <span>{color}</span>
+                  <button
+                    onClick={() => toggleColor(color)}
+                    className="hover:bg-black/5 transition-colors"
+                    aria-label={`Remove ${color} filter`}
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              );
+            })}
+
+            {filters.sizes.map((size) => (
+              <div key={size} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+                <span>Size: {size}</span>
+                <button
+                  onClick={() => toggleSize(size)}
+                  className="hover:bg-black/5 transition-colors"
+                  aria-label={`Remove ${size} filter`}
                 >
                   <X size={14} />
                 </button>

@@ -66,8 +66,8 @@ const HomePage2 = () => {
   ];
 
   // Hero Video URLs (for hero section)
-  const portraitVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
-  const landscapeVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2Fhero-vid.mp4?alt=media&token=40901bd4-7ba6-4565-9e07-85b853223ea4";
+  const portraitVideo = "https://vod.freecaster.com/louisvuitton/a04723c9-c426-48c6-9e45-b3cc5fecceba/yRedHpMc1t34Pr5gScX3GF4J_3.mp4";
+  const landscapeVideo = "https://vod.freecaster.com/louisvuitton/a04723ab-0c87-48cd-9a64-130562635d71/NEdEFmAPqMS9gxd4rFYAQRDw_11.mp4";
 
   useEffect(() => {
     fetchProducts();

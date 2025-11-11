@@ -98,7 +98,8 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const mainNavigationItems = [
-    { label: "What's New", nav: "whats-new", special: true },
+    { label: "Gifts & Personalization", nav: "gifts-personalization", giftCard: true },
+    { label: "New", nav: "whats-new", special: true },
     { label: "Men", nav: "Men" },
     { label: "Women", nav: "Women" },
     { label: t("navbar.collectionsItems.petWear." + i18n.language), nav: "PetWear" },
@@ -142,16 +143,25 @@ const Sidebar = ({ isOpen, onClose }) => {
 
           {/* Main Navigation */}
           <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-6 space-y-0">
-            {mainNavigationItems.map((item, index) => (
-              <Link
-                key={item.label}
-                to={item.special ? `/products?sort=latest` : `/products/${item.nav.replace(/\s/g, "-")}`}
-                className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
-                onClick={onClose}
-              >
-                <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
-              </Link>
-            ))}
+            {mainNavigationItems.map((item, index) => {
+              let routePath = `/products/${item.nav.replace(/\s/g, "-")}`;
+              if (item.special) {
+                routePath = `/products?sort=latest`;
+              } else if (item.giftCard) {
+                routePath = `/gift-card-purchase`;
+              }
+              
+              return (
+                <Link
+                  key={item.label}
+                  to={routePath}
+                  className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                  onClick={onClose}
+                >
+                  <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
+                </Link>
+              );
+            })}
 
             {/* Account Section */}
             <div className="pt-6 border-t border-gray-100 mt-2">
