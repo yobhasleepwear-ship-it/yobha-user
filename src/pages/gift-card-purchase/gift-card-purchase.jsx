@@ -527,24 +527,24 @@ const GiftCardPurchase = () => {
                   </h3>
                   <ul className="space-y-4 text-text-medium font-light text-sm md:text-base leading-relaxed font-futura-pt-light">
                     <li className="flex items-start">
-                      <span className="text-black mr-3 mt-1 flex-shrink-0">•</span>
-                      <span>Gift card will be sent to the recipient's email address</span>
+                      <span className="text-black mr-3 mt-1  flex-shrink-0">•</span>
+                      <span className="font-futura-pt-light font-light">Gift card will be sent to the recipient's email address</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-black mr-3 mt-1 flex-shrink-0">•</span>
-                      <span>Gift card can be used on all YOBHA products</span>
+                      <span className="font-futura-pt-light font-light">Gift card can be used on all YOBHA products</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-black mr-3 mt-1 flex-shrink-0">•</span>
-                      <span>Gift card never expires</span>
+                      <span className="font-futura-pt-light font-light">Gift card never expires</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-black mr-3 mt-1 flex-shrink-0">•</span>
-                      <span>Secure payment via Razorpay</span>
+                      <span className="font-futura-pt-light font-light">Secure payment via Razorpay</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-black mr-3 mt-1 flex-shrink-0">•</span>
-                      <span>Instant delivery via email</span>
+                      <span className="font-futura-pt-light font-light">Instant delivery via email</span>
                     </li>
                   </ul>
                 </div>
@@ -556,19 +556,19 @@ const GiftCardPurchase = () => {
                   <ol className="space-y-4 text-text-medium font-light text-sm md:text-base leading-relaxed font-futura-pt-light">
                     <li className="flex items-start">
                       <span className="text-black mr-3 font-light flex-shrink-0">1.</span>
-                      <span>Enter recipient email and gift card amount</span>
+                      <span className="font-futura-pt-light font-light">Enter recipient email and gift card amount</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-black mr-3 font-light flex-shrink-0">2.</span>
-                      <span>Complete secure payment</span>
+                      <span className="font-futura-pt-light font-light">Complete secure payment</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-black mr-3 font-light flex-shrink-0">3.</span>
-                      <span>Gift card code sent to recipient's email</span>
+                      <span className="font-futura-pt-light font-light">Gift card code sent to recipient's email</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-black mr-3 font-light flex-shrink-0">4.</span>
-                      <span>Recipient can use the code at checkout</span>
+                      <span className="font-futura-pt-light font-light">Recipient can use the code at checkout</span>
                     </li>
                   </ol>
                 </div>
