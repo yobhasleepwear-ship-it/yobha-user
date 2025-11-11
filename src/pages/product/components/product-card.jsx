@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart } from "lucide-react";
+import { addToWishlist } from "../../../service/wishlist";
+import { message } from "../../../comman/toster-message/ToastContainer";
+import * as localStorageService from "../../../service/localStorageService";
+import { LocalStorageKeys } from "../../../constants/localStorageKeys";
 
 /**
  * ProductCard Component - Luxury Gucci-inspired design
@@ -26,10 +30,12 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = JSON.parse(savedCountry);
-  const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code || "IN");
+  const [selectedCountry] = useState(parsedCountry?.code || "IN");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
   const autoCarouselRef = useRef(null);
 
@@ -37,68 +43,124 @@ const ProductCard = ({ product }) => {
   const productId = product?.id || '';
   const productName = product?.name || 'Untitled Product';
  
-  const matchedPrice = product?.priceList?.find(
-    (e) => e.country === selectedCountry && e.size === product?.availableSizes?.[0]
-  );
-  console.log(matchedPrice,"matchedprice")
-  const productPrice = matchedPrice?.priceAmount || 0;
-  const currency = matchedPrice?.currency || "";
+  // Price matching logic with fallbacks:
+  // 1. Try to find price matching both country and size
+  // 2. If not found, try to find any price for the selected country
+  // 3. If still not found, use the base price field from product
+  // 4. Only then default to 0
+  let matchedPrice = null;
+  let productPrice = 0;
+  let currency = "";
+  
+  if (product?.priceList && Array.isArray(product.priceList) && product.priceList.length > 0) {
+    // First try: exact match (country + size)
+    const firstSize = product?.availableSizes?.[0];
+    matchedPrice = product.priceList.find(
+      (e) => e.country === selectedCountry && e.size === firstSize
+    );
+    
+    // Second try: match by country only (any size)
+    if (!matchedPrice) {
+      matchedPrice = product.priceList.find(
+        (e) => e.country === selectedCountry
+      );
+    }
+    
+    // Third try: any price from priceList (fallback to first available)
+    if (!matchedPrice) {
+      matchedPrice = product.priceList[0];
+    }
+    
+    productPrice = matchedPrice?.priceAmount || 0;
+    currency = matchedPrice?.currency || "";
+  }
+  
+  // If no price found in priceList, use the base price field
+  if (productPrice === 0 && product?.price && product.price > 0) {
+    productPrice = product.price;
+    // Try to determine currency from priceList or default to INR
+    currency = product?.priceList?.[0]?.currency || "INR";
+  }
   const productImages = Array.isArray(product?.images) && product.images.length > 0
     ? product.images
     : ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4='];
   const hasMultipleImages = productImages.length > 1;
-  const availableColors = Array.isArray(product?.availableColors) ? product.availableColors : [];
-  const availableSizes = Array.isArray(product?.availableSizes) ? product.availableSizes : [];
+  
+  // Format price
+  const formatPrice = (price, currency = 'INR') => {
+    if (typeof price !== 'number') return '₹0.00';
+    const symbol = currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency;
+    return `${symbol} ${price.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+  };
 
 
   const handleCardClick = () => {
-
     if (productId) {
       try {
-        console.log("i am in ")
         const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
-
-
         const filtered = existing.filter((p) => p.id !== productId);
-
-
         const updated = [product, ...filtered];
-
-
         const limited = updated.slice(0, 8);
-
-
         localStorage.setItem("recentVisited", JSON.stringify(limited));
       } catch (err) {
         console.error("Error saving recent visited products:", err);
       }
-
-
       navigate(`/productDetail/${productId}`);
     }
   };
 
-  const nextImage = (e) => {
+  const handleWishlistClick = async (e) => {
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+
+    if (!token) {
+      message.info("Please log in to add items to your wishlist.");
+      navigate("/login");
+      return;
+    }
+
+    if (wishlistLoading) {
+      return;
+    }
+
+    try {
+      setWishlistLoading(true);
+      const payload = {
+        productId: product.slug || product.id,
+        size: "",
+        desiredQuantity: 1,
+        desiredSize: "",
+        desiredColor: "",
+        notifyWhenBackInStock: false,
+      };
+
+      await addToWishlist(product.id, payload);
+      setIsWishlisted(true);
+      message.success("Added to wishlist");
+    } catch (error) {
+      console.error("Failed to add to wishlist:", error);
+      message.error("Unable to add to wishlist right now.");
+    } finally {
+      setWishlistLoading(false);
+    }
   };
 
-  const prevImage = (e) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
-  };
-
-  const goToImage = (index, e) => {
-    e.stopPropagation();
-    setCurrentImageIndex(index);
-  };
-
-  // Auto carousel effect - Always running like TrendingNewArrivals
+  // Auto carousel effect - Speed up on hover
   useEffect(() => {
     if (hasMultipleImages) {
+      // Clear existing interval
+      if (autoCarouselRef.current) {
+        clearInterval(autoCarouselRef.current);
+      }
+      
+      // Set interval based on hover state
+      const intervalTime = isHovered ? 2000 : 4000; // Faster on hover
       autoCarouselRef.current = setInterval(() => {
         setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
-      }, 3000); // Change image every 3 seconds
+      }, intervalTime);
     }
 
     return () => {
@@ -106,7 +168,23 @@ const ProductCard = ({ product }) => {
         clearInterval(autoCarouselRef.current);
       }
     };
-  }, [hasMultipleImages, productImages.length]);
+  }, [hasMultipleImages, productImages.length, isHovered]);
+
+  // Check if product is in wishlist on mount
+  useEffect(() => {
+    const checkWishlist = async () => {
+      try {
+        const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+        if (token) {
+          // You can implement getWishlist check here if needed
+          // For now, we'll rely on the state after adding
+        }
+      } catch (error) {
+        console.error("Error checking wishlist:", error);
+      }
+    };
+    checkWishlist();
+  }, [productId]);
 
   // Intersection Observer for fade-in animation
   useEffect(() => {
@@ -119,13 +197,14 @@ const ProductCard = ({ product }) => {
       { threshold: 0.1, rootMargin: '50px' }
     );
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
+    const currentCardRef = cardRef.current;
+    if (currentCardRef) {
+      observer.observe(currentCardRef);
     }
 
     return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current);
+      if (currentCardRef) {
+        observer.unobserve(currentCardRef);
       }
     };
   }, []);
@@ -136,28 +215,45 @@ const ProductCard = ({ product }) => {
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`group relative bg-white border-0 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ease-out cursor-pointer flex flex-col backdrop-blur-sm transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-        } hover:-translate-y-2 hover:scale-[1.02]`}
+      className="group relative bg-white overflow-hidden cursor-pointer flex flex-col w-full"
       style={{
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        transition: 'all 0.7s cubic-bezier(0.4, 0, 0.2, 1)'
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(1rem)',
+        transition: 'opacity 0.4s ease-out, transform 0.4s ease-out',
+        border: 'none',
+        boxShadow: 'none',
+        outline: 'none'
       }}
     >
-      {/* Image Container - Luxury Design */}
-      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 group/image shadow-inner">
-        {/* Carousel Images */}
-        <div className="relative w-full h-full">
+      {/* Image Container - Clean Minimal Design with Hover Effects */}
+      <div 
+        className="relative w-full overflow-hidden bg-white"
+        style={{
+          aspectRatio: '1 / 1',
+          border: 'none',
+          boxShadow: isHovered ? '0 10px 30px rgba(0, 0, 0, 0.1)' : 'none',
+          transition: 'box-shadow 0.5s ease-out, transform 0.5s ease-out',
+          transform: isHovered ? 'translateY(-4px)' : 'translateY(0)'
+        }}
+      >
+        {/* Carousel Images with Zoom Effect */}
+        <div className="relative w-full h-full overflow-hidden">
           {productImages.map((img, index) => (
             <img
               key={index}
               src={img}
               alt={`${productName} - ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${index === currentImageIndex
-                ? 'opacity-100 scale-100'
-                : 'opacity-0 scale-105'
-                } group-hover:scale-110 group-hover/image:scale-105`}
+              className={`absolute inset-0 w-full h-full object-cover ${index === currentImageIndex
+                ? 'opacity-100'
+                : 'opacity-0'
+                }`}
               style={{
-                transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)'
+                transition: isHovered 
+                  ? 'opacity 0.6s ease-in-out, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+                  : 'opacity 1s ease-in-out, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                transform: isHovered && index === currentImageIndex 
+                  ? 'scale(1.08)' 
+                  : 'scale(1)'
               }}
               onError={(e) => {
                 e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
@@ -166,76 +262,62 @@ const ProductCard = ({ product }) => {
           ))}
         </div>
 
-        {/* Elegant Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-
-        {/* Navigation Arrows - Premium Design */}
-        {hasMultipleImages && (
-          <>
-            <button
-              onClick={prevImage}
-              className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/95 backdrop-blur-md shadow-xl opacity-0 group-hover:opacity-100 hover:bg-white transition-all duration-500 z-20 rounded-full border border-gray-100 hover:scale-110 hover:shadow-2xl transform -translate-x-2 group-hover:translate-x-0"
-              style={{ transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
-              aria-label="Previous image"
-            >
-              <ChevronLeft size={18} className="text-gray-700 transition-transform duration-300 hover:scale-110" />
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 bg-white/95 backdrop-blur-md shadow-xl opacity-0 group-hover:opacity-100 hover:bg-white transition-all duration-500 z-20 rounded-full border border-gray-100 hover:scale-110 hover:shadow-2xl transform translate-x-2 group-hover:translate-x-0"
-              style={{ transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
-              aria-label="Next image"
-            >
-              <ChevronRight size={18} className="text-gray-700 transition-transform duration-300 hover:scale-110" />
-            </button>
-          </>
-        )}
-
-
-        {/* Image Indicator Dots - Refined Design */}
-        {hasMultipleImages && (
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-            {productImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={(e) => goToImage(index, e)}
-                className={`h-1.5 rounded-full transition-all duration-500 hover:scale-125 ${index === currentImageIndex
-                  ? 'w-8 bg-white shadow-lg scale-110'
-                  : 'w-1.5 bg-white/50 hover:bg-white/80 hover:scale-110'
-                  }`}
-                style={{ transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
-                aria-label={`Go to image ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Heart Icon - Top Right */}
+        <button
+          onClick={handleWishlistClick}
+          disabled={wishlistLoading}
+          className="absolute top-2 right-2 z-20 p-1.5 hover:opacity-70 transition-opacity duration-200 disabled:opacity-50 touch-manipulation"
+          style={{
+            backgroundColor: 'transparent',
+            border: 'none',
+            outline: 'none',
+            cursor: 'pointer'
+          }}
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <Heart
+            size={18}
+            strokeWidth={1.5}
+            className={`transition-colors ${isWishlisted ? "text-black fill-black" : "text-black"}`}
+          />
+        </button>
       </div>
 
-      {/* Content - Luxury Typography */}
-      <div className="p-4 sm:p-6 flex flex-col flex-1 bg-white group/content shadow-sm">
-        {/* Product Name - Elegant Typography with Fixed Height */}
-        <div className="h-12 sm:h-14 mb-3 sm:mb-4 flex items-start overflow-hidden">
-          <h3 className="text-gray-900 font-light text-sm sm:text-lg line-clamp-2 tracking-wide uppercase group-hover:text-gray-500 transition-all duration-700 leading-relaxed transform group-hover:translate-x-1">
-            {productName}
-          </h3>
-        </div>
+      {/* Content - Minimal Clean Design with Hover Animation */}
+      <div 
+        className="p-3 sm:p-4 bg-white flex flex-col w-full"
+        style={{
+          border: 'none',
+          boxShadow: 'none',
+          transition: 'transform 0.5s ease-out',
+          transform: isHovered ? 'translateY(-2px)' : 'translateY(0)'
+        }}
+      >
+        {/* Product Name */}
+        <h3 
+          className="text-black font-light font-futura-pt-light mb-2 line-clamp-2 transition-colors duration-300"
+          style={{
+            fontSize: '0.875rem',
+            lineHeight: '1.25rem',
+            fontWeight: 300,
+            color: isHovered ? '#1a1a1a' : '#000000'
+          }}
+        >
+          {productName}
+        </h3>
 
-        {/* Size Information - Minimal Design with Flexible Height */}
-        <div className="min-h-[1.25rem] sm:min-h-[1.5rem] mb-2 sm:mb-3 flex items-center">
-          {availableSizes.length > 0 && (
-            <p className="text-gray-500 text-xs tracking-widest uppercase font-light transition-all duration-700 transform group-hover:translate-x-1 group-hover:text-gray-700 leading-tight">
-              Sizes: <span className="text-gray-700 font-light transition-colors duration-500 group-hover:text-gray-500">{availableSizes.join(', ')}</span>
-            </p>
-          )}
-        </div>
-        {/* Price - Consistent Typography with Fixed Height */}
-        <div className="h-6 sm:h-7 flex items-center mt-auto">
-          <p className="text-gray-900 text-sm sm:text-base font-light tracking-wide uppercase font-sweet-sans">
-            {currency} {productPrice}
-          </p>
-        </div>
-        {/* Subtle shimmer effect on hover */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out opacity-0 group-hover:opacity-100"></div>
+        {/* Price */}
+        <p 
+          className="text-black font-light font-futura-pt-light transition-all duration-300"
+          style={{
+            fontSize: '0.875rem',
+            lineHeight: '1.25rem',
+            fontWeight: 300,
+            transform: isHovered ? 'translateX(2px)' : 'translateX(0)'
+          }}
+        >
+          {formatPrice(productPrice, currency)}
+        </p>
       </div>
     </div>
   );

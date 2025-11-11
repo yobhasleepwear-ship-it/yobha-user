@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart } from "lucide-react";
 import MEN_IMAGE from "../../assets/Men.png";
 import WOMEN_IMAGE from "../../assets/Women.png";
 import KID_IMAGE from "../../assets/kids-hero.jpg";
@@ -18,9 +17,7 @@ import BUYBACK_IMAGE from "../../assets/buyback-image.jpg";
 import { getFilteredProducts } from "../../service/productAPI";
 import { SubscribeNewsletter } from "../../service/notification";
 import { message } from "../../comman/toster-message/ToastContainer";
-import { addToWishlist } from "../../service/wishlist";
-import { LocalStorageKeys } from "../../constants/localStorageKeys";
-import * as localStorageService from "../../service/localStorageService";
+import ProductCard from "../product/components/product-card";
 
 const HomePage2 = () => {
   const navigate = useNavigate();
@@ -38,8 +35,6 @@ const HomePage2 = () => {
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isVideoHovered, setIsVideoHovered] = useState(false);
-  const [wishlistedIds, setWishlistedIds] = useState([]);
-  const [wishlistLoading, setWishlistLoading] = useState({});
   const giftShopRef = useRef(null);
 
   // Video URLs - Add your manufacturing/packaging video URLs here
@@ -157,85 +152,6 @@ const HomePage2 = () => {
     { id: "towels", title: "Towels", image: TOWELS_IMAGE },
   ];
 
-  const normalizeOption = (option) => {
-    if (typeof option === "string") return option;
-    if (!option || typeof option !== "object") return null;
-    return (
-      option.name ||
-      option.label ||
-      option.value ||
-      option.color ||
-      option.size ||
-      option.title ||
-      null
-    );
-  };
-
-  const formatOptions = (options) => {
-    if (!Array.isArray(options)) return [];
-    return options
-      .map((opt) => normalizeOption(opt))
-      .filter(Boolean)
-      .map((opt) => opt.toString());
-  };
-
-  const displayProducts = products
-    .filter((p) => p.available)
-    .slice(0, 8)
-    .map((p) => ({
-      id: p.id,
-      title: p.name || "Untitled Product",
-      price: p.price ? `₹${p.price.toLocaleString("en-IN")}` : "Price not available",
-      image: p.images?.[0] || "",
-      images: p.images || [],
-      badge: p.productMainCategory || "New",
-      slug: p.productId,
-      category: p.category || "Luxury Collection",
-      code: p.productId || p.productCode || p.sku || p.id,
-      colors: formatOptions(p.availableColors),
-      sizes: formatOptions(p.availableSizes),
-    }));
-
-  const handleWishlistClick = async (event, product) => {
-    event.stopPropagation();
-    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
-
-    if (!token) {
-      message.info("Please log in to add items to your wishlist.");
-      navigate("/login");
-      return;
-    }
-
-    if (wishlistLoading[product.id]) {
-      return;
-    }
-
-    try {
-      setWishlistLoading((prev) => ({ ...prev, [product.id]: true }));
-
-      const payload = {
-        productId: product.slug || product.id,
-        size: "",
-        desiredQuantity: 1,
-        desiredSize: "",
-        desiredColor: "",
-        notifyWhenBackInStock: false,
-      };
-
-      await addToWishlist(product.id, payload);
-      message.success("Added to wishlist");
-      setWishlistedIds((prev) => (prev.includes(product.id) ? prev : [...prev, product.id]));
-    } catch (error) {
-      console.error("Failed to add to wishlist:", error);
-      message.error("Unable to add to wishlist right now.");
-    } finally {
-      setWishlistLoading((prev) => {
-        const updated = { ...prev };
-        delete updated[product.id];
-        return updated;
-      });
-    }
-  };
 
   // Image carousel state for each product
 
@@ -380,11 +296,11 @@ const HomePage2 = () => {
       </section>
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
         <div className=" mx-auto">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-4 font-sweet-sans">
+          <div className="text-center mb-10 md:mb-12">
+            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-3 font-futura-pt-light">
               Curated By YOBHA
             </h2>
-            <p className="text-gray-600 text-sm md:text-base lg:text-lg font-light tracking-wide leading-relaxed">
+            <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed">
               New Winter Collection
             </p>
           </div>
@@ -393,72 +309,17 @@ const HomePage2 = () => {
             <div className="flex items-center justify-center py-20">
               <div className="w-12 h-12 border-4 border-luxury-gold/20 animate-spin" />
             </div>
-          ) : displayProducts.length > 0 ? (
+          ) : products.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-                {displayProducts.map((product, index) => {
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6" style={{ gap: '0.75rem' }}>
+                {products
+                  .filter((p) => p.available)
+                  .slice(0, 8)
+                  .map((product, index) => {
                   const hideOnMobile = index >= 6;
-                  const isWishlisted = wishlistedIds.includes(product.id);
                   return (
                     <div key={product.id} className={hideOnMobile ? "hidden md:block" : "block"}>
-                      <article
-                        className="group relative bg-white border border-gray-200/50 hover:border-gray-300 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer flex flex-col h-full"
-                        onClick={() => navigate(`/productDetail/${product.id}`)}
-                      >
-                        <div className="relative aspect-[3/4] overflow-hidden">
-                          <img
-                            src={product.image || "https://via.placeholder.com/400x600?text=YOBHA"}
-                            alt={product.title}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            onError={(e) => {
-                              e.target.src = "https://via.placeholder.com/400x600?text=YOBHA";
-                            }}
-                          />
-                          <button
-                            type="button"
-                            onClick={(event) => handleWishlistClick(event, product)}
-                            className="absolute top-3 right-3 flex items-center justify-center w-9 h-9 rounded-full bg-white/80 backdrop-blur-md border border-white/60 shadow-md hover:bg-white transition-all duration-300"
-                            aria-label="Add to wishlist"
-                          >
-                            <Heart
-                              size={18}
-                              strokeWidth={1.8}
-                              className={isWishlisted ? "text-black" : "text-gray-700"}
-                              fill={isWishlisted ? "currentColor" : "none"}
-                            />
-                          </button>
-                          {wishlistLoading[product.id] && (
-                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center text-xs uppercase tracking-[0.3em] text-gray-700">
-                              Adding...
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-col flex-1 px-4 py-4 text-center space-y-3">
-                          <p className="text-[11px] uppercase tracking-[0.35em] text-gray-500">
-                            {product.category}
-                          </p>
-                          <h3 className="text-sm sm:text-base font-light text-gray-900 uppercase tracking-[0.28em] leading-snug line-clamp-2 min-h-[2.5rem]">
-                            {product.title}
-                          </h3>
-                          {/* <p className="text-xs uppercase tracking-[0.25em] text-gray-500">
-                            Code: <span className="tracking-normal text-gray-700">{product.code || "—"}</span>
-                          </p> */}
-                          <p className="text-base font-light text-gray-900 tracking-wide">
-                            {product.price}
-                          </p>
-                          {/* {product.colors.length > 0 && (
-                            <p className="text-xs uppercase tracking-[0.25em] text-gray-500">
-                              Colors: <span className="tracking-normal text-gray-700">{product.colors.join(", ")}</span>
-                            </p>
-                          )} */}
-                          {/* {product.sizes.length > 0 && (
-                            <p className="text-xs uppercase tracking-[0.25em] text-gray-500">
-                              Sizes: <span className="tracking-normal text-gray-700">{product.sizes.join(" • ")}</span>
-                            </p>
-                          )} */}
-                          <div className="mt-auto" />
-                        </div>
-                      </article>
+                        <ProductCard product={product} />
                     </div>
                   );
                 })}
@@ -498,15 +359,15 @@ const HomePage2 = () => {
           {/* Overlaid Text and Button */}
           <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
             <div className="max-w-sm font-futura">
-              <h2 className="text-white font-light font-futura">
-                <span className="text-3xl sm:text-4xl block mb-1 tracking-wide font-light font-futura">Recycle</span>
-                <span className="text-4xl sm:text-5xl block tracking-wide font-light font-futura">Renew</span>
-                <span className="text-3xl sm:text-4xl block mt-1 tracking-wide font-light font-futura">Reuse</span>
+              <h2 className="text-white font-light font-futura-pt-light">
+                <span className="text-2xl sm:text-2xl block mb-1 font-light font-futura-pt-light">Recycle</span>
+                <span className="text-2xl sm:text-2xl block font-light font-futura-pt-light">Renew</span>
+                <span className="text-2xl sm:text-2xl block mt-1 font-light font-futura-pt-light">Reuse</span>
               </h2>
-              <p className="mt-4 text-white/90 text-sm font-light tracking-wide leading-relaxed font-futura">
+              <p className="mt-3 text-white/90 text-xs font-light leading-relaxed font-futura">
                 We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
               </p>
-              <button className="mt-6 self-start px-8 py-3 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
+              <button className="mt-5 self-start px-6 py-2.5 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
                 Learn More
               </button>
             </div>
@@ -523,15 +384,15 @@ const HomePage2 = () => {
           >
             <div className="absolute inset-0 bg-black/65" />
             <div className="relative z-10 max-w-2xl">
-              <h2 className="text-white font-light font-futura">
-                <span className="text-4xl md:text-5xl lg:text-6xl block mb-2 tracking-wide font-light font-futura pb-2">Recycle</span>
-                <span className="text-4xl md:text-5xl lg:text-6xl xl:text-6xl block tracking-wide font-light font-futura">Renew</span>
-                <span className="text-4xl md:text-5xl lg:text-6xl block mt-2 tracking-wide font-light font-futura">Reuse</span>
+              <h2 className="text-white font-light font-futura-pt-light">
+                <span className="text-2xl md:text-2xl lg:text-2xl block mb-1 font-light font-futura-pt-light">Recycle</span>
+                <span className="text-2xl md:text-2xl lg:text-2xl block font-light font-futura-pt-light">Renew</span>
+                <span className="text-2xl md:text-2xl lg:text-2xl block mt-1 font-light font-futura-pt-light">Reuse</span>
               </h2>
-              <p className="mt-8 text-white/90 text-base md:text-lg font-light tracking-wide leading-relaxed font-futura">
+              <p className="mt-4 text-white/90 text-sm md:text-sm font-light leading-relaxed font-futura">
                 We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
               </p>
-              <button className="mt-10 self-start px-10 py-3.5 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
+              <button className="mt-6 self-start px-8 py-3 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
                 Learn More
               </button>
             </div>
@@ -542,17 +403,17 @@ const HomePage2 = () => {
       {/* Shop by Category */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
         <div className=" mx-auto">
-          <div className="text-center mb-16 md:mb-20 lg:mb-24">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8 font-sweet-sans">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
               Shop by Category
             </h2>
-            <div className="w-16 md:w-20 h-px bg-gray-300 mx-auto mb-6 md:mb-8" />
-            <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
+            <div className="w-12 md:w-16 h-px bg-gray-300 mx-auto mb-4 md:mb-5" />
+            <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light leading-relaxed">
               Discover timeless elegance across our curated collections
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
             {genderCategories.map((category) => (
               <div
                 key={category.id}
@@ -576,11 +437,11 @@ const HomePage2 = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </div>
 
-                <div className="mt-6 md:mt-8 lg:mt-10 text-center">
-                  <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-gray-900 uppercase tracking-[0.2em] md:tracking-[0.25em] group-hover:text-gray-700 transition-colors duration-500 font-sweet-sans">
+                <div className="mt-3 md:mt-4 text-center">
+                  <h3 className="text-[10px] sm:text-[11px] md:text-xs font-light text-gray-900 uppercase group-hover:text-gray-700 transition-colors duration-500 font-sweet-sans">
                     {category.title}
                   </h3>
-                  <div className="mt-3 md:mt-4 h-[1px] w-0 mx-auto bg-gray-400 group-hover:w-10 md:group-hover:w-12 transition-all duration-700 ease-out" />
+                  <div className="mt-1.5 md:mt-2 h-[1px] w-0 mx-auto bg-gray-400 group-hover:w-6 md:group-hover:w-8 transition-all duration-700 ease-out" />
                 </div>
               </div>
             ))}
@@ -852,11 +713,11 @@ const HomePage2 = () => {
         <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 bg-white font-sweet-sans">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
-            <div className="text-center mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 font-sweet-sans">
+            <div className="text-center mb-8 md:mb-10">
+              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-2 font-futura-pt-light">
                 Recently Viewed
               </h2>
-              <p className="text-gray-600 text-xs sm:text-sm md:text-base max-w-xl mx-auto font-light tracking-wide font-sweet-sans">
+              <p className="text-gray-600 text-xs max-w-xl mx-auto font-light font-sweet-sans">
                 Revisit the pieces that caught your eye
               </p>
             </div>
@@ -927,10 +788,10 @@ const HomePage2 = () => {
       {/* Follow Us on Instagram Section */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-16 md:py-20 lg:py-24 bg-white font-sweet-sans">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4 font-sweet-sans">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-3 font-futura-pt-light">
             Follow Us
           </h2>
-          <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-light tracking-wide mb-12 md:mb-16 font-sweet-sans">
+          <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light mb-10 md:mb-12 font-sweet-sans">
             Join our community on Instagram for the latest updates and exclusive content
           </p>
 
@@ -970,7 +831,7 @@ const HomePage2 = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 lg:py-20 bg-premium-white font-sweet-sans overflow-hidden">
+      {false && <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-12 md:py-16 lg:py-20 bg-premium-white font-sweet-sans overflow-hidden">
         {/* Subtle decorative background elements */}
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.015] pointer-events-none">
           <div className="absolute top-20 left-10 w-48 h-48 md:w-64 md:h-64 border border-gray-900/30 rounded-full"></div>
@@ -979,17 +840,17 @@ const HomePage2 = () => {
 
         <div className="max-w-3xl mx-auto text-center relative z-10">
           {/* Decorative line above heading */}
-          <div className="flex items-center justify-center mb-5 md:mb-6">
-            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
+          <div className="flex items-center justify-center mb-4 md:mb-5">
+            <div className="h-px w-10 md:w-16 bg-gray-300/60"></div>
             <div className="mx-2 md:mx-3 w-1 h-1 rounded-full bg-gray-400/60"></div>
-            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
+            <div className="h-px w-10 md:w-16 bg-gray-300/60"></div>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 md:mb-4 font-sweet-sans">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-3 font-futura-pt-light">
             Newsletter
           </h2>
 
-          <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto font-light tracking-wide mb-8 md:mb-10 font-sweet-sans leading-relaxed">
+          <p className="text-gray-600 text-xs md:text-sm max-w-xl mx-auto font-light mb-8 md:mb-10 font-sweet-sans leading-relaxed">
             Subscribe to receive updates, access to exclusive deals, and more
           </p>
 
@@ -1048,19 +909,19 @@ const HomePage2 = () => {
             </div>
 
             {/* Additional info text */}
-            <p className="mt-5 md:mt-6 text-xs md:text-sm text-gray-500/80 font-light tracking-wide font-sweet-sans">
+            <p className="mt-4 md:mt-5 text-xs text-gray-500/80 font-light font-sweet-sans">
               Join our community and stay updated with the latest collections
             </p>
           </form>
 
           {/* Decorative line below form */}
-          <div className="flex items-center justify-center mt-8 md:mt-10">
-            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
+          <div className="flex items-center justify-center mt-6 md:mt-8">
+            <div className="h-px w-10 md:w-16 bg-gray-300/60"></div>
             <div className="mx-2 md:mx-3 w-1 h-1 rounded-full bg-gray-400/60"></div>
-            <div className="h-px w-12 md:w-20 bg-gray-300/60"></div>
+            <div className="h-px w-10 md:w-16 bg-gray-300/60"></div>
           </div>
         </div>
-      </section>
+      </section> }
     </div>
   );
 };
