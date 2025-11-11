@@ -145,24 +145,24 @@ const CartPage = () => {
 
   // Loading
   if (isLoading) return (
-    <div className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans">
+    <div className="min-h-screen bg-premium-cream flex items-center justify-center font-futura-pt-light">
       <div className="text-center">
         <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-text-medium text-sm uppercase tracking-wider">Loading Cart...</p>
+        <p className="text-gray-600 text-xs md:text-sm uppercase tracking-wider font-light font-futura-pt-light">Loading Cart...</p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-premium-cream font-sweet-sans">
+    <div className="min-h-screen bg-premium-cream font-futura-pt-light">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
         {/* Page Header */}
         <div className="mb-8 md:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 md:mb-3">
+          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
             Shopping Cart
           </h1>
-          <p className="text-text-medium font-light text-sm md:text-base">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
+          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
         </div>
 
         {cartItems.length === 0 ? (
@@ -171,8 +171,8 @@ const CartPage = () => {
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <ShoppingBag size={40} className="text-text-light md:w-12 md:h-12" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl md:text-2xl font-light text-black mb-3 md:mb-4 uppercase tracking-wider font-sweet-sans">Your Cart is Empty</h2>
-              <p className="text-sm md:text-base text-text-medium mb-6 md:mb-8">Discover our premium collection of luxury sleepwear</p>
+              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">Your Cart is Empty</h2>
+              <p className="text-gray-600 text-xs md:text-sm mb-6 md:mb-8 font-light leading-relaxed font-futura-pt-light">Discover our premium collection of luxury sleepwear</p>
               <button onClick={() => navigate("/products")} className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm">
                 Start Shopping <ArrowRight size={18} strokeWidth={1.5} />
               </button>

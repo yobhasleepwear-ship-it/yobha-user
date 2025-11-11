@@ -660,7 +660,7 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-premium-cream font-sweet-sans">
+    <div className="min-h-screen bg-premium-cream font-futura-pt-light">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
         {/* Back Button & Header */}
@@ -669,10 +669,10 @@ const CheckoutPage = () => {
             <ArrowLeft size={20} strokeWidth={1.5} />
             <span className="text-sm uppercase tracking-wider">Back to Cart</span>
           </button>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black uppercase tracking-widest mb-2">
+          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
             Checkout
           </h1>
-          <p className="text-text-medium font-light text-sm md:text-base">Complete your order details</p>
+          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">Complete your order details</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
@@ -686,7 +686,7 @@ const CheckoutPage = () => {
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsDeliveryExpanded(!isDeliveryExpanded)}
               >
-                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
                   <MapPin size={20} strokeWidth={1.5} />
                   Delivery Address
                 </h2>
@@ -958,7 +958,7 @@ const CheckoutPage = () => {
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsCouponsExpanded(!isCouponsExpanded)}
               >
-                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
                   <Gift size={20} strokeWidth={1.5} />
                   Coupons & Loyalty Points
                 </h2>
@@ -1135,7 +1135,7 @@ const CheckoutPage = () => {
             {/* Payment Section */}
             <div className="bg-white border border-text-light/20">
               <div className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20">
-                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
                   <CreditCard size={20} strokeWidth={1.5} />
                   Payment Method
                 </h2>
@@ -1185,7 +1185,7 @@ const CheckoutPage = () => {
             {/* Contact & Delivery Notes */}
             <div className="bg-white border border-text-light/20">
               <div className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20">
-                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider flex items-center gap-2 font-sweet-sans">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
                   <Shield size={18} strokeWidth={1.5} />
                   Order Contact & Notes
                 </h2>
@@ -1229,7 +1229,7 @@ const CheckoutPage = () => {
           <div className="lg:col-span-1">
             <div className="bg-white border border-text-light/20 lg:sticky lg:top-24">
               <div className="p-4 md:p-6 border-b border-text-light/20">
-                <h2 className="text-base md:text-lg font-semibold text-black uppercase tracking-wider mb-1 font-sweet-sans">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
                   Order Summary
                 </h2>
                 {/* <p className="text-xs md:text-sm text-text-medium">{cartSummary.distinctItems} {cartSummary.distinctItems === 1 ? 'item' : 'items'}</p> */}

@@ -733,7 +733,7 @@ const ProductsPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-premium-cream font-sweet-sans"
+      className="min-h-screen bg-premium-cream font-futura-pt-light"
     >
       {/* Filter Sidebar - Opens from left */}
       {showMobileFilters && (
@@ -826,12 +826,12 @@ const ProductsPage = () => {
 
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 font-futura">
+          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
             {category
               ? `${category.replace(/([A-Z])/g, " $1").trim()} Collection`
               : "All Products"}
           </h1>
-          <p className="text-text-medium font-light text-sm md:text-base">
+          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
             Timeless essentials crafted for serene nights and refined comfort
           </p>
         </div>

@@ -78,3 +78,19 @@ code {
     animation: newArrivalsCarousel 40s linear infinite;
   }
 }
+
+/* Slide Up From Bottom Animation for Mobile Modal */
+@keyframes slideUpFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-up-from-bottom {
+  animation: slideUpFromBottom 0.3s ease-out;
+}

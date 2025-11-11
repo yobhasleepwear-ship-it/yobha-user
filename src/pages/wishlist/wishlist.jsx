@@ -120,10 +120,10 @@ const WishlistPage = () => {
         className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center max-w-md px-4">
-          <h2 className="text-2xl font-light text-black mb-4 uppercase tracking-wider">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">
             Something Went Wrong
           </h2>
-          <p className="text-text-medium mb-8">{error}</p>
+          <p className="text-gray-600 text-xs md:text-sm mb-8 font-light font-futura-pt-light">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
@@ -137,7 +137,7 @@ const WishlistPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-premium-cream font-sweet-sans"
+      className="min-h-screen bg-premium-cream font-futura-pt-light"
     >
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-12">
 
@@ -145,10 +145,10 @@ const WishlistPage = () => {
         <div className="mb-8 md:mb-12">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-2 md:mb-3">
+              <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
                 My Wishlist
               </h1>
-              <p className="text-text-medium text-sm md:text-base">
+              <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
                 {wishlistItems.length} {wishlistItems.length === 1 ? 'item' : 'items'} saved
               </p>
             </div>
@@ -171,10 +171,10 @@ const WishlistPage = () => {
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <Heart size={40} className="text-text-light md:w-12 md:h-12" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl md:text-2xl font-light text-black mb-3 md:mb-4 uppercase tracking-wider">
+              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">
                 Your Wishlist is Empty
               </h2>
-              <p className="text-sm md:text-base text-text-medium mb-6 md:mb-8">
+              <p className="text-gray-600 text-xs md:text-sm mb-6 md:mb-8 font-light leading-relaxed font-futura-pt-light">
                 Save items you love for later
               </p>
               <button

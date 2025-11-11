@@ -152,16 +152,16 @@ const Careers = () => {
   const hasActiveFilters = searchQuery || selectedCountry || selectedJobType;
 
   return (
-    <div className="relative min-h-screen bg-white font-sweet-sans">
+    <div className="relative min-h-screen bg-white font-futura-pt-light">
       {/* Compact Header Section with Integrated Search/Filters */}
       <section className="relative w-full bg-white border-b border-gray-100/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 md:py-8">
           {/* Compact Heading */}
           <div className="mb-6 md:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-2 font-sweet-sans">
+            <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
               Join Our Team
             </h1>
-            <p className="text-gray-600 text-sm md:text-base font-light tracking-wide">
+            <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
               Discover opportunities to grow your career with us
             </p>
           </div>
@@ -267,10 +267,10 @@ const Careers = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100/50 mb-6">
                 <Briefcase className="w-10 h-10 text-gray-300" />
               </div>
-              <h3 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide mb-3 font-sweet-sans">
+              <h3 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
                 {hasActiveFilters ? "No Results Found" : "No Open Positions"}
               </h3>
-              <p className="text-gray-600 text-base font-light mb-2 max-w-md mx-auto">
+              <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light mb-2 max-w-md mx-auto">
                 {hasActiveFilters ? "No jobs match your search criteria." : "No job openings at the moment."}
               </p>
               <p className="text-gray-500 text-sm font-light">
@@ -314,7 +314,7 @@ const Careers = () => {
                           </div>
                         )}
                         <h3
-                          className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide group-hover:text-gray-700 transition-colors duration-300 leading-tight"
+                          className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light group-hover:text-gray-700 transition-colors duration-300"
                           style={{ display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", minHeight: "72px" }}
                         >
                           {job.jobTitle}

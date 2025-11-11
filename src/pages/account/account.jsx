@@ -260,16 +260,16 @@ const AccountPage = () => {
   // };
 
   return (
-    <div className="relative min-h-screen bg-white font-sweet-sans">
+    <div className="relative min-h-screen bg-white font-futura-pt-light">
       {/* Main Content */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
           <div className="mb-8 md:mb-12">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-900 uppercase tracking-[0.15em] md:tracking-[0.2em] mb-2 font-sweet-sans">
+            <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
               My Account
             </h1>
-            <p className="text-gray-600 text-sm md:text-base font-light tracking-wide">
+            <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
               Manage your profile and preferences
             </p>
           </div>
@@ -283,7 +283,7 @@ const AccountPage = () => {
                 <div className="px-6 md:px-8 py-6 border-b border-gray-400">
                   <div className="flex items-center gap-3">
                     <User size={20} className="text-gray-600" />
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
+                    <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
                       Profile Information
                     </h2>
                   </div>
@@ -374,7 +374,7 @@ const AccountPage = () => {
                 <div className="px-6 md:px-8 py-6 border-b border-gray-400">
                   <div className="flex items-center gap-3">
                     <MapPin size={20} className="text-gray-600" />
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
+                    <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
                       Addresses
                     </h2>
                   </div>
@@ -550,7 +550,7 @@ const AccountPage = () => {
                 <div className="px-6 md:px-8 py-6 border-b border-gray-200/50">
                   <div className="flex items-center gap-3">
                     <Gift size={20} className="text-gray-600" />
-                    <h3 className="text-xl md:text-2xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
+                    <h3 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
                       Refer Your Friend
                     </h3>
                   </div>

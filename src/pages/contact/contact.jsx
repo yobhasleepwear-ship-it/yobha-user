@@ -94,7 +94,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-premium-cream lg:pt-6 md:pt-6 font-sweet-sans">
+    <div className="min-h-screen bg-premium-cream lg:pt-6 md:pt-6 font-futura-pt-light">
       {/* Hero Section */}
       <section className="relative py-2 bg-gradient-to-br from-premium-beige via-premium-cream to-premium-warm-white overflow-hidden">
         <div className="absolute inset-0 opacity-5">
@@ -105,10 +105,10 @@ const Contact = () => {
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4">
+          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
             Contact Us
           </h1>
-          <p className="text-text-medium text-xl font-light tracking-wide max-w-2xl mx-auto">
+          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light max-w-2xl mx-auto">
             We'd love to hear from you. Get in touch with our luxury team directly on WhatsApp.
           </p>
         </div>

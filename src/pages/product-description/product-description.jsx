@@ -5,17 +5,19 @@ import {
   Heart,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Minus,
   Plus,
   Star,
   Truck,
+  Share2,
+  X,
 } from "lucide-react";
 import { addToCart, getCartDetails, getProductDescription, submitReview, getFilteredProducts } from "../../service/productAPI";
 import { useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
 import { addToWishlist } from "../../service/wishlist";
 import { message } from "../../comman/toster-message/ToastContainer";
-import { Share2 } from "lucide-react";
 
 const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
   if (!Array.isArray(priceList) || priceList.length === 0) return 0;
@@ -186,7 +188,64 @@ const ProductDetailPage = () => {
     waist: '',
     hip: ''
   });
+  const [isSizeDropdownOpen, setIsSizeDropdownOpen] = useState(false);
+  const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
+  const sizeDropdownRef = React.useRef(null);
+  const sizeModalRef = React.useRef(null);
   const [recommendedSize, setRecommendedSize] = useState(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sizeDropdownRef.current && !sizeDropdownRef.current.contains(event.target)) {
+        setIsSizeDropdownOpen(false);
+      }
+    };
+
+    if (isSizeDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSizeDropdownOpen]);
+
+  // Handle size selection
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size);
+    setItemAddedToCart(false);
+    setIsSizeDropdownOpen(false);
+    setIsSizeModalOpen(false);
+  };
+
+  // Handle mobile modal open
+  const handleMobileSizeClick = () => {
+    setIsSizeModalOpen(true);
+  };
+
+  // Handle desktop dropdown toggle
+  const handleDesktopSizeClick = () => {
+    setIsSizeDropdownOpen(!isSizeDropdownOpen);
+  };
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isSizeModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isSizeModalOpen]);
+
+  // Prevent modal from closing when clicking inside modal content
+  const handleModalContentClick = (e) => {
+    e.stopPropagation();
+  };
 
   // Button Loading States
   const [addingToCart, setAddingToCart] = useState(false);
@@ -571,10 +630,10 @@ const ProductDetailPage = () => {
         className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center max-w-md px-6">
-          <h2 className="text-xl font-light text-black mb-3 uppercase tracking-widest">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">
             Product Not Found
           </h2>
-          <p className="text-text-medium text-sm mb-8 leading-relaxed">
+          <p className="text-gray-600 text-xs md:text-sm mb-8 font-light leading-relaxed font-futura-pt-light">
             {error || 'The product you are looking for does not exist or is no longer available.'}
           </p>
           <a
@@ -672,30 +731,33 @@ const ProductDetailPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-white font-futura"
+      className="min-h-screen bg-white font-futura-pt-light"
     >
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-10">
+      <div className="max-w-[1600px] mx-auto px-0">
 
-        {/* Breadcrumb */}
-        <div className="mb-6 md:mb-8 text-sm  font-light tracking-widest">
-          <a href="/" className="hover:text-black transition-colors">Home</a>
-          <span className="mx-2">/</span>
-          <a href="/products" className="hover:text-black transition-colors">Products</a>
-          <span className="mx-2">/</span>
-          <span className="text-black">{product.name}</span>
-        </div>
+        {/* Main Content Grid - Louis Vuitton Style */}
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-0">
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+          {/* Left Column - Full Product Image */}
+          <div className="relative bg-gray-50 lg:bg-gray-100 flex items-center justify-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] xl:min-h-[800px] 2xl:min-h-[900px] group">
+            {/* Navigation Arrow - Left (Visible on hover) */}
+            {hasMultipleImages && (
+              <button
+                onClick={handlePrevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md hover:shadow-lg"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={20} className="text-black" strokeWidth={1.5} />
+              </button>
+            )}
 
-          {/* Left Column - Images */}
-          <div className="space-y-3 md:space-y-4">
-            {/* Main Image */}
-            <div className="relative aspect-square bg-white overflow-hidden group">
+            {/* Main Product Image - Full Visible */}
+            <div className="relative w-full h-full flex items-center justify-center p-6 sm:p-8 lg:p-12 xl:p-16">
               <img
                 src={currentImage.url}
                 alt={currentImage.alt}
-                className="w-full h-full object-cover cursor-pointer"
+                className="max-w-full max-h-full w-auto h-auto object-contain cursor-pointer"
+                style={{ maxHeight: '90vh' }}
                 onClick={() => {
                   setIsImageFull(true);
                   setCurrentImageFull(currentImage.url);
@@ -704,140 +766,80 @@ const ProductDetailPage = () => {
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
                 }}
               />
-              <button
-                onClick={handleShare}
-                className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm hover:bg-white transition-all opacity-0 group-hover:opacity-100"
-              >
-                <Share2 className="w-4 h-4 text-black" strokeWidth={1.5} />
-              </button>
 
-              {/* Navigation Arrows */}
+              {/* Image Navigation Indicators - Top Left (if multiple images) */}
               {hasMultipleImages && (
-                <>
-                  <button
-                    onClick={handlePrevImage}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm p-2 opacity-0 group-hover:opacity-100 hover:bg-white transition-all shadow-sm"
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeft size={18} className="text-black" strokeWidth={2} />
-                  </button>
-                  <button
-                    onClick={handleNextImage}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm p-2 opacity-0 group-hover:opacity-100 hover:bg-white transition-all shadow-sm"
-                    aria-label="Next image"
-                  >
-                    <ChevronRight size={18} className="text-black" strokeWidth={2} />
-                  </button>
-                </>
-              )}
-
-              {/* Image Indicators */}
-              {hasMultipleImages && (
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                <div className="absolute top-4 left-4 flex gap-2 z-10">
                   {product.images.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`h-0.5 rounded-full transition-all ${index === selectedImageIndex
-                        ? 'w-5 bg-black'
-                        : 'w-1 bg-black/20'
+                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
+                        ? 'bg-black'
+                        : 'bg-gray-400 hover:bg-gray-600'
                         }`}
                       aria-label={`Go to image ${index + 1}`}
                     />
                   ))}
                 </div>
               )}
+
+              {/* Share Button - Top Right */}
+              <button
+                onClick={handleShare}
+                className="absolute top-4 right-4 w-10 h-10 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all opacity-0 group-hover:opacity-100 duration-300 z-10"
+              >
+                <Share2 className="w-4 h-4 text-black" strokeWidth={1.5} />
+              </button>
             </div>
 
-            {/* Thumbnail Gallery */}
+            {/* Navigation Arrow - Right (Visible on hover) */}
             {hasMultipleImages && (
-              <div className="grid grid-cols-4 gap-2.5">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`aspect-square bg-white overflow-hidden transition-all ${index === selectedImageIndex
-                      ? 'ring-1 ring-black'
-                      : 'ring-[0.5px] ring-text-light/20 hover:ring-text-light/40'
-                      }`}
-                  >
-                    <img
-                      src={image.thumbnailUrl}
-                      alt={image.alt}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+';
-                      }}
-                    />
-                  </button>
-                ))}
-              </div>
+              <button
+                onClick={handleNextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md hover:shadow-lg"
+                aria-label="Next image"
+              >
+                <ChevronRight size={20} className="text-black" strokeWidth={1.5} />
+              </button>
             )}
           </div>
 
-          {/* Right Column - Product Info */}
-          <div className="space-y-6 md:space-y-7">
+          {/* Right Column - Product Info - Louis Vuitton Style */}
+          <div className="bg-white px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:sticky lg:top-0 lg:self-start">
 
-            {/* Product Name */}
-            <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 uppercase tracking-widest mb-3 leading-tight font-futura">
-                {product.name}
-              </h1>
-              
-
-              {/* Rating
-              {product.reviewCount > 0 && (
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex items-center gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        size={12}
-                        className={
-                          i < Math.floor(averageProdRating)
-                            ? "fill-black text-black"
-                            : "fill-none text-text-light"
-                        }
-                        strokeWidth={1.5}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs text-text-medium font-light">
-                    {averageProdRating} ({product.reviews.length} review{product.reviewCount !== 1 ? 's' : ''})
-                  </span>
-                </div>
-              )} */}
-            </div>
-
-            {/* Country Selector */}
-            {/* <div className="mt-4">
-              <label htmlFor="country" className="block text-sm text-text-light mb-1">
-                Select Country
-              </label>
-              <select
-                id="country"
-                name="country"
-                value={selectedCountry}
-                onChange={handleCountryChange}
-                className="w-full px-4 py-2 border border-text-light/20 rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-black"
+            {/* Product Header - Code and Name with Heart */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <p className="text-xs text-gray-500 font-light font-futura-pt-light mb-1">
+                  {product.productId || ''}
+                </p>
+                <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-2 font-futura-pt-light">
+                  {product.name}
+                </h1>
+              </div>
+              {/* Heart Icon - Wishlist */}
+              <button
+                onClick={() => handleAddToWishlist(product.id)}
+                disabled={addingToWishlist}
+                className="p-2 hover:opacity-70 transition-opacity disabled:opacity-50 flex-shrink-0"
+                aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
               >
-                {countryOptions.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-            </div> */}
-
-            {/* Debug or use selected country */}
-            <div className="text-sm text-text-medium font-semibold text-black">
-              Product ID: <span className="font-semibold text-black">{product.productId}</span><br />
-              Selected Country: <span className="font-semibold text-black">{selectedCountry}</span>
-
+                {addingToWishlist ? (
+                  <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Heart
+                    size={20}
+                    strokeWidth={1.5}
+                    className={isWishlisted ? "text-black fill-black" : "text-black"}
+                  />
+                )}
+              </button>
             </div>
-            {/* Price - Based on selectedCountry and selectedSize */}
-            <div className="py-4 border-y border-text-light/10">
-              <div className="flex items-baseline gap-3">
+
+            {/* Price - Louis Vuitton Style */}
+            <div className="pb-4 border-b border-gray-200">
+              <div className="flex flex-col">
                 {(() => {
                   const matchedPrice = product.priceList?.find(
                     (item) =>
@@ -847,13 +849,15 @@ const ProductDetailPage = () => {
 
                   return matchedPrice ? (
                     <>
-                      <span className="text-2xl md:text-3xl font-light text-black tracking-tight">
+                      <span className="text-2xl md:text-3xl font-light text-black font-futura-pt-light">
                         {formatPrice(matchedPrice.priceAmount, matchedPrice.currency)}
-                        <p className="text-sm ">(Inc. all taxes)</p>
                       </span>
+                      <p className="text-xs text-gray-500 font-light font-futura-pt-light mt-1">
+                        (M.R.P. incl. of all taxes)
+                      </p>
                     </>
                   ) : (
-                    <span className="text-sm text-red-500 font-light">Item not available</span>
+                    <span className="text-sm text-gray-500 font-light font-futura-pt-light">Price not available</span>
                   );
                 })()}
               </div>
@@ -892,199 +896,188 @@ const ProductDetailPage = () => {
               </div>
             )}
 
-            {/* Size Selection */}
+            {/* Size Selection - Custom Dropdown (Desktop) / Modal (Mobile) */}
             {product.sizeOfProduct.length > 0 && (
-              <div className="bg-white border border-text-light/10 p-3 rounded-sm">
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <div>
-                    <h3 className="text-xs font-bold text-black uppercase tracking-widest">
-                      Size
-                    </h3>
-                    <span className="text-xs text-text-medium font-light">
-                      {selectedSize}
-                    </span>
-                  </div>
-
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-light text-black uppercase font-futura-pt-light">
+                    Select your size
+                  </label>
                   <button
                     type="button"
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-black/80 backdrop-blur-sm transition-all hover:border-black/30 hover:bg-black hover:text-white hover:shadow-md hover:shadow-black/10"
+                    className="text-xs text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors"
                   >
-                    <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-black/60 to-black/90"></span>
-                    Size Guide
+                    Size guide
                   </button>
-
                 </div>
-                <div className="flex gap-1.5 overflow-x-auto pb-1 pt-1 scrollbar-hide px-1 -mx-1">
-                  {product.sizeOfProduct.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => {
-                        setSelectedSize(size);
-                        setItemAddedToCart(false);
-                      }}
-                      className={`flex-shrink-0 w-10 h-10 border transition-all duration-300 uppercase text-xs tracking-widest font-light rounded-sm relative group flex items-center justify-center min-h-[28px] ${selectedSize === size
-                        ? 'border-black bg-black text-white'
-                        : 'border-text-light/20 text-black hover:border-black/40 hover:bg-black/5'
-                        }`}
-                    >
-                      {selectedSize === size && (
-                        <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full"></div>
-                      )}
-                      {size}
-                    </button>
-                  ))}
+                
+                {/* Desktop: Custom Dropdown */}
+                <div className="relative hidden lg:block" ref={sizeDropdownRef}>
+                  <button
+                    type="button"
+                    onClick={handleDesktopSizeClick}
+                    className="w-full px-4 py-3 border border-gray-300 bg-white text-left text-black font-light font-futura-pt-light text-sm cursor-pointer hover:border-black transition-colors focus:outline-none focus:border-black flex items-center justify-between"
+                  >
+                    <span className={selectedSize ? 'text-black' : 'text-gray-400'}>
+                      {selectedSize || 'Please select your size'}
+                    </span>
+                    <ChevronDown 
+                      size={18} 
+                      className={`text-black transition-transform duration-200 ${isSizeDropdownOpen ? 'rotate-180' : ''}`} 
+                      strokeWidth={1.5} 
+                    />
+                  </button>
+                  
+                  {/* Custom Dropdown Menu */}
+                  {isSizeDropdownOpen && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto">
+                      {product.sizeOfProduct.map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => handleSizeSelect(size)}
+                          className={`w-full px-4 py-3 text-left text-sm font-light font-futura-pt-light transition-colors ${
+                            selectedSize === size
+                              ? 'bg-black text-white hover:bg-black'
+                              : 'text-black hover:bg-gray-50'
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Mobile: Button to Open Modal */}
+                <div className="lg:hidden">
+                  <button
+                    type="button"
+                    onClick={handleMobileSizeClick}
+                    className="w-full px-4 py-3 border border-gray-300 bg-white text-left text-black font-light font-futura-pt-light text-sm cursor-pointer hover:border-black transition-colors focus:outline-none focus:border-black flex items-center justify-between"
+                  >
+                    <span className={selectedSize ? 'text-black' : 'text-gray-400'}>
+                      {selectedSize || 'Please select your size'}
+                    </span>
+                    <ChevronDown size={18} className="text-black" strokeWidth={1.5} />
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* Quantity */}
-            <div>
-              <h3 className="text-xs font-bold text-black mb-3 uppercase tracking-widest">
-                Quantity
-              </h3>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center border border-text-light/20">
-                  <button
-                    onClick={handleDecrement}
-                    disabled={quantity <= 1}
-                    className="p-2.5 hover:bg-premium-beige transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Decrease quantity"
-                  >
-                    <Minus size={14} strokeWidth={2} />
-                  </button>
-                  <span className="px-5 py-2.5 font-light text-sm min-w-[50px] text-center">
-                    {quantity}
-                  </span>
-                  <button
-                    onClick={handleIncrement}
-                    disabled={quantity >= availableQuantity}
-                    className="p-2.5 hover:bg-premium-beige transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Increase quantity"
-                  >
-                    <Plus size={14} strokeWidth={2} />
-                  </button>
+            {/* Mobile: Bottom Sheet Modal for Size Selection */}
+            {isSizeModalOpen && (
+              <>
+                {/* Backdrop */}
+                <div 
+                  className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+                  onClick={() => setIsSizeModalOpen(false)}
+                />
+                
+                {/* Modal Content */}
+                <div 
+                  ref={sizeModalRef}
+                  onClick={handleModalContentClick}
+                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 lg:hidden slide-up-from-bottom"
+                >
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <h3 className="text-sm font-light text-black uppercase font-futura-pt-light">
+                      Select your size
+                    </h3>
+                    <button
+                      onClick={() => setIsSizeModalOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      aria-label="Close"
+                    >
+                      <X size={20} className="text-black" strokeWidth={1.5} />
+                    </button>
+                  </div>
+
+                  {/* Size Options */}
+                  <div className="max-h-[60vh] overflow-y-auto">
+                    {product.sizeOfProduct.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => handleSizeSelect(size)}
+                        className={`w-full px-6 py-4 text-left text-sm font-light font-futura-pt-light transition-colors border-b border-gray-100 ${
+                          selectedSize === size
+                            ? 'bg-black text-white'
+                            : 'text-black hover:bg-gray-50'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Size Guide Link */}
+                  <div className="px-6 py-4 border-t border-gray-200">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSizeModalOpen(false);
+                        setIsSizeGuideOpen(true);
+                      }}
+                      className="text-xs text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors w-full text-left"
+                    >
+                      Size guide
+                    </button>
+                  </div>
                 </div>
+              </>
+            )}
 
-              </div>
-            </div>
-
-            {/* Personalisation */}
-            <div className="bg-white border border-text-light/10 p-4 rounded-sm space-y-2">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-xs font-bold text-black uppercase tracking-widest">
-                  Add Monogram
-                </h3>
-                <span className="text-[11px] text-text-medium">
-                  {monogram.length}/{MONOGRAM_CHAR_LIMIT}
-                </span>
-              </div>
-              <p className="text-sm text-text-medium font-light leading-relaxed">
-                Personalise this piece with refined initials or a short note.
-              </p>
-              <input
-                type="text"
-                value={monogram}
-                onChange={(e) => setMonogram(e.target.value)}
-                maxLength={MONOGRAM_CHAR_LIMIT}
-                placeholder="Add Monogram text"
-                className="w-full px-3 py-2 text-sm bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light tracking-wide"
-              />
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-              {availableQuantity === 0 ? (
-                // Out of Stock - Show only one button
-                <div className="flex gap-2.5 sm:gap-3 flex-1">
-                  <button
-                    disabled
-                    className="flex-1 bg-text-light text-white py-3 px-4 font-light uppercase tracking-widest text-xs flex items-center justify-center gap-2 cursor-not-allowed min-h-[42px]"
-                  >
-                    <ShoppingBag size={14} strokeWidth={1.5} />
-                    <span className="text-xs">Out of Stock</span>
-                  </button>
-                </div>
-              ) : (
-                // In Stock - Show both buttons
-                <div className="flex gap-2.5 sm:gap-3 flex-1">
-                  <button
-                    onClick={itemAddedToCart ? handleGoToCart : () => handleAddToCart(product, selectedSize, selectedCountry, quantity)}
-                    disabled={
-                      !selectedColor ||
-                      !selectedSize ||
-                      !matchedPrice ||
-                      addingToCart
-                    }
-                    className="flex-1 bg-black text-white py-3 px-4 font-light hover:bg-text-dark transition-colors uppercase tracking-widest text-xs flex items-center justify-center gap-2 disabled:bg-text-light disabled:cursor-not-allowed min-h-[42px]"
-                  >
-                    {addingToCart ? (
-                      <>
-                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-xs">Adding...</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag size={14} strokeWidth={1.5} />
-                        <span className="text-xs">
-                          {!matchedPrice
-                            ? 'Price Not Available'
-                            : itemAddedToCart
-                              ? 'Go to Cart'
-                              : 'Add to Cart'}
-                        </span>
-                      </>
-                    )}
-                  </button>
-
-                  <button
-                    onClick={handleBuyNow}
-                    disabled={
-                      !selectedColor ||
-                      !selectedSize ||
-                      !matchedPrice ||
-                      addingToCart
-                    }
-                    className="flex-1 bg-black text-white py-3 px-4 font-light hover:bg-text-dark transition-colors uppercase tracking-widest text-xs flex items-center justify-center gap-2 disabled:bg-text-light disabled:cursor-not-allowed min-h-[42px]"
-                  >
-                    {addingToCart ? (
-                      <>
-                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-xs">Processing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag size={14} strokeWidth={1.5} />
-                        <span className="text-xs">
-                          {!matchedPrice
-                            ? 'Price Not Available'
-                            : 'Buy Now'}
-                        </span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-
+            {/* Action Buttons - Add to Cart & Buy Now */}
+            <div className="flex flex-col gap-3">
+              {/* Add to Cart Button */}
               <button
-                onClick={() => handleAddToWishlist(product.id)}
-                disabled={addingToWishlist}
-                className={`p-3 border transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[42px] flex items-center justify-center ${isWishlisted
-                  ? 'border-black bg-black'
-                  : 'border-text-light/20 hover:border-black'
-                  }`}
-                aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                onClick={itemAddedToCart ? handleGoToCart : () => handleAddToCart(product, selectedSize, selectedCountry, quantity)}
+                disabled={
+                  !selectedColor ||
+                  !selectedSize ||
+                  !matchedPrice ||
+                  addingToCart
+                }
+                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors uppercase tracking-wider text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light"
               >
-                {addingToWishlist ? (
-                  <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                {addingToCart ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Adding to Cart...
+                  </span>
                 ) : (
-                  <Heart
-                    size={14}
-                    strokeWidth={1.5}
-                    className={`${isWishlisted ? 'fill-white text-white' : 'text-black'}`}
-                  />
+                  itemAddedToCart ? 'Go to Cart' : 'Add to Cart'
                 )}
               </button>
+
+              {/* Buy Now Button */}
+              <button
+                onClick={handleBuyNow}
+                disabled={
+                  !selectedColor ||
+                  !selectedSize ||
+                  !matchedPrice ||
+                  addingToCart
+                }
+                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors uppercase tracking-wider text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light"
+              >
+                {addingToCart ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </span>
+                ) : (
+                  'Buy Now'
+                )}
+              </button>
+            </div>
+
+            {/* Concierge/Contact Info */}
+            <div className="text-xs text-gray-600 font-light font-futura-pt-light leading-relaxed">
+              <p>Our Digital Concierge is available if you have any question on this product. <a href="/contact" className="underline hover:text-black transition-colors">Contact us</a></p>
             </div>
 
 
@@ -1119,10 +1112,10 @@ const ProductDetailPage = () => {
               </div>
             </div> */}
 
-            {/* Description */}
+            {/* Description - Louis Vuitton Style */}
             {product.description && (
-              <div className="pt-5 border-t border-text-light/10">
-                <p className="text-text-medium text-sm leading-relaxed font-light">
+              <div className="pt-4 border-t border-gray-200">
+                <p className="text-gray-700 text-sm leading-relaxed font-light font-futura-pt-light">
                   {product.description}
                 </p>
               </div>
@@ -1219,7 +1212,7 @@ const ProductDetailPage = () => {
         </div>
         {/* Review Form Section */}
         { false && <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
-          <h2 className="text-lg md:text-xl font-light text-black uppercase tracking-widest mb-5 md:mb-6 font-sweet-sans">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
             Customer Reviews
           </h2>
 
@@ -1628,7 +1621,7 @@ const ProductDetailPage = () => {
                         <p className="text-xs sm:text-sm text-text-medium uppercase tracking-widest mb-2 font-light">
                           Recommended Size
                         </p>
-                        <p className="text-2xl sm:text-3xl md:text-4xl font-light text-black uppercase tracking-widest mb-2">
+                        <p className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
                           {recommendedSize}
                         </p>
                         <p className="text-xs sm:text-sm text-text-medium font-light">
