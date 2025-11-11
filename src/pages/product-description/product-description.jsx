@@ -334,9 +334,10 @@ const ProductDetailPage = () => {
     }
   };
 
-  const availableQuantity = product
-    ? getAvailableQuantity(product.priceList, selectedCountry, selectedSize)
-    : 0;
+  // const availableQuantity = product
+  //   ? getAvailableQuantity(product.priceList, selectedCountry, selectedSize)
+  //   : 0;
+  const availableQuantity = 100000000000;
 
   const handlePrevImage = () => {
     if (!product || product.images.length === 0) return;

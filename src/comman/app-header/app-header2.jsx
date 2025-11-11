@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Menu, X, User, Heart, Search, Loader2, LogOut } from "lucide-react";
 import { BsBag } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 import logoImage from "../../assets/yobhaLogo.png";
@@ -10,8 +10,12 @@ import { getFilteredProducts } from "../../service/productAPI";
 import { useTranslation } from "react-i18next";
 import Sidebar from "./Sidebar";
 
-const HeaderWithSidebar2 = () => {
+const HeaderWithSidebar2 = ({isScrolled}) => {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
+
+  const isHomePage = location.pathname === "/home";
+
   const cartCount = useSelector(state => state.cart.count);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,6 +30,10 @@ const HeaderWithSidebar2 = () => {
   const accountDropdownRef = useRef(null);
   const [mobileAccountOpen, setMobileAccountOpen] = useState(false);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+
+  console.log(isScrolled, "proe")
+  const [isHovered, setIsHovered] = useState(false);
+  const [isSCroll , setIsScroll]=useState(false)
   const navigate = useNavigate();
 
   // Check authentication status
@@ -39,6 +47,8 @@ const HeaderWithSidebar2 = () => {
     window.addEventListener("storage", checkAuth); // update if storage changes
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
+
+
 
   // Trigger cart animation only when cart count increases (product added)
   const [prevCartCount, setPrevCartCount] = useState(0);
@@ -80,7 +90,7 @@ const HeaderWithSidebar2 = () => {
 
   // Logout function
   const handleLogout = () => {
-    localStorageService.clearAllExcept(["selectedCountry" , "cart"]);
+    localStorageService.clearAllExcept(["selectedCountry", "cart"]);
     setIsAuthenticated(false);
     navigate("/login");
   };
@@ -186,23 +196,33 @@ const HeaderWithSidebar2 = () => {
     }
   }, [isAuthenticated]);
 
+  const headerClasses = `
+    fixed top-0 w-full z-[1200] border-b transition-all duration-500
+    ${isHomePage
+      ? (isScrolled || isHovered
+        ? "bg-white/95 backdrop-blur-md border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)]"
+        : "bg-transparent border-transparent")
+      : "sticky top-0 relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
+  `;
+
   return (
     <>
 
-
-
       <header
-        className="sticky top-0 relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"
+        className={headerClasses}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
 
-        <div className="bg-white text-black font-sweet-sans  z-[1300] shadow-sm">
+
+        <div className=" text-black font-sweet-sans  z-[1300] shadow-sm">
           <div className="max-w-[1600px] mx-auto flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-2.5 md:py-3">
             <Link to="/home" className="flex items-center justify-center">
               <img
                 src={logoImage}
                 alt="YOBHA Logo"
                 className="h-7 md:h-8 lg:h-9"
-                // style={{ filter: "brightness(0) invert(1)" }}
+              // style={{ filter: "brightness(0) invert(1)" }}
               />
             </Link>
           </div>
@@ -386,7 +406,7 @@ const HeaderWithSidebar2 = () => {
 
             {/* Right Section - Utilities */}
             <div className="flex items-center space-x-2 md:space-x-3 lg:space-x-4 flex-shrink-0">
-              
+
 
               {/* Wishlist Icon - Desktop Only */}
               <Link
@@ -428,7 +448,7 @@ const HeaderWithSidebar2 = () => {
                   aria-haspopup="true"
                   aria-expanded={accountDropdownOpen}
                 >
-                <User size={22} strokeWidth={1.5} />
+                  <User size={22} strokeWidth={1.5} />
                 </button>
 
                 {isAuthenticated && accountDropdownOpen && (
