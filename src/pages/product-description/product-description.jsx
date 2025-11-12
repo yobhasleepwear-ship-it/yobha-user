@@ -555,6 +555,7 @@ const ProductDetailPage = () => {
           currency: selectedPrice.currency,
           variantSize: selectedSize,
           variantColor: selectedColor,
+          color:selectedColor,
           country: selectedCountry,
           size: selectedSize,
           thumbnailUrl: product.images[0].url,

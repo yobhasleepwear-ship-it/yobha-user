@@ -196,7 +196,7 @@ const CheckoutPage = () => {
         size: item.size,
         quantity: item.quantity,
         fabric: item.fabricType,
-        color: item.color,
+        color: [item.color],
         monogram: item.monogram
       }));
       const orderPayload = {
