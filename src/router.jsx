@@ -19,7 +19,8 @@ const FAQ = lazy(() => import("./pages/faq/faq"))
 const PrivacyPolicy = lazy(() => import("./pages/privacy-policy/privacy-policy"));
 const TermsConditions = lazy(() => import("./pages/terms-conditions/terms-conditions"));
 const ReturnPolicy = lazy(() => import("./pages/return-policy/return-policy"));
-const Buyback = lazy(() => import("./pages/buyback2/buyback2"))
+const Buyback = lazy(() => import("./pages/buyback/buyback"))
+const Buyback3 = lazy(() => import("./pages/buyback3/buyback3"))
 const FabricProtection = lazy(() => import("./pages/fabric-protection/fabric-protection"));
 const Careers = lazy(() => import("./pages/careers/careers"));
 const CareerDetails = lazy(() => import("./pages/careers/career-details"));
@@ -53,7 +54,8 @@ const Router = () => {
     { path: '/privacy-policy', element: <PrivacyPolicy /> },
     { path: '/terms-conditions', element: <TermsConditions /> },
     { path: '/return-policy', element: <ReturnPolicy /> },
-    {path:'/buyback',element:<Buyback/>},
+    {path:'/buyback',element:<Buyback3/>},
+    {path:'/buyback3',element:<Buyback/>},
     {path:'/fabric-protection', element:<FabricProtection />},
     { path: '/career', element: <Careers /> },
     { path: '/career/:jobId', element: <CareerDetails /> },
