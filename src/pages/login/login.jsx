@@ -101,7 +101,7 @@ const LoginPage = () => {
         <button
           onClick={() => navigate(-1)}
           aria-label="Close login"
-          className="absolute top-6 right-4 md:top-10 md:right-6 z-[1400] w-10 h-10 md:w-11 md:h-11 flex items-center justify-center  bg-white border border-text-light/20 shadow hover:bg-gray-50"
+          className="absolute top-6 right-4 md:top-10 md:right-6 z-[1100] w-10 h-10 md:w-11 md:h-11 flex items-center justify-center  bg-white border border-text-light/20 shadow hover:bg-gray-50"
         >
           <span className="text-lg md:text-xl font-semibold">✕</span>
         </button>

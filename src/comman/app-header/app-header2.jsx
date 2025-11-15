@@ -177,10 +177,12 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
 
     if (searchOpen || mobileAccountOpen || accountDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, [searchOpen, mobileAccountOpen, accountDropdownOpen]);
 
@@ -301,30 +303,50 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
 
               {/* Account Dropdown - Mobile */}
               {isAuthenticated && mobileAccountOpen && (
-                <div className="md:hidden absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl overflow-hidden text-xs uppercase font-futura-pt-light min-w-[180px]">
+                <div 
+                  className="md:hidden absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl overflow-hidden text-xs uppercase font-futura-pt-light min-w-[180px]"
+                  onClick={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                >
                   <button
-                    className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                    onClick={() => setMobileAccountOpen(false)}
+                    className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors duration-200 z-10"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMobileAccountOpen(false);
+                    }}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                    }}
                     aria-label="Close account menu"
                   >
                     <X size={16} strokeWidth={1.8} />
                   </button>
                   <button
-                    onClick={() => {
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
                       navigate('/account');
                       setMobileAccountOpen(false);
                     }}
-                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300 mt-6 w-full text-left"
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 active:bg-gray-200 transition-colors duration-300 mt-6 w-full text-left touch-manipulation cursor-pointer"
+                    style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
                     <User size={16} />
                     <span>Account</span>
                   </button>
                   <button
-                    onClick={() => {
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setMobileAccountOpen(false);
                       handleLogout();
                     }}
-                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 transition-colors duration-300 w-full text-left"
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 active:bg-gray-200 transition-colors duration-300 w-full text-left touch-manipulation cursor-pointer"
+                    style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
                     <LogOut size={16} />
                     <span>Logout</span>

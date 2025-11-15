@@ -1032,6 +1032,37 @@ const ProductDetailPage = () => {
               </>
             )}
 
+            {/* Monogram Input */}
+            <div className="space-y-2">
+              <label className="text-xs font-light text-black uppercase font-futura-pt-light">
+                Add Monogram (Optional)
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={monogram}
+                  onChange={(e) => {
+                    const value = e.target.value.toUpperCase();
+                    if (value.length <= MONOGRAM_CHAR_LIMIT) {
+                      setMonogram(value);
+                      setItemAddedToCart(false);
+                    }
+                  }}
+                  placeholder="Enter up to 12 characters"
+                  maxLength={MONOGRAM_CHAR_LIMIT}
+                  className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400 uppercase tracking-wider"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-light">
+                  {monogram.length}/{MONOGRAM_CHAR_LIMIT}
+                </div>
+              </div>
+              {monogram && (
+                <p className="text-xs text-gray-500 font-light italic">
+                  Your monogram will be displayed on the product
+                </p>
+              )}
+            </div>
+
             {/* Action Buttons - Add to Cart & Buy Now */}
             <div className="flex flex-col gap-3">
               {/* Add to Cart Button */}
