@@ -168,7 +168,7 @@ const OrdersPage = () => {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-5 md:p-6 border-b border-gray-200">
                   <div className="flex-1">
                     <h2 className="text-xs sm:text-sm font-light text-black uppercase mb-2 font-futura-pt-light">
-                      Order ID: <span className="font-light">{order.orderNo || order.id}</span>
+                      Order ID: <span className="font-light">{ order.id}</span>
                     </h2>
                     <p className="text-gray-600 text-xs font-light font-futura-pt-light">
                       {formatDate(order.createdAt)}

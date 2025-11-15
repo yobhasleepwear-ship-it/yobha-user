@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
   ArrowLeft, Package, Truck, CheckCircle2, XCircle, 
-  Clock, MapPin, Phone, Mail, Gift
+  Clock, MapPin, Phone, Mail, Gift, RotateCcw, X
 } from "lucide-react";
 import { getOrderDetails } from "../../service/order";
+import { createReturn } from "../../service/returns";
+import { message } from "../../comman/toster-message/ToastContainer";
+import ImageUploader from "../../comman/Image-Uploader/ImageUploader";
 
 /**
  * Helper function to safely format order detail data from API
@@ -21,6 +24,7 @@ const formatOrderDetailData = (orderData) => {
   return {
     id: data?.id || '',
     orderNo: data?.orderNo || data?.id || '',
+    orderNumber: data?.orderNumber, // Prioritize orderNumber from API
     userId: data?.userId || '',
     
     // Gift Card Info
@@ -162,6 +166,14 @@ const OrderDetailPage = () => {
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Return State
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [selectedReturnItems, setSelectedReturnItems] = useState([]);
+  const [returnReasons, setReturnReasons] = useState({});
+  const [returnImages, setReturnImages] = useState([]);
+  const [returnReason, setReturnReason] = useState("");
+  const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
 
   // Fetch order details
   useEffect(() => {
@@ -179,8 +191,21 @@ const OrderDetailPage = () => {
         const response = await getOrderDetails(orderId);
         
         if (response) {
+          // Log raw API response to see the actual structure
+          console.log('Raw Order API Response:', response);
+          
           const formattedOrder = formatOrderDetailData(response);
           if (formattedOrder) {
+            // Extract orderNumber from API response - API returns orderNumber field
+            const apiData = response.data || response;
+            // Prioritize orderNumber from API response as it matches orders API
+            if (apiData.orderNumber) {
+              formattedOrder.orderNumber = apiData.orderNumber;
+            } else if (apiData.orderNo) {
+              formattedOrder.orderNumber = apiData.orderNo;
+            }
+       
+            
             setOrder(formattedOrder);
           } else {
             setError('Invalid order data received');
@@ -198,6 +223,103 @@ const OrderDetailPage = () => {
 
     fetchOrderDetail();
   }, [orderId]);
+
+  // Handle item selection for return
+  const handleReturnItemToggle = (item) => {
+    const itemKey = `${item.productId}-${item.productObjectId}`;
+    if (selectedReturnItems.some(i => `${i.productId}-${i.productObjectId}` === itemKey)) {
+      setSelectedReturnItems(selectedReturnItems.filter(i => `${i.productId}-${i.productObjectId}` !== itemKey));
+      const newReasons = { ...returnReasons };
+      delete newReasons[itemKey];
+      setReturnReasons(newReasons);
+    } else {
+      setSelectedReturnItems([...selectedReturnItems, item]);
+    }
+  };
+
+  // Handle return reason change for item
+  const handleReturnReasonChange = (itemKey, reason) => {
+    setReturnReasons({ ...returnReasons, [itemKey]: reason });
+  };
+
+  // Handle return images upload
+  const handleReturnImageUpload = (uploadedImages) => {
+    const urls = uploadedImages.map(img => typeof img === 'string' ? img : img.url);
+    setReturnImages([...returnImages, ...urls]);
+  };
+
+  // Handle return image removal
+  const handleRemoveReturnImage = (index) => {
+    setReturnImages(returnImages.filter((_, i) => i !== index));
+  };
+
+  // Handle return submission
+  const handleSubmitReturn = async () => {
+    if (selectedReturnItems.length === 0) {
+      message.error("Please select at least one item to return");
+      return;
+    }
+
+    setIsSubmittingReturn(true);
+    try {
+      const items = selectedReturnItems.map(item => {
+        const itemKey = `${item.productId}-${item.productObjectId}`;
+        return {
+          productId: item.productId,
+          productObjectId: item.productObjectId,
+          quantity: item.quantity,
+          reasonForReturn: returnReasons[itemKey] || ""
+        };
+      });
+
+      // Use orderNumber from API response - this should match what comes from orders API
+      // Prioritize orderNumber as it's the field name used in orders API response
+      const orderNumber = order.orderNumber ;
+      
+      const payload = {
+        orderNumber: orderNumber,
+        items: items,
+        returnImagesURLs: returnImages,
+        returnReason: returnReason || "Customer requested return"
+      };
+
+      // Debug: Log payload to verify correct orderNumber
+      console.log('Return Payload:', payload);
+      console.log('Order Number used:', orderNumber);
+      console.log('Order object fields:', { 
+        orderNumber: order.orderNumber, 
+        orderNo: order.orderNo, 
+        id: order.id 
+      });
+
+      const response = await createReturn(payload);
+      
+      if (response) {
+        message.success("Return request submitted successfully");
+        setShowReturnModal(false);
+        setSelectedReturnItems([]);
+        setReturnReasons({});
+        setReturnImages([]);
+        setReturnReason("");
+        // Optionally refresh order details
+        // fetchOrderDetail();
+      }
+    } catch (error) {
+      console.error("Return submission error:", error);
+      message.error(error.response?.data?.message || "Failed to submit return request. Please try again.");
+    } finally {
+      setIsSubmittingReturn(false);
+    }
+  };
+
+  // Reset return modal
+  const handleCloseReturnModal = () => {
+    setShowReturnModal(false);
+    setSelectedReturnItems([]);
+    setReturnReasons({});
+    setReturnImages([]);
+    setReturnReason("");
+  };
 
   // Loading state
   if (isLoading) {
@@ -555,6 +677,25 @@ const OrderDetailPage = () => {
 
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4">
+                  {/* Return Button - Show for delivered, shipped orders with items */}
+                  {!isGiftCard && order.items && order.items.length > 0 && (() => {
+                    const status = (order.status || order.paymentStatus || '').toLowerCase();
+                    const canReturn = ['delivered', 'shipped', 'confirmed', 'processing', 'pending'].includes(status);
+                    
+                    // Debug: Uncomment to see status in console
+                    // console.log('Order Status:', status, 'Can Return:', canReturn, 'Order:', order);
+                    
+                    return canReturn ? (
+                      <button
+                        onClick={() => setShowReturnModal(true)}
+                        className="w-full border border-gray-300 text-black py-3 font-light hover:border-black hover:bg-gray-50 transition-colors uppercase tracking-wider text-xs sm:text-sm font-futura-pt-light flex items-center justify-center gap-2"
+                      >
+                        <RotateCcw size={16} strokeWidth={1.5} />
+                        Return
+                      </button>
+                    ) : null;
+                  })()}
+
                   {order.status?.toLowerCase() === 'delivered' && !isGiftCard && (
                     <button
                       onClick={() => {
@@ -586,6 +727,177 @@ const OrderDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Return Modal */}
+      {showReturnModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 flex items-start sm:items-center justify-center p-0 sm:p-4" onClick={handleCloseReturnModal}>
+          <div className="bg-white w-full sm:max-w-2xl sm:w-full sm:max-h-[90vh] h-screen sm:h-auto flex flex-col" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between border-b border-gray-100">
+              <h2 className="text-base sm:text-lg font-light text-black font-futura-pt-light">
+                Request Return
+              </h2>
+              <button
+                onClick={handleCloseReturnModal}
+                className="text-gray-500 hover:text-black transition-colors p-1"
+              >
+                <X size={18} strokeWidth={1.5} />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5 space-y-5">
+              {/* Select Items */}
+              <div>
+                <p className="text-xs sm:text-sm text-gray-700 mb-3 font-light font-futura-pt-light">
+                  Select items to return:
+                </p>
+                <div className="space-y-2">
+                  {order.items.map((item, index) => {
+                    const itemKey = `${item.productId}-${item.productObjectId}`;
+                    const isSelected = selectedReturnItems.some(i => `${i.productId}-${i.productObjectId}` === itemKey);
+                    
+                    return (
+                      <div
+                        key={`${item.productId}-${index}`}
+                        className={`p-3 sm:p-4 cursor-pointer transition-colors ${
+                          isSelected ? "bg-gray-50" : "hover:bg-gray-50"
+                        }`}
+                        onClick={() => handleReturnItemToggle(item)}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="flex items-center mt-0.5">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => handleReturnItemToggle(item)}
+                              className="w-4 h-4 border-gray-300 text-black focus:ring-black cursor-pointer"
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          </div>
+                          
+                          <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 bg-gray-50 overflow-hidden">
+                            <img
+                              src={item.thumbnailUrl}
+                              alt={item.productName}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+';
+                              }}
+                            />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-xs sm:text-sm font-light text-black mb-1 font-futura-pt-light">
+                              {item.productName}
+                            </h3>
+                            <p className="text-xs text-gray-600 font-light font-futura-pt-light">
+                              Qty: {item.quantity} × {formatPrice(item.unitPrice, item.currency)}
+                            </p>
+                            {item.variantSku && (
+                              <p className="text-xs text-gray-500 font-light font-futura-pt-light mt-0.5">
+                                SKU: {item.variantSku}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {isSelected && (
+                          <div className="mt-3 pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
+                            <label className="text-xs text-gray-700 mb-1.5 block font-light font-futura-pt-light">
+                              Reason (optional):
+                            </label>
+                            <input
+                              type="text"
+                              value={returnReasons[itemKey] || ""}
+                              onChange={(e) => handleReturnReasonChange(itemKey, e.target.value)}
+                              placeholder="e.g., Size doesn't fit"
+                              className="w-full border border-gray-200 bg-white px-3 py-1.5 text-xs sm:text-sm text-black focus:outline-none focus:border-black font-light"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* General Return Reason */}
+              <div>
+                <label className="text-xs sm:text-sm text-gray-700 mb-1.5 block font-light font-futura-pt-light">
+                  General return reason (optional):
+                </label>
+                <textarea
+                  value={returnReason}
+                  onChange={(e) => setReturnReason(e.target.value)}
+                  placeholder="Provide additional details..."
+                  rows={3}
+                  className="w-full border border-gray-200 bg-white px-3 py-2 text-xs sm:text-sm text-black focus:outline-none focus:border-black font-light resize-none"
+                />
+              </div>
+
+              {/* Return Images */}
+              <div>
+                <p className="text-xs sm:text-sm text-gray-700 mb-2 font-light font-futura-pt-light">
+                  Upload return images (optional):
+                </p>
+                <ImageUploader
+                  productId={`return_${order.orderNo || order.id}_${Date.now()}`}
+                  onUploadComplete={handleReturnImageUpload}
+                  hideUploadedDisplay={true}
+                />
+                {returnImages.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-600 mb-2 font-light">
+                      Uploaded ({returnImages.length})
+                    </p>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      {returnImages.map((img, index) => (
+                        <div key={index} className="relative border border-gray-100 overflow-hidden">
+                          <img
+                            src={img}
+                            alt={`Return ${index + 1}`}
+                            className="w-full h-20 sm:h-24 object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveReturnImage(index)}
+                            className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-4 py-3 sm:px-6 sm:py-4 border-t border-gray-100 bg-white flex gap-2 sm:gap-3">
+              <button
+                onClick={handleCloseReturnModal}
+                className="flex-1 border border-gray-200 text-black py-2 sm:py-2.5 font-light hover:border-black hover:bg-gray-50 transition-colors text-xs sm:text-sm font-futura-pt-light"
+                disabled={isSubmittingReturn}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitReturn}
+                disabled={isSubmittingReturn || selectedReturnItems.length === 0}
+                className={`flex-1 py-2 sm:py-2.5 font-light text-xs sm:text-sm font-futura-pt-light transition-colors ${
+                  isSubmittingReturn || selectedReturnItems.length === 0
+                    ? "border border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+                    : "border border-black bg-black text-white hover:bg-gray-900"
+                }`}
+              >
+                {isSubmittingReturn ? "Submitting..." : "Submit Return"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
