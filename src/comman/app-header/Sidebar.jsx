@@ -197,7 +197,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.myAccount." + i18n.language)}</span>
                       </Link>
                       <Link
-                        to="/buyback"
+                        to="/buyback/all"
                         className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
                         onClick={onClose}
                       >

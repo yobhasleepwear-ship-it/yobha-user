@@ -347,7 +347,7 @@ const HomePage2 = () => {
       {/* Buyback USP Section */}
       <section className="relative w-full bg-white font-futura py-6 md:py-8 lg:py-10">
         <div className="md:hidden relative h-[450px] cursor-pointer group overflow-hidden"
-          onClick={() => navigate('/buyback')}>
+          onClick={() => navigate('/buyback/create')}>
           {/* Image Background */}
           <img
             src={BUYBACK_IMAGE}
@@ -491,7 +491,7 @@ const HomePage2 = () => {
             {/* Services Panel */}
             <div
               className="group cursor-pointer relative overflow-hidden"
-              onClick={() => navigate("/buyback")}
+              onClick={() => navigate("/buyback/create")}
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
                 <img
