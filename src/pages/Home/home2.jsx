@@ -381,7 +381,7 @@ const HomePage2 = () => {
 
         <div
           className="hidden md:block cursor-pointer group"
-          onClick={() => navigate('/buyback')}
+          onClick={() => navigate('/buyback/create')}
         >
           <div
             className="relative min-h-[500px] lg:min-h-[600px] flex flex-col justify-center px-12 lg:px-16 py-16 font-futura bg-cover bg-center overflow-hidden"

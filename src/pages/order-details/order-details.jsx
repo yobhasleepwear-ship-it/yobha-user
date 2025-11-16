@@ -357,7 +357,7 @@ const OrderDetailPage = () => {
   }
 
   const isGiftCard = order.giftCardNumber;
-  const statusInfo = getStatusInfo(order.status || order.paymentStatus);
+  const statusInfo = getStatusInfo( order.paymentStatus);
   const StatusIcon = statusInfo.icon;
   const totalItems = order.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
 

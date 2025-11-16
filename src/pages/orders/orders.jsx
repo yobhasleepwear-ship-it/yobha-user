@@ -195,9 +195,33 @@ const OrdersPage = () => {
                         <Gift className="text-black" size={24} strokeWidth={1.5} />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0">
-                        <Package className="text-black" size={24} strokeWidth={1.5} />
-                      </div>
+                      (() => {
+                        const firstItem = order?.items?.[0] || {};
+                        const imgSrc =
+                          firstItem?.thumbnailUrl ||
+                          firstItem?.image ||
+                          firstItem?.productImage ||
+                          firstItem?.imageUrl ||
+                          null;
+                        const altText = firstItem?.productName || "Product";
+                        return (
+                          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {imgSrc ? (
+                              <img
+                                src={imgSrc}
+                                alt={altText}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src =
+                                    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCAxNTAgMTUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+PHRleHQgeD0iNzUiIHk9Ijc1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==";
+                                }}
+                              />
+                            ) : (
+                              <Package className="text-black" size={24} strokeWidth={1.5} />
+                            )}
+                          </div>
+                        );
+                      })()
                     )}
 
                     <div className="flex-1">
