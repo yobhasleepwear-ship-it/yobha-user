@@ -65,7 +65,10 @@ const HomePage2 = () => {
   const landscapeVideo = "https://vod.freecaster.com/louisvuitton/a04723ab-0c87-48cd-9a64-130562635d71/NEdEFmAPqMS9gxd4rFYAQRDw_11.mp4";
 
   useEffect(() => {
-    fetchProducts();
+    if(products.length===0){
+  fetchProducts();
+    }
+  
     const checkOrientation = () => {
       const isPortraitMode = window.innerHeight > window.innerWidth ||
         (window.innerWidth < 768 && window.innerHeight > window.innerWidth);

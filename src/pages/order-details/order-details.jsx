@@ -708,7 +708,7 @@ const OrderDetailPage = () => {
                     </button>
                   )}
 
-                  {['pending', 'confirmed', 'processing'].includes(order.status?.toLowerCase() || order.paymentStatus?.toLowerCase() || '') && (
+                  {/* {['pending', 'confirmed', 'processing'].includes(order.status?.toLowerCase() || order.paymentStatus?.toLowerCase() || '') && (
                     <button
                       onClick={() => {
                         // TODO: Implement cancel order functionality
@@ -720,7 +720,7 @@ const OrderDetailPage = () => {
                     >
                       Cancel Order
                     </button>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

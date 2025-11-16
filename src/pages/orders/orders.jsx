@@ -48,8 +48,8 @@ const OrdersPage = () => {
     });
   };
 
-  const formatPrice = (price) =>
-    `₹${Number(price || 0).toLocaleString("en-IN")}`;
+  const formatPrice = (price, cur) =>
+    `${cur}${Number(price || 0).toLocaleString("en-IN")}`;
 
   const getStatusColor = (status) => {
     switch ((status || "").toLowerCase()) {
@@ -220,7 +220,7 @@ const OrdersPage = () => {
                         Total Amount
                       </p>
                       <p className="text-lg sm:text-xl font-light text-black font-futura-pt-light">
-                        {formatPrice(order.totalAmount || order.giftCardAmount)}
+                        {formatPrice(order.giftCardNumber===''?order.subTotal:order.total ,order.currency)}
                       </p>
                     </div>
                   </div>

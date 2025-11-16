@@ -39,6 +39,7 @@ const ProductCard = ({ product }) => {
   const cardRef = useRef(null);
   const autoCarouselRef = useRef(null);
 
+
   // Safe data extraction with null checks
   const productId = product?.id || '';
   const productName = product?.name || 'Untitled Product';
@@ -129,11 +130,11 @@ const ProductCard = ({ product }) => {
     try {
       setWishlistLoading(true);
       const payload = {
-        productId: product.slug || product.id,
-        size: "",
+        productId: product.productId ,
+        size: product.availableSizes[0],
         desiredQuantity: 1,
-        desiredSize: "",
-        desiredColor: "",
+        desiredSize:product.availableSizes[0],
+        desiredColor: product.availableColors[0],
         notifyWhenBackInStock: false,
       };
 

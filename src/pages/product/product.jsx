@@ -23,15 +23,15 @@ const ProductsPage = () => {
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = JSON.parse(savedCountry);
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code || "IN");
-  console.log(selectedCountry,"s")
+  console.log(selectedCountry, "s")
   const navigate = useNavigate();
   const passedProducts = location.state?.products || [];
   console.log(passedProducts, "passed")
-  
+
   // Get sort from URL query parameter
   const searchParams = new URLSearchParams(location.search);
   const urlSort = searchParams.get('sort');
-  
+
   // UI State
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showMobileSort, setShowMobileSort] = useState(false);
@@ -48,7 +48,9 @@ const ProductsPage = () => {
     country: 'IN',
     colors: [],
     sizes: [],
+    fabric: [],
   });
+  console.log(filters,"filtersas")
 
   // API State
   const [products, setProducts] = useState([]);
@@ -119,7 +121,7 @@ const ProductsPage = () => {
   // Extract unique colors and sizes from products using useMemo to prevent unnecessary recalculations
   const extractedColorsAndSizes = useMemo(() => {
     const productsToExtract = products.length > 0 ? products : (passedProducts.length > 0 ? passedProducts : []);
-    
+
     if (productsToExtract.length === 0) {
       return { colors: [], sizes: [] };
     }
@@ -171,9 +173,9 @@ const ProductsPage = () => {
     const newSizes = extractedColorsAndSizes.sizes;
 
     // Check if colors or sizes have actually changed
-    const colorsChanged = prevColors.length !== newColors.length || 
+    const colorsChanged = prevColors.length !== newColors.length ||
       JSON.stringify(prevColors) !== JSON.stringify(newColors);
-    const sizesChanged = prevSizes.length !== newSizes.length || 
+    const sizesChanged = prevSizes.length !== newSizes.length ||
       JSON.stringify(prevSizes) !== JSON.stringify(newSizes);
 
     if (colorsChanged || sizesChanged) {
@@ -198,7 +200,7 @@ const ProductsPage = () => {
     debouncedFilterUpdate();
 
   }, [priceRange]);
-  
+
   // Fetch products from API - memoized to prevent unnecessary re-creation
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
@@ -215,6 +217,7 @@ const ProductsPage = () => {
         country: null,
         colors: filters.colors.length > 0 ? filters.colors : undefined,
         sizes: filters.sizes.length > 0 ? filters.sizes : undefined,
+        fabric:filters.fabric
       };
 
       // Remove undefined values
@@ -263,6 +266,16 @@ const ProductsPage = () => {
     // Reset to page 1 when filters change
     setPagination(prev => ({ ...prev, pageNumber: 1 }));
   }, []);
+  const updateFilterArray = useCallback((key, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: prev[key].includes(value)
+        ? prev[key].filter(v => v !== value)
+        : [...prev[key], value],
+    }));
+    setPagination(prev => ({ ...prev, pageNumber: 1 }));
+  }, []);
+
 
   const toggleCategory = useCallback((categoryId) => {
     setFilters(prev => {
@@ -305,6 +318,7 @@ const ProductsPage = () => {
       country: '',
       colors: [],
       sizes: [],
+      fabric:[]
     });
     // Clear the category from URL when clearing all filters
     navigate('/products', { replace: true });
@@ -329,7 +343,7 @@ const ProductsPage = () => {
   // Helper function to get hex color from color name or hex code
   const getColorHex = (color) => {
     if (!color) return '#CCCCCC';
-    
+
     // Check if color is already a hex code
     const isHex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
     if (isHex) {
@@ -339,7 +353,7 @@ const ProductsPage = () => {
       }
       return color;
     }
-    
+
     // Map common color names to hex codes
     const colorNameToHex = {
       'black': '#000000',
@@ -380,7 +394,7 @@ const ProductsPage = () => {
       'indigo': '#4B0082',
       'violet': '#8A2BE2',
     };
-    
+
     // Normalize color name (lowercase, trim)
     const normalizedColor = color.toLowerCase().trim();
     return colorNameToHex[normalizedColor] || '#CCCCCC';
@@ -520,16 +534,16 @@ const ProductsPage = () => {
               className="flex items-center cursor-pointer group"
             >
               <input
-                type="radio"
+                type="checkbox"
                 name="fabric"
-                checked={filters.fabric === fabric.id}
-                onChange={() => updateFilter("fabric", fabric.id)}
+                checked={filters.fabric.includes(fabric.id)}
+                onChange={() => updateFilterArray("fabric", fabric.id)}
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
               <span
                 className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.fabric === fabric.id
-                    ? "text-black"
-                    : "text-text-medium group-hover:text-black"
+                  ? "text-black"
+                  : "text-text-medium group-hover:text-black"
                   }`}
               >
                 {fabric.name}
@@ -549,7 +563,7 @@ const ProductsPage = () => {
           <div className="space-y-3">
             {filterOptions.colors.map((color) => {
               const displayHex = getColorHex(color);
-              
+
               return (
                 <label
                   key={color}
@@ -563,18 +577,17 @@ const ProductsPage = () => {
                   />
                   <div className="ml-3 flex items-center gap-3 flex-1">
                     <div
-                      className={`w-6 h-6 rounded-full flex-shrink-0 ${
-                        isLightColor(displayHex)
+                      className={`w-6 h-6 rounded-full flex-shrink-0 ${isLightColor(displayHex)
                           ? 'border-2 border-gray-400'
                           : 'border border-gray-300'
-                      }`}
+                        }`}
                       style={{ backgroundColor: displayHex }}
                       title={color}
                     />
                     <span
                       className={`text-sm tracking-wide transition-colors font-light font-futura-pt-light flex-1 ${filters.colors.includes(color)
-                          ? "text-black"
-                          : "text-text-medium group-hover:text-black"
+                        ? "text-black"
+                        : "text-text-medium group-hover:text-black"
                         }`}
                     >
                       {color}
@@ -608,8 +621,8 @@ const ProductsPage = () => {
                 />
                 <span
                   className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.sizes.includes(size)
-                      ? "text-black"
-                      : "text-text-medium group-hover:text-black"
+                    ? "text-black"
+                    : "text-text-medium group-hover:text-black"
                     }`}
                 >
                   {size}
@@ -957,7 +970,7 @@ const ProductsPage = () => {
 
             {filters.colors.map((color) => {
               const displayHex = getColorHex(color);
-              
+
               return (
                 <div key={color} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
                   <div

@@ -87,7 +87,7 @@ const BuybackAll = () => {
 				<div className="border rounded-lg p-8 text-center bg-white">
 					<p className="text-gray-600">No buyback requests found.</p>
 					<div className="mt-2">
-						<Link to="/buyback" className="text-sm text-black hover:underline active:underline underline-offset-2">
+						<Link to="/buyback/create" className="text-sm text-black hover:underline active:underline underline-offset-2">
 							Start a new buyback
 						</Link>
 					</div>
