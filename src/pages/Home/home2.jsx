@@ -517,7 +517,7 @@ const HomePage2 = () => {
             {/* Art of Gifting Panel */}
             <div
               className="group cursor-pointer relative overflow-hidden"
-              onClick={() => navigate("/giftCard-Personalization")}
+              onClick={() => navigate("/gifts-personalization")}
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
                 <img

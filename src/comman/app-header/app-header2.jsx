@@ -216,9 +216,9 @@ useEffect(() => {
       fixed top-0 left-0 right-0  z-[1200] border-b transition-all duration-500
     ${isHomePage
       ? (isScrolled || isHovered
-        ? "bg-white/95 backdrop-blur-md border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)] "
+        ? "bg-white  border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)] "
         : "bg-transparent border-transparent ")
-      : "sticky top-0 relative  z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
+      : "sticky top-0 relative  z-[1200] bg-white border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
   `;
   
   // Icon color classes based on header transparency
