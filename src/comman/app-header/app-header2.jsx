@@ -10,7 +10,7 @@ import { getFilteredProducts } from "../../service/productAPI";
 import { useTranslation } from "react-i18next";
 import Sidebar from "./Sidebar";
 
-const HeaderWithSidebar2 = ({isScrolled}) => {
+const HeaderWithSidebar2 = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
 
@@ -32,7 +32,23 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
 
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+ const [isScrolled, setHasScrolled] = useState(false); 
 
+useEffect(() => {
+  const handleScroll = () => {
+    setHasScrolled(true);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  window.addEventListener("wheel", handleScroll);       // desktop
+  window.addEventListener("touchmove", handleScroll);  // mobile
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("wheel", handleScroll);
+    window.removeEventListener("touchmove", handleScroll);
+  };
+}, []);
   // Check authentication status
   useEffect(() => {
     const checkAuth = () => {
@@ -197,12 +213,12 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
   const isHeaderTransparent = isHomePage && !isScrolled && !isHovered;
 
   const headerClasses = `
-    fixed top-0 w-full z-[1200] border-b transition-all duration-500
+      fixed top-0 left-0 right-0  z-[1200] border-b transition-all duration-500
     ${isHomePage
       ? (isScrolled || isHovered
-        ? "bg-white/95 backdrop-blur-md border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)]"
-        : "bg-transparent border-transparent")
-      : "sticky top-0 relative w-full z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
+        ? "bg-white/95 backdrop-blur-md border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)] "
+        : "bg-transparent border-transparent ")
+      : "sticky top-0 relative  z-[1200] bg-white/95 backdrop-blur-md border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
   `;
   
   // Icon color classes based on header transparency
@@ -216,7 +232,7 @@ const HeaderWithSidebar2 = ({isScrolled}) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5 relative">
+        <div className=" mx-auto flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-3 md:py-4 lg:py-5 relative">
 
           {/* Left Side - Menu & Search Icon (All Devices) */}
           <div className="flex items-center gap-2 md:gap-3 lg:gap-4 flex-shrink-0">
