@@ -191,14 +191,29 @@ const CheckoutPage = () => {
   const handleOrder = async () => {
     console.log(selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "", "kkk")
     try {
-      const PurchasedProduct = cartItems.map((item, index) => ({
-        id: item.id,
-        size: item.size,
-        quantity: item.quantity,
-        fabric: item.fabricType,
-        color: [item.color],
-        monogram: item.monogram
-      }));
+      const PurchasedProduct = cartItems.map((item, index) => {
+        // Combine monogram and note with dash separator
+        const monogramValue = (item.monogram || "").trim();
+        const noteValue = (item.note || "").trim();
+        let combinedMonogramNote = "";
+        
+        if (monogramValue && noteValue) {
+          combinedMonogramNote = `${monogramValue}-${noteValue}`;
+        } else if (monogramValue) {
+          combinedMonogramNote = monogramValue;
+        } else if (noteValue) {
+          combinedMonogramNote = noteValue;
+        }
+        
+        return {
+          id: item.id,
+          size: item.size,
+          quantity: item.quantity,
+          fabric: item.fabricType,
+          color: [item.color],
+          monogram: combinedMonogramNote || undefined
+        };
+      });
       const orderPayload = {
         currency: cartItems[0].priceList.find((e) => e.country === cartItems[0].country).currency,
         productRequests: PurchasedProduct,

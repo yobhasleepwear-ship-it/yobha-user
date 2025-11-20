@@ -259,6 +259,7 @@ const ProductDetailPage = () => {
   const [newProducts, setProducts] = useState([])
   const [monogram, setMonogram] = useState("")
   const MONOGRAM_CHAR_LIMIT = 12;
+  const [notes, setNotes] = useState("");
   // Review Form State
   const [averageProdRating, setAverageProdRating] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -510,6 +511,8 @@ const ProductDetailPage = () => {
       cart[itemIndex] = {
         ...cart[itemIndex],
         quantity: quantity,
+        note: notes,
+        monogram: monogram,
       };
     } else {
 
@@ -520,7 +523,8 @@ const ProductDetailPage = () => {
         quantity: quantity,
         country: selectedCountry,
         monogram: monogram,
-        color:selectedColor
+        color:selectedColor,
+        note: notes
       });
     }
 
@@ -568,7 +572,7 @@ const ProductDetailPage = () => {
           lineTotal: lineTotal,
           addedAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          note: "",
+          note: notes,
           success: true,
           message: "OK",
           suggestedCountryPrice: null,
@@ -769,9 +773,9 @@ const ProductDetailPage = () => {
                 }}
               />
 
-              {/* Image Navigation Indicators - Top Left (if multiple images) */}
+              {/* Image Navigation Indicators - Below Image Center (if multiple images) */}
               {hasMultipleImages && (
-                <div className="absolute top-4 left-4 flex gap-2 z-10">
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
                   {product.images.map((_, index) => (
                     <button
                       key={index}
@@ -1061,6 +1065,24 @@ const ProductDetailPage = () => {
                   Your monogram will be displayed on the product
                 </p>
               )}
+            </div>
+
+            {/* Notes Input */}
+            <div className="space-y-2">
+              <label className="text-xs font-light text-black uppercase font-futura-pt-light">
+                Notes
+              </label>
+              <textarea
+                type="text"
+                value={notes}
+                onChange={(e) => {
+                  setNotes(e.target.value);
+                  setItemAddedToCart(false);
+                }}
+                placeholder="Add any special instructions or notes..."
+                rows={3}
+                className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400 resize-none"
+              />
             </div>
 
             {/* Action Buttons - Add to Cart & Buy Now */}

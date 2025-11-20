@@ -33,6 +33,7 @@ const GiftsPersonalization = lazy(() => import("./pages/gifts-personalization/gi
 const Personalization = lazy(() => import("./pages/personalization/personalization"));
 const Accessories = lazy(() => import("./pages/Accessories/Accessories"));
 const BuybackAll = lazy(() => import("./pages/buyback-all/buyback-all"));
+const BuybackDetails = lazy(() => import("./pages/buyback-details/buyback-details"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -68,6 +69,7 @@ const Router = () => {
     { path: '/careers', element: <Careers /> },
     { path: '/Accessories', element: <Accessories /> }
     ,{ path: '/buyback/all', element: <BuybackAll /> }
+    ,{ path: '/buyback/details/:id', element: <BuybackDetails /> }
   ];
 
   return (

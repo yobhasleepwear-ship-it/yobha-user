@@ -370,7 +370,7 @@ const HomePage2 = () => {
                 <span className="text-2xl sm:text-2xl block mt-1 font-light font-futura-pt-light">Reuse</span>
               </h2>
               <p className="mt-3 text-white/90 text-xs font-light leading-relaxed font-futura">
-                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative.
+                Give your YOBHA garment a new life. Simple, clean and seamless.
               </p>
               <button className="mt-5 self-start px-6 py-2.5 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
                 Learn More
@@ -395,7 +395,7 @@ const HomePage2 = () => {
                 <span className="text-2xl md:text-2xl lg:text-2xl block mt-1 font-light font-futura-pt-light">Reuse</span>
               </h2>
               <p className="mt-4 text-white/90 text-sm md:text-sm font-light leading-relaxed font-futura">
-                We'll buy back your gently used YOBHA pieces for credit. Recycle responsibly with our eco initiative and give your luxury wardrobe a new life.
+              Give your YOBHA garment a new life. Simple, clean and seamless.
               </p>
               <button className="mt-6 self-start px-8 py-3 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
                 Learn More

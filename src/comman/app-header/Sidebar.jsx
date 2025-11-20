@@ -20,6 +20,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isGiftsSubmenuOpen, setIsGiftsSubmenuOpen] = useState(false);
   const giftsSubmenuRef = useRef(null);
+  const giftsHoverTimeoutRef = useRef(null);
 
   const resolveSavedCountry = () => {
     if (typeof window === "undefined") return countryOptions[0];
@@ -109,6 +110,15 @@ const Sidebar = ({ isOpen, onClose }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isGiftsHovered]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (giftsHoverTimeoutRef.current) {
+        clearTimeout(giftsHoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleSidebarCountryChange = (selectedCode) => {
     const chosen = countryOptions.find((option) => option.code === selectedCode);
@@ -207,12 +217,19 @@ const Sidebar = ({ isOpen, onClose }) => {
                     data-gifts-menu
                     onMouseEnter={() => {
                       if (!isMobile) {
+                        // Clear any pending timeout
+                        if (giftsHoverTimeoutRef.current) {
+                          clearTimeout(giftsHoverTimeoutRef.current);
+                        }
                         setIsGiftsHovered(true);
                       }
                     }}
                     onMouseLeave={() => {
                       if (!isMobile) {
-                        setIsGiftsHovered(false);
+                        // Add delay before closing to allow mouse to move to submenu
+                        giftsHoverTimeoutRef.current = setTimeout(() => {
+                          setIsGiftsHovered(false);
+                        }, 150);
                       }
                     }}
                   >
@@ -344,8 +361,19 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div
               ref={giftsSubmenuRef}
               className="absolute left-full top-0 h-full w-80 bg-white border-l border-gray-100 animate-slideInRight z-[100001] font-futura-pt-light overflow-y-auto"
-              onMouseEnter={() => setIsGiftsHovered(true)}
-              onMouseLeave={() => setIsGiftsHovered(false)}
+              onMouseEnter={() => {
+                // Clear any pending timeout when mouse enters submenu
+                if (giftsHoverTimeoutRef.current) {
+                  clearTimeout(giftsHoverTimeoutRef.current);
+                }
+                setIsGiftsHovered(true);
+              }}
+              onMouseLeave={() => {
+                // Add delay before closing to allow mouse to return to main menu
+                giftsHoverTimeoutRef.current = setTimeout(() => {
+                  setIsGiftsHovered(false);
+                }, 150);
+              }}
             >
               {/* Submenu Header - LV Style */}
               <div className="flex items-center px-6 py-5 border-b border-gray-100 bg-white sticky top-0 z-10">
