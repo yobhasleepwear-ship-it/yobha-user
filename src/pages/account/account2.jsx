@@ -260,7 +260,7 @@ const AccountPage2 = () => {
         {/* Page Header */}
         <div className="mb-8 md:mb-12">
           <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
-            My Account
+            My Profile
           </h1>
           <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
           <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
