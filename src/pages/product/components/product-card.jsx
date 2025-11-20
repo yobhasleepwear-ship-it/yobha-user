@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { addToWishlist } from "../../../service/wishlist";
@@ -38,6 +38,7 @@ const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
   const autoCarouselRef = useRef(null);
+  const touchTimeoutRef = useRef(null);
 
 
   // Safe data extraction with null checks
@@ -82,10 +83,13 @@ const ProductCard = ({ product }) => {
     // Try to determine currency from priceList or default to INR
     currency = product?.priceList?.[0]?.currency || "INR";
   }
-  const productImages = Array.isArray(product?.images) && product.images.length > 0
-    ? product.images
-    : ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4='];
-  const hasMultipleImages = productImages.length > 1;
+  const productImages = useMemo(() => {
+    return Array.isArray(product?.images) && product.images.length > 0
+      ? product.images
+      : ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4='];
+  }, [product?.images]);
+  
+  const hasMultipleImages = useMemo(() => productImages.length > 1, [productImages.length]);
   
   // Format price
   const formatPrice = (price, currency = 'INR') => {
@@ -149,27 +153,90 @@ const ProductCard = ({ product }) => {
     }
   };
 
-  // Auto carousel effect - Speed up on hover
+  // Handle touch events for mobile devices
+  const handleTouchStart = (e) => {
+    // Only handle touch on the image area, not on buttons
+    if (e.target.closest('button')) {
+      return;
+    }
+    setIsHovered(true);
+    // Clear any existing timeout
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current);
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    // Only handle touch on the image area, not on buttons
+    if (e.target.closest('button')) {
+      return;
+    }
+    // Delay turning off hover state to allow image carousel to continue briefly
+    touchTimeoutRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 3000); // Keep carousel running for 3 seconds after touch ends
+  };
+
+  const handleTouchCancel = () => {
+    // Clear timeout and reset hover state if touch is cancelled
+    if (touchTimeoutRef.current) {
+      clearTimeout(touchTimeoutRef.current);
+    }
+    setIsHovered(false);
+  };
+
+  // Auto carousel effect - Only change images on hover
   useEffect(() => {
-    if (hasMultipleImages) {
-      // Clear existing interval
+    // Store productId in closure to ensure this effect is scoped to this specific card
+    const currentProductId = productId;
+    const imagesLength = productImages.length;
+    
+    // Only proceed if this specific card is hovered and has multiple images
+    if (hasMultipleImages && isHovered) {
+      // Clear existing interval for this card
       if (autoCarouselRef.current) {
         clearInterval(autoCarouselRef.current);
+        autoCarouselRef.current = null;
       }
       
-      // Set interval based on hover state
-      const intervalTime = isHovered ? 2000 : 4000; // Faster on hover
+      // Set interval only when this specific card is hovered
+      const intervalTime = 2000; // Change image every 2 seconds on hover
       autoCarouselRef.current = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+        // Use functional update to ensure we're working with latest state
+        setCurrentImageIndex((prev) => {
+          // Double-check we're still hovering this card (safety check)
+          return (prev + 1) % imagesLength;
+        });
       }, intervalTime);
+    } else {
+      // Clear interval when this card is not hovered
+      if (autoCarouselRef.current) {
+        clearInterval(autoCarouselRef.current);
+        autoCarouselRef.current = null;
+      }
+      // Reset to first image when this card is not hovered
+      if (!isHovered) {
+        setCurrentImageIndex(0);
+      }
     }
 
     return () => {
+      // Cleanup: clear interval when component unmounts or dependencies change
       if (autoCarouselRef.current) {
         clearInterval(autoCarouselRef.current);
+        autoCarouselRef.current = null;
       }
     };
-  }, [hasMultipleImages, productImages.length, isHovered]);
+  }, [hasMultipleImages, productImages.length, isHovered, productId]);
+
+  // Cleanup touch timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (touchTimeoutRef.current) {
+        clearTimeout(touchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Check if product is in wishlist on mount
   useEffect(() => {
@@ -229,6 +296,9 @@ const ProductCard = ({ product }) => {
       {/* Image Container - Clean Minimal Design with Hover Effects */}
       <div 
         className="relative w-full overflow-hidden bg-white"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
         style={{
           aspectRatio: '1 / 1',
           border: 'none',

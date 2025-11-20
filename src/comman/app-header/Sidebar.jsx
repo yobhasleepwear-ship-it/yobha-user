@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { X, ChevronDown, ChevronRight, User, Package, LogOut, Recycle } from "lucide-react";
+import { X, ChevronDown, ChevronRight, User, Package, LogOut, Recycle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "../../assets/yobhaLogo.png";
 import LanguageSwitcher from "../../LanguageSwitcher";
@@ -16,6 +16,10 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [expandedSections, setExpandedSections] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedSidebarCountry, setSelectedSidebarCountry] = useState(null);
+  const [isGiftsHovered, setIsGiftsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isGiftsSubmenuOpen, setIsGiftsSubmenuOpen] = useState(false);
+  const giftsSubmenuRef = useRef(null);
 
   const resolveSavedCountry = () => {
     if (typeof window === "undefined") return countryOptions[0];
@@ -67,11 +71,44 @@ const Sidebar = ({ isOpen, onClose }) => {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
+      // Close sub-sidebar when main sidebar closes
+      setIsGiftsSubmenuOpen(false);
     }
     return () => {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  // Detect mobile/desktop
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Handle clicks outside gifts submenu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (giftsSubmenuRef.current && !giftsSubmenuRef.current.contains(event.target)) {
+        // Check if click is not on the gifts menu item
+        const giftsMenuItem = event.target.closest('[data-gifts-menu]');
+        if (!giftsMenuItem) {
+          setIsGiftsHovered(false);
+        }
+      }
+    };
+
+    if (isGiftsHovered) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isGiftsHovered]);
 
   const handleSidebarCountryChange = (selectedCode) => {
     const chosen = countryOptions.find((option) => option.code === selectedCode);
@@ -97,8 +134,18 @@ const Sidebar = ({ isOpen, onClose }) => {
     navigate("/login");
   };
 
+  // Gifts submenu items
+  const giftsSubmenuItems = [
+    { label: "Gifts For Her", nav: "gifts-personalization", category: "Women" },
+    { label: "Gifts For Him", nav: "gifts-personalization", category: "Men" },
+    { label: "Gifts For Family", nav: "gifts-personalization", category: "Family" },
+    { label: "Gifts For Kids", nav: "gifts-personalization", category: "kids" },
+    { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" },
+    { label: "Personalisation", nav: "personalization" },
+  ];
+
   const mainNavigationItems = [
-    { label: "Gifts & Personalization", nav: "gifts-personalization", giftCard: true },
+    { label: "Gifts & Personalization", nav: "gifts-personalization", giftCard: true, hasSubmenu: true },
     { label: "New", nav: "whats-new", special: true },
     { label: "Men", nav: "Men" },
     { label: "Women", nav: "Women" },
@@ -127,7 +174,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           onClick={onClose}
         ></div>
 
-        <aside className="absolute left-0 top-0 h-full w-80 md:w-96 max-w-[90vw] bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-futura-pt-light">
+        <aside className="absolute left-0 top-0 h-full w-full md:w-96 bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-futura-pt-light relative">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
             <Link to="/home" onClick={onClose}>
@@ -149,6 +196,49 @@ const Sidebar = ({ isOpen, onClose }) => {
                 routePath = `/products?sort=latest`;
               } else if (item.giftCard) {
                 routePath = `/gifts-personalization`;
+              }
+
+              // Handle Gifts & Personalization with submenu
+              if (item.hasSubmenu) {
+                return (
+                  <div
+                    key={item.label}
+                    className="relative"
+                    data-gifts-menu
+                    onMouseEnter={() => {
+                      if (!isMobile) {
+                        setIsGiftsHovered(true);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (!isMobile) {
+                        setIsGiftsHovered(false);
+                      }
+                    }}
+                  >
+                    {/* Mobile: Button to open sub-sidebar */}
+                    {isMobile && (
+                      <button
+                        onClick={() => setIsGiftsSubmenuOpen(true)}
+                        className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                      >
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
+                        <ChevronRight size={18} className="text-gray-700 ml-auto" />
+                      </button>
+                    )}
+                    
+                    {/* Desktop: Regular link */}
+                    {!isMobile && (
+                      <Link
+                        to={routePath}
+                        className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        onClick={onClose}
+                      >
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
+                      </Link>
+                    )}
+                  </div>
+                );
               }
               
               return (
@@ -248,7 +338,100 @@ const Sidebar = ({ isOpen, onClose }) => {
               <LanguageSwitcher />
             </div>
           </nav>
+
+          {/* Desktop: Gifts Submenu - LV Inspired Design */}
+          {isGiftsHovered && !isMobile && (
+            <div
+              ref={giftsSubmenuRef}
+              className="absolute left-full top-0 h-full w-80 bg-white border-l border-gray-100 animate-slideInRight z-[100001] font-futura-pt-light overflow-y-auto"
+              onMouseEnter={() => setIsGiftsHovered(true)}
+              onMouseLeave={() => setIsGiftsHovered(false)}
+            >
+              {/* Submenu Header - LV Style */}
+              <div className="flex items-center px-6 py-5 border-b border-gray-100 bg-white sticky top-0 z-10">
+                <h3 className="h-10 flex items-center text-[13px] uppercase tracking-[0.3em] text-black font-light font-futura-pt-light">
+                  Gifts & Personalization
+                </h3>
+              </div>
+
+              {/* Submenu Items - LV Style */}
+              <nav className="flex flex-col px-8 py-6 space-y-0">
+                {giftsSubmenuItems.map((subItem) => {
+                  let subRoutePath = subItem.nav;
+                  if (subItem.category) {
+                    subRoutePath = `/gifts-personalization?category=${subItem.category}`;
+                  }
+                  return (
+                    <Link
+                      key={subItem.label}
+                      to={subRoutePath}
+                      className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light hover:bg-gray-50/30"
+                      onClick={onClose}
+                    >
+                      <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light inline-block">
+                        {subItem.label}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+          )}
         </aside>
+
+        {/* Mobile: Gifts Sub-sidebar - Slides in from right */}
+        {isMobile && isGiftsSubmenuOpen && (
+          <aside className="absolute right-0 top-0 h-full w-full bg-white shadow-2xl animate-slideInRightMobile border-l border-gray-200 flex flex-col z-[100002] font-futura-pt-light">
+            {/* Header with Back Button */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <button
+                onClick={() => setIsGiftsSubmenuOpen(false)}
+                className="flex items-center gap-2 text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
+              >
+                <ArrowLeft size={20} />
+                <span className="text-[13px] uppercase tracking-[0.25em] font-light font-futura-pt-light">Back</span>
+              </button>
+              <button
+                className="text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
+                onClick={onClose}
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            {/* Submenu Title */}
+            <div className="px-6 py-4 border-b border-gray-100">
+              <h3 className="text-[13px] uppercase tracking-[0.3em] text-black font-light font-futura-pt-light">
+                Gifts & Personalization
+              </h3>
+            </div>
+
+            {/* Submenu Items */}
+            <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-6 space-y-0">
+              {giftsSubmenuItems.map((subItem) => {
+                let subRoutePath = subItem.nav;
+                if (subItem.category) {
+                  subRoutePath = `/gifts-personalization?category=${subItem.category}`;
+                }
+                return (
+                  <Link
+                    key={subItem.label}
+                    to={subRoutePath}
+                    className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                    onClick={() => {
+                      setIsGiftsSubmenuOpen(false);
+                      onClose();
+                    }}
+                  >
+                    <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">
+                      {subItem.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </aside>
+        )}
 
         <style jsx>{`
             @keyframes slideInLeft {
@@ -274,6 +457,30 @@ const Sidebar = ({ isOpen, onClose }) => {
             }
             .animate-slideDown {
               animation: slideDown 0.3s ease-out forwards;
+            }
+            @keyframes slideInRight {
+              0% {
+                transform: translateX(-20px);
+                opacity: 0;
+              }
+              100% {
+                transform: translateX(0);
+                opacity: 1;
+              }
+            }
+            .animate-slideInRight {
+              animation: slideInRight 0.3s ease forwards;
+            }
+            @keyframes slideInRightMobile {
+              0% {
+                transform: translateX(100%);
+              }
+              100% {
+                transform: translateX(0);
+              }
+            }
+            .animate-slideInRightMobile {
+              animation: slideInRightMobile 0.3s ease forwards;
             }
           `}</style>
       </div>,

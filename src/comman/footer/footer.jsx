@@ -84,7 +84,7 @@ const [newsletter , setNewsletter]=useState("")
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
-                  to="/"
+                  to="/home"
                   className="text-text-medium font-light hover:text-black transition-colors duration-300"
                 >
                   Home
