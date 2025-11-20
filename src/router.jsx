@@ -12,7 +12,8 @@ const Checkout = lazy(() => import("./pages/checkout/checkout"));
 const Wishlist = lazy(() => import("./pages/wishlist/wishlist"));
 const Orders = lazy(() => import("./pages/orders/orders"));
 const OrderDetails = lazy(() => import("./pages/order-details/order-details"));
-const Account = lazy(() => import("./pages/account/account"));
+
+const Account = lazy(() => import("./pages/account/account2"));
 const Contact = lazy(() => import("./pages/contact/contact"))
 const About = lazy(() => import("./pages/about/about"))
 const FAQ = lazy(() => import("./pages/faq/faq"))
@@ -46,6 +47,7 @@ const Router = () => {
     { path: "/orders", element: <Orders /> },
     { path: "/order-details/:orderId", element: <OrderDetails /> },
     { path: "/account", element: <Account /> },
+   
     { path: '/contact', element: <Contact /> },
     { path: '/about', element: <About /> },
     { path: '/giftCard-Personalization', element: <GiftCardPersonalize /> },
