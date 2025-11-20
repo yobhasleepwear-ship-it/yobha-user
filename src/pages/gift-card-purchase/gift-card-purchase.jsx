@@ -190,9 +190,9 @@ const GiftCardPurchase = () => {
             amount: amount,
             currency: currency
           }));
-          message.success("Gift Card Order Created Successfully 🎁");
+          message.success("Gift Card Order Created Successfully 🎁", 10000);
         } else {
-          message.success("Gift Card Order Created Successfully 🎁");
+          message.success("Gift Card Order Created Successfully 🎁", 10000);
           message.info("Gift card code will be sent to your email. Please check your inbox.");
         }
         setEmail("");

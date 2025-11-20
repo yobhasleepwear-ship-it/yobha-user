@@ -43,7 +43,7 @@ const GiftCardPage = () => {
 
       // 3️⃣ If no Razorpay order, mark as success
       if (!orderRes.razorpayOrderId) {
-        message.success("Gift Card Order Created Successfully 🎁");
+        message.success("Gift Card Order Created Successfully 🎁", 10000);
         setEmail("");
         setAmount("");
         setLoading(false);

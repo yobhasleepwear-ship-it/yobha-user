@@ -242,7 +242,7 @@ const CheckoutPage = () => {
         return;
       }
       if (orderRes.razorpayOrderId == null) {
-        message.success("Order Created Successfully , your orderId is " + orderPayload.orderId)
+        message.success("Order Created Successfully , your orderId is " + orderPayload.orderId, 10000)
         removeKey("cart");
         setCartItems([])
         return
@@ -551,7 +551,7 @@ const CheckoutPage = () => {
     try {
       const response = CreateOrder(payload)
       console.log(response);
-      message.success("Order Created SuccessFully");
+      message.success("Order Created SuccessFully", 10000);
       // navigate("/orders")
 
     }

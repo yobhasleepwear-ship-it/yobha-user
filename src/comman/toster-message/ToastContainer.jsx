@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 let toastHandler = null;
 
 export const message = {
-  success: (msg) => toastHandler && toastHandler("success", msg),
-  error: (msg) => toastHandler && toastHandler("error", msg),
+  success: (msg, duration) => toastHandler && toastHandler("success", msg, duration),
+  error: (msg, duration) => toastHandler && toastHandler("error", msg, duration),
+  info: (msg, duration) => toastHandler && toastHandler("info", msg, duration),
 };
 
 const ToastContainer = () => {
@@ -34,6 +35,8 @@ const ToastContainer = () => {
         return "bg-green-500";
       case "error":
         return "bg-red-500";
+      case "info":
+        return "bg-blue-500";
       default:
         return "bg-blue-500";
     }
