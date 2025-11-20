@@ -490,10 +490,11 @@ const HomePage2 = () => {
           </div>
 
           {/* Services Grid - Vertical Panels with spacing */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
+          {/* Mobile: Horizontal scroll, Desktop: Grid */}
+          <div className="flex md:grid md:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8 overflow-x-auto md:overflow-x-visible scrollbar-hide pb-2 md:pb-0 -mx-4 sm:-mx-6 md:mx-0 px-4 sm:px-6 md:px-0">
             {/* Services Panel */}
             <div
-              className="group cursor-pointer relative overflow-hidden"
+              className="group cursor-pointer relative overflow-hidden flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-full"
               onClick={() => navigate("/buyback/create")}
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
@@ -516,7 +517,7 @@ const HomePage2 = () => {
 
             {/* Art of Gifting Panel */}
             <div
-              className="group cursor-pointer relative overflow-hidden"
+              className="group cursor-pointer relative overflow-hidden flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-full"
               onClick={() => navigate("/gifts-personalization")}
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
@@ -539,7 +540,7 @@ const HomePage2 = () => {
 
             {/* Personalisation Panel */}
             <div
-              className="group cursor-pointer relative overflow-hidden"
+              className="group cursor-pointer relative overflow-hidden flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-full"
               onClick={() => navigate("/personalization")}
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">

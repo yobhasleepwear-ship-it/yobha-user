@@ -7,14 +7,20 @@ import {
   XCircle,
   Clock,
   ChevronRight,
+  RotateCcw,
 } from "lucide-react";
 import { getOrders } from "../../service/order";
+import BuybackModal from "./BuybackModal";
 
 const OrdersPage = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showBuybackModal, setShowBuybackModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showItemSelection, setShowItemSelection] = useState(false);
 
   // Fetch Orders
   useEffect(() => {
@@ -251,7 +257,26 @@ const OrdersPage = () => {
                 </div>
 
                 {/* Footer */}
-                <div className="border-t border-gray-200 px-4 sm:px-5 md:px-6 py-3 flex justify-end">
+                <div className="border-t border-gray-200 px-4 sm:px-5 md:px-6 py-3 flex flex-wrap justify-end gap-3">
+                  {!isGiftCard && order?.items && order.items.length > 0 && (
+                    <button
+                      onClick={() => {
+                        setSelectedOrder(order);
+                        // If multiple items, show item selection first
+                        if (order.items.length > 1) {
+                          setShowItemSelection(true);
+                        } else {
+                          // Single item, set it and show buyback modal directly
+                          setSelectedItem(order.items[0]);
+                          setShowBuybackModal(true);
+                        }
+                      }}
+                      className="flex items-center gap-2 text-xs sm:text-sm text-black hover:text-gray-600 transition-colors font-light font-futura-pt-light uppercase tracking-wider"
+                    >
+                      <RotateCcw size={16} strokeWidth={1.5} />
+                      Buyback
+                    </button>
+                  )}
                   <button
                     onClick={() => navigate(`/order-details/${order.id}`)}
                     className="flex items-center gap-2 text-xs sm:text-sm text-black hover:text-gray-600 transition-colors font-light font-futura-pt-light uppercase tracking-wider"
@@ -265,6 +290,95 @@ const OrdersPage = () => {
           })}
         </div>
       </div>
+
+      {/* Item Selection Modal (if multiple items) */}
+      {showItemSelection && selectedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl md:text-2xl font-light uppercase tracking-[0.1em] text-black">
+                Select Item for Buyback
+              </h2>
+              <button
+                onClick={() => {
+                  setShowItemSelection(false);
+                  setSelectedOrder(null);
+                  setSelectedItem(null);
+                }}
+                className="p-2 hover:bg-gray-100 transition-colors"
+                aria-label="Close"
+              >
+                <XCircle className="w-5 h-5" strokeWidth={1.5} />
+              </button>
+            </div>
+            <div className="p-6">
+              <p className="text-sm text-gray-600 mb-4 font-light">
+                Please select which item from this order you'd like to submit for buyback.
+              </p>
+              <div className="space-y-3">
+                {selectedOrder.items.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setShowItemSelection(false);
+                      setShowBuybackModal(true);
+                    }}
+                    className="w-full text-left p-4 border-2 border-gray-200 hover:border-black transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-gray-50 border border-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {item.thumbnailUrl || item.image || item.productImage ? (
+                          <img
+                            src={item.thumbnailUrl || item.image || item.productImage}
+                            alt={item.productName || "Product"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Package className="text-black" size={24} strokeWidth={1.5} />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-light text-black mb-1">
+                          {item.productName || "Product"}
+                        </p>
+                        <p className="text-xs text-gray-600 font-light">
+                          Product ID: {item.productId || "N/A"}
+                        </p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-400" strokeWidth={1.5} />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Buyback Modal */}
+      <BuybackModal
+        isOpen={showBuybackModal}
+        onClose={() => {
+          setShowBuybackModal(false);
+          setSelectedOrder(null);
+          setSelectedItem(null);
+        }}
+        onSelectOption={(optionId) => {
+          // Use selected item or first item as fallback
+          const item = selectedItem || selectedOrder?.items?.[0] || null;
+          
+          // Navigate to buyback condition check page
+          navigate("/buyback-from-order", {
+            state: {
+              order: selectedOrder,
+              selectedOption: optionId,
+              selectedItem: item,
+            },
+          });
+        }}
+        order={selectedOrder}
+      />
     </div>
   );
 };

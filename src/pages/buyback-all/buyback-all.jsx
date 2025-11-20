@@ -2,34 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getBuybackDetails } from "../../service/buyback";
 
-// Dummy data for testing UI when API returns empty array
-const dummyRequests = [
-	{
-		id: 101,
-		status: "Pending",
-		productName: "Mulberry Silk Pillowcase",
-		createdAt: new Date().toISOString(),
-		amount: "₹1,200",
-		notes: "Customer wants to trade-in a used pillowcase."
-	},
-	{
-		id: 102,
-		status: "Approved",
-		productName: "Silk Scrunchies Set",
-		createdAt: new Date(Date.now() - 86400000).toISOString(),
-		amount: "₹600",
-		notes: "Approved after quality check."
-	},
-	{
-		id: 103,
-		status: "Rejected",
-		productName: "Silk Eye Mask",
-		createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-		amount: "₹350",
-		notes: "Not eligible due to visible damage."
-	}
-];
-
 const BuybackAll = () => {
 	const [requests, setRequests] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -46,12 +18,12 @@ const BuybackAll = () => {
 				const data = res?.data ?? res;
 				if (isMounted) {
 					const items = Array.isArray(data) ? data : data?.data ?? [];
-					// For testing: if API returns empty, display dummy items
-					setRequests(items.length > 0 ? items : []);
+					setRequests(items);
 				}
 			} catch (err) {
 				if (isMounted) {
 					setError("Failed to load buyback requests.");
+					setRequests([]);
 				}
 			} finally {
 				if (isMounted) setIsLoading(false);
