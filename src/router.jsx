@@ -34,6 +34,7 @@ const Personalization = lazy(() => import("./pages/personalization/personalizati
 const Accessories = lazy(() => import("./pages/Accessories/Accessories"));
 const BuybackAll = lazy(() => import("./pages/buyback-all/buyback-all"));
 const BuybackDetails = lazy(() => import("./pages/buyback-details/buyback-details"));
+const Gifts = lazy(() => import("./pages/gifts/gifts"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -68,8 +69,9 @@ const Router = () => {
     { path: '/career/applyNow/:jobId', element: <CareerApply /> },
     { path: '/careers', element: <Careers /> },
     { path: '/Accessories', element: <Accessories /> }
-    ,{ path: '/buyback/all', element: <BuybackAll /> }
+    ,    { path: '/buyback/all', element: <BuybackAll /> }
     ,{ path: '/buyback/details/:id', element: <BuybackDetails /> }
+    ,{ path: '/gifts', element: <Gifts /> }
   ];
 
   return (

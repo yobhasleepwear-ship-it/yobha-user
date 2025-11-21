@@ -387,7 +387,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 {giftsSubmenuItems.map((subItem) => {
                   let subRoutePath = subItem.nav;
                   if (subItem.category) {
-                    subRoutePath = `/gifts-personalization?category=${subItem.category}`;
+                    subRoutePath = `/gifts?category=${subItem.category}`;
                   }
                   return (
                     <Link
@@ -439,7 +439,7 @@ const Sidebar = ({ isOpen, onClose }) => {
               {giftsSubmenuItems.map((subItem) => {
                 let subRoutePath = subItem.nav;
                 if (subItem.category) {
-                  subRoutePath = `/gifts-personalization?category=${subItem.category}`;
+                  subRoutePath = `/gifts?category=${subItem.category}`;
                 }
                 return (
                   <Link
