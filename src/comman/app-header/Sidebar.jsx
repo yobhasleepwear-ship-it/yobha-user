@@ -276,7 +276,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 onClick={() => toggleAccordion("account")}
                 className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
               >
-                <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.myAccount." + i18n.language)}</span>
+                <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">MY PROFILE</span>
                 {expandedSections.account ? (
                   <ChevronDown size={18} className="text-gray-700" />
                 ) : (
@@ -301,7 +301,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                         onClick={onClose}
                       >
                         <User size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.myAccount." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">MY PROFILE</span>
                       </Link>
                       <Link
                         to="/buyback/all"
