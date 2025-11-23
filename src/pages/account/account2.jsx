@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Send, Gift, User, Mail, Phone, MapPin, Edit3, X, CheckCircle, Package, ChevronRight, Gift as GiftIcon } from "lucide-react";
+import { Send, Gift, User, Mail, Phone, MapPin, Edit3, X, CheckCircle, Package, ChevronRight, Gift as GiftIcon, Wallet } from "lucide-react";
 import { addAddress, updateAddress, deleteAddress, getAddresses, createReferral } from "../../service/address";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { updateUserName } from "../../service/user";
 import { getOrders } from "../../service/order";
+import { getLoyaltyAudit } from "../../service/wallet";
 import CountryDropdown from "../../countryDropdown";
+
+// Toggle for dummy data - set to false to use real API
+const USE_DUMMY_DATA = true;
 
 const AccountPage2 = () => {
   const navigate = useNavigate();
@@ -13,6 +17,9 @@ const AccountPage2 = () => {
   const [LocalUserData, setLocalUserData] = useState({});
   const [orders, setOrders] = useState([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [walletHistory, setWalletHistory] = useState([]);
+  const [isLoadingWallet, setIsLoadingWallet] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(0);
   const [editingField, setEditingField] = useState(null);
   const [tempData, setTempData] = useState({});
   const [editingAddressId, setEditingAddressId] = useState(null);
@@ -23,6 +30,119 @@ const AccountPage2 = () => {
   const [loading, setLoading] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
   const [savingName, setSavingName] = useState(false);
+
+  // Create dummy wallet data for testing
+  const createDummyWalletData = () => {
+    return {
+      totalCount: 8,
+      page: 1,
+      pageSize: 20,
+      items: [
+        {
+          id: "1",
+          userId: "USR123456",
+          email: "user@example.com",
+          phoneNumber: "+919876543210",
+          reason: "BuybackApproved",
+          relatedEntityId: "BUYBACK001",
+          operation: "Credit",
+          points: 50,
+          balanceAfter: 240,
+          metadata: { adminId: "ADMIN001", note: "Approved buyback" },
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: "2",
+          userId: "USR123456",
+          email: "user@example.com",
+          phoneNumber: "+919876543210",
+          reason: "BuybackApproved",
+          relatedEntityId: "BUYBACK002",
+          operation: "Credit",
+          points: 30,
+          balanceAfter: 190,
+          metadata: null,
+          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+          id: "3",
+          userId: "USR123456",
+          email: "user@example.com",
+          phoneNumber: "+919876543210",
+          reason: "RecycledGarment",
+          relatedEntityId: "RECYCLE001",
+          operation: "Credit",
+          points: 15,
+          balanceAfter: 160,
+          metadata: null,
+          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+          id: "4",
+          userId: "USR123456",
+          email: "user@example.com",
+          phoneNumber: "+919876543210",
+          reason: "OrderPayment",
+          relatedEntityId: "ORD001",
+          operation: "Debit",
+          points: 50,
+          balanceAfter: 145,
+          metadata: null,
+          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+        {
+          id: "5",
+          userId: "USR123456",
+          email: "user@example.com",
+          phoneNumber: "+919876543210",
+          reason: "BuybackApproved",
+          relatedEntityId: "BUYBACK003",
+          operation: "Credit",
+          points: 40,
+          balanceAfter: 195,
+          metadata: null,
+          createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+      ],
+    };
+  };
+
+  const fetchWalletHistory = useCallback(async () => {
+    try {
+      setIsLoadingWallet(true);
+      let response;
+      
+      if (USE_DUMMY_DATA) {
+        // Use dummy data for testing
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+        response = createDummyWalletData();
+      } else {
+        // Use real API
+        response = await getLoyaltyAudit(1, 20);
+      }
+
+      if (response && response.items) {
+        const history = response.items.map((item) => ({
+          id: item.id,
+          reason: item.reason,
+          operation: item.operation,
+          points: item.points,
+          balanceAfter: item.balanceAfter,
+          createdAt: item.createdAt,
+        }));
+
+        setWalletHistory(history);
+        // Set current balance from most recent transaction
+        if (history.length > 0) {
+          setWalletBalance(history[0].balanceAfter);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch wallet history", err);
+    } finally {
+      setIsLoadingWallet(false);
+    }
+  }, []);
 
   // Load user data from localStorage on component mount
   useEffect(() => {
@@ -47,6 +167,7 @@ const AccountPage2 = () => {
     loadUserData();
     GetAddress();
     fetchOrders();
+    fetchWalletHistory();
 
     const handleStorageChange = (e) => {
       if (e.key === "user") {
@@ -59,7 +180,7 @@ const AccountPage2 = () => {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
+  }, [fetchWalletHistory]);
 
   const fetchOrders = async () => {
     try {
@@ -73,6 +194,24 @@ const AccountPage2 = () => {
     }
   };
 
+  // Format reason text for display
+  const formatWalletReason = (reason, operation, points) => {
+    if (operation === "Credit") {
+      if (reason === "BuybackApproved") {
+        return `+${points} Renewed Garment`;
+      }
+      if (reason?.toLowerCase().includes("recycl")) {
+        return `+${points} Recycled Garment`;
+      }
+      return `+${points} ${reason || "Credit"}`;
+    } else {
+      if (reason === "OrderPayment") {
+        return `-${points} Redeemed on Purchase`;
+      }
+      return `-${points} ${reason || "Debit"}`;
+    }
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return "N/A";
     const d = new Date(dateStr);
@@ -82,9 +221,6 @@ const AccountPage2 = () => {
       year: "numeric",
     });
   };
-
-  const formatPrice = (price, cur) =>
-    `${cur}${Number(price || 0).toLocaleString("en-IN")}`;
 
   // Function to update localStorage with new user data
   const updateLocalStorage = (updatedData) => {
@@ -172,7 +308,7 @@ const AccountPage2 = () => {
     } else if (editingField === "name") {
       setSavingName(true);
       try {
-        const response = await updateUserName({ "fullName": tempData.name });
+        await updateUserName({ "fullName": tempData.name });
         message.success("Name Updated Successfully");
         updateLocalStorage({
           name: tempData.name,
@@ -510,17 +646,90 @@ const AccountPage2 = () => {
                         </div>
                       )}
                     </div>
-                    <button
-                      onClick={() => startEdit("address")}
-                      className="w-full px-6 py-3.5 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Edit3 size={16} />
-                      Add Address
-                    </button>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => startEdit("address")}
+                        className="w-1/2 px-6 py-3.5 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Edit3 size={16} />
+                        Add Address
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
+
+          {/* Wallet History Section */}
+          <div className="bg-white border border-gray-200">
+            <div className="px-6 md:px-8 py-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Wallet size={20} className="text-gray-600" />
+                  <h2 className="text-lg sm:text-xl md:text-xl font-light text-black uppercase font-futura-pt-light">
+                    Wallet History
+                  </h2>
+                </div>
+                {walletBalance > 0 && (
+                  <div className="text-right">
+                    <p className="text-xs uppercase text-gray-500 font-light">Balance</p>
+                    <p className="text-lg font-light text-black">{walletBalance} Credits</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="p-6 md:p-8">
+              {isLoadingWallet ? (
+                <div className="text-center py-8">
+                  <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-600 text-sm font-light">Loading wallet history...</p>
+                </div>
+              ) : walletHistory.length === 0 ? (
+                <div className="text-center py-8">
+                  <Wallet size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-600 text-sm font-light">No wallet activity yet</p>
+                  <button
+                    onClick={() => navigate("/wallet")}
+                    className="mt-4 px-4 py-2 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors"
+                  >
+                    View Full Wallet
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-3 mb-6">
+                    {walletHistory.slice(0, 5).map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <p className="text-sm font-light text-black mb-1">
+                            {formatWalletReason(item.reason, item.operation, item.points)}
+                          </p>
+                          <p className="text-xs font-light text-gray-500">
+                            {formatDate(item.createdAt)}
+                          </p>
+                        </div>
+                        <div className="text-xs font-light text-gray-500 ml-4">
+                          Balance: {item.balanceAfter}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => navigate("/wallet")}
+                      className="w-1/2 px-4 py-2 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                    >
+                      View Full Wallet History
+                      <ChevronRight size={14} strokeWidth={1.5} />
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
 
           {/* My Orders Section */}
           <div className="bg-white border border-gray-200">
@@ -602,13 +811,15 @@ const AccountPage2 = () => {
                     })}
                   </div>
                   {orders.length > 3 && (
-                    <button
-                      onClick={() => navigate("/orders")}
-                      className="w-full px-4 py-2 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
-                    >
-                      View All
-                      <ChevronRight size={14} strokeWidth={1.5} />
-                    </button>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => navigate("/orders")}
+                        className="w-1/2 px-4 py-2 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                      >
+                        View All
+                        <ChevronRight size={14} strokeWidth={1.5} />
+                      </button>
+                    </div>
                   )}
                 </>
               )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { X, ChevronDown, ChevronRight, User, Package, LogOut, Recycle, ArrowLeft } from "lucide-react";
+import { X, ChevronDown, ChevronRight, User, Package, LogOut, Recycle, ArrowLeft, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "../../assets/yobhaLogo.png";
 import LanguageSwitcher from "../../LanguageSwitcher";
@@ -310,6 +310,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                       >
                         <Recycle size={16} />
                         <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.buyback." + i18n.language)}</span>
+                      </Link>
+                      <Link
+                        to="/wallet"
+                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        onClick={onClose}
+                      >
+                        <Wallet size={16} />
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">Wallet</span>
                       </Link>
                       <Link
                         to="/orders"
