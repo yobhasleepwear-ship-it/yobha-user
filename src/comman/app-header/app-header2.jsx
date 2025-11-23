@@ -440,7 +440,7 @@ const HeaderWithSidebar2 = () => {
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest transition-all duration-300 pt-6 text-left"
                     >
                       <User size={16} />
-                      <span>My Account</span>
+                      <span>MY PROFILE</span>
                     </button>
                     <button
                       onClick={() => {
@@ -450,7 +450,7 @@ const HeaderWithSidebar2 = () => {
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest transition-all duration-300 text-left"
                     >
                       <LogOut size={16} />
-                      <span>Logout</span>
+                      <span>LOGOUT</span>
                     </button>
                   </div>
                 </div>
