@@ -316,7 +316,7 @@ const HomePage2 = () => {
             </div>
           ) : products.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6" style={{ gap: '0.75rem' }}>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1">
                 {products
                   .filter((p) => p.available)
                   .slice(0, 8)
