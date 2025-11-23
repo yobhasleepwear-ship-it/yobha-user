@@ -1016,6 +1016,31 @@ const Gifts = () => {
 
   return (
     <div className="min-h-screen bg-white font-futura-pt-light">
+      {/* Header Above Hero Section - Without Filters */}
+      <div className="w-full bg-white border-b border-gray-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-3 sm:py-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <button
+                onClick={() => {
+                  const categories = Object.keys(categoryMap);
+                  const currentIndex = categories.findIndex(cat => categoryMap[cat].segment === currentCategory.segment);
+                  const nextIndex = (currentIndex + 1) % categories.length;
+                  navigate(`/gifts?category=${categories[nextIndex]}`);
+                }}
+                className="flex items-center gap-1.5 sm:gap-2 text-black hover:text-gray-600 transition-colors uppercase tracking-wider text-sm sm:text-base font-light"
+              >
+                <span className="font-light">{currentCategory.name}</span>
+                <ChevronDown size={16} className="sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
+              </button>
+              <span className="text-xs sm:text-sm text-gray-600 font-light">
+                {products.length} {products.length === 1 ? 'item' : 'items'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Large Hero Banner Image - Full Width */}
       <div ref={headerTriggerRef} className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] mb-0 overflow-hidden bg-gray-100">
           <img
