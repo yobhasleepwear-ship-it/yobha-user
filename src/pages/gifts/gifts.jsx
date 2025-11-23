@@ -48,8 +48,11 @@ const Gifts = () => {
   const [wishlistItems, setWishlistItems] = useState(new Set());
   const [wishlistLoading, setWishlistLoading] = useState({});
   const [openAccordion, setOpenAccordion] = useState("sortBy");
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const stickyHeaderRef = React.useRef(null);
   const headerTriggerRef = React.useRef(null);
+  const categoryDropdownRef = React.useRef(null);
+  const categoryButtonRef2 = React.useRef(null);
 
   // Flag to toggle between dummy data and API - Set to true to use dummy data
   // Change to false when ready to use real API
@@ -626,6 +629,34 @@ const Gifts = () => {
     };
   }, []);
 
+  // Handle outside click to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target) &&
+        categoryButtonRef2.current &&
+        !categoryButtonRef2.current.contains(event.target)
+      ) {
+        setShowCategoryDropdown(false);
+      }
+    };
+
+    if (showCategoryDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCategoryDropdown]);
+
+  // Handle category selection
+  const handleCategorySelect = (categoryKey) => {
+    navigate(`/gifts?category=${categoryKey}`);
+    setShowCategoryDropdown(false);
+  };
+
   // Get product image
   const getProductImage = (product) => {
     if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
@@ -1021,18 +1052,9 @@ const Gifts = () => {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-3 sm:py-4">
             <div className="flex items-center gap-3 sm:gap-4">
-              <button
-                onClick={() => {
-                  const categories = Object.keys(categoryMap);
-                  const currentIndex = categories.findIndex(cat => categoryMap[cat].segment === currentCategory.segment);
-                  const nextIndex = (currentIndex + 1) % categories.length;
-                  navigate(`/gifts?category=${categories[nextIndex]}`);
-                }}
-                className="flex items-center gap-1.5 sm:gap-2 text-black hover:text-gray-600 transition-colors uppercase tracking-wider text-sm sm:text-base font-light"
-              >
+              <div className="flex items-center gap-1 sm:gap-2 text-black uppercase tracking-wider text-xs sm:text-sm md:text-base font-light">
                 <span className="font-light">{currentCategory.name}</span>
-                <ChevronDown size={16} className="sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
-              </button>
+              </div>
               <span className="text-xs sm:text-sm text-gray-600 font-light">
                 {products.length} {products.length === 1 ? 'item' : 'items'}
               </span>
@@ -1061,19 +1083,41 @@ const Gifts = () => {
         >
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between py-3 sm:py-4">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <button
-                onClick={() => {
-                  const categories = Object.keys(categoryMap);
-                  const currentIndex = categories.findIndex(cat => categoryMap[cat].segment === currentCategory.segment);
-                  const nextIndex = (currentIndex + 1) % categories.length;
-                  navigate(`/gifts?category=${categories[nextIndex]}`);
-                }}
-                className="flex items-center gap-1.5 sm:gap-2 text-black hover:text-gray-600 transition-colors uppercase tracking-wider text-sm sm:text-base font-light"
-              >
-                <span className="font-light">{currentCategory.name}</span>
-                <ChevronDown size={16} className="sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
-              </button>
+            <div className="flex items-center gap-3 sm:gap-4 relative">
+              <div className="relative">
+                <button
+                  ref={categoryButtonRef2}
+                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                  className="flex items-center gap-1 sm:gap-2 text-black hover:text-gray-600 transition-colors uppercase tracking-wider text-xs sm:text-sm md:text-base font-light"
+                >
+                  <span className="font-light">{currentCategory.name}</span>
+                  <ChevronDown size={14} className={`sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px] transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+                </button>
+                {showCategoryDropdown && (
+                  <div
+                    ref={categoryDropdownRef}
+                    className="absolute top-full left-0 mt-1 sm:mt-2 bg-white border border-gray-200 shadow-lg z-50 min-w-[160px] sm:min-w-[200px]"
+                  >
+                    {Object.keys(categoryMap).map((categoryKey) => {
+                      const category = categoryMap[categoryKey];
+                      const isActive = currentCategory.segment === category.segment;
+                      return (
+                        <button
+                          key={categoryKey}
+                          onClick={() => handleCategorySelect(categoryKey)}
+                          className={`w-full text-left px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm uppercase tracking-wider font-light transition-colors ${
+                            isActive
+                              ? 'text-black font-medium border-l-2 border-black'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          {category.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
               <span className="text-xs sm:text-sm text-gray-600 font-light">
                 {products.length} {products.length === 1 ? 'item' : 'items'}
               </span>
