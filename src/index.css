@@ -5,7 +5,8 @@
 /* Futura Regular Font Face */
 @font-face {
   font-family: 'Futura Regular';
-  src: url('./assets/fonts/Futura-Regular.ttf') format('truetype');
+  src: url('./assets/fonts/Futura-Regular.woff2') format('woff2'),
+       url('./assets/fonts/Futura-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -14,7 +15,8 @@
 /* Futura Light Font Face */
 @font-face {
   font-family: 'Futura Light';
-  src: url('./assets/fonts/FuturaLT-Light.ttf') format('truetype');
+  src: url('./assets/fonts/FuturaLT-Light.woff2') format('woff2'),
+       url('./assets/fonts/FuturaLT-Light.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -23,7 +25,8 @@
 /* Futura Book Font Face */
 @font-face {
   font-family: 'Futura Book';
-  src: url('./assets/fonts/Futura-Book.ttf') format('truetype');
+  src: url('./assets/fonts/Futura-Book.woff2') format('woff2'),
+       url('./assets/fonts/Futura-Book.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
