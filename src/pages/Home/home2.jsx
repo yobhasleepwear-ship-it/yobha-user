@@ -302,9 +302,9 @@ const HomePage2 = () => {
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
         <div className=" mx-auto">
           <div className="text-center mb-6 md:mb-8">
-            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black  mb-3 Futura-regular">
+            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-light text-black  mb-3 font-futura-pt-light">
               Curated By YOBHA
-            </h2>
+            </h3>
             <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed Futura-book">
               New Winter Collection
             </p>
