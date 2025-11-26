@@ -366,11 +366,11 @@ const ProductCard = ({ product }) => {
       >
         {/* Product Name */}
         <h3 
-          className="text-black font-light font-futura-pt-light mb-2 line-clamp-2 transition-colors duration-300"
+          className="text-black text-sm font-light Futura-Light mb-2 line-clamp-2 transition-colors duration-300"
           style={{
-            fontSize: '0.875rem',
+          
             lineHeight: '1.25rem',
-            fontWeight: 300,
+          
             color: isHovered ? '#1a1a1a' : '#000000'
           }}
         >
@@ -379,11 +379,11 @@ const ProductCard = ({ product }) => {
 
         {/* Price */}
         <p 
-          className="text-black font-light font-futura-pt-light transition-all duration-300"
+          className="text-black text-sm font-light Futura-light transition-all duration-300"
           style={{
-            fontSize: '0.875rem',
+            
             lineHeight: '1.25rem',
-            fontWeight: 300,
+        
             transform: isHovered ? 'translateX(2px)' : 'translateX(0)'
           }}
         >

@@ -10,6 +10,9 @@ module.exports = {
         'sweet-sans': ['Futura', 'Futura PT', 'Futura PT Light', 'Futura PT-Light', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
         'futura': ['Futura', 'Futura PT', 'Futura PT Light', 'Futura PT-Light', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
         'futura-pt-light': ['Futura PT Light', 'Futura PT-Light', 'Futura PT', 'Futura', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'futura-light': ['Futura Light', 'Futura-Light', 'Futura', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'futura-regular': ['Futura Regular', 'Futura-Regular', 'Futura', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'futura-book': ['Futura Book', 'Futura-Book', 'Futura', 'Century Gothic', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       colors: {
         'luxury': {

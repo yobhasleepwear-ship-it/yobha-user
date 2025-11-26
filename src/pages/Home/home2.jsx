@@ -137,8 +137,8 @@ const HomePage2 = () => {
   };
 
   const genderCategories = [
-    { id: "Women", title: "WOMEN", image: WOMEN_IMAGE },
-    { id: "men", title: "MEN", image: MEN_IMAGE },
+    { id: "Women", title: "Women", image: WOMEN_IMAGE },
+    { id: "men", title: "Men", image: MEN_IMAGE },
     { id: "kids", title: "Kids", image: KID_IMAGE },
     { id: "pets", title: "Pets", image: PET_IMAGE },
     { id: "couple", title: "Couple", image: COUPLE_IMAGE },
@@ -292,7 +292,7 @@ const HomePage2 = () => {
                 // }
                 navigate("/gifts-personalization")
               }}
-              className="px-8 py-3 bg-black text-white text-sm sm:text-base md:text-lg font-light rounded-full uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]"
+              className="px-8 py-3 bg-black text-white text-sm sm:text-base md:text-lg Futura-Regular font-light rounded-full  tracking-[0.1em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]"
             >
               Gifts
             </button>
@@ -302,10 +302,10 @@ const HomePage2 = () => {
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
         <div className=" mx-auto">
           <div className="text-center mb-6 md:mb-8">
-            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-3 font-futura-pt-light">
+            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black  mb-3 Futura-regular">
               Curated By YOBHA
             </h2>
-            <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed">
+            <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed Futura-book">
               New Winter Collection
             </p>
           </div>
@@ -333,7 +333,7 @@ const HomePage2 = () => {
               <div className="mt-8 text-center">
                 <button
                   onClick={() => navigate("/products")}
-                  className="px-10 py-3 bg-black text-white text-sm md:text-base uppercase tracking-[0.3em] rounded-full hover:bg-gray-900 transition-all duration-300 shadow-[0_12px_30px_rgba(0,0,0,0.12)] font-light font-futura-pt-light"
+                  className="px-10 py-3 bg-black text-white text-sm md:text-base tracking-[0.1em] rounded-full hover:bg-gray-900 transition-all duration-300 shadow-[0_12px_30px_rgba(0,0,0,0.12)] font-light Futura-Regular"
                 >
                   Explore All
                 </button>
@@ -365,14 +365,14 @@ const HomePage2 = () => {
           <div className="absolute inset-0 flex flex-col justify-end px-6 pb-8">
             <div className="max-w-sm font-futura">
               <h2 className="text-white font-light font-futura-pt-light">
-                <span className="text-2xl sm:text-2xl block mb-1 font-light font-futura-pt-light">Recycle</span>
-                <span className="text-2xl sm:text-2xl block font-light font-futura-pt-light">Renew</span>
-                <span className="text-2xl sm:text-2xl block mt-1 font-light font-futura-pt-light">Reuse</span>
+                <span className="text-lg block mb-1 font-light Futura-book">Recycle</span>
+                <span className="text-lg block font-light Futura-book">Renew</span>
+                <span className="text-lg block mt-1 font-light Futura-book">Reuse</span>
               </h2>
-              <p className="mt-3 text-white/90 text-xs font-light leading-relaxed font-futura">
+              <p className="mt-3 text-white/90 text-sm font-light leading-relaxed font-futura-light">
                 Give your YOBHA garment a new life. Simple, clean and seamless.
               </p>
-              <button className="mt-5 self-start px-6 py-2.5 bg-white border border-gray-900 text-gray-900 text-xs uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
+              <button className="mt-5 self-start px-6 py-2.5 bg-white border border-gray-900 text-gray-900 text-sm tracking-[0.1em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full Futura-Regular">
                 Learn More
               </button>
             </div>
@@ -389,15 +389,15 @@ const HomePage2 = () => {
           >
             <div className="absolute inset-0 bg-black/65" />
             <div className="relative z-10 max-w-2xl">
-              <h2 className="text-white font-light font-futura-pt-light">
-                <span className="text-2xl md:text-2xl lg:text-2xl block mb-1 font-light font-futura-pt-light">Recycle</span>
-                <span className="text-2xl md:text-2xl lg:text-2xl block font-light font-futura-pt-light">Renew</span>
-                <span className="text-2xl md:text-2xl lg:text-2xl block mt-1 font-light font-futura-pt-light">Reuse</span>
+              <h2 className="text-white font-light ">
+                <span className="text-lg block mb-1 font-light Futura-book">Recycle</span>
+                <span className="text-lg block font-light Futura-book">Renew</span>
+                <span className="text-lg block mt-1 font-light Futura-book">Reuse</span>
               </h2>
-              <p className="mt-4 text-white/90 text-sm md:text-sm font-light leading-relaxed font-futura">
+              <p className="mt-4 text-white/90 text-sm  font-light leading-relaxed Futura-light">
               Give your YOBHA garment a new life. Simple, clean and seamless.
               </p>
-              <button className="mt-6 self-start px-8 py-3 bg-white border border-gray-900 text-gray-900 text-sm uppercase tracking-[0.15em] font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full font-futura">
+              <button className="mt-6 self-start px-8 py-3 bg-white border border-gray-900 text-gray-900 text-sm  font-light hover:bg-gray-900 hover:text-white transition-all duration-500 rounded-full Futura-Regular">
                 Learn More
               </button>
             </div>
@@ -409,11 +409,11 @@ const HomePage2 = () => {
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
         <div className=" mx-auto">
           <div className="text-center mb-8 md:mb-10">
-            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black  mb-4 Futura-Regular">
               Shop by Category
             </h2>
             <div className="w-12 md:w-16 h-px bg-gray-300 mx-auto mb-4 md:mb-5" />
-            <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light leading-relaxed Futura-book">
               Discover timeless elegance across our curated collections
             </p>
           </div>
@@ -449,7 +449,7 @@ const HomePage2 = () => {
                 </div>
 
                 <div className="mt-3 md:mt-4 text-center">
-                  <h3 className="text-[10px] sm:text-[11px] md:text-xs font-light text-gray-900 uppercase group-hover:text-gray-700 transition-colors duration-500 font-sweet-sans">
+                  <h3 className="text-sm font-light text-gray-900  group-hover:text-gray-700 transition-colors duration-500 Futura-light">
                     {category.title}
                   </h3>
                   <div className="mt-1.5 md:mt-2 h-[1px] w-0 mx-auto bg-gray-400 group-hover:w-6 md:group-hover:w-8 transition-all duration-700 ease-out" />
@@ -478,13 +478,14 @@ const HomePage2 = () => {
 
       {/* YOBHA Services Section - Louis Vuitton Style */}
       <section className="relative w-full bg-white py-12 md:py-16 lg:py-20 font-futura-light-pt">
-        <div className="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+        <div className="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 font-sweet-sans">
           {/* Section Header */}
           <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+            <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black  mb-4 Futura-Regular">
               YOBHA Services
             </h2>
-            <p className="text-gray-600 text-xs md:text-sm max-w-3xl mx-auto font-light leading-relaxed font-futura-pt-light">
+            <div className="w-12 md:w-16 h-px bg-gray-300 mx-auto mb-4 md:mb-5" />
+            <p className="text-gray-600 text-xs md:text-sm max-w-3xl mx-auto font-light leading-relaxed Futura-book">
               YOBHA offers an array of tailored services — including comprehensive support, signature gift wrapping, and exclusive personalisation options.
             </p>
           </div>
@@ -509,7 +510,7 @@ const HomePage2 = () => {
               </div>
               {/* Title below image */}
               <div className="bg-white py-6 md:py-8 px-6 md:px-8">
-                <h3 className="text-sm md:text-base lg:text-lg font-light text-black uppercase font-futura-pt-light">
+                <h3 className="text-sm md:text-base lg:text-lg font-light text-black  Futura-light">
                   Renewal
                 </h3>
               </div>
@@ -532,7 +533,7 @@ const HomePage2 = () => {
               </div>
               {/* Title below image */}
               <div className="bg-white py-6 md:py-8 px-6 md:px-8">
-                <h3 className="text-sm md:text-base lg:text-lg font-light text-black uppercase font-futura-pt-light">
+                <h3 className="text-sm md:text-base lg:text-lg font-light text-black  Futura-light">
                   Art of Gifting
                 </h3>
               </div>
@@ -555,7 +556,7 @@ const HomePage2 = () => {
               </div>
               {/* Title below image */}
               <div className="bg-white py-6 md:py-8 px-6 md:px-8">
-                <h3 className="text-sm md:text-base lg:text-lg font-light text-black uppercase font-futura-pt-light">
+                <h3 className="text-sm md:text-base lg:text-lg font-light text-black Futura-light">
                   Personalisation
                 </h3>
               </div>
@@ -829,10 +830,11 @@ const HomePage2 = () => {
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
             <div className="text-center mb-6 md:mb-8">
-              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-2 font-futura-pt-light">
+              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black  mb-4 Futura-Regular">
                 Recently Viewed
               </h2>
-              <p className="text-gray-600 text-xs max-w-xl mx-auto font-light font-sweet-sans">
+              <div className="w-12 md:w-16 h-px bg-gray-300 mx-auto mb-4 md:mb-5" />
+              <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light leading-relaxed Futura-book">
                 Revisit the pieces that caught your eye
               </p>
             </div>
@@ -847,7 +849,7 @@ const HomePage2 = () => {
                     className="group cursor-pointer flex-shrink-0 w-[calc((100%-16px)/2)] max-w-[180px]"
                     onClick={() => navigate(`/productDetail/${item.id}`)}
                   >
-                    <div className="relative h-40 w-full overflow-hidden bg-gray-50 border border-gray-200/50 rounded-lg group-hover:border-gray-300 transition-all duration-300 mb-2">
+                    <div className="relative h-40 w-full overflow-hidden bg-gray-50 border border-gray-200/50  group-hover:border-gray-300 transition-all duration-300 mb-2">
                       <img
                         src={item.images?.[0]}
                         alt={item.name}
@@ -855,7 +857,7 @@ const HomePage2 = () => {
                       />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-xs font-light text-gray-900 uppercase tracking-wide line-clamp-2 group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
+                      <h3 className="text-xs font-light text-gray-900 line-clamp-2 group-hover:text-luxury-gold transition-colors duration-300 Futura-light">
                         {item.name}
                       </h3>
                     </div>
@@ -880,7 +882,7 @@ const HomePage2 = () => {
                     className="group cursor-pointer w-full max-w-[200px]"
                     onClick={() => navigate(`/productDetail/${item.id}`)}
                   >
-                    <div className="relative h-48 w-full overflow-hidden bg-gray-50 border border-gray-200/50 rounded-xl group-hover:border-gray-300 group-hover:shadow-lg transition-all duration-300 mb-3">
+                    <div className="relative h-48 w-full overflow-hidden bg-gray-50 border border-gray-200/50  group-hover:border-gray-300 group-hover:shadow-lg transition-all duration-300 mb-3">
                       <img
                         src={item.images?.[0]}
                         alt={item.name}
@@ -888,7 +890,7 @@ const HomePage2 = () => {
                       />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-sm font-light text-gray-900 uppercase tracking-wide line-clamp-2 min-h-[2rem] group-hover:text-luxury-gold transition-colors duration-300 font-sweet-sans">
+                      <h3 className="text-sm font-light text-gray-900  line-clamp-2 min-h-[2rem] group-hover:text-luxury-gold transition-colors duration-300 Futura-light">
                         {item.name}
                       </h3>
                     </div>
@@ -903,10 +905,11 @@ const HomePage2 = () => {
       {/* Follow Us on Instagram Section */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-3 font-futura-pt-light">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black  mb-4 Futura-Regular">
             Follow Us
           </h2>
-          <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light mb-6 md:mb-8 font-sweet-sans">
+          <div className="w-12 md:w-16 h-px bg-gray-300 mx-auto mb-4 md:mb-5" />
+          <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto font-light leading-relaxed mb-6 md:mb-8 Futura-book">
             Join our community on Instagram for the latest updates and exclusive content
           </p>
 
@@ -915,7 +918,7 @@ const HomePage2 = () => {
               href="https://www.instagram.com/yobha.world"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 font-sweet-sans rounded-full"
+              className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 rounded-full"
             >
               {/* Instagram Icon */}
               <div className="relative">
@@ -928,7 +931,7 @@ const HomePage2 = () => {
                 </svg>
               </div>
               {/* Text */}
-              <span className="text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.25em] text-gray-900 group-hover:text-white transition-colors duration-500 font-light font-sweet-sans">
+              <span className="text-xs md:text-sm text-gray-900 group-hover:text-white transition-colors duration-500 font-light Futura-Regular">
                 YOBHA.WORLD
               </span>
               {/* Arrow */}
