@@ -450,7 +450,7 @@ const HomePage2 = () => {
                 </div>
 
                 <div className="mt-3 md:mt-4 text-center">
-                  <h3 className="text-sm font-light text-gray-900  group-hover:text-gray-700 transition-colors duration-500 font-futura-pt-light">
+                  <h3 className="text-sm font-light text-gray-700   transition-colors duration-500 font-futura-pt-light">
                     {category.title}
                   </h3>
                   <div className="mt-1.5 md:mt-2 h-[1px] w-0 mx-auto bg-gray-400 group-hover:w-6 md:group-hover:w-8 transition-all duration-700 ease-out" />

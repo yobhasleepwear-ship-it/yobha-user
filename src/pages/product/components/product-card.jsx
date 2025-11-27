@@ -366,7 +366,7 @@ const ProductCard = ({ product }) => {
       >
         {/* Product Name */}
         <h3 
-          className="text-gray-700 text-sm font-light font-futura-light mb-2 line-clamp-2 transition-colors duration-300"
+          className="text-gray-700 text-sm font-light font-futura-pt-light mb-2 line-clamp-2 transition-colors duration-300"
           style={{
           
             lineHeight: '1.25rem',
