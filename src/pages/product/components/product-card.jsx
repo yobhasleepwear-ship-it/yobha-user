@@ -379,7 +379,7 @@ const ProductCard = ({ product }) => {
 
         {/* Price */}
         <p 
-          className="text-gray-600 text-sm font-light font-futura-light transition-all duration-300"
+          className="text-gray-400 text-sm font-light font-futura-light transition-all duration-300"
           style={{
             
             lineHeight: '1.25rem',
