@@ -187,8 +187,6 @@ const ProductCard = ({ product }) => {
 
   // Auto carousel effect - Only change images on hover
   useEffect(() => {
-    // Store productId in closure to ensure this effect is scoped to this specific card
-    const currentProductId = productId;
     const imagesLength = productImages.length;
     
     // Only proceed if this specific card is hovered and has multiple images
@@ -366,7 +364,7 @@ const ProductCard = ({ product }) => {
       >
         {/* Product Name */}
         <h3 
-          className="text-gray-700 text-sm font-light font-futura-pt-light mb-2 line-clamp-2 transition-colors duration-300"
+          className="text-gray-700 text-sm font-light font-futura-pt-light mb-2 line-clamp-2 transition-colors duration-300 min-h-[2.5rem]"
           style={{
           
             lineHeight: '1.25rem',
