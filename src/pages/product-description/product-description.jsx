@@ -346,24 +346,42 @@ const ProductDetailPage = () => {
     setCarouselIndex(0);
   }, [itemsPerView, newProducts.length]);
 
-  // Handle scroll to change images
+  // Handle scroll to change images (both horizontal on mobile and vertical on desktop)
   useEffect(() => {
     const scrollContainer = imageScrollRef.current;
     if (!scrollContainer || !product || product.images.length <= 1) return;
 
     const handleScroll = () => {
-      const scrollTop = scrollContainer.scrollTop;
-      const containerHeight = scrollContainer.clientHeight;
-      const imageHeight = containerHeight; // Each image takes full container height
+      const isMobile = window.innerWidth < 1024; // lg breakpoint
       
-      // Calculate which image is currently in view
-      const newIndex = Math.min(
-        Math.round(scrollTop / imageHeight),
-        product.images.length - 1
-      );
-      
-      if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
-        setSelectedImageIndex(newIndex);
+      if (isMobile) {
+        // Horizontal scrolling on mobile
+        const scrollLeft = scrollContainer.scrollLeft;
+        const containerWidth = scrollContainer.clientWidth;
+        const imageWidth = containerWidth; // Each image takes full container width
+        
+        const newIndex = Math.min(
+          Math.round(scrollLeft / imageWidth),
+          product.images.length - 1
+        );
+        
+        if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
+          setSelectedImageIndex(newIndex);
+        }
+      } else {
+        // Vertical scrolling on desktop
+        const scrollTop = scrollContainer.scrollTop;
+        const containerHeight = scrollContainer.clientHeight;
+        const imageHeight = containerHeight; // Each image takes full container height
+        
+        const newIndex = Math.min(
+          Math.round(scrollTop / imageHeight),
+          product.images.length - 1
+        );
+        
+        if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
+          setSelectedImageIndex(newIndex);
+        }
       }
     };
 
@@ -798,17 +816,41 @@ const ProductDetailPage = () => {
 
           {/* Left Column - Full Product Image */}
           <div className="relative bg-white flex items-center justify-center h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px] group">
-            {/* Main Product Image - Full Visible with Vertical Scroll */}
+            {/* Main Product Image - Horizontal Scroll on Mobile, Vertical Scroll on Desktop */}
             <div 
               ref={imageScrollRef}
-              className="relative w-full h-full overflow-y-scroll overflow-x-hidden scrollbar-hide"
+              className="relative w-full h-full overflow-x-scroll lg:overflow-x-hidden lg:overflow-y-scroll overflow-y-hidden scrollbar-hide"
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none'
               }}
             >
-              <div className="relative w-full">
-                <div className="flex flex-col">
+              <div className="relative w-full h-full">
+                {/* Mobile: Horizontal Layout */}
+                <div className="flex flex-row lg:hidden h-full">
+                  {product.images.map((image, index) => (
+                    <div 
+                      key={index}
+                      className="w-full flex items-center justify-center flex-shrink-0 h-full"
+                      style={{ minWidth: '100%' }}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.alt || `Product image ${index + 1}`}
+                        className="w-full h-full object-contain cursor-pointer"
+                        onClick={() => {
+                          setIsImageFull(true);
+                          setCurrentImageFull(image.url);
+                        }}
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop: Vertical Layout */}
+                <div className="hidden lg:flex flex-col h-full">
                   {product.images.map((image, index) => (
                     <div 
                       key={index}
@@ -840,29 +882,54 @@ const ProductDetailPage = () => {
               </button>
             </div>
 
-            {/* Image Navigation Indicators - Immediate Left Side Middle (if multiple images) */}
+            {/* Image Navigation Indicators - Bottom Center on Mobile, Left Middle on Desktop */}
             {hasMultipleImages && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
-                {product.images.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      const scrollContainer = imageScrollRef.current;
-                      if (scrollContainer) {
-                        const containerHeight = scrollContainer.clientHeight;
-                        const scrollPosition = index * containerHeight;
-                        scrollContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-                      }
-                      setSelectedImageIndex(index);
-                    }}
-                    className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
-                      ? 'bg-black'
-                      : 'bg-gray-400 hover:bg-gray-600'
-                      }`}
-                    aria-label={`Go to image ${index + 1}`}
-                  />
-                ))}
-              </div>
+              <>
+                {/* Mobile: Bottom Center */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-2 z-20 lg:hidden">
+                  {product.images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const scrollContainer = imageScrollRef.current;
+                        if (scrollContainer) {
+                          const containerWidth = scrollContainer.clientWidth;
+                          const scrollPosition = index * containerWidth;
+                          scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+                        }
+                        setSelectedImageIndex(index);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
+                        ? 'bg-black'
+                        : 'bg-gray-400 hover:bg-gray-600'
+                        }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                {/* Desktop: Left Middle */}
+                <div className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
+                  {product.images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const scrollContainer = imageScrollRef.current;
+                        if (scrollContainer) {
+                          const containerHeight = scrollContainer.clientHeight;
+                          const scrollPosition = index * containerHeight;
+                          scrollContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+                        }
+                        setSelectedImageIndex(index);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
+                        ? 'bg-black'
+                        : 'bg-gray-400 hover:bg-gray-600'
+                        }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
@@ -965,7 +1032,7 @@ const ProductDetailPage = () => {
             {product.sizeOfProduct.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+                  <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
                     Select your size
                   </label>
                   <button
@@ -1097,7 +1164,7 @@ const ProductDetailPage = () => {
 
             {/* Monogram Input */}
             <div className="space-y-2">
-              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
                 Add Monogram (Optional)
               </label>
               <div className="relative">
@@ -1120,7 +1187,7 @@ const ProductDetailPage = () => {
                 </div>
               </div>
               {monogram && (
-                <p className="text-md lg:text-md md:text-md sm:text-sm text-gray-500 font-light ">
+                <p className="text-md lg:text-md md:text-md sm:text-sm text-gray-500 font-light  font-futura-pt-light">
                   Your monogram will be displayed on the product
                 </p>
               )}
@@ -1128,7 +1195,7 @@ const ProductDetailPage = () => {
 
             {/* Notes Input */}
             <div className="space-y-2">
-              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
                 Notes
               </label>
               <textarea
@@ -1281,9 +1348,9 @@ const ProductDetailPage = () => {
                       )}
                     </button>
                     {expandedSections.fabric && (
-                      <p className="text-xs text-black leading-relaxed font-light font-futura-pt-thin">
-                        {product.fabricType.join(', ')}
-                      </p>
+                      <div className="text-xs text-black flex items-start font-light leading-relaxed font-futura-pt-thin">
+                        <span>{product.fabricType.join(', ')}</span>
+                      </div>
                     )}
                   </div>
                 )}
@@ -1618,7 +1685,7 @@ const ProductDetailPage = () => {
       {/* Product Variants */}
       {isImageFull && (
         <div
-          className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-[9999]"
           onClick={() => setIsImageFull(false)}
         >
           <img
@@ -1627,8 +1694,11 @@ const ProductDetailPage = () => {
             className="max-w-full max-h-full object-contain p-4"
           />
           <button
-            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors text-2xl font-light w-8 h-8 flex items-center justify-center"
-            onClick={() => setIsImageFull(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors text-2xl font-light w-8 h-8 flex items-center justify-center z-[10000]"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsImageFull(false);
+            }}
           >
             ✕
           </button>
