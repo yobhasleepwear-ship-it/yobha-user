@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
+  ChevronUp,
   Minus,
   Plus,
   Star,
@@ -36,14 +37,36 @@ const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
 
 
 const formatPrice = (price, currency) => {
-  if (typeof price !== 'number') return '0';
-
-  return price.toLocaleString(undefined, {
-    style: 'currency',
-    currency,
+  if (typeof price !== 'number' || price === 0) return { symbol: '0', number: '' };
+  
+  // Ensure currency is uppercase and valid
+  const currencyCode = currency ? currency.toUpperCase() : 'INR';
+  
+  // Currency symbol mapping
+  const currencySymbols = {
+    'INR': '₹',
+    'USD': '$',
+    'AED': 'AED',
+    'SAR': 'SAR',
+    'QAR': 'QAR',
+    'KWD': 'KWD',
+    'OMR': 'OMR',
+    'BHD': 'BHD',
+    'JOD': 'JOD',
+    'LBP': 'LBP',
+    'EGP': 'EGP',
+    'IQD': 'IQD'
+  };
+  
+  const symbol = currencySymbols[currencyCode] || currencyCode;
+  
+  // Format the number with commas
+  const formattedNumber = price.toLocaleString('en-IN', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 0
   });
+  
+  return { symbol, number: formattedNumber };
 };
 
 const sizeGuideData = [
@@ -193,6 +216,7 @@ const ProductDetailPage = () => {
   const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
   const sizeDropdownRef = React.useRef(null);
   const sizeModalRef = React.useRef(null);
+  const imageScrollRef = React.useRef(null);
   const [recommendedSize, setRecommendedSize] = useState(null);
 
   // Close dropdown when clicking outside
@@ -321,6 +345,34 @@ const ProductDetailPage = () => {
   useEffect(() => {
     setCarouselIndex(0);
   }, [itemsPerView, newProducts.length]);
+
+  // Handle scroll to change images
+  useEffect(() => {
+    const scrollContainer = imageScrollRef.current;
+    if (!scrollContainer || !product || product.images.length <= 1) return;
+
+    const handleScroll = () => {
+      const scrollTop = scrollContainer.scrollTop;
+      const containerHeight = scrollContainer.clientHeight;
+      const imageHeight = containerHeight; // Each image takes full container height
+      
+      // Calculate which image is currently in view
+      const newIndex = Math.min(
+        Math.round(scrollTop / imageHeight),
+        product.images.length - 1
+      );
+      
+      if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
+        setSelectedImageIndex(newIndex);
+      }
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [product, selectedImageIndex]);
 
   // Calculate recommended size when measurements change
   useEffect(() => {
@@ -742,53 +794,42 @@ const ProductDetailPage = () => {
       <div className="max-w-[1600px] mx-auto px-0">
 
         {/* Main Content Grid - Louis Vuitton Style */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-0">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-0">
 
           {/* Left Column - Full Product Image */}
-          <div className="relative bg-gray-50 lg:bg-gray-100 flex items-center justify-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] xl:min-h-[800px] 2xl:min-h-[900px] group">
-            {/* Navigation Arrow - Left (Visible on hover) */}
-            {hasMultipleImages && (
-              <button
-                onClick={handlePrevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md hover:shadow-lg"
-                aria-label="Previous image"
-              >
-                <ChevronLeft size={20} className="text-black" strokeWidth={1.5} />
-              </button>
-            )}
-
-            {/* Main Product Image - Full Visible */}
-            <div className="relative w-full h-full flex items-center justify-center p-6 sm:p-8 lg:p-12 xl:p-16">
-              <img
-                src={currentImage.url}
-                alt={currentImage.alt}
-                className="max-w-full max-h-full w-auto h-auto object-contain cursor-pointer"
-                style={{ maxHeight: '90vh' }}
-                onClick={() => {
-                  setIsImageFull(true);
-                  setCurrentImageFull(currentImage.url);
-                }}
-                onError={(e) => {
-                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                }}
-              />
-
-              {/* Image Navigation Indicators - Below Image Center (if multiple images) */}
-              {hasMultipleImages && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                  {product.images.map((_, index) => (
-                    <button
+          <div className="relative bg-white flex items-center justify-center h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px] group">
+            {/* Main Product Image - Full Visible with Vertical Scroll */}
+            <div 
+              ref={imageScrollRef}
+              className="relative w-full h-full overflow-y-scroll overflow-x-hidden scrollbar-hide"
+              style={{ 
+                scrollbarWidth: 'none', 
+                msOverflowStyle: 'none'
+              }}
+            >
+              <div className="relative w-full">
+                <div className="flex flex-col">
+                  {product.images.map((image, index) => (
+                    <div 
                       key={index}
-                      onClick={() => setSelectedImageIndex(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
-                        ? 'bg-black'
-                        : 'bg-gray-400 hover:bg-gray-600'
-                        }`}
-                      aria-label={`Go to image ${index + 1}`}
-                    />
+                      className="w-full flex items-center justify-center flex-shrink-0 h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px]"
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.alt || `Product image ${index + 1}`}
+                        className="w-full h-full object-contain cursor-pointer"
+                        onClick={() => {
+                          setIsImageFull(true);
+                          setCurrentImageFull(image.url);
+                        }}
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                        }}
+                      />
+                    </div>
                   ))}
                 </div>
-              )}
+              </div>
 
               {/* Share Button - Top Right */}
               <button
@@ -799,15 +840,29 @@ const ProductDetailPage = () => {
               </button>
             </div>
 
-            {/* Navigation Arrow - Right (Visible on hover) */}
+            {/* Image Navigation Indicators - Immediate Left Side Middle (if multiple images) */}
             {hasMultipleImages && (
-              <button
-                onClick={handleNextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md hover:shadow-lg"
-                aria-label="Next image"
-              >
-                <ChevronRight size={20} className="text-black" strokeWidth={1.5} />
-              </button>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
+                {product.images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      const scrollContainer = imageScrollRef.current;
+                      if (scrollContainer) {
+                        const containerHeight = scrollContainer.clientHeight;
+                        const scrollPosition = index * containerHeight;
+                        scrollContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+                      }
+                      setSelectedImageIndex(index);
+                    }}
+                    className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
+                      ? 'bg-black'
+                      : 'bg-gray-400 hover:bg-gray-600'
+                      }`}
+                    aria-label={`Go to image ${index + 1}`}
+                  />
+                ))}
+              </div>
             )}
           </div>
 
@@ -817,12 +872,12 @@ const ProductDetailPage = () => {
             {/* Product Header - Code and Name with Heart */}
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
-                <p className="text-xs text-gray-500 font-light font-futura-pt-light mb-1">
+                <p className="text-xs text-gray-600 font-light font-futura-pt-light mb-1">
                   {product.productId || ''}
                 </p>
-                <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-2 font-futura-pt-light">
+                <h3 className="text-xl sm:text-sm md:text-md lg:text-xl text-black mb-2 font-light font-futura-pt-book">
                   {product.name}
-                </h1>
+                </h3>
               </div>
               {/* Heart Icon - Wishlist */}
               <button
@@ -853,17 +908,21 @@ const ProductDetailPage = () => {
                       item.size === selectedSize
                   );
 
-                  return matchedPrice ? (
+                  if (!matchedPrice) {
+                    return <span className="text-sm text-gray-500 font-light font-futura-pt-light">Price not available</span>;
+                  }
+
+                  const priceFormatted = formatPrice(matchedPrice.priceAmount, matchedPrice.currency);
+                  return (
                     <>
-                      <span className="text-2xl md:text-3xl font-light text-black font-futura-pt-light">
-                        {formatPrice(matchedPrice.priceAmount, matchedPrice.currency)}
+                      <span className="text-lg md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+                        <span className="font-sans">{priceFormatted.symbol}</span>
+                        {priceFormatted.number}
                       </span>
                       <p className="text-xs text-gray-500 font-light font-futura-pt-light mt-1">
                         (M.R.P. incl. of all taxes)
                       </p>
                     </>
-                  ) : (
-                    <span className="text-sm text-gray-500 font-light font-futura-pt-light">Price not available</span>
                   );
                 })()}
               </div>
@@ -872,10 +931,10 @@ const ProductDetailPage = () => {
             {product?.availableColors?.length > 0 && (
               <div className="bg-white border border-text-light/10 p-3 rounded-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xs font-bold text-black uppercase tracking-widest">
+                  <h3 className="text-md lg:text-md md:text-md sm:text-sm text-black font-light font-futura-pt-book">
                     Color
                   </h3>
-                  <span className="text-xs text-text-medium font-semibold">
+                  <span className="text-md lg:text-md md:text-md sm:text-sm font-light font-futura-pt-light">
                     {selectedColor}
                   </span>
                 </div>
@@ -887,7 +946,7 @@ const ProductDetailPage = () => {
                         setSelectedColor(color);
                         setItemAddedToCart(false);
                       }}
-                      className={`flex-shrink-0 px-3 py-1.5 border transition-all duration-300 uppercase text-xs tracking-widest font-light rounded-full relative group min-h-[28px] flex items-center justify-center ${selectedColor === color
+                      className={`flex-shrink-0 px-3 py-1.5 border transition-all duration-300 text-md lg:text-md md:text-md sm:text-sm font-light rounded-full relative group min-h-[28px] flex items-center justify-center ${selectedColor === color
                         ? 'border-black bg-black text-white'
                         : 'border-text-light/20 text-black hover:border-black/40 hover:bg-black/5'
                         }`}
@@ -906,13 +965,13 @@ const ProductDetailPage = () => {
             {product.sizeOfProduct.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-light text-black uppercase font-futura-pt-light">
+                  <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
                     Select your size
                   </label>
                   <button
                     type="button"
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-xs text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors"
+                    className="text-md lg:text-md md:text-md sm:text-sm text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors"
                   >
                     Size guide
                   </button>
@@ -989,7 +1048,7 @@ const ProductDetailPage = () => {
                 >
                   {/* Modal Header */}
                   <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                    <h3 className="text-sm font-light text-black uppercase font-futura-pt-light">
+                    <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
                       Select your size
                     </h3>
                     <button
@@ -1038,7 +1097,7 @@ const ProductDetailPage = () => {
 
             {/* Monogram Input */}
             <div className="space-y-2">
-              <label className="text-xs font-light text-black uppercase font-futura-pt-light">
+              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
                 Add Monogram (Optional)
               </label>
               <div className="relative">
@@ -1054,14 +1113,14 @@ const ProductDetailPage = () => {
                   }}
                   placeholder="Enter up to 12 characters"
                   maxLength={MONOGRAM_CHAR_LIMIT}
-                  className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400 uppercase tracking-wider"
+                  className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-md lg:text-md md:text-md sm:text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-light">
                   {monogram.length}/{MONOGRAM_CHAR_LIMIT}
                 </div>
               </div>
               {monogram && (
-                <p className="text-xs text-gray-500 font-light italic">
+                <p className="text-md lg:text-md md:text-md sm:text-sm text-gray-500 font-light ">
                   Your monogram will be displayed on the product
                 </p>
               )}
@@ -1069,7 +1128,7 @@ const ProductDetailPage = () => {
 
             {/* Notes Input */}
             <div className="space-y-2">
-              <label className="text-xs font-light text-black uppercase font-futura-pt-light">
+              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
                 Notes
               </label>
               <textarea
@@ -1096,7 +1155,7 @@ const ProductDetailPage = () => {
                   !matchedPrice ||
                   addingToCart
                 }
-                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors uppercase tracking-wider text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light"
+                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light rounded-full"
               >
                 {addingToCart ? (
                   <span className="flex items-center justify-center gap-2">
@@ -1117,7 +1176,7 @@ const ProductDetailPage = () => {
                   !matchedPrice ||
                   addingToCart
                 }
-                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors uppercase tracking-wider text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light"
+                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light rounded-full"
               >
                 {addingToCart ? (
                   <span className="flex items-center justify-center gap-2">
@@ -1137,8 +1196,8 @@ const ProductDetailPage = () => {
               <div className="flex items-start gap-2.5">
                 <Truck size={16} className="text-text-medium mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <p className="text-xs font-light text-black uppercase tracking-widest">Shipping Charges</p>
-                  <p className="text-xs text-text-medium font-light">
+                  <p className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">Shipping Charges</p>
+                  <p className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-lightfont-futura-pt-light">
                     {shippingInfo.priceAmount === 0
                       ? "Free Shipment"
                       : `${shippingInfo.priceAmount.toLocaleString()} ${shippingInfo.currency}`}
@@ -1166,7 +1225,7 @@ const ProductDetailPage = () => {
             {/* Description - Louis Vuitton Style */}
             {product.description && (
               <div className="pt-4 border-t border-gray-200">
-                <p className="text-gray-700 text-sm leading-relaxed font-light font-futura-pt-light">
+                <p className="text-black text-sm leading-relaxed font-light font-futura-pt-light">
                   {product.description}
                 </p>
               </div>
@@ -1183,7 +1242,7 @@ const ProductDetailPage = () => {
                       onClick={() => setExpandedSections(prev => ({ ...prev, keyFeatures: !prev.keyFeatures }))}
                       className="flex items-center justify-between w-full text-left mb-2.5"
                     >
-                      <h3 className="text-xs font-bold text-black uppercase tracking-widest">
+                      <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
                         Key Features
                       </h3>
                       {expandedSections.keyFeatures ? (
@@ -1195,9 +1254,9 @@ const ProductDetailPage = () => {
                     {expandedSections.keyFeatures && (
                       <ul className="space-y-1.5">
                         {product.keyFeatures.map((feature, index) => (
-                          <li key={index} className="text-xs text-text-medium flex items-start font-light leading-relaxed">
+                          <li key={index} className="text-xs text-black flex items-start font-light leading-relaxed font-futura-pt-thin">
                             <span className="mr-2 mt-1">•</span>
-                            <span className="font-light">{feature}</span>
+                            <span>{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -1212,7 +1271,7 @@ const ProductDetailPage = () => {
                       onClick={() => setExpandedSections(prev => ({ ...prev, fabric: !prev.fabric }))}
                       className="flex items-center justify-between w-full text-left mb-2.5"
                     >
-                      <h3 className="text-xs font-bold text-black uppercase tracking-widest">
+                      <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
                         Fabric
                       </h3>
                       {expandedSections.fabric ? (
@@ -1222,7 +1281,7 @@ const ProductDetailPage = () => {
                       )}
                     </button>
                     {expandedSections.fabric && (
-                      <p className="text-xs text-text-medium font-light">
+                      <p className="text-xs text-black leading-relaxed font-light font-futura-pt-thin">
                         {product.fabricType.join(', ')}
                       </p>
                     )}
@@ -1236,7 +1295,7 @@ const ProductDetailPage = () => {
                       onClick={() => setExpandedSections(prev => ({ ...prev, careInstructions: !prev.careInstructions }))}
                       className="flex items-center justify-between w-full text-left mb-2.5"
                     >
-                      <h3 className="text-xs font-bold text-black uppercase tracking-widest">
+                      <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
                         Care Instructions
                       </h3>
                       {expandedSections.careInstructions ? (
@@ -1248,9 +1307,9 @@ const ProductDetailPage = () => {
                     {expandedSections.careInstructions && (
                       <ul className="space-y-1.5">
                         {product.careInstructions.map((instruction, index) => (
-                          <li key={index} className="text-xs text-text-medium flex items-start font-light leading-relaxed">
+                          <li key={index} className="text-xs text-text-medium flex items-start font-light leading-relaxed font-futura-pt-thin">
                             <span className="mr-2 mt-1">•</span>
-                            <span className="font-light">{instruction}</span>
+                            <span>{instruction}</span>
                           </li>
                         ))}
                       </ul>
@@ -1413,11 +1472,11 @@ const ProductDetailPage = () => {
           <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 border-t border-gray-200">
             {/* Section Header */}
             <div className="mb-8 md:mb-10">
-              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+              <h2 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black  mb-4 font-futura-pt-book">
                 Hot Picks for You
               </h2>
               <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
-              <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
+              <p className="text-gray-900 text-md sm:text:sm md:text-md lg:text-md font-light leading-relaxed font-futura-pt-light">
                 Discover more from our curated collection
               </p>
             </div>
@@ -1510,7 +1569,7 @@ const ProductDetailPage = () => {
                         {/* Info Section */}
                         <div className="p-3 sm:p-4 text-left space-y-1.5 flex flex-col justify-between min-h-[100px] flex-grow bg-white">
                           <div>
-                            <h3 className="text-xs sm:text-sm font-light text-black uppercase line-clamp-2 mb-1.5 font-futura-pt-light">
+                            <h3 className="text-xs sm:text-sm font-light text-black line-clamp-2 mb-1.5 font-futura-pt-light">
                               {product.name || product.title || 'Untitled Product'}
                             </h3>
                             {product.category && (
