@@ -664,14 +664,20 @@ const CheckoutPage = () => {
 
   // Format price based on currency - same as product description page
   const formatPrice = (price, currency) => {
-    if (typeof price !== 'number') return '0';
+    if (typeof price !== 'number') return { symbol: '', number: '0' };
 
-    return price.toLocaleString(undefined, {
+    const formatted = price.toLocaleString(undefined, {
       style: 'currency',
       currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
+
+    // Extract symbol and number
+    const symbol = formatted.replace(/[\d,.\s]/g, '').trim();
+    const number = formatted.replace(/[^\d,.]/g, '').trim();
+
+    return { symbol, number };
   };
 
   return (
@@ -682,12 +688,12 @@ const CheckoutPage = () => {
         <div className="mb-8 md:mb-12">
           <button onClick={() => navigate("/cart")} className="flex items-center gap-2 text-text-medium hover:text-black mb-4 transition-colors">
             <ArrowLeft size={20} strokeWidth={1.5} />
-            <span className="text-sm uppercase tracking-wider">Back to Cart</span>
+            <span className="text-sm md:text-base font-light font-futura-pt-light">Back to Cart</span>
           </button>
-          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+          <h1 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-4 font-futura-pt-book">
             Checkout
           </h1>
-          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">Complete your order details</p>
+          <p className="text-gray-900 text-sm md:text-base leading-relaxed font-light font-futura-pt-light">Complete your order details</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
@@ -701,7 +707,7 @@ const CheckoutPage = () => {
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsDeliveryExpanded(!isDeliveryExpanded)}
               >
-                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book flex items-center gap-2">
                   <MapPin size={20} strokeWidth={1.5} />
                   Delivery Address
                 </h2>
@@ -719,23 +725,23 @@ const CheckoutPage = () => {
                   {userAddresses.length > 0 && (
                     <div className="mb-6 pb-4 border-b border-text-light/20">
                       <div className="flex items-center gap-4">
-                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
                           <input
                             type="radio"
                             checked={useSavedAddress}
                             onChange={() => setUseSavedAddress(true)}
                             className="accent-black"
                           />
-                          <span className="font-light">Use Saved Address</span>
+                          <span className="font-light font-futura-pt-light">Use Saved Address</span>
                         </label>
-                        <label className="flex items-center gap-2 text-sm cursor-pointer">
+                        <label className="flex items-center gap-2 text-sm md:text-base cursor-pointer">
                           <input
                             type="radio"
                             checked={!useSavedAddress}
                             onChange={() => setUseSavedAddress(false)}
                             className="accent-black"
                           />
-                          <span className="font-light">Enter Manually</span>
+                          <span className="font-light font-futura-pt-light">Enter Manually</span>
                         </label>
                       </div>
                     </div>
@@ -762,11 +768,11 @@ const CheckoutPage = () => {
                                   onChange={() => setAddress(addr)}
                                   className="accent-black"
                                 />
-                                <h3 className="font-light text-black text-sm md:text-base font-sweet-sans">
+                                <h3 className="font-light text-black text-sm md:text-base font-futura-pt-book">
                                   {addr.fullName}
                                 </h3>
                               </div>
-                              <div className="text-xs md:text-sm text-text-medium space-y-1 ml-6">
+                              <div className="text-sm md:text-base text-text-medium space-y-1 ml-6 font-light font-futura-pt-light">
                                 <p>{addr.line1}</p>
                                 {addr.line2 && <p>{addr.line2}</p>}
                                 <p>{addr.city}, {addr.state} - {addr.zip}</p>
@@ -793,10 +799,10 @@ const CheckoutPage = () => {
                       {/* Form Header */}
                       {isEditingAddress && (
                         <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 ">
-                          <p className="text-sm text-blue-800 font-light">Editing Address</p>
+                          <p className="text-sm md:text-base text-blue-800 font-light font-futura-pt-light">Editing Address</p>
                           <button
                             onClick={handleCancelEdit}
-                            className="text-xs text-blue-600 hover:text-blue-800 underline"
+                            className="text-sm md:text-base text-blue-600 hover:text-blue-800 underline font-light font-futura-pt-light"
                           >
                             Cancel Edit
                           </button>
@@ -806,7 +812,7 @@ const CheckoutPage = () => {
                       {/* Form Fields */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-light text-gray-700 mb-1">Full Name *</label>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">Full Name *</label>
                           <input
                             type="text"
                             name="fullName"
@@ -818,11 +824,11 @@ const CheckoutPage = () => {
                               : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
-                          {addressErrors.fullName && <p className="text-xs text-red-500 mt-1">{addressErrors.fullName}</p>}
+                          {addressErrors.fullName && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.fullName}</p>}
                         </div>
 
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-light text-gray-700 mb-1">Phone Number *</label>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">Phone Number *</label>
                           <input
                             type="tel"
                             name="phone"
@@ -834,11 +840,11 @@ const CheckoutPage = () => {
                               : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
-                          {addressErrors.phone && <p className="text-xs text-red-500 mt-1">{addressErrors.phone}</p>}
+                          {addressErrors.phone && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.phone}</p>}
                         </div>
 
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-light text-gray-700 mb-1">Address Line 1 *</label>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">Address Line 1 *</label>
                           <input
                             type="text"
                             name="addressLine1"
@@ -850,11 +856,11 @@ const CheckoutPage = () => {
                               : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
-                          {addressErrors.addressLine1 && <p className="text-xs text-red-500 mt-1">{addressErrors.addressLine1}</p>}
+                          {addressErrors.addressLine1 && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.addressLine1}</p>}
                         </div>
 
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-light text-gray-700 mb-1">Address Line 2</label>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">Address Line 2</label>
                           <input
                             type="text"
                             name="addressLine2"
@@ -866,7 +872,7 @@ const CheckoutPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-light text-gray-700 mb-1">City *</label>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">City *</label>
                           <input
                             type="text"
                             name="city"
@@ -878,11 +884,11 @@ const CheckoutPage = () => {
                               : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
-                          {addressErrors.city && <p className="text-xs text-red-500 mt-1">{addressErrors.city}</p>}
+                          {addressErrors.city && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.city}</p>}
                         </div>
 
                         <div>
-                          <label className="block text-sm font-light text-gray-700 mb-1">State *</label>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">State *</label>
                           <input
                             type="text"
                             name="state"
@@ -894,11 +900,11 @@ const CheckoutPage = () => {
                               : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
-                          {addressErrors.state && <p className="text-xs text-red-500 mt-1">{addressErrors.state}</p>}
+                          {addressErrors.state && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.state}</p>}
                         </div>
 
                         <div>
-                          <label className="block text-sm font-light text-gray-700 mb-1">Pincode *</label>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">Pincode *</label>
                           <input
                             type="text"
                             name="pincode"
@@ -911,7 +917,7 @@ const CheckoutPage = () => {
                               : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
-                          {addressErrors.pincode && <p className="text-xs text-red-500 mt-1">{addressErrors.pincode}</p>}
+                          {addressErrors.pincode && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.pincode}</p>}
                         </div>
 
                         {/* <div>
@@ -936,7 +942,7 @@ const CheckoutPage = () => {
                         <button
                           onClick={isEditingAddress ? handleUpdateAddress : handleAddAddress}
                           disabled={isAddingAddress}
-                          className="flex-1 bg-black text-white py-3 px-6 font-light hover:bg-gray-800 transition-colors uppercase tracking-wider text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed "
+                          className="flex-1 bg-black text-white py-3 px-6 font-light hover:bg-gray-800 transition-colors text-sm md:text-base flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed font-futura-pt-light"
                         >
                           {isAddingAddress ? (
                             <>
@@ -955,7 +961,7 @@ const CheckoutPage = () => {
                           <button
                             onClick={handleCancelEdit}
                             disabled={isAddingAddress}
-                            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-light hover:bg-gray-50 transition-colors uppercase tracking-wider text-sm disabled:opacity-50 disabled:cursor-not-allowed "
+                            className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-light hover:bg-gray-50 transition-colors text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
                           >
                             Cancel
                           </button>
@@ -973,7 +979,7 @@ const CheckoutPage = () => {
                 className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => setIsCouponsExpanded(!isCouponsExpanded)}
               >
-                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book flex items-center gap-2">
                   <Gift size={20} strokeWidth={1.5} />
                   Coupons & Loyalty Points
                 </h2>
@@ -992,26 +998,32 @@ const CheckoutPage = () => {
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <Star size={20} className="text-luxury-gold" strokeWidth={1.5} />
-                          <h3 className="text-sm md:text-base font-light text-black uppercase tracking-wider font-sweet-sans">
+                          <h3 className="text-sm md:text-base font-light text-black font-futura-pt-book">
                             Loyalty Points
                           </h3>
                         </div>
                         <div className="text-right">
-                          <p className="text-xs md:text-sm text-text-medium">Available Points</p>
-                          <p className="text-lg md:text-xl font-light text-luxury-gold">{loyaltyPoints}</p>
+                          <p className="text-sm md:text-base text-text-medium font-futura-pt-light">Available Points</p>
+                          <p className="text-lg md:text-xl font-light text-luxury-gold font-futura-pt-light">{loyaltyPoints}</p>
                         </div>
                       </div>
                       <div className="bg-white/50 border border-luxury-gold/20 p-3 md:p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-xs md:text-sm font-light text-black">Redeemable Amount</p>
-                            <p className="text-xs text-text-medium">Convert {loyaltyPoints} points to discount</p>
+                            <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Redeemable Amount</p>
+                            <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">Convert {loyaltyPoints} points to discount</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm md:text-base font-light text-luxury-rose-gold">
-                              {formatPrice(loyaltyDiscountAmount, getCurrency())}
-                            </p>
-                            <p className="text-xs text-text-medium">({loyaltyDiscountAmount * 10} points used)</p>
+                            {(() => {
+                              const priceFormatted = formatPrice(loyaltyDiscountAmount, getCurrency());
+                              return (
+                                <p className="text-sm md:text-base font-light text-luxury-rose-gold font-futura-pt-light">
+                                  <span className="font-sans">{priceFormatted.symbol}</span>
+                                  {priceFormatted.number}
+                                </p>
+                              );
+                            })()}
+                            <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">({loyaltyDiscountAmount * 10} points used)</p>
                           </div>
                         </div>
                       </div>
@@ -1020,7 +1032,7 @@ const CheckoutPage = () => {
 
                   {/* Coupons Section */}
                   <div>
-                    <h3 className="text-sm md:text-base font-light text-black uppercase tracking-wider mb-4 flex items-center gap-2 font-sweet-sans">
+                    <h3 className="text-sm md:text-base font-light text-black mb-4 flex items-center gap-2 font-futura-pt-book">
                       <Tag size={18} strokeWidth={1.5} />
                       Available Coupons
                     </h3>
@@ -1028,7 +1040,7 @@ const CheckoutPage = () => {
                     {isLoadingCoupons ? (
                       <div className="flex items-center justify-center py-8">
                         <div className="w-6 h-6 border-2 border-luxury-gold border-t-transparent rounded-full animate-spin"></div>
-                        <span className="ml-2 text-sm text-text-medium">Loading coupons...</span>
+                        <span className="ml-2 text-sm md:text-base text-text-medium font-futura-pt-light">Loading coupons...</span>
                       </div>
                     ) : getValidCoupons().length > 0 ? (
                       <div className="space-y-3">
@@ -1051,33 +1063,39 @@ const CheckoutPage = () => {
                                     className="accent-black"
                                   />
                                   <div className="flex items-center gap-2">
-                                    <span className="text-sm md:text-base font-light text-black uppercase tracking-wider">
+                                    <span className="text-sm md:text-base font-light text-black font-futura-pt-light">
                                       {coupon.code}
                                     </span>
                                     {coupon.firstOrderOnly && (
-                                      <span className="px-2 py-1 text-xs bg-gray-200 text-white rounded-full font-light">
+                                      <span className="px-2 py-1 text-xs md:text-sm bg-gray-200 text-white rounded-full font-light font-futura-pt-light">
                                         First Order
                                       </span>
                                     )}
                                     {coupon.first100UsersOnly && (
-                                      <span className="px-2 py-1 text-xs bg-gray-200 text-white rounded-full font-light">
+                                      <span className="px-2 py-1 text-xs md:text-sm bg-gray-200 text-white rounded-full font-light font-futura-pt-light">
                                         Limited
                                       </span>
                                     )}
                                   </div>
                                 </div>
-                                <p className="text-xs md:text-sm text-text-medium ml-6 mb-2">
+                                <p className="text-sm md:text-base text-text-medium ml-6 mb-2 font-light font-futura-pt-light">
                                   {coupon.description}
                                 </p>
                                 <div className="flex items-center gap-4 ml-6">
-                                  <div className="text-sm font-light text-luxury-rose-gold">
-                                    Save {formatPrice(calculateCouponDiscount(coupon), getCurrency())}
-                                  </div>
+                                  {(() => {
+                                    const priceFormatted = formatPrice(calculateCouponDiscount(coupon), getCurrency());
+                                    return (
+                                      <div className="text-sm md:text-base font-light text-luxury-rose-gold font-futura-pt-light">
+                                        Save <span className="font-sans">{priceFormatted.symbol}</span>
+                                        {priceFormatted.number}
+                                      </div>
+                                    );
+                                  })()}
                                   {coupon.isActive && cartSummary.subTotal >= coupon.minOrderAmount && (
-                                    <span className="text-xs text-green-600 font-light">✓ Valid for your order</span>
+                                    <span className="text-sm md:text-base text-green-600 font-light font-futura-pt-light">✓ Valid for your order</span>
                                   )}
                                   {cartSummary.subTotal < coupon.minOrderAmount && (
-                                    <span className="text-xs text-orange-600 font-light">Min order ₹{coupon.minOrderAmount}</span>
+                                    <span className="text-sm md:text-base text-orange-600 font-light font-futura-pt-light">Min order ₹{coupon.minOrderAmount}</span>
                                   )}
                                 </div>
                               </div>
@@ -1099,7 +1117,7 @@ const CheckoutPage = () => {
                     ) : (
                       <div className="text-center py-8">
                         <Gift size={48} className="text-text-light mx-auto mb-3" strokeWidth={1} />
-                        <p className="text-sm text-text-medium">
+                        <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">
                           {availableCoupons.length === 0
                             ? "No coupons available for this order"
                             : `No valid coupons for orders under ₹${Math.min(...availableCoupons.map(c => c.minOrderAmount))}`
@@ -1112,32 +1130,50 @@ const CheckoutPage = () => {
                   {/* Applied Discounts Summary */}
                   {calculateTotalDiscount() > 0 && (
                     <div className="bg-gray-50 border border-gray-700 p-4 md:p-5">
-                      <h4 className="text-sm font-light text-black uppercase tracking-wider mb-3 font-sweet-sans">
+                      <h4 className="text-sm md:text-base font-light text-black mb-3 font-futura-pt-book">
                         Applied Discounts
                       </h4>
                       <div className="space-y-2">
                         {selectedCoupon && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-text-medium">Coupon: {selectedCoupon.code}</span>
-                            <span className="text-luxury-rose-gold font-light">
-                              -{formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency())}
-                            </span>
+                          <div className="flex justify-between text-sm md:text-base">
+                            <span className="text-text-medium font-futura-pt-light">Coupon: {selectedCoupon.code}</span>
+                            {(() => {
+                              const priceFormatted = formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency());
+                              return (
+                                <span className="text-luxury-rose-gold font-light font-futura-pt-light">
+                                  -<span className="font-sans">{priceFormatted.symbol}</span>
+                                  {priceFormatted.number}
+                                </span>
+                              );
+                            })()}
                           </div>
                         )}
                         {loyaltyDiscountAmount > 0 && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-text-medium">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
-                            <span className="text-luxury-gold font-light">
-                              -{formatPrice(loyaltyDiscountAmount, getCurrency())}
-                            </span>
+                          <div className="flex justify-between text-sm md:text-base">
+                            <span className="text-text-medium font-futura-pt-light">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
+                            {(() => {
+                              const priceFormatted = formatPrice(loyaltyDiscountAmount, getCurrency());
+                              return (
+                                <span className="text-luxury-gold font-light font-futura-pt-light">
+                                  -<span className="font-sans">{priceFormatted.symbol}</span>
+                                  {priceFormatted.number}
+                                </span>
+                              );
+                            })()}
                           </div>
                         )}
                         <div className="border-t border-luxury-gold/20 pt-2 mt-3">
-                          <div className="flex justify-between text-sm font-light">
-                            <span className="text-black">Total Discount</span>
-                            <span className="text-luxury-rose-gold">
-                              -{formatPrice(calculateTotalDiscount(), getCurrency())}
-                            </span>
+                          <div className="flex justify-between text-sm md:text-base font-light">
+                            <span className="text-black font-futura-pt-light">Total Discount</span>
+                            {(() => {
+                              const priceFormatted = formatPrice(calculateTotalDiscount(), getCurrency());
+                              return (
+                                <span className="text-luxury-rose-gold font-futura-pt-light">
+                                  -<span className="font-sans">{priceFormatted.symbol}</span>
+                                  {priceFormatted.number}
+                                </span>
+                              );
+                            })()}
                           </div>
                         </div>
                       </div>
@@ -1150,11 +1186,11 @@ const CheckoutPage = () => {
             {/* Payment Section */}
             <div className="bg-white border border-text-light/20">
               <div className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20">
-                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book flex items-center gap-2">
                   <CreditCard size={20} strokeWidth={1.5} />
                   Payment Method
                 </h2>
-                <p className="text-xs md:text-sm font-light text-text-medium mt-1">
+                <p className="text-sm md:text-base font-light text-text-medium mt-1 font-futura-pt-light">
                   Choose your payment option
                 </p>
               </div>
@@ -1179,9 +1215,9 @@ const CheckoutPage = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className=" font-semibold text-black text-sm md:text-base">{method.name}</span>
+                            <span className="font-light text-black text-sm md:text-base font-futura-pt-light">{method.name}</span>
                           </div>
-                          <p className="text-xs md:text-sm font-light mt-1">{method.description}</p>
+                          <p className="text-sm md:text-base font-light mt-1 font-futura-pt-light">{method.description}</p>
                         </div>
                         {selectedPayment?.id === method.id && (
                           <div className="flex-shrink-0">
@@ -1200,18 +1236,18 @@ const CheckoutPage = () => {
             {/* Contact & Delivery Notes */}
             <div className="bg-white border border-text-light/20">
               <div className="px-4 md:px-6 py-4 md:py-5 border-b border-text-light/20">
-                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light flex items-center gap-2">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book flex items-center gap-2">
                   <Shield size={18} strokeWidth={1.5} />
                   Order Contact & Notes
                 </h2>
-                <p className="text-xs md:text-sm font-light text-text-medium mt-1">
+                <p className="text-sm md:text-base font-light text-text-medium mt-1 font-futura-pt-light">
                   Keep us posted with your preferred email and delivery notes
                 </p>
               </div>
               <div className="p-4 md:p-6 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="block text-xs md:text-sm font-light text-gray-700 mb-2 uppercase tracking-[0.25em]">
+                    <label className="block text-sm md:text-base font-light text-gray-700 mb-2 font-futura-pt-light">
                       Email Address
                     </label>
                     <input
@@ -1224,7 +1260,7 @@ const CheckoutPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs md:text-sm font-light text-gray-700 mb-2 uppercase tracking-[0.25em]">
+                  <label className="block text-sm md:text-base font-light text-gray-700 mb-2 font-futura-pt-light">
                     Shipping Remarks
                   </label>
                   <textarea
@@ -1244,10 +1280,10 @@ const CheckoutPage = () => {
           <div className="lg:col-span-1">
             <div className="bg-white border border-text-light/20 lg:sticky lg:top-24">
               <div className="p-4 md:p-6 border-b border-text-light/20">
-                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book">
                   Order Summary
                 </h2>
-                {/* <p className="text-xs md:text-sm text-text-medium">{cartSummary.distinctItems} {cartSummary.distinctItems === 1 ? 'item' : 'items'}</p> */}
+                {/* <p className="text-sm md:text-base text-text-medium font-futura-pt-light">{cartSummary.distinctItems} {cartSummary.distinctItems === 1 ? 'item' : 'items'}</p> */}
               </div>
 
               <div className="p-4 md:p-6 space-y-3">
@@ -1269,82 +1305,157 @@ const CheckoutPage = () => {
                     <div key={`${item.id}_${item.size || "nosize"}`} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
                       <img src={imageSrc} alt={product.name} className="w-16 h-16 object-cover rounded" />
                       <div className="flex-1 min-w-0 space-y-1">
-                        <p className="text-sm font-light text-black truncate">{product.name}</p>
+                        <p className="text-sm md:text-base font-light text-black truncate font-futura-pt-book">{product.name}</p>
                         {item.size && (
-                          <p className="text-xs uppercase tracking-widest text-text-medium">Size • <span className="text-black tracking-normal">{item.size}</span></p>
+                          <p className="text-sm md:text-base text-text-medium font-futura-pt-light">Size • <span className="text-black font-futura-pt-light">{item.size}</span></p>
                         )}
-                        <p className="text-xs text-text-medium">{item.quantity} × {formatPrice(unitPrice, currency)}</p>
+                        {(() => {
+                          const priceFormatted = formatPrice(unitPrice, currency);
+                          return (
+                            <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">{item.quantity} × <span className="font-sans">{priceFormatted.symbol}</span>{priceFormatted.number}</p>
+                          );
+                        })()}
                         {monogramText && (
-                          <div className="inline-flex items-center gap-2  border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-luxury-gold">
-
-                            <span className="font-light tracking-[0.2em] text-black text-[11px]">{monogramText}</span>
+                          <div className="inline-flex items-center gap-2 border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-sm text-luxury-gold font-futura-pt-light">
+                            <span className="font-light text-black font-futura-pt-light">{monogramText}</span>
                           </div>
                         )}
                       </div>
-                      <div className="text-sm font-light text-black whitespace-nowrap">{formatPrice(itemTotal, currency)}</div>
+                      {(() => {
+                        const priceFormatted = formatPrice(itemTotal, currency);
+                        return (
+                          <div className="text-sm md:text-base font-light text-black whitespace-nowrap font-futura-pt-light">
+                            <span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </div>
+                        );
+                      })()}
                     </div>
                   );
                 })}
 
                 <div className="pt-4 border-t border-text-light/20 space-y-2">
-                  <div className="flex justify-between text-xs md:text-sm">
-                    <span className="text-text-medium">Subtotal</span>
-                    <span className="text-black font-light">{formatPrice(cartSummary.subTotal, getCurrency())}</span>
+                  <div className="flex justify-between text-sm md:text-base">
+                    <span className="text-text-medium font-futura-pt-light">Subtotal</span>
+                    {(() => {
+                      const priceFormatted = formatPrice(cartSummary.subTotal, getCurrency());
+                      return (
+                        <span className="text-black font-light font-futura-pt-light">
+                          <span className="font-sans">{priceFormatted.symbol}</span>
+                          {priceFormatted.number}
+                        </span>
+                      );
+                    })()}
                   </div>
 
                   {/* Coupon Discount */}
                   {selectedCoupon && (
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="text-text-medium">Coupon: {selectedCoupon.code}</span>
-                      <span className="text-luxury-rose-gold font-light">-{formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency())}</span>
+                    <div className="flex justify-between text-sm md:text-base">
+                      <span className="text-text-medium font-futura-pt-light">Coupon: {selectedCoupon.code}</span>
+                      {(() => {
+                        const priceFormatted = formatPrice(calculateCouponDiscount(selectedCoupon), getCurrency());
+                        return (
+                          <span className="text-luxury-rose-gold font-light font-futura-pt-light">
+                            -<span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </span>
+                        );
+                      })()}
                     </div>
                   )}
 
                   {/* Loyalty Points Discount */}
                   {loyaltyDiscountAmount > 0 && (
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="text-text-medium">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
-                      <span className="text-luxury-gold font-light">-{formatPrice(loyaltyDiscountAmount, getCurrency())}</span>
+                    <div className="flex justify-between text-sm md:text-base">
+                      <span className="text-text-medium font-futura-pt-light">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
+                      {(() => {
+                        const priceFormatted = formatPrice(loyaltyDiscountAmount, getCurrency());
+                        return (
+                          <span className="text-luxury-gold font-light font-futura-pt-light">
+                            -<span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </span>
+                        );
+                      })()}
                     </div>
                   )}
 
                   {/* Total Discount */}
                   {calculateTotalDiscount() > 0 && (
-                    <div className="flex justify-between text-xs md:text-sm border-t border-text-light/10 pt-2">
-                      <span className="text-text-medium font-light">Total Discount</span>
-                      <span className="text-luxury-rose-gold font-light">-{formatPrice(calculateTotalDiscount(), getCurrency())}</span>
+                    <div className="flex justify-between text-sm md:text-base border-t border-text-light/10 pt-2">
+                      <span className="text-text-medium font-light font-futura-pt-light">Total Discount</span>
+                      {(() => {
+                        const priceFormatted = formatPrice(calculateTotalDiscount(), getCurrency());
+                        return (
+                          <span className="text-luxury-rose-gold font-light font-futura-pt-light">
+                            -<span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </span>
+                        );
+                      })()}
                     </div>
                   )}
 
-                  <div className="flex justify-between text-xs md:text-sm">
-                    <span className="text-text-medium">Shipping</span>
+                  <div className="flex justify-between text-sm md:text-base">
+                    <span className="text-text-medium font-futura-pt-light">Shipping</span>
                     {cartSummary.shipping === 0 ? (
-                      <span className="text-black font-light">FREE</span>
+                      <span className="text-black font-light font-futura-pt-light">Free</span>
                     ) : (
-                      <span className="text-black font-light">{formatPrice(cartSummary.shipping, getCurrency())}</span>
+                      (() => {
+                        const priceFormatted = formatPrice(cartSummary.shipping, getCurrency());
+                        return (
+                          <span className="text-black font-light font-futura-pt-light">
+                            <span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </span>
+                        );
+                      })()
                     )}
                   </div>
                   {cartSummary.tax > 0 && (
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="text-text-medium">Tax</span>
-                      <span className="text-black font-light">{formatPrice(cartSummary.tax, getCurrency())}</span>
+                    <div className="flex justify-between text-sm md:text-base">
+                      <span className="text-text-medium font-futura-pt-light">Tax</span>
+                      {(() => {
+                        const priceFormatted = formatPrice(cartSummary.tax, getCurrency());
+                        return (
+                          <span className="text-black font-light font-futura-pt-light">
+                            <span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </span>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
 
                 {/* Gift Wrap Amount */}
                 {giftWrapEnabled && (
-                  <div className="flex justify-between text-xs md:text-sm pt-2 border-t border-text-light/10">
-                    <span className="text-text-medium">Gift Wrap</span>
-                    <span className="text-black font-light">{formatPrice(calculateGiftWrapAmount(), getCurrency())}</span>
+                  <div className="flex justify-between text-sm md:text-base pt-2 border-t border-text-light/10">
+                    <span className="text-text-medium font-futura-pt-light">Gift Wrap</span>
+                    {(() => {
+                      const priceFormatted = formatPrice(calculateGiftWrapAmount(), getCurrency());
+                      return (
+                        <span className="text-black font-light font-futura-pt-light">
+                          <span className="font-sans">{priceFormatted.symbol}</span>
+                          {priceFormatted.number}
+                        </span>
+                      );
+                    })()}
                   </div>
                 )}
 
                 <div className="flex justify-between pt-4 pb-4 md:pb-6 border-t border-text-light/20">
-                  <span className="text-base md:text-lg font-light text-black uppercase tracking-wider font-sweet-sans">Total</span>
-                  <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(cartSummary.subTotal - calculateTotalDiscount() + cartSummary.shipping + cartSummary.tax + calculateGiftWrapAmount(), getCurrency())}
-                    <p className="text-sm">(inc. all taxes)</p>
-                  </span>
+                  <span className="text-base md:text-lg font-light text-black font-futura-pt-book">Total</span>
+                  {(() => {
+                    const priceFormatted = formatPrice(cartSummary.subTotal - calculateTotalDiscount() + cartSummary.shipping + cartSummary.tax + calculateGiftWrapAmount(), getCurrency());
+                    return (
+                      <span className="text-xl md:text-2xl font-light text-black font-futura-pt-light">
+                        <span className="font-sans">{priceFormatted.symbol}</span>
+                        {priceFormatted.number}
+                        <p className="text-sm font-light font-futura-pt-light">(inc. all taxes)</p>
+                      </span>
+                    );
+                  })()}
                 </div>
 
                 {cartSummary.shipping === 0 && (
@@ -1352,14 +1463,14 @@ const CheckoutPage = () => {
                     <div className="flex items-start gap-3">
                       <Truck size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs md:text-sm font-light text-black">Free Shipping</p>
+                        <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Free Shipping</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <RotateCcw size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs md:text-sm font-light text-black">Easy Returns</p>
-                        <p className="text-xs text-text-medium">30-day return policy</p>
+                        <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Easy Returns</p>
+                        <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">30-day return policy</p>
                       </div>
                     </div>
                   </div>
@@ -1377,12 +1488,18 @@ const CheckoutPage = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Gift size={16} className="text-gray-600 flex-shrink-0" strokeWidth={1.5} />
-                        <span className="text-sm md:text-base font-light text-black">Add Gift Wrap</span>
-                        <span className="text-xs md:text-sm text-text-medium">
-                          ({formatPrice(getGiftWrapAmount(address.country || 'India'), getCurrency())})
-                        </span>
+                        <span className="text-sm md:text-base font-light text-black font-futura-pt-light">Add Gift Wrap</span>
+                        {(() => {
+                          const priceFormatted = formatPrice(getGiftWrapAmount(address.country || 'India'), getCurrency());
+                          return (
+                            <span className="text-sm md:text-base text-text-medium font-futura-pt-light">
+                              (<span className="font-sans">{priceFormatted.symbol}</span>
+                              {priceFormatted.number})
+                            </span>
+                          );
+                        })()}
                       </div>
-                      <p className="text-xs md:text-sm text-text-medium mt-1 ml-6">
+                      <p className="text-sm md:text-base text-text-medium mt-1 ml-6 font-light font-futura-pt-light">
                         Add premium gift wrapping to make your order special
                       </p>
                     </div>
@@ -1399,11 +1516,11 @@ const CheckoutPage = () => {
                       className="mt-1 w-4 h-4 border-2 border-gray-300 rounded focus:ring-2 focus:ring-black focus:ring-offset-0 text-black cursor-pointer accent-black"
                     />
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs md:text-sm text-text-medium">
+                      <span className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">
                         I accept the{" "}
                         <button
                           type="button"
-                          className="text-black underline hover:text-gray-700 font-light bg-transparent border-0 p-0 cursor-pointer"
+                          className="text-black underline hover:text-gray-700 font-light bg-transparent border-0 p-0 cursor-pointer font-futura-pt-light"
                           onClick={(e) => {
                             navigate('/terms-conditions');
                           }}
@@ -1418,7 +1535,7 @@ const CheckoutPage = () => {
                 <button
                   onClick={handleOrder}
                   disabled={isProcessing || !acceptedTerms}
-                  className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
+                  className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark transition-colors text-sm md:text-base flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6 font-futura-pt-light"
                 >
                   {isProcessing ? (
                     <>
@@ -1434,7 +1551,7 @@ const CheckoutPage = () => {
                 </button>
 
                 <div className="mt-6 pt-4 border-t border-text-light/10">
-                  <div className="flex items-center gap-2 text-xs text-text-medium justify-center">
+                  <div className="flex items-center gap-2 text-sm md:text-base text-text-medium justify-center font-light font-futura-pt-light">
                     <Shield size={14} strokeWidth={1.5} />
                     <span>100% Secure Payment</span>
                   </div>
