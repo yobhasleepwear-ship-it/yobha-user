@@ -184,7 +184,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           onClick={onClose}
         ></div>
 
-        <aside className="absolute left-0 top-0 h-full w-full md:w-96 bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-futura-pt-light relative">
+        <aside className="absolute left-0 top-0 h-full w-full md:w-96 bg-white shadow-2xl animate-slideInLeft border-r border-gray-200 flex flex-col z-[100000] font-futura-pt-book relative">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
             <Link to="/home" onClick={onClose}>
@@ -237,9 +237,9 @@ const Sidebar = ({ isOpen, onClose }) => {
                     {isMobile && (
                       <button
                         onClick={() => setIsGiftsSubmenuOpen(true)}
-                        className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        className="flex items-center justify-between w-full py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                       >
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
                         <ChevronRight size={18} className="text-gray-700 ml-auto" />
                       </button>
                     )}
@@ -248,10 +248,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                     {!isMobile && (
                       <Link
                         to={routePath}
-                        className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
                       </Link>
                     )}
                   </div>
@@ -262,10 +262,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <Link
                   key={item.label}
                   to={routePath}
-                  className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                  className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                   onClick={onClose}
                 >
-                  <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{item.label}</span>
+                  <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
                 </Link>
               );
             })}
@@ -274,9 +274,9 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="pt-6 border-t border-gray-100 mt-2">
               <button
                 onClick={() => toggleAccordion("account")}
-                className="flex items-center justify-between w-full py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                className="flex items-center justify-between w-full py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
               >
-                <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">MY PROFILE</span>
+                <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">Account</span>
                 {expandedSections.account ? (
                   <ChevronDown size={18} className="text-gray-700" />
                 ) : (
@@ -288,54 +288,54 @@ const Sidebar = ({ isOpen, onClose }) => {
                   {!isAuthenticated ? (
                     <Link
                       to="/login"
-                      className="block py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                      className="block py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                       onClick={onClose}
                     >
-                      <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.login." + i18n.language)}</span>
+                      <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{t("navbar.account.login." + i18n.language)}</span>
                     </Link>
                   ) : (
                     <>
                       <Link
                         to="/account"
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <User size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">MY PROFILE</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">My Profile</span>
                       </Link>
                       <Link
                         to="/buyback/all"
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <Recycle size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.buyback." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{t("navbar.account.buyback." + i18n.language)}</span>
                       </Link>
                       <Link
                         to="/wallet"
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <Wallet size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">Wallet</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">Wallet</span>
                       </Link>
                       <Link
                         to="/orders"
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <Package size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.orders." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{t("navbar.account.orders." + i18n.language)}</span>
                       </Link>
                       <button
                         onClick={() => {
                           onClose();
                           handleLogout();
                         }}
-                        className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light text-left w-full"
+                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book text-left w-full"
                       >
                         <LogOut size={16} />
-                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">{t("navbar.account.logout." + i18n.language)}</span>
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{t("navbar.account.logout." + i18n.language)}</span>
                       </button>
                     </>
                   )}
@@ -346,7 +346,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             {/* Ship To Section */}
           {selectedSidebarCountry && (
             <div className="pt-6 border-t border-gray-100 mt-2">
-              <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-light">SHIP TO</p>
+              <p className="flex items-center gap-3 py-4 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">SHIP TO</p>
               <CountrySelector
                 value={selectedSidebarCountry?.code}
                 onSelect={handleSidebarCountryChange}
@@ -359,7 +359,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           )}
               {/* Language Switcher */}
             <div className="pt-6 border-t border-gray-100 mt-2">
-            <p className="flex items-center gap-3 py-4 text-[13px] uppercase tracking-[0.25em] text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-light">Choose Language</p>  
+            <p className="flex items-center gap-3 py-4 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">Choose Language</p>  
               <LanguageSwitcher />
             </div>
           </nav>
@@ -368,7 +368,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           {isGiftsHovered && !isMobile && (
             <div
               ref={giftsSubmenuRef}
-              className="absolute left-full top-0 h-full w-80 bg-white border-l border-gray-100 animate-slideInRight z-[100001] font-futura-pt-light overflow-y-auto"
+              className="absolute left-full top-0 h-full w-80 bg-white border-l border-gray-100 animate-slideInRight z-[100001] font-futura-pt-book overflow-y-auto"
               onMouseEnter={() => {
                 // Clear any pending timeout when mouse enters submenu
                 if (giftsHoverTimeoutRef.current) {
@@ -385,7 +385,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             >
               {/* Submenu Header - LV Style */}
               <div className="flex items-center px-6 py-5 border-b border-gray-100 bg-white sticky top-0 z-10">
-                <h3 className="h-10 flex items-center text-[13px] uppercase tracking-[0.3em] text-black font-light font-futura-pt-light">
+                <h3 className="h-10 flex items-center text-sm md:text-base text-black font-light font-futura-pt-book">
                   Gifts & Personalization
                 </h3>
               </div>
@@ -401,10 +401,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <Link
                       key={subItem.label}
                       to={subRoutePath}
-                      className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light hover:bg-gray-50/30"
+                      className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book hover:bg-gray-50/30"
                       onClick={onClose}
                     >
-                      <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light inline-block">
+                      <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book inline-block">
                         {subItem.label}
                       </span>
                     </Link>
@@ -417,7 +417,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
         {/* Mobile: Gifts Sub-sidebar - Slides in from right */}
         {isMobile && isGiftsSubmenuOpen && (
-          <aside className="absolute right-0 top-0 h-full w-full bg-white shadow-2xl animate-slideInRightMobile border-l border-gray-200 flex flex-col z-[100002] font-futura-pt-light">
+          <aside className="absolute right-0 top-0 h-full w-full bg-white shadow-2xl animate-slideInRightMobile border-l border-gray-200 flex flex-col z-[100002] font-futura-pt-book">
             {/* Header with Back Button */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
               <button
@@ -425,7 +425,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 className="flex items-center gap-2 text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
               >
                 <ArrowLeft size={20} />
-                <span className="text-[13px] uppercase tracking-[0.25em] font-light font-futura-pt-light">Back</span>
+                <span className="text-sm md:text-base font-light font-futura-pt-book">Back</span>
               </button>
               <button
                 className="text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
@@ -437,7 +437,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
             {/* Submenu Title */}
             <div className="px-6 py-4 border-b border-gray-100">
-              <h3 className="text-[13px] uppercase tracking-[0.3em] text-black font-light font-futura-pt-light">
+              <h3 className="text-sm md:text-base text-black font-light font-futura-pt-book">
                 Gifts & Personalization
               </h3>
             </div>
@@ -453,13 +453,13 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <Link
                     key={subItem.label}
                     to={subRoutePath}
-                    className="py-4 text-[13px] uppercase tracking-[0.25em] text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-light"
+                    className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                     onClick={() => {
                       setIsGiftsSubmenuOpen(false);
                       onClose();
                     }}
                   >
-                    <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-light">
+                    <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">
                       {subItem.label}
                     </span>
                   </Link>
