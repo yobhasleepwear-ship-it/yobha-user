@@ -10,14 +10,36 @@ import { message } from "../../comman/toster-message/ToastContainer";
  * Format price based on currency
  */
 const formatPrice = (price, currency) => {
-  console.log(price, currency)
-  if (typeof price !== 'number') return '0';
-  return price.toLocaleString(undefined, {
-    style: 'currency',
-    currency,
+  if (typeof price !== 'number' || price === 0) return '0';
+  
+  // Ensure currency is uppercase and valid
+  const currencyCode = currency ? currency.toUpperCase() : 'INR';
+  
+  // Currency symbol mapping
+  const currencySymbols = {
+    'INR': '₹',
+    'USD': '$',
+    'AED': 'AED',
+    'SAR': 'SAR',
+    'QAR': 'QAR',
+    'KWD': 'KWD',
+    'OMR': 'OMR',
+    'BHD': 'BHD',
+    'JOD': 'JOD',
+    'LBP': 'LBP',
+    'EGP': 'EGP',
+    'IQD': 'IQD'
+  };
+  
+  const symbol = currencySymbols[currencyCode] || currencyCode;
+  
+  // Format the number with commas
+  const formattedNumber = price.toLocaleString('en-IN', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 0
   });
+  
+  return { symbol, number: formattedNumber };
 };
 
 
@@ -148,7 +170,7 @@ const CartPage = () => {
     <div className="min-h-screen bg-premium-cream flex items-center justify-center font-futura-pt-light">
       <div className="text-center">
         <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600 text-xs md:text-sm uppercase tracking-wider font-light font-futura-pt-light">Loading Cart...</p>
+        <p className="text-gray-600 text-sm md:text-base font-light font-futura-pt-light">Loading Cart...</p>
       </div>
     </div>
   );
@@ -159,10 +181,10 @@ const CartPage = () => {
 
         {/* Page Header */}
         <div className="mb-8 md:mb-12">
-          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book">
             Shopping Cart
           </h1>
-          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
+          <p className="text-gray-600 text-sm md:text-base font-light leading-relaxed font-futura-pt-light">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
         </div>
 
         {cartItems.length === 0 ? (
@@ -171,9 +193,9 @@ const CartPage = () => {
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <ShoppingBag size={40} className="text-text-light md:w-12 md:h-12" strokeWidth={1.5} />
               </div>
-              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">Your Cart is Empty</h2>
-              <p className="text-gray-600 text-xs md:text-sm mb-6 md:mb-8 font-light leading-relaxed font-futura-pt-light">Discover our premium collection of luxury sleepwear</p>
-              <button onClick={() => navigate("/products")} className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm">
+              <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book">Your Cart is Empty</h2>
+              <p className="text-gray-600 text-sm md:text-base mb-6 md:mb-8 font-light leading-relaxed font-futura-pt-thin">Discover our premium collection of luxury sleepwear</p>
+              <button onClick={() => navigate("/products")} className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors text-sm md:text-base font-futura-pt-light">
                 Start Shopping <ArrowRight size={18} strokeWidth={1.5} />
               </button>
             </div>
@@ -202,18 +224,18 @@ const CartPage = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between gap-2 mb-3">
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-light text-black text-base md:text-lg mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight font-sweet-sans"
+                            <h3 className="font-light text-black text-base md:text-lg mb-2 line-clamp-2 hover:underline cursor-pointer font-futura-pt-book"
                               onClick={() => navigate(`/productDetail/${product.id}`)}>
                               {product.name}
                             </h3>
-                            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-text-medium mb-2">
-                              {product.variantColor && <span>Color: <span className="text-black font-light capitalize">{product.variantColor}</span></span>}
-                              {item.size && <span className="font-light">Size: <span className="text-black font-light">{item.size}</span></span>}
+                            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-sm md:text-base text-text-medium mb-2 font-futura-pt-light">
+                              {product.variantColor && <span>Color: <span className="text-black font-light font-futura-pt-light">{product.variantColor}</span></span>}
+                              {item.size && <span className="font-light font-futura-pt-light">Size: <span className="text-black font-light font-futura-pt-light">{item.size}</span></span>}
                             </div>
                              {item.monogram && (
-                          <div className="inline-flex items-center gap-2  border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-luxury-gold">
+                          <div className="inline-flex items-center gap-2 border border-luxury-gold/30 bg-luxury-gold/5 px-3 py-1 text-sm text-luxury-gold font-futura-pt-light">
                            
-                            <span className="font-light tracking-[0.2em] text-black text-[11px]">{item.monogram}</span>
+                            <span className="font-light text-black font-futura-pt-light">{item.monogram}</span>
                           </div>
                         )}
                           </div>
@@ -240,11 +262,21 @@ const CartPage = () => {
 
                         {/* Price */}
                         <div className="mb-4">
-                          <span className="text-xl md:text-2xl font-light text-black">{formatPrice(product.priceList.find(
-                            (e) =>
-                              e.country?.trim().toUpperCase() === product.country?.trim().toUpperCase() &&
-                              e.size?.trim().toUpperCase() === product.size?.trim().toUpperCase()
-                          ).priceAmount, product.priceList.find((e) => (e.country === product.country && e.size === product.size)).currency)}</span>
+                          {(() => {
+                            const matchedPrice = product.priceList.find(
+                              (e) =>
+                                e.country?.trim().toUpperCase() === product.country?.trim().toUpperCase() &&
+                                e.size?.trim().toUpperCase() === product.size?.trim().toUpperCase()
+                            );
+                            const currency = product.priceList.find((e) => (e.country === product.country && e.size === product.size))?.currency;
+                            const priceFormatted = formatPrice(matchedPrice?.priceAmount, currency);
+                            return (
+                              <span className="text-base md:text-lg font-light text-black font-futura-pt-light">
+                                <span className="font-sans">{priceFormatted.symbol}</span>
+                                {priceFormatted.number}
+                              </span>
+                            );
+                          })()}
                         </div>
 
                         {/* Quantity Controls */}
@@ -253,7 +285,7 @@ const CartPage = () => {
                             <button onClick={() => updateQuantity(item.id, item.size, -1)} disabled={item.quantity <= 1} className="p-2 hover:bg-premium-beige transition-colors">
                               <Minus size={14} strokeWidth={2} />
                             </button>
-                            <span className="px-4 md:px-6 py-2 font-light text-sm md:text-base min-w-[50px] text-center">{item.quantity}</span>
+                            <span className="px-4 md:px-6 py-2 font-light text-sm md:text-base min-w-[50px] text-center font-futura-pt-light">{item.quantity}</span>
                             <button onClick={() => updateQuantity(item.id, item.size, 1)} className="p-2 hover:bg-premium-beige transition-colors">
                               <Plus size={14} strokeWidth={2} />
                             </button>
@@ -277,35 +309,55 @@ const CartPage = () => {
             <div className="lg:col-span-1">
               <div className="bg-white border border-text-light/20 lg:sticky lg:top-24">
                 <div className="p-4 md:p-6 border-b border-text-light/20">
-                  <h2 className="text-lg md:text-xl text-text-medium text-black uppercase tracking-wider mb-1 font-futura">Order Summary</h2>
-                  <p className="text-xs md:text-sm font-light text-text-medium">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</p>
+                  <h2 className="text-lg md:text-xl text-black mb-1 font-light font-futura-pt-book">Order Summary</h2>
+                  <p className="text-sm md:text-base font-light text-text-medium font-futura-pt-light">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</p>
                 </div>
 
                 <div className="p-4 md:p-6 space-y-4">
                   <div className="space-y-3 pb-4 border-b border-text-light/10">
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="text-text-medium">Subtotal</span>
-                      <span className="text-black font-light">{formatPrice(totals.subTotal, getCurrency())}
-                        
-                      </span>
-                      
+                    <div className="flex justify-between text-sm md:text-base">
+                      <span className="text-text-medium font-futura-pt-light">Subtotal</span>
+                      {(() => {
+                        const priceFormatted = formatPrice(totals.subTotal, getCurrency());
+                        return (
+                          <span className="text-black font-light font-futura-pt-light">
+                            <span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </span>
+                        );
+                      })()}
                     </div>
 
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="text-text-medium">Shipping</span>
+                    <div className="flex justify-between text-sm md:text-base">
+                      <span className="text-text-medium  font-futura-pt-light">Shipping</span>
                       {totals.shipping === 0 ? (
-                        <span className="text-black font-light">FREE</span>
+                        <span className="text-black font-light font-futura-pt-light">Free</span>
                       ) : (
-                        <span className="text-black font-light">{formatPrice(totals.shipping, getCurrency())}</span>
+                        (() => {
+                          const priceFormatted = formatPrice(totals.shipping, getCurrency());
+                          return (
+                            <span className="text-black font-light font-futura-pt-light">
+                              <span className="font-sans">{priceFormatted.symbol}</span>
+                              {priceFormatted.number}
+                            </span>
+                          );
+                        })()
                       )}
                     </div>
                   </div>
 
                   <div className="flex justify-between pt-4 pb-4 md:pb-6 border-b border-text-light/20">
-                    <span className="text-base md:text-lg text-text-medium text-black uppercase tracking-wider font-sweet-sans">Total</span>
-                    <span className="text-xl md:text-2xl font-light text-black font-sweet-sans">{formatPrice(totals.grandTotal, getCurrency())}
-                      <p className="text-sm">(inc. all taxes)</p>
-                    </span>
+                    <span className="text-black text-lg md:text-lg  font-light font-futura-pt-book">Total</span>
+                    {(() => {
+                      const priceFormatted = formatPrice(totals.grandTotal, getCurrency());
+                      return (
+                        <span className="text-xl md:text-2xl font-light text-black font-futura-pt-light">
+                          <span className="font-sans">{priceFormatted.symbol}</span>
+                          {priceFormatted.number}
+                          <p className="text-sm font-futura-pt-thin">(inc. all taxes)</p>
+                        </span>
+                      );
+                    })()}
                   </div>
 
                   {totals.shipping === 0 && (
@@ -313,14 +365,14 @@ const CartPage = () => {
                       <div className="flex items-start gap-3">
                         <Truck size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs md:text-sm font-light text-black">Free Shipping</p>
+                          <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Free Shipping</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
                         <RotateCcw size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs md:text-sm font-light text-black">Easy Returns</p>
-                          <p className="text-xs font-light">30-day return policy</p>
+                          <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Easy Returns</p>
+                          <p className="text-xs md:text-sm font-light font-futura-pt-thin">30-day return policy</p>
                         </div>
                       </div>
                     </div>
@@ -329,12 +381,12 @@ const CartPage = () => {
                   <button
                     onClick={() => navigate("/checkout")}
                     disabled={cartItems.length === 0}
-                    className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center justify-center gap-2 md:gap-3 disabled:bg-text-light disabled:cursor-not-allowed"
+                    className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark transition-colors text-sm md:text-base flex items-center justify-center gap-2 md:gap-3 disabled:bg-text-light disabled:cursor-not-allowed font-futura-pt-light"
                   >
                     Proceed to Checkout <ArrowRight size={18} strokeWidth={1.5} />
                   </button>
 
-                  <button onClick={() => navigate("/products")} className="w-full mt-3 border-2 border-text-light/30 text-black py-3 md:py-4 font-light hover:border-black transition-colors uppercase tracking-wider text-xs md:text-sm">
+                  <button onClick={() => navigate("/products")} className="w-full mt-3 border-2 border-text-light/30 text-black py-3 md:py-4 font-light hover:border-black transition-colors text-sm md:text-base font-futura-pt-light">
                     Continue Shopping
                   </button>
                 </div>
