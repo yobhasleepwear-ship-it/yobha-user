@@ -427,7 +427,7 @@ const ProductsPage = () => {
         onClick={onToggle}
         className="w-full flex items-center justify-between py-5 px-6 hover:bg-black/[0.02] transition-colors duration-200"
       >
-        <span className="text-black text-sm uppercase tracking-widest font-light font-futura-pt-light">
+        <span className="text-black text-md lg:text-md md:text-md sm:text-sm  font-light font-futura-pt-light">
           {title}
         </span>
         {isOpen ? (
@@ -449,13 +449,13 @@ const ProductsPage = () => {
     <div className="bg-white overflow-hidden">
       {showHeader && (
         <div className="px-6 py-5 border-b border-text-light/10 flex items-center justify-between">
-          <h2 className="text-black text-sm uppercase tracking-widest font-light font-futura-pt-light">
+          <h2 className="text-black text-md lg:text-md md:text-md sm:text-sm font-light font-futura-pt-light">
             Filters
           </h2>
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline transition-colors font-futura-pt-light"
+              className="text-black hover:text-text-medium font-light text-md lg:text-md md:text-md sm:text-sm transition-colors font-futura-pt-light"
             >
               Clear All
             </button>
@@ -746,7 +746,7 @@ const ProductsPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-premium-cream font-futura-pt-light"
+      className="min-h-screen bg-premium-cream"
     >
       {/* Filter Sidebar - Opens from left */}
       {showMobileFilters && (
@@ -759,7 +759,7 @@ const ProductsPage = () => {
           <div className="absolute left-0 top-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl overflow-y-auto animate-slideInLeft">
             <div className="sticky top-0 bg-white z-10 px-6 py-5 border-b border-text-light/20">
               <div className="flex items-center justify-between">
-                <h2 className="font-light text-black uppercase tracking-wider text-sm font-futura-pt-light">
+                <h2 className=" text-md lg:text-md md:text-md sm:text-sm  text-black font-light font-futura-pt-light">
                   Filters
                 </h2>
                 <button
@@ -776,7 +776,7 @@ const ProductsPage = () => {
                     clearAllFilters();
                     setShowMobileFilters(false);
                   }}
-                  className="mt-3 text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline font-futura-pt-light"
+                  className="mt-3 text-md lg:text-md md:text-md sm:text-sm hover:text-text-medium font-light  font-futura-pt-light"
                 >
                   Clear All
                 </button>
@@ -798,7 +798,7 @@ const ProductsPage = () => {
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl animate-slideUp">
             <div className="px-6 py-5 border-b border-text-light/20">
               <div className="flex items-center justify-between">
-                <h2 className="font-light text-black uppercase tracking-wider text-sm font-sweet-sans">
+                <h2 className="font-light text-black text-sm font-sweet-sans">
                   Sort By
                 </h2>
                 <button
@@ -839,12 +839,12 @@ const ProductsPage = () => {
 
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+          <h1 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-2 font-futura-pt-book">
             {category
               ? `${category.replace(/([A-Z])/g, " $1").trim()} Collection`
               : "All Products"}
           </h1>
-          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
+          <p className="text-gray-600 text-md md:text-md sm:text-sm font-light leading-relaxed font-futura-pt-light">
             Timeless essentials crafted for serene nights and refined comfort
           </p>
         </div>
@@ -860,20 +860,20 @@ const ProductsPage = () => {
                 className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
               >
                 <SlidersHorizontal size={18} strokeWidth={1.5} />
-                <span className="uppercase text-sm tracking-wider font-light border-b-2 border-black group-hover:border-text-medium transition-colors">
+                <span className=" text-lg lg:text-lg md:text-md sm:text-sm font-light border-b-2 border-black group-hover:border-text-medium transition-colors font-futura-pt-light">
                   Filters
                 </span>
               </button>
 
               {/* Sorting Options - Desktop/Tablet */}
               {/* <div className="flex items-center gap-3">
-                <span className="text-sm font-light text-black uppercase tracking-wider">Sort By:</span>
+                <span className="text-sm font-light text-black">Sort By:</span>
                 <div className="flex flex-wrap gap-2">
                   {filterOptions.sortOptions.map((option) => (
                     <button
                       key={option.id}
                       onClick={() => updateFilter('sortBy', option.id)}
-                      className={`px-3 py-1.5 text-xs uppercase tracking-wider transition-all duration-200 ${filters.sortBy === option.id
+                      className={`px-3 py-1.5 text-xs transition-all duration-200 ${filters.sortBy === option.id
                           ? 'bg-black text-white'
                           : 'border border-text-light text-black hover:bg-black hover:text-white'
                         }`}
@@ -885,7 +885,7 @@ const ProductsPage = () => {
               </div> */}
             </div>
 
-            <div className="text-text-medium text-sm uppercase tracking-wider">
+            <div className="text-text-medium text-sm  font-futura-pt-light">
               {products.length} Product{products.length !== 1 ? 's' : ''}
             </div>
           </div>
@@ -900,7 +900,7 @@ const ProductsPage = () => {
                 className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
               >
                 <SlidersHorizontal size={18} strokeWidth={1.5} />
-                <span className="uppercase text-sm tracking-wider font-light border-b-2 border-black group-hover:border-text-medium transition-colors">
+                <span className="tex-black text-md lg:text-md md:text-md sm:text-sm font-light border-b-2 border-black group-hover:border-text-medium transition-colors font-futura-pt-light">
                   Filters
                 </span>
               </button>
@@ -910,7 +910,7 @@ const ProductsPage = () => {
                 onClick={() => setShowMobileSort(true)}
                 className="flex items-center gap-2 text-black hover:text-text-medium transition-colors group"
               >
-                <span className="text-sm font-light text-black uppercase tracking-wider">
+                <span className="text-sm font-light text-black">
                   Sort by {filterOptions.sortOptions.find(opt => opt.id === filters.sortBy)?.name || 'Featured'}
                 </span>
                 <ChevronDown size={16} strokeWidth={1.5} />
@@ -919,7 +919,7 @@ const ProductsPage = () => {
 
             {/* Mobile Product Count - Centered */}
             <div className="text-center">
-              <div className="text-text-medium text-sm uppercase tracking-wider">
+              <div className="text-text-medium text-sm  font-futura-pt-light">
                 {products.length} Product{products.length !== 1 ? 's' : ''}
               </div>
             </div>
@@ -930,7 +930,7 @@ const ProductsPage = () => {
         {hasActiveFilters && (
           <div className="flex items-center gap-2 flex-wrap mb-8">
             {filters.sortBy !== '' && (
-              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs font-futura-pt-light">
                 <span>Sort: {filterOptions.sortOptions.find(opt => opt.id === filters.sortBy)?.name || ''}</span>
                 <button
                   onClick={() => updateFilter('sortBy', '')}
@@ -943,7 +943,7 @@ const ProductsPage = () => {
             )}
 
             {filters.segment !== '' && (
-              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs  font-futura-pt-light">
                 <span>{filters.segment}</span>
                 <button
                   onClick={() => updateFilter('segment', '')}
@@ -956,7 +956,7 @@ const ProductsPage = () => {
             )}
 
             {filters.categories.map((catId) => (
-              <div key={catId} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+              <div key={catId} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs  font-light font-futura-pt-light">
                 <span>{getCategoryName(catId)}</span>
                 <button
                   onClick={() => toggleCategory(catId)}
@@ -972,7 +972,7 @@ const ProductsPage = () => {
               const displayHex = getColorHex(color);
 
               return (
-                <div key={color} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+                <div key={color} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs font-light font-futura-pt-light">
                   <div
                     className="w-3 h-3 rounded-full border border-gray-300 flex-shrink-0"
                     style={{ backgroundColor: displayHex }}
@@ -990,7 +990,7 @@ const ProductsPage = () => {
             })}
 
             {filters.sizes.map((size) => (
-              <div key={size} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+              <div key={size} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs font-light font-futura-pt-light">
                 <span>Size: {size}</span>
                 <button
                   onClick={() => toggleSize(size)}
@@ -1004,7 +1004,7 @@ const ProductsPage = () => {
 
             <button
               onClick={clearAllFilters}
-              className="text-xs text-black hover:text-text-medium font-light underline uppercase tracking-wider"
+              className="text-sm text-black hover:text-text-medium font-light  font-futura-pt-light"
             >
               Clear All
             </button>
@@ -1017,7 +1017,7 @@ const ProductsPage = () => {
           <div className="flex justify-center items-center py-20">
             <div className="text-center">
               <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-text-medium text-sm uppercase tracking-wider">Loading...</p>
+              <p className="text-text-medium text-sm font-futura-pt-light">Loading...</p>
             </div>
           </div>
         ) : products.length > 0 ? (
@@ -1032,16 +1032,16 @@ const ProductsPage = () => {
               <div className="w-24 h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                 <span className="text-4xl text-text-light">✕</span>
               </div>
-              <h3 className="text-2xl font-light text-black mb-3 uppercase tracking-wider font-sweet-sans">
+              <h3 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-2 font-futura-pt-book">
                 No Products Found
               </h3>
-              <p className="text-text-medium  font-light font-futura mb-8">
+              <p className="text-gray-600 text-md md:text-md sm:text-sm font-light leading-relaxed font-futura-pt-light mb-8">
                 Try adjusting your filters to find what you're looking for
               </p>
               {hasActiveFilters && (
                 <button
                   onClick={clearAllFilters}
-                  className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
+                  className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors text-sm font-futura-pt-light"
                 >
                   Clear All Filters
                 </button>
