@@ -1716,18 +1716,18 @@ const ProductDetailPage = () => {
               ✕
             </button>
 
-            <h3 className="text-sm sm:text-base md:text-lg uppercase tracking-[0.3em] text-black mb-4 sm:mb-6 font-light font-sweet-sans pr-8">
+            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl text-black mb-4 sm:mb-6 font-light font-futura-pt-book pr-8">
               Size Guide
             </h3>
 
             {/* Unit Toggle and Tabs */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 border-b border-text-light/20">
               <div className="flex items-center gap-2 sm:gap-3">
-                <span className="text-xs sm:text-sm text-text-medium font-light uppercase tracking-widest whitespace-nowrap">Unit:</span>
+                <span className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light whitespace-nowrap">Unit:</span>
                 <div className="flex items-center bg-premium-beige/30 rounded-full p-1">
                   <button
                     onClick={() => handleUnitToggle('inches')}
-                    className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all rounded-full ${sizeGuideUnit === 'inches'
+                    className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'inches'
                         ? 'bg-black text-white'
                         : 'text-black/70 hover:text-black'
                       }`}
@@ -1736,7 +1736,7 @@ const ProductDetailPage = () => {
                   </button>
                   <button
                     onClick={() => handleUnitToggle('cm')}
-                    className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all rounded-full ${sizeGuideUnit === 'cm'
+                    className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'cm'
                         ? 'bg-black text-white'
                         : 'text-black/70 hover:text-black'
                       }`}
@@ -1750,7 +1750,7 @@ const ProductDetailPage = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowFindSize(false)}
-                  className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all border ${!showFindSize
+                  className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${!showFindSize
                       ? 'border-black bg-black text-white'
                       : 'border-text-light/20 text-black/70 hover:border-black/40'
                     }`}
@@ -1759,7 +1759,7 @@ const ProductDetailPage = () => {
                 </button>
                 <button
                   onClick={() => setShowFindSize(true)}
-                  className={`px-2.5 sm:px-3 md:px-4 py-1.5 text-[10px] sm:text-[11px] md:text-xs font-light uppercase tracking-widest transition-all border ${showFindSize
+                  className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${showFindSize
                       ? 'border-black bg-black text-white'
                       : 'border-text-light/20 text-black/70 hover:border-black/40'
                     }`}
@@ -1769,26 +1769,26 @@ const ProductDetailPage = () => {
               </div>
             </div>
 
-            <div className="space-y-4 sm:space-y-6 text-xs sm:text-sm text-text-medium leading-relaxed">
+            <div className="space-y-4 sm:space-y-6 text-sm sm:text-base md:text-base lg:text-base text-text-medium leading-relaxed font-futura-pt-light">
               {!showFindSize ? (
                 <>
                   {/* Size Chart View */}
-                  <p className="text-xs sm:text-sm">
+                  <p className="text-sm sm:text-base md:text-base lg:text-base font-futura-pt-light">
                     Discover your perfect fit. Refer to the measurement chart curated for our signature silhouettes. If you are in-between sizes, we recommend choosing the larger size for a more relaxed drape.
                   </p>
                   <div className="overflow-x-auto -mx-4 sm:mx-0">
                     <div className="inline-block min-w-full align-middle px-4 sm:px-0">
                       <table className="min-w-full border border-premium-beige">
                         <thead>
-                          <tr className="bg-premium-beige/60 text-black uppercase tracking-[0.25em] text-[10px] sm:text-[11px]">
-                            <th className="px-3 sm:px-4 py-2 text-left font-light">Size</th>
-                            <th className="px-3 sm:px-4 py-2 text-left font-light">
+                          <tr className="bg-premium-beige/60 text-black text-xs sm:text-sm md:text-base lg:text-base">
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">Size</th>
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
                               Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                             </th>
-                            <th className="px-3 sm:px-4 py-2 text-left font-light">
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
                               Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                             </th>
-                            <th className="px-3 sm:px-4 py-2 text-left font-light">
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
                               Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                             </th>
                           </tr>
@@ -1796,16 +1796,16 @@ const ProductDetailPage = () => {
                         <tbody className="text-black/80">
                           {sizeGuideData.map((row, idx) => (
                             <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-premium-beige/20'}>
-                              <td className="px-3 sm:px-4 py-2 uppercase tracking-[0.25em] text-[10px] sm:text-[11px] font-light">
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light">
                                 {row.size}
                               </td>
-                              <td className="px-3 sm:px-4 py-2 text-[11px] sm:text-xs">
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
                                 {convertRange(row.bust, 'inches', sizeGuideUnit)}
                               </td>
-                              <td className="px-3 sm:px-4 py-2 text-[11px] sm:text-xs">
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
                                 {convertRange(row.waist, 'inches', sizeGuideUnit)}
                               </td>
-                              <td className="px-3 sm:px-4 py-2 text-[11px] sm:text-xs">
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
                                 {convertRange(row.hip, 'inches', sizeGuideUnit)}
                               </td>
                             </tr>
@@ -1814,7 +1814,7 @@ const ProductDetailPage = () => {
                       </table>
                     </div>
                   </div>
-                  <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-text-medium">
+                  <p className="text-xs sm:text-sm md:text-base lg:text-base text-text-medium font-futura-pt-light">
                     Need assistance? Our client care team is happy to guide you to your ideal size.
                   </p>
                 </>
@@ -1822,13 +1822,13 @@ const ProductDetailPage = () => {
                 <>
                   {/* Find Your Size View */}
                   <div className="space-y-4 sm:space-y-6">
-                    <p className="text-xs sm:text-sm">
+                    <p className="text-sm sm:text-base md:text-base lg:text-base font-futura-pt-light">
                       Enter your measurements below to find your perfect size. We'll recommend the best size based on your bust, waist, and hip measurements.
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                       <div>
-                        <label className="block text-xs font-light text-black uppercase tracking-widest mb-2">
+                        <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
                           Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                         </label>
                         <input
@@ -1837,12 +1837,12 @@ const ProductDetailPage = () => {
                           value={userMeasurements.bust}
                           onChange={(e) => handleMeasurementChange('bust', e.target.value)}
                           placeholder="0.0"
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50"
+                          className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-light text-black uppercase tracking-widest mb-2">
+                        <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
                           Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                         </label>
                         <input
@@ -1851,12 +1851,12 @@ const ProductDetailPage = () => {
                           value={userMeasurements.waist}
                           onChange={(e) => handleMeasurementChange('waist', e.target.value)}
                           placeholder="0.0"
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50"
+                          className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-xs font-light text-black uppercase tracking-widest mb-2">
+                        <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
                           Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                         </label>
                         <input
@@ -1865,7 +1865,7 @@ const ProductDetailPage = () => {
                           value={userMeasurements.hip}
                           onChange={(e) => handleMeasurementChange('hip', e.target.value)}
                           placeholder="0.0"
-                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50"
+                          className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
                         />
                       </div>
                     </div>
@@ -1873,13 +1873,13 @@ const ProductDetailPage = () => {
                     {/* Recommended Size Display */}
                     {recommendedSize && (
                       <div className="bg-premium-beige/40 border-2 border-black p-4 sm:p-6 text-center">
-                        <p className="text-xs sm:text-sm text-text-medium uppercase tracking-widest mb-2 font-light">
+                        <p className="text-sm sm:text-base md:text-base lg:text-lg text-text-medium mb-2 font-light font-futura-pt-light">
                           Recommended Size
                         </p>
-                        <p className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+                        <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black mb-4 font-futura-pt-light">
                           {recommendedSize}
                         </p>
-                        <p className="text-xs sm:text-sm text-text-medium font-light">
+                        <p className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light">
                           We recommend this size for you
                         </p>
                       </div>
@@ -1887,15 +1887,15 @@ const ProductDetailPage = () => {
 
                     {!recommendedSize && userMeasurements.bust && userMeasurements.waist && userMeasurements.hip && (
                       <div className="bg-premium-beige/20 border border-text-light/20 p-4 text-center">
-                        <p className="text-xs sm:text-sm text-text-medium font-light">
+                        <p className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light">
                           Calculating your recommended size...
                         </p>
                       </div>
                     )}
 
                     <div className="bg-premium-beige/20 p-3 sm:p-4 rounded-sm">
-                      <p className="text-[10px] sm:text-[11px] text-text-medium font-light leading-relaxed">
-                        <strong className="font-light uppercase tracking-widest">How to measure:</strong> Use a soft measuring tape. For bust, measure around the fullest part. For waist, measure around the narrowest part. For hip, measure around the fullest part of your hips.
+                      <p className="text-xs sm:text-sm md:text-base lg:text-base text-text-medium font-light leading-relaxed font-futura-pt-light">
+                        <strong className="font-light font-futura-pt-light">How to measure:</strong> Use a soft measuring tape. For bust, measure around the fullest part. For waist, measure around the narrowest part. For hip, measure around the fullest part of your hips.
                       </p>
                     </div>
                   </div>
