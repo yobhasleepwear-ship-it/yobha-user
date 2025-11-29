@@ -346,7 +346,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             {/* Ship To Section */}
           {selectedSidebarCountry && (
             <div className="pt-6 border-t border-gray-100 mt-2">
-              <p className="flex items-center gap-3 py-4 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">SHIP TO</p>
+              <p className="flex items-center gap-3 py-4 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">Ship To</p>
               <CountrySelector
                 value={selectedSidebarCountry?.code}
                 onSelect={handleSidebarCountryChange}
