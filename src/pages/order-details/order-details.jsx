@@ -405,7 +405,7 @@ const OrderDetailPage = () => {
             </h1>
             <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
               <p className="text-sm text-black font-light font-futura-pt-light">
-                Order ID: <span className="font-futura-pt-book">{order.orderNo || order.id}</span>
+                Order ID: <span className="font-futura-pt-light font-light">{order.orderNo || order.id}</span>
               </p>
               
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 ${statusInfo.bg} border border-gray-200`}>
@@ -417,7 +417,7 @@ const OrderDetailPage = () => {
             </div>
 
             <div className="flex flex-wrap gap-4 mt-4 text-sm text-black font-light font-futura-pt-light">
-              <span>Placed: <span className="font-futura-pt-book">{formatDate(order.createdAt)}</span></span>
+              <span className="font-futura-pt-light font-light">Placed: <span className="font-futura-pt-light font-light">{formatDate(order.createdAt)}</span></span>
               {order.updatedAt && (
                 <span>Updated: <span className="font-futura-pt-book">{formatDate(order.updatedAt)}</span></span>
               )}
