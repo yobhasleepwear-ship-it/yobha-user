@@ -92,8 +92,8 @@ const LoginModal = () => {
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-2xl border border-gray-200 p-8 relative transition-all">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 font-futura-pt-light">
+      <div className="bg-white w-full max-w-md rounded-xl shadow-2xl border border-gray-200 p-8 relative transition-all font-futura-pt-light">
         {/* Close Button */}
         <button
           onClick={() => setShowModal(false)}
@@ -108,7 +108,7 @@ const LoginModal = () => {
         </div>
 
         {/* Title */}
-        <h2 className="text-2xl font-bold text-center text-black mb-6 uppercase tracking-wider">
+        <h2 className="text-base md:text-lg font-light text-center text-black mb-6 font-futura-pt-book">
           {isSignup ? "Create Account" : "Welcome Back"}
         </h2>
 
@@ -125,7 +125,7 @@ const LoginModal = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 text-sm"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 text-sm font-futura-pt-light font-light"
                 />
               )}
 
@@ -137,7 +137,7 @@ const LoginModal = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 text-sm"
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 text-sm font-futura-pt-light font-light"
                   />
                   <input
                     type="password"
@@ -145,7 +145,7 @@ const LoginModal = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 text-sm"
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 text-sm font-futura-pt-light font-light"
                   />
                 </>
               ) : (
@@ -153,7 +153,7 @@ const LoginModal = () => {
                   <select
                     value={countryCode}
                     onChange={(e) => setCountryCode(e.target.value)}
-                    className="w-20 px-2 py-3 border border-gray-300 focus:border-black focus:outline-none text-black text-sm"
+                    className="w-20 px-2 py-3 border border-gray-300 focus:border-black focus:outline-none text-black text-sm font-futura-pt-light font-light"
                   >
                     <option value="+91">🇮🇳 +91</option>
                     <option value="+1">🇺🇸 +1</option>
@@ -172,18 +172,18 @@ const LoginModal = () => {
               )}
 
               {!isSignup && (
-                <div className="flex justify-center gap-8 text-sm font-semibold uppercase text-gray-500 mt-2">
+                <div className="flex justify-center gap-8 text-sm font-light text-black mt-2 font-futura-pt-light">
                   <button
                     type="button"
                     onClick={() => setActiveTab("email")}
-                    className={`pb-1 ${activeTab === "email" ? "border-b-2 border-black text-black" : "hover:text-black"}`}
+                    className={`pb-1 font-futura-pt-light ${activeTab === "email" ? "border-b-2 border-black text-black" : "hover:text-black"}`}
                   >
                     Email
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("phone")}
-                    className={`pb-1 ${activeTab === "phone" ? "border-b-2 border-black text-black" : "hover:text-black"}`}
+                    className={`pb-1 font-futura-pt-light ${activeTab === "phone" ? "border-b-2 border-black text-black" : "hover:text-black"}`}
                   >
                     Phone
                   </button>
@@ -192,7 +192,7 @@ const LoginModal = () => {
 
               <button
                 type="submit"
-                className="w-full py-3 bg-black text-white font-semibold hover:bg-gray-800 transition-colors uppercase tracking-wider text-sm mt-4"
+                className="w-full py-3 bg-black text-white font-light hover:bg-gray-800 transition-colors text-sm mt-4 font-futura-pt-light"
               >
                 {isSignup ? "Sign Up" : activeTab === "email" ? "Login" : "Continue"}
               </button>
@@ -201,16 +201,16 @@ const LoginModal = () => {
             {/* Divider */}
             {!isSignup && (
               <>
-                <div className="flex items-center my-5 text-gray-400">
+                <div className="flex items-center my-5 text-black">
                   <hr className="flex-grow border-gray-200" />
-                  <span className="px-3 text-xs uppercase">Or</span>
+                  <span className="px-3 text-xs font-futura-pt-light font-light">Or</span>
                   <hr className="flex-grow border-gray-200" />
                 </div>
 
                 {/* Google Login */}
                 <button
                   onClick={handleGoogleLogin}
-                  className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 hover:border-black transition text-black font-medium text-sm"
+                  className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 hover:border-black transition text-black font-light text-sm font-futura-pt-light"
                 >
                   <FcGoogle size={20} /> Continue with Google
                 </button>
@@ -218,23 +218,23 @@ const LoginModal = () => {
             )}
 
             {/* Sign Up / Login Toggle */}
-            <p className="text-center text-gray-500 mt-6 text-sm">
+            <p className="text-center text-black mt-6 text-sm font-futura-pt-light font-light">
               {isSignup ? (
                 <>
                   Already have an account?{" "}
                   <span
                     onClick={() => setIsSignup(false)}
-                    className="text-black font-semibold cursor-pointer hover:text-gray-700 underline"
+                    className="text-black font-light cursor-pointer hover:text-black underline font-futura-pt-light"
                   >
                     Login
                   </span>
                 </>
               ) : (
                 <>
-                  Don’t have an account?{" "}
+                  Don't have an account?{" "}
                   <span
                     onClick={() => setIsSignup(true)}
-                    className="text-black font-semibold cursor-pointer hover:text-gray-700 underline"
+                    className="text-black font-light cursor-pointer hover:text-black underline font-futura-pt-light"
                   >
                     Sign Up
                   </span>
@@ -244,10 +244,10 @@ const LoginModal = () => {
           </>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-center text-black mb-3 uppercase">
+            <h2 className="text-base md:text-lg font-light text-center text-black mb-3 font-futura-pt-book">
               Enter OTP
             </h2>
-            <p className="text-center text-gray-500 mb-5 text-sm">
+            <p className="text-center text-black mb-5 text-sm font-futura-pt-light font-light">
               Sent to {countryCode} {phoneNumber}
             </p>
 
@@ -257,7 +257,7 @@ const LoginModal = () => {
               onChange={(e) => setOtp(e.target.value)}
               placeholder="Enter 6-digit OTP"
               maxLength="6"
-              className="w-full px-4 py-3 border border-gray-300 text-center text-lg font-semibold tracking-widest focus:border-black focus:outline-none"
+              className="w-full px-4 py-3 border border-gray-300 text-center text-lg font-light font-futura-pt-light focus:border-black focus:outline-none"
             />
 
             <button
@@ -280,14 +280,14 @@ const LoginModal = () => {
                   message.error("OTP verification failed");
                 }
               }}
-              className="w-full mt-5 py-3 bg-black text-white font-semibold hover:bg-gray-800 transition-colors uppercase tracking-wider text-sm"
+              className="w-full mt-5 py-3 bg-black text-white font-light hover:bg-gray-800 transition-colors text-sm font-futura-pt-light"
             >
               Verify OTP
             </button>
 
             <button
               onClick={() => setShowOtp(false)}
-              className="text-gray-500 hover:text-black text-sm mt-4 w-full text-center"
+              className="text-black hover:text-black text-sm mt-4 w-full text-center font-futura-pt-light font-light"
             >
               Back
             </button>

@@ -97,31 +97,31 @@ const LoginPage = () => {
   return (
     <>
       <HeaderWithSidebar />
-  <div className="relative min-h-screen flex flex-col md:flex-row bg-premium-cream pt-14 font-futura">
+  <div className="relative min-h-screen flex flex-col md:flex-row bg-white pt-14 font-futura-pt-light">
         {/* Close button placed inside page content so it appears below header */}
         <button
           onClick={() => navigate(-1)}
           aria-label="Close login"
           className="absolute top-6 right-4 md:top-10 md:right-6 z-[1100] w-10 h-10 md:w-11 md:h-11 flex items-center justify-center  bg-white border border-text-light/20 shadow hover:bg-gray-50"
         >
-          <span className="text-lg md:text-xl font-semibold">✕</span>
+          <span className="text-lg md:text-xl font-light font-futura-pt-light">✕</span>
         </button>
         {/* Left Side - Brand Section */}
         <div className="hidden md:flex w-1/2 p-16 lg:p-20 bg-gray-200 flex-col justify-center items-start space-y-8 bg-white">
-          <h1 className="text-5xl lg:text-6xl font-light text-black tracking-wider uppercase font-futura">
+          <h1 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black font-futura-pt-book">
             Welcome
           </h1>
-          <p className="font-light max-w-md text-base lg:text-lg leading-relaxed font-futura">
+          <p className="font-light max-w-md text-sm md:text-base leading-relaxed text-black font-futura-pt-light">
             Discover the ultimate luxury in sleepwear with YOBHA. Sign in to continue and indulge in exclusivity.
           </p>
-          <div className="flex space-x-6 text-black text-2xl font-futura">
-            <button className="hover:text-text-medium transition-colors font-futura" aria-label="Instagram">
+          <div className="flex space-x-6 text-black text-2xl font-futura-pt-light">
+            <button className="hover:text-black transition-colors font-futura-pt-light" aria-label="Instagram">
               <FaInstagram />
             </button>
-            <button className="hover:text-text-medium transition-colors font-futura" aria-label="Facebook">
+            <button className="hover:text-black transition-colors font-futura-pt-light" aria-label="Facebook">
               <FaFacebookF />
             </button>
-            <button className="hover:text-text-medium transition-colors font-futura" aria-label="Twitter">
+            <button className="hover:text-black transition-colors font-futura-pt-light" aria-label="Twitter">
               <FaTwitter />
             </button>
           </div>
@@ -129,7 +129,7 @@ const LoginPage = () => {
 
         {/* Right Side - Login/Signup Form */}
         <div className="flex w-full md:w-1/2 justify-center items-center p-6 md:p-12 lg:p-20">
-          <div className="w-full md:max-w-md bg-white border border-text-light/20 shadow-lg p-8 md:p-12 font-futura">
+          <div className="w-full md:max-w-md bg-white border border-text-light/20 shadow-lg p-8 md:p-12 font-futura-pt-light">
             {/* Brand */}
             <div className="flex justify-center items-center mb-10 md:mb-12">
               <Link to="/" className="flex items-center">
@@ -148,18 +148,18 @@ const LoginPage = () => {
                 <div className="flex justify-center gap-8 mb-8 md:mb-10 border-b border-text-light/20">
                   <button
                     onClick={() => setActiveTab("email")}
-                    className={`pb-3 px-2 font-semibold text-sm uppercase tracking-wider transition-all ${activeTab === "email"
+                    className={`pb-3 px-2 font-light text-sm transition-all font-futura-pt-light ${activeTab === "email"
                       ? "border-b-2 border-black text-black"
-                      : "text-text-medium hover:text-black"
+                      : "text-black hover:text-black"
                       }`}
                   >
                     Email
                   </button>
                   <button
                     onClick={() => setActiveTab("phone")}
-                    className={`pb-3 px-2 font-semibold text-sm uppercase tracking-wider transition-all ${activeTab === "phone"
+                    className={`pb-3 px-2 font-light text-sm transition-all font-futura-pt-light ${activeTab === "phone"
                       ? "border-b-2 border-black text-black"
-                      : "text-text-medium hover:text-black"
+                      : "text-black hover:text-black"
                       }`}
                   >
                     Phone
@@ -176,7 +176,7 @@ const LoginPage = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="w-full px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light text-sm"
+                        className="w-full px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light text-sm font-futura-pt-light font-light"
                       />
                       <input
                         type="password"
@@ -184,7 +184,7 @@ const LoginPage = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="w-full px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light text-sm"
+                        className="w-full px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light text-sm font-futura-pt-light font-light"
                       />
                     </>
                   ) : (
@@ -192,7 +192,7 @@ const LoginPage = () => {
                       <select
                         value={countryCode}
                         onChange={(e) => setCountryCode(e.target.value)}
-                        className="w-20 sm:w-24 px-2 sm:px-3 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white text-xs sm:text-sm font-semibold cursor-pointer"
+                        className="w-20 sm:w-24 px-2 sm:px-3 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white text-xs sm:text-sm font-light font-futura-pt-light cursor-pointer"
                       >
                         <option value="+91">🇮🇳 +91</option>
                         <option value="+1">🇺🇸 +1</option>
@@ -229,41 +229,41 @@ const LoginPage = () => {
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         required
-                        className="flex-1 min-w-0 px-3 sm:px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light text-sm"
+                        className="flex-1 min-w-0 px-3 sm:px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light text-sm font-futura-pt-light font-light"
                       />
                     </div>
                   )}
 
                   <button
                     type="submit"
-                    className="w-full py-4 bg-black text-white font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-sm mt-6"
+                    className="w-full py-4 bg-black text-white font-light hover:bg-text-dark transition-colors text-sm mt-6 font-futura-pt-light"
                   >
                     {activeTab === "email" ? "Login" : "Continue"}
                   </button>
                 </form>
 
                 {/* OR Divider */}
-                <div className="flex items-center my-6 md:my-8 text-text-medium">
+                <div className="flex items-center my-6 md:my-8 text-black">
                   <hr className="flex-grow border-text-light/20" />
-                  <span className="px-4 text-xs uppercase tracking-wider">Or</span>
+                  <span className="px-4 text-xs font-futura-pt-light font-light">Or</span>
                   <hr className="flex-grow border-text-light/20" />
                 </div>
 
                 {/* Google Login */}
                 <button
                   onClick={handleGoogleLogin}
-                  className="w-full flex items-center justify-center gap-3 py-4 border-2 border-text-light/30 hover:border-black transition-colors text-black font-medium text-sm"
+                  className="w-full flex items-center justify-center gap-3 py-4 border-2 border-text-light/30 hover:border-black transition-colors text-black font-light text-sm font-futura-pt-light"
                 >
                   <FcGoogle size={22} />
                   Continue with Google
                 </button>
 
                 {/* Signup Link */}
-                <p className="text-center text-text-medium mt-6 md:mt-8 text-sm">
+                <p className="text-center text-black mt-6 md:mt-8 text-sm font-futura-pt-light font-light">
                   New to YOBHA?{" "}
                   <span
                     onClick={() => setIsSignup(true)}
-                    className="text-black font-semibold cursor-pointer hover:text-text-medium transition-colors underline"
+                    className="text-black font-light cursor-pointer hover:text-black transition-colors underline font-futura-pt-light"
                   >
                     Sign Up
                   </span>
@@ -272,7 +272,7 @@ const LoginPage = () => {
             ) : (
               <>
                 {/* Signup Form */}
-                <h2 className="text-center text-2xl md:text-3xl font-bold text-black mb-6 md:mb-8 uppercase tracking-wider">
+                <h2 className="text-center text-base md:text-lg font-light text-black mb-6 md:mb-8 font-futura-pt-book">
                   Create Account
                 </h2>
                 <form className="space-y-5" onSubmit={handleSignup}>
@@ -304,7 +304,7 @@ const LoginPage = () => {
                     <select
                       value={countryCode}
                       onChange={(e) => setCountryCode(e.target.value)}
-                      className="w-20 sm:w-24 px-2 sm:px-3 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white text-xs sm:text-sm font-semibold cursor-pointer"
+                      className="w-20 sm:w-24 px-2 sm:px-3 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white text-xs sm:text-sm font-light font-futura-pt-light cursor-pointer"
                     >
                       <option value="+91">🇮🇳 +91</option>
                       <option value="+1">🇺🇸 +1</option>
@@ -346,16 +346,16 @@ const LoginPage = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-4 bg-black text-white font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-sm mt-6"
+                    className="w-full py-4 bg-black text-white font-light hover:bg-text-dark transition-colors text-sm mt-6 font-futura-pt-light"
                   >
                     Sign Up
                   </button>
                 </form>
-                <p className="text-center text-text-medium mt-6 md:mt-8 text-sm">
+                <p className="text-center text-black mt-6 md:mt-8 text-sm font-futura-pt-light font-light">
                   Already have an account?{" "}
                   <span
                     onClick={() => setIsSignup(false)}
-                    className="text-black font-semibold cursor-pointer hover:text-text-medium transition-colors underline"
+                    className="text-black font-light cursor-pointer hover:text-black transition-colors underline font-futura-pt-light"
                   >
                     Login
                   </span>
@@ -369,16 +369,16 @@ const LoginPage = () => {
         {showOtpModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
             <div className="bg-white p-6 md:p-8 w-full max-w-md shadow-2xl border border-text-light/20">
-              <h2 className="text-2xl md:text-3xl font-bold text-black mb-3 md:mb-4 text-center uppercase tracking-wider">
+              <h2 className="text-base md:text-lg font-light text-black mb-3 md:mb-4 text-center font-futura-pt-book">
                 Enter OTP
               </h2>
-              <p className="text-center text-text-medium mb-6 text-sm md:text-base">
+              <p className="text-center text-black mb-6 text-sm md:text-base font-futura-pt-light font-light">
                 We sent a verification code to
               </p>
 
               {/* Phone Number Display */}
               <div className="bg-premium-beige p-3 mb-6 text-center border border-text-light/20">
-                <p className="text-black font-bold text-base md:text-lg break-all">
+                <p className="text-black font-light text-base md:text-lg break-all font-futura-pt-light">
                   {countryCode} {phoneNumber}
                 </p>
               </div>
@@ -390,10 +390,10 @@ const LoginPage = () => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 maxLength="6"
-                className="w-full px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light mb-5 text-center text-lg md:text-xl font-semibold tracking-widest"
+                className="w-full px-4 py-4 border-2 border-text-light/30 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light mb-5 text-center text-lg md:text-xl font-light font-futura-pt-light"
               />
               <button
-                className="w-full py-4 bg-black text-white font-semibold hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
+                className="w-full py-4 bg-black text-white font-light hover:bg-text-dark transition-colors text-sm font-futura-pt-light"
                 onClick={async () => {
                   try {
                     const response = await verifyOtp(`${countryCode}${phoneNumber}`, otp);
@@ -420,7 +420,7 @@ const LoginPage = () => {
               </button>
 
               {/* Resend OTP */}
-              <p className="text-center text-text-medium mt-4 text-sm">
+              <p className="text-center text-black mt-4 text-sm font-futura-pt-light font-light">
                 Didn't receive code?{" "}
                 <button
                   onClick={async () => {
@@ -432,14 +432,14 @@ const LoginPage = () => {
                       message.error("Failed to resend OTP");
                     }
                   }}
-                  className="text-black font-semibold hover:text-text-medium transition-colors underline"
+                  className="text-black font-light hover:text-black transition-colors underline font-futura-pt-light"
                 >
                   Resend OTP
                 </button>
               </p>
 
               <button
-                className="text-center text-text-medium mt-3 cursor-pointer hover:text-black text-sm w-full transition-colors uppercase tracking-wider"
+                className="text-center text-black mt-3 cursor-pointer hover:text-black text-sm w-full transition-colors font-futura-pt-light font-light"
                 onClick={() => setShowOtpModal(false)}
               >
                 Cancel

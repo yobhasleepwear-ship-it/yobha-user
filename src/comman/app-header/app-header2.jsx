@@ -266,7 +266,7 @@ const HeaderWithSidebar2 = () => {
       ? (scrollY !== 0 || isHovered
         ? "bg-white  border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)] "
         : "bg-transparent border-transparent ")
-      : "sticky top-0 relative  z-[1200] bg-white border-b border-gray-200 font-sweet-sans shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
+      : "sticky top-0 relative  z-[1200] bg-white border-b border-gray-200 font-futura-pt-light shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
   `;
 
   // Icon color classes based on header transparency
@@ -368,7 +368,7 @@ const HeaderWithSidebar2 = () => {
               {/* Account Dropdown - Mobile */}
               {isAuthenticated && mobileAccountOpen && (
                 <div
-                  className="md:hidden absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl overflow-hidden text-xs uppercase font-futura-pt-light min-w-[180px]"
+                  className="md:hidden absolute right-0 top-12 z-[1500] bg-white border border-gray-200 shadow-xl overflow-hidden text-xs font-futura-pt-light font-light min-w-[180px]"
                   onClick={(e) => e.stopPropagation()}
                   onTouchStart={(e) => e.stopPropagation()}
                 >
@@ -394,7 +394,7 @@ const HeaderWithSidebar2 = () => {
                       navigate('/account');
                       setMobileAccountOpen(false);
                     }}
-                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 active:bg-gray-200 transition-colors duration-300 mt-6 w-full text-left touch-manipulation cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 active:bg-gray-200 transition-colors duration-300 mt-6 w-full text-left touch-manipulation cursor-pointer font-futura-pt-light font-light"
                     style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
                     <User size={16} />
@@ -409,7 +409,7 @@ const HeaderWithSidebar2 = () => {
                       setMobileAccountOpen(false);
                       handleLogout();
                     }}
-                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 active:bg-gray-200 transition-colors duration-300 w-full text-left touch-manipulation cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-3 text-black hover:bg-gray-100 active:bg-gray-200 transition-colors duration-300 w-full text-left touch-manipulation cursor-pointer font-futura-pt-light font-light"
                     style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
                     <LogOut size={16} />
@@ -437,20 +437,20 @@ const HeaderWithSidebar2 = () => {
                         setAccountDropdownOpen(false);
                         navigate('/account');
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest transition-all duration-300 pt-6 text-left"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black transition-all duration-300 pt-6 text-left font-futura-pt-light font-light"
                     >
                       <User size={16} />
-                      <span>MY PROFILE</span>
+                      <span>My Profile</span>
                     </button>
                     <button
                       onClick={() => {
                         setAccountDropdownOpen(false);
                         handleLogout();
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black uppercase tracking-widest transition-all duration-300 text-left"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-xs md:text-sm text-black transition-all duration-300 text-left font-futura-pt-light font-light"
                     >
                       <LogOut size={16} />
-                      <span>LOGOUT</span>
+                      <span>Logout</span>
                     </button>
                   </div>
                 </div>
@@ -472,7 +472,7 @@ const HeaderWithSidebar2 = () => {
                       placeholder={t("navbar.placeholders.search." + i18n.language)}
                       value={searchQuery}
                       onChange={handleSearchChange}
-                      className="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black text-sm md:text-base bg-gray-50 transition-all duration-300 hover:bg-white"
+                      className="w-full pl-12 pr-4 py-3 md:py-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black text-sm md:text-base bg-gray-50 transition-all duration-300 hover:bg-white font-futura-pt-light font-light text-black"
                       autoFocus
                     />
                     {searchLoading && (
@@ -510,9 +510,9 @@ const HeaderWithSidebar2 = () => {
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-light text-black text-sm leading-tight truncate">{product.name}</h4>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide">{product.category}</p>
-                            <p className="text-black font-light text-sm">Rs. {product.price} INR</p>
+                            <h4 className="font-light text-black text-sm leading-tight truncate font-futura-pt-light">{product.name}</h4>
+                            <p className="text-black text-xs font-futura-pt-light font-light">{product.category}</p>
+                            <p className="text-black font-light text-sm font-futura-pt-light">Rs. {product.price} INR</p>
                           </div>
                         </div>
                       ))}
@@ -523,7 +523,7 @@ const HeaderWithSidebar2 = () => {
                 {/* No Results */}
                 {showSearchResults && searchResults.length === 0 && searchQuery.trim() && !searchLoading && (
                   <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 shadow-2xl z-50 p-6 mt-2 rounded-lg">
-                    <p className="text-gray-500 text-sm text-center">No products found for "{searchQuery}"</p>
+                    <p className="text-black text-sm text-center font-futura-pt-light font-light">No products found for "{searchQuery}"</p>
                   </div>
                 )}
               </div>
