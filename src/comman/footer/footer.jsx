@@ -51,7 +51,7 @@ const [newsletter , setNewsletter]=useState("")
   }
   return (
     <footer
-      className="bg-premium-cream relative z-10 border-t border-text-light/20 font-sweet-sans"
+      className="bg-premium-cream relative z-10 border-t border-text-light/20 font-futura-pt-light"
     >
       {/* Main Footer Content */}
       <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-16">
@@ -59,7 +59,7 @@ const [newsletter , setNewsletter]=useState("")
 
           {/* Brand & About */}
           <div className="space-y-5">
-            <div className="text-3xl font-light text-black tracking-wider">
+            <div className="text-3xl font-light text-black">
               <Link
                 to="/"
                 className="flex items-center"
@@ -71,21 +71,21 @@ const [newsletter , setNewsletter]=useState("")
                 />
               </Link>
             </div>
-            <p className="text-text-medium text-sm leading-relaxed font-light">
+            <p className="text-black text-sm leading-relaxed font-light font-futura-pt-light">
               Premium comfortwear for your ultimate comfort. Designed with care, elegance, and style.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-bold mb-6 text-black uppercase tracking-wider">
+            <h3 className="text-sm font-light mb-6 text-black font-futura-pt-book">
               Quick Links
             </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
                   to="/home"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   Home
                 </Link>
@@ -93,7 +93,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/products"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   Collections
                 </Link>
@@ -101,7 +101,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/about"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   About
                 </Link>
@@ -109,7 +109,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/contact"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   Contact
                 </Link>
@@ -117,7 +117,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/careers"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   Careers
                 </Link>
@@ -127,14 +127,14 @@ const [newsletter , setNewsletter]=useState("")
 
           {/* Policies */}
           <div>
-            <h3 className="text-sm font-bold mb-6 text-black uppercase tracking-wider">
+            <h3 className="text-sm font-light mb-6 text-black font-futura-pt-book">
               Policies
             </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
                   to="/privacy-policy"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   Privacy Policy
                 </Link>
@@ -142,7 +142,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/terms-conditions"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   Terms of Service
                 </Link>
@@ -150,7 +150,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/return-policy"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   Shipping & Returns
                 </Link>
@@ -158,7 +158,7 @@ const [newsletter , setNewsletter]=useState("")
               <li>
                 <Link
                   to="/faq"
-                  className="text-text-medium font-light hover:text-black transition-colors duration-300"
+                  className="text-black font-light hover:text-gray-600 transition-colors duration-300 font-futura-pt-light"
                 >
                   FAQs
                 </Link>
@@ -169,7 +169,7 @@ const [newsletter , setNewsletter]=useState("")
           {/* Newsletter & Social */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
              <div className=" border-b border-gray-200 bg-premium-cream/70">
-                              <p className="text-medium uppercase tracking-wider text-black font-bold mb-3">Ship To</p>
+                              <p className="text-sm text-black font-light mb-3 font-futura-pt-book">Ship To</p>
                               <CountrySelector
                                 value={selectedSidebarCountry?.code}
                                 onSelect={handleSidebarCountryChange}
@@ -180,10 +180,10 @@ const [newsletter , setNewsletter]=useState("")
                               />
                             </div>
             <div>
-              <h3 className="text-sm font-bold mb-4 text-black uppercase tracking-wider">
+              <h3 className="text-sm font-light mb-4 text-black font-futura-pt-book">
                 Newsletter
               </h3>
-              <p className="text-text-medium font-light text-sm mb-4">
+              <p className="text-black font-light text-sm mb-4 font-futura-pt-light">
                 Subscribe to receive updates, access to exclusive deals, and more.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 max-w-md lg:max-w-none">
@@ -192,16 +192,16 @@ const [newsletter , setNewsletter]=useState("")
                   placeholder="Enter your email"
                   value={newsletter}
                   onChange={(e)=>setNewsletter(e.target.value)}
-                  className="flex-1 px-4 py-3 text-sm border border-text-light/30 focus:outline-none focus:border-black transition-colors bg-white rounded-none min-w-0"
+                  className="flex-1 px-4 py-3 text-sm border border-gray-300 focus:outline-none focus:border-black transition-colors bg-white rounded-none min-w-0 font-light font-futura-pt-light text-black"
                 />
-                <button className="px-6 py-3 bg-black text-white text-sm font-light hover:bg-text-dark transition-colors duration-300 uppercase tracking-wider whitespace-nowrap flex-shrink-0" onClick={handleNewsSubscribe}>
+                <button className="px-6 py-3 bg-black text-white text-sm font-light hover:bg-gray-900 transition-colors duration-300 whitespace-nowrap flex-shrink-0 font-futura-pt-light" onClick={handleNewsSubscribe}>
                   Subscribe
                 </button>
               </div>
             </div>
 
             <div>
-              <h3 className="text-sm font-bold mb-4 text-black uppercase tracking-wider">
+              <h3 className="text-sm font-light mb-4 text-black font-futura-pt-book">
                 Follow Us
               </h3>
               <div className="flex items-center gap-5">
@@ -210,7 +210,7 @@ const [newsletter , setNewsletter]=useState("")
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-black hover:text-gray-600 transition-colors duration-300"
                 >
                   <Facebook size={22} strokeWidth={1.5} />
                 </a>
@@ -219,7 +219,7 @@ const [newsletter , setNewsletter]=useState("")
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="X (formerly Twitter)"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-black hover:text-gray-600 transition-colors duration-300"
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -230,7 +230,7 @@ const [newsletter , setNewsletter]=useState("")
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="text-text-medium hover:text-black transition-colors duration-300"
+                  className="text-black hover:text-gray-600 transition-colors duration-300"
                 >
                   <Instagram size={22} strokeWidth={1.5} />
                 </a>
@@ -243,24 +243,24 @@ const [newsletter , setNewsletter]=useState("")
       {/* Bottom Bar */}
       <div className="border-t border-text-light/20 bg-premium-white">
         <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-text-medium">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-black font-light font-futura-pt-light">
             <p>© 2025 YOBHA. All rights reserved.</p>
             <div className="flex gap-8">
               <Link
                 to="/privacy-policy"
-                className="hover:text-black transition-colors duration-300"
+                className="hover:text-gray-600 transition-colors duration-300"
               >
                 Privacy Policy
               </Link>
               <Link
                 to="/terms-conditions"
-                className="hover:text-black transition-colors duration-300"
+                className="hover:text-gray-600 transition-colors duration-300"
               >
                 Terms & Conditions
               </Link>
               <Link
                 to="/return-policy"
-                className="hover:text-black transition-colors duration-300"
+                className="hover:text-gray-600 transition-colors duration-300"
               >
                 Return Policy
               </Link>

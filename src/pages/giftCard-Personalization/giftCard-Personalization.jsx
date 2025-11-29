@@ -80,28 +80,28 @@ const GiftCardPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 font-[Helvetica Neue]">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-[400px]">
-        <h2 className="text-xl font-semibold mb-6 text-center text-gray-800">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white font-futura-pt-light">
+      <div className="bg-white p-8 border border-gray-200 w-full max-w-md">
+        <h2 className="text-base md:text-lg font-light mb-6 text-center text-black font-futura-pt-book">
           Buy Gift Card
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <div>
-            <label className="block mb-1 text-sm font-medium">Email</label>
+            <label className="block mb-2 text-sm text-black font-light font-futura-pt-book">Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring focus:ring-orange-300"
+              className="w-full border border-gray-300 bg-white px-4 py-3 text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors font-light font-futura-pt-light text-sm md:text-base"
             />
           </div>
 
           {/* Gift Card Amount */}
           <div>
-            <label className="block mb-1 text-sm font-medium">
+            <label className="block mb-2 text-sm text-black font-light font-futura-pt-book">
               Gift Card Amount
             </label>
             <input
@@ -110,17 +110,17 @@ const GiftCardPage = () => {
               min="1"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring focus:ring-orange-300"
+              className="w-full border border-gray-300 bg-white px-4 py-3 text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors font-light font-futura-pt-light text-sm md:text-base"
             />
           </div>
 
           {/* Currency */}
           <div>
-            <label className="block mb-1 text-sm font-medium">Currency</label>
+            <label className="block mb-2 text-sm text-black font-light font-futura-pt-book">Currency</label>
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="w-full border rounded-lg p-2"
+              className="w-full border border-gray-300 bg-white px-4 py-3 text-black focus:outline-none focus:border-black transition-colors font-light font-futura-pt-light text-sm md:text-base"
             >
               <option value="INR">INR</option>
               <option value="USD">USD</option>
@@ -129,11 +129,11 @@ const GiftCardPage = () => {
 
           {/* Country */}
           <div>
-            <label className="block mb-1 text-sm font-medium">Country</label>
+            <label className="block mb-2 text-sm text-black font-light font-futura-pt-book">Country</label>
             <select
               value={country}
               onChange={(e) => setCountry(e.target.value)}
-              className="w-full border rounded-lg p-2"
+              className="w-full border border-gray-300 bg-white px-4 py-3 text-black focus:outline-none focus:border-black transition-colors font-light font-futura-pt-light text-sm md:text-base"
             >
               <option value="IN">India</option>
               <option value="US">USA</option>
@@ -144,10 +144,10 @@ const GiftCardPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full text-white py-2 rounded-lg transition-all ${
+            className={`w-full py-4 px-6 text-sm font-light transition-all duration-200 flex items-center justify-center gap-2 font-futura-pt-light ${
               loading
-                ? "bg-orange-300 cursor-not-allowed"
-                : "bg-orange-500 hover:bg-orange-600"
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-black text-white hover:bg-gray-900"
             }`}
           >
             {loading ? "Processing..." : "Purchase Gift Card"}

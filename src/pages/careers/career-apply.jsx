@@ -161,7 +161,7 @@ const CareerApply = () => {
 
   if (isLoading) {
     return (
-      <div className="relative min-h-screen bg-[#FAF6F2] font-sweet-sans flex items-center justify-center">
+      <div className="relative min-h-screen bg-white font-futura-pt-light flex items-center justify-center">
         <Loader2 className="w-12 h-12 text-gray-400 animate-spin" />
       </div>
     );
@@ -172,7 +172,7 @@ const CareerApply = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#FAF6F2] font-sweet-sans">
+    <div className="relative min-h-screen bg-white font-futura-pt-light">
       {/* Main Content */}
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-12 lg:py-16">
         <div className="max-w-4xl mx-auto">
@@ -182,13 +182,13 @@ const CareerApply = () => {
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-300 mb-8 font-light"
           >
             <ArrowLeft size={20} />
-            <span className="text-sm uppercase tracking-[0.15em]">Back to Job Details</span>
+            <span className="text-sm font-light font-futura-pt-light">Back to Job Details</span>
           </button>
 
           {/* Application Form */}
           <div className="bg-white border border-gray-200/50 p-6 md:p-8 lg:p-10">
             <div className="mb-8">
-              <h2 className="text-2xl md:text-3xl font-light text-gray-900 uppercase tracking-wide font-sweet-sans">
+              <h2 className="text-xl md:text-3xl font-light text-black font-futura-pt-book">
                 Apply for {job.jobTitle}
               </h2>
             </div>
@@ -196,7 +196,7 @@ const CareerApply = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                  <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -205,13 +205,13 @@ const CareerApply = () => {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                     placeholder="Enter your full name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                  <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                     Email <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -220,7 +220,7 @@ const CareerApply = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -228,7 +228,7 @@ const CareerApply = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                  <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                     Mobile Number <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -237,13 +237,13 @@ const CareerApply = () => {
                     value={formData.mobileNumber}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                     placeholder="+919876543210"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                  <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                     Current City
                   </label>
                   <input
@@ -251,7 +251,7 @@ const CareerApply = () => {
                     name="currentCity"
                     value={formData.currentCity}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                     placeholder="Bangalore"
                   />
                 </div>
@@ -259,7 +259,7 @@ const CareerApply = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2 whitespace-nowrap">
+                  <label className="block text-sm text-black font-light mb-2 whitespace-nowrap font-futura-pt-book">
                     Relevant Experience (Years)
                   </label>
                   <input
@@ -268,13 +268,13 @@ const CareerApply = () => {
                     value={formData.relevantExperienceYears}
                     onChange={handleInputChange}
                     min="0"
-                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                     placeholder="3"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2 whitespace-nowrap">
+                  <label className="block text-sm text-black font-light mb-2 whitespace-nowrap font-futura-pt-book">
                     Current CTC (INR)
                   </label>
                   <input
@@ -283,13 +283,13 @@ const CareerApply = () => {
                     value={formData.currentCTC}
                     onChange={handleInputChange}
                     min="0"
-                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                     placeholder="600000"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2 whitespace-nowrap">
+                  <label className="block text-sm text-black font-light mb-2 whitespace-nowrap font-futura-pt-book">
                     Expected CTC (INR)
                   </label>
                   <input
@@ -298,14 +298,14 @@ const CareerApply = () => {
                     value={formData.expectedCTC}
                     onChange={handleInputChange}
                     min="0"
-                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                    className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                     placeholder="900000"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                   Notice Period (Days)
                 </label>
                 <input
@@ -314,13 +314,13 @@ const CareerApply = () => {
                   value={formData.noticePeriodInDays}
                   onChange={handleInputChange}
                   min="0"
-                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                   placeholder="30"
                 />
               </div>
 
               <div>
-                <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                   Resume/CV <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -337,16 +337,16 @@ const CareerApply = () => {
                     className="flex items-center gap-3 px-4 py-3 border border-gray-200 hover:border-gray-900 cursor-pointer transition-colors duration-300 bg-white"
                   >
                     <Upload size={20} className="text-gray-600" />
-                    <span className="text-sm text-gray-600 font-light">
+                    <span className="text-sm text-black font-light font-futura-pt-light">
                       {formData.resume ? formData.resume.name : "Choose file (PDF, DOC, DOCX)"}
                     </span>
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 mt-2 font-light">Maximum file size: 5MB</p>
+                <p className="text-xs text-black mt-2 font-light font-futura-pt-light">Maximum file size: 5MB</p>
               </div>
 
               <div>
-                <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                   Portfolio URL
                 </label>
                 <input
@@ -354,13 +354,13 @@ const CareerApply = () => {
                   name="portfolioUrl"
                   value={formData.portfolioUrl}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                   placeholder="https://yourportfolio.com"
                 />
               </div>
 
               <div>
-                <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                   Why YOBHA?
                 </label>
                 <textarea
@@ -368,13 +368,13 @@ const CareerApply = () => {
                   value={formData.whyYobha}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light resize-none font-futura-pt-light"
                   placeholder="I love creating interactive UI..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm uppercase tracking-[0.15em] text-gray-900 font-light mb-2">
+                <label className="block text-sm text-black font-light mb-2 font-futura-pt-book">
                   How Did You Hear About Us?
                 </label>
                 <input
@@ -382,7 +382,7 @@ const CareerApply = () => {
                   name="howDidYouHear"
                   value={formData.howDidYouHear}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-gray-900 font-light"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 transition-colors duration-300 bg-white text-black font-light font-futura-pt-light"
                   placeholder="LinkedIn, Website, Referral, etc."
                 />
               </div>
@@ -391,7 +391,7 @@ const CareerApply = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-8 py-3 bg-gray-900 text-white text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-800 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-8 py-3 bg-gray-900 text-white text-sm font-light hover:bg-gray-800 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
@@ -405,7 +405,7 @@ const CareerApply = () => {
                 <button
                   type="button"
                   onClick={() => navigate(`/career/${jobId}`)}
-                  className="px-8 py-3 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-500"
+                  className="px-8 py-3 border border-gray-900/30 text-black text-sm font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-500 font-futura-pt-light"
                 >
                   Cancel
                 </button>

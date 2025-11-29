@@ -783,13 +783,13 @@ const Gifts = () => {
         onClick={onToggle}
         className="w-full flex items-center justify-between py-5 px-6 hover:bg-black/[0.02] transition-colors duration-200"
       >
-        <span className="text-black text-sm uppercase tracking-widest font-light font-futura-pt-light">
+        <span className="text-black text-sm font-light font-futura-pt-book">
           {title}
         </span>
         {isOpen ? (
           <ChevronUp size={16} className="text-black" strokeWidth={1.5} />
         ) : (
-          <ChevronDown size={16} className="text-text-medium" strokeWidth={1.5} />
+          <ChevronDown size={16} className="text-gray-600" strokeWidth={1.5} />
         )}
       </button>
       {isOpen && (
@@ -805,13 +805,13 @@ const Gifts = () => {
     <div className="bg-white overflow-hidden">
       {showHeader && (
         <div className="px-6 py-5 border-b border-text-light/10 flex items-center justify-between">
-          <h2 className="text-black text-sm uppercase tracking-widest font-light font-futura-pt-light">
+          <h2 className="text-black text-sm font-light font-futura-pt-book">
             Filters
           </h2>
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline transition-colors font-futura-pt-light"
+              className="text-xs text-black hover:text-gray-600 font-light underline transition-colors font-futura-pt-light"
             >
               Clear All
             </button>
@@ -838,9 +838,9 @@ const Gifts = () => {
                 onChange={() => updateFilter('sortBy', option.id)}
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
-              <span className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.sortBy === option.id
+              <span className={`ml-3 text-sm transition-colors font-light font-futura-pt-light ${filters.sortBy === option.id
                 ? "text-black"
-                : "text-text-medium group-hover:text-black"
+                : "text-gray-600 group-hover:text-black"
                 }`}>
                 {option.name}
               </span>
@@ -868,9 +868,9 @@ const Gifts = () => {
                 onChange={() => updateFilter('segment', segment)}
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
-              <span className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.segment === segment
+              <span className={`ml-3 text-sm transition-colors font-light font-futura-pt-light ${filters.segment === segment
                 ? "text-black"
-                : "text-text-medium group-hover:text-black"
+                : "text-gray-600 group-hover:text-black"
                 }`}>
                 {segment}
               </span>
@@ -898,9 +898,9 @@ const Gifts = () => {
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
               <span
-                className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.fabric.includes(fabric.id)
+                className={`ml-3 text-sm transition-colors font-light font-futura-pt-light ${filters.fabric.includes(fabric.id)
                   ? "text-black"
-                  : "text-text-medium group-hover:text-black"
+                  : "text-gray-600 group-hover:text-black"
                   }`}
               >
                 {fabric.name}
@@ -942,9 +942,9 @@ const Gifts = () => {
                       title={color}
                     />
                     <span
-                      className={`text-sm tracking-wide transition-colors font-light font-futura-pt-light flex-1 ${filters.colors.includes(color)
+                      className={`text-sm transition-colors font-light font-futura-pt-light flex-1 ${filters.colors.includes(color)
                         ? "text-black"
-                        : "text-text-medium group-hover:text-black"
+                        : "text-gray-600 group-hover:text-black"
                         }`}
                     >
                       {color}
@@ -977,9 +977,9 @@ const Gifts = () => {
                   className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
                 />
                 <span
-                  className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.sizes.includes(size)
+                  className={`ml-3 text-sm transition-colors font-light font-futura-pt-light ${filters.sizes.includes(size)
                     ? "text-black"
-                    : "text-text-medium group-hover:text-black"
+                    : "text-gray-600 group-hover:text-black"
                     }`}
                 >
                   {size}
@@ -1052,8 +1052,8 @@ const Gifts = () => {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-3 sm:py-4">
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-1 sm:gap-2 text-black uppercase tracking-wider text-xs sm:text-sm md:text-base font-light">
-                <span className="font-light">{currentCategory.name}</span>
+              <div className="flex items-center gap-1 sm:gap-2 text-black text-xs sm:text-sm md:text-base font-light font-futura-pt-book">
+                <span>{currentCategory.name}</span>
               </div>
               <span className="text-xs sm:text-sm text-gray-600 font-light">
                 {products.length} {products.length === 1 ? 'item' : 'items'}
@@ -1088,9 +1088,9 @@ const Gifts = () => {
                 <button
                   ref={categoryButtonRef2}
                   onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                  className="flex items-center gap-1 sm:gap-2 text-black hover:text-gray-600 transition-colors uppercase tracking-wider text-xs sm:text-sm md:text-base font-light"
+                  className="flex items-center gap-1 sm:gap-2 text-black hover:text-gray-600 transition-colors text-xs sm:text-sm md:text-base font-light font-futura-pt-book"
                 >
-                  <span className="font-light">{currentCategory.name}</span>
+                  <span>{currentCategory.name}</span>
                   <ChevronDown size={14} className={`sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px] transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} strokeWidth={1.5} />
                 </button>
                 {showCategoryDropdown && (
@@ -1105,9 +1105,9 @@ const Gifts = () => {
                         <button
                           key={categoryKey}
                           onClick={() => handleCategorySelect(categoryKey)}
-                          className={`w-full text-left px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm uppercase tracking-wider font-light transition-colors ${
+                          className={`w-full text-left px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm font-light transition-colors font-futura-pt-light ${
                             isActive
-                              ? 'text-black font-medium border-l-2 border-black'
+                              ? 'text-black font-futura-pt-book border-l-2 border-black'
                               : 'text-gray-700 hover:bg-gray-50'
                           }`}
                         >
@@ -1124,10 +1124,10 @@ const Gifts = () => {
             </div>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-1.5 sm:gap-2 text-black hover:text-gray-600 transition-colors uppercase tracking-wider text-xs sm:text-sm font-light"
+                className="flex items-center gap-1.5 sm:gap-2 text-black hover:text-gray-600 transition-colors text-xs sm:text-sm font-light font-futura-pt-light"
               >
                 <SlidersHorizontal size={16} className="sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
-                <span className="font-light">Filters</span>
+                <span>Filters</span>
               </button>
             </div>
           </div>
@@ -1138,7 +1138,7 @@ const Gifts = () => {
         {hasActiveFilters && (
           <div className="flex items-center gap-2 flex-wrap mb-6">
             {filters.sortBy !== '' && (
-              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs font-light font-futura-pt-light">
                 <span>Sort: {filterOptions.sortOptions.find(opt => opt.id === filters.sortBy)?.name || ''}</span>
                 <button
                   onClick={() => updateFilter('sortBy', '')}
@@ -1151,7 +1151,7 @@ const Gifts = () => {
             )}
 
             {filters.segment !== '' && (
-              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 bg-black text-white px-3 py-1.5 text-xs font-light font-futura-pt-light">
                 <span>{filters.segment}</span>
                 <button
                   onClick={() => updateFilter('segment', '')}
@@ -1164,7 +1164,7 @@ const Gifts = () => {
             )}
 
             {filters.categories.map((catId) => (
-              <div key={catId} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+              <div key={catId} className="inline-flex items-center gap-2 border border-gray-300 text-black px-3 py-1.5 text-xs font-light font-futura-pt-light">
                 <span>{getCategoryName(catId)}</span>
                 <button
                   onClick={() => toggleCategory(catId)}
@@ -1180,7 +1180,7 @@ const Gifts = () => {
               const displayHex = getColorHex(color);
 
               return (
-                <div key={color} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+                <div key={color} className="inline-flex items-center gap-2 border border-gray-300 text-black px-3 py-1.5 text-xs font-light font-futura-pt-light">
                   <div
                     className="w-3 h-3 rounded-full border border-gray-300 flex-shrink-0"
                     style={{ backgroundColor: displayHex }}
@@ -1198,7 +1198,7 @@ const Gifts = () => {
             })}
 
             {filters.sizes.map((size) => (
-              <div key={size} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+              <div key={size} className="inline-flex items-center gap-2 border border-gray-300 text-black px-3 py-1.5 text-xs font-light font-futura-pt-light">
                 <span>Size: {size}</span>
                 <button
                   onClick={() => toggleSize(size)}
@@ -1213,7 +1213,7 @@ const Gifts = () => {
             {filters.fabric.map((fabricId) => {
               const fabricName = filterOptions.fabricOptions.find(f => f.id === fabricId)?.name || fabricId;
               return (
-                <div key={fabricId} className="inline-flex items-center gap-2 border border-text-light text-black px-3 py-1.5 text-xs uppercase tracking-wider font-light">
+                <div key={fabricId} className="inline-flex items-center gap-2 border border-gray-300 text-black px-3 py-1.5 text-xs font-light font-futura-pt-light">
                   <span>{fabricName}</span>
                   <button
                     onClick={() => updateFilterArray("fabric", fabricId)}
@@ -1228,7 +1228,7 @@ const Gifts = () => {
 
             <button
               onClick={clearAllFilters}
-              className="text-xs text-black hover:text-text-medium font-light underline uppercase tracking-wider"
+              className="text-xs text-black hover:text-gray-600 font-light underline font-futura-pt-light"
             >
               Clear All
             </button>
@@ -1296,12 +1296,12 @@ const Gifts = () => {
                     {/* Product Name and Price Overlay - Shows on Hover */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex flex-col items-center justify-center gap-2 px-4">
                       <div className="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 text-center">
-                        <p className="text-white text-sm md:text-base font-light uppercase tracking-wider mb-1 line-clamp-2">
+                        <p className="text-white text-sm md:text-base font-light mb-1 line-clamp-2 font-futura-pt-light">
                           {product.name || product.productName || 'Product'}
                         </p>
                     {productPrice && (
-                          <p className="text-white text-lg md:text-xl font-light uppercase tracking-wider">
-                            {productPrice}
+                          <p className="text-white text-lg md:text-xl font-light font-futura-pt-light">
+                            <span className="font-sans">{productPrice}</span>
                           </p>
                         )}
                       </div>
@@ -1329,7 +1329,7 @@ const Gifts = () => {
             <div className="absolute right-0 top-0 bottom-0 w-80 md:w-96 bg-white shadow-2xl overflow-y-auto">
               <div className="sticky top-0 bg-white z-10 px-6 py-5 border-b border-gray-200">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-light text-black uppercase tracking-wider text-sm">
+                  <h2 className="font-light text-black text-sm font-futura-pt-book">
                     Filters
                   </h2>
                   <button
@@ -1345,7 +1345,7 @@ const Gifts = () => {
                     onClick={() => {
                       clearAllFilters();
                     }}
-                    className="mt-3 text-xs text-black hover:text-text-medium font-light uppercase tracking-wider underline font-futura-pt-light"
+                    className="mt-3 text-xs text-black hover:text-gray-600 font-light underline font-futura-pt-light"
                   >
                     Clear All
                   </button>

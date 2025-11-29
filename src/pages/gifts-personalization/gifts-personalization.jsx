@@ -28,10 +28,10 @@ const GiftsPersonalization = () => {
       <section className="border-b border-gray-200 py-12 md:py-16 lg:py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-black uppercase tracking-widest mb-4 font-futura-pt-light">
+            <h1 className="text-2xl md:text-3xl font-light text-black mb-4 font-futura-pt-book">
               Gifts & Personalization
             </h1>
-            <p className="text-text-medium text-base md:text-lg font-light tracking-wide font-futura-pt-light">
+            <p className="text-black text-base md:text-lg font-light font-futura-pt-light">
               Make every gift special with our personalized options
             </p>
           </div>
@@ -64,16 +64,16 @@ const GiftsPersonalization = () => {
 
                     {/* Content Section */}
                     <div className="p-8 md:p-10 lg:p-12 flex flex-col flex-1">
-                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-light text-black uppercase tracking-widest mb-4 font-futura-pt-light">
+                      <h2 className="text-base md:text-lg font-light text-black mb-4 font-futura-pt-book">
                         {option.title}
                       </h2>
-                      <p className="text-text-medium text-sm md:text-base lg:text-lg font-light leading-relaxed mb-8 flex-1 font-futura-pt-light">
+                      <p className="text-black text-sm md:text-base font-light leading-relaxed mb-8 flex-1 font-futura-pt-light">
                         {option.description}
                       </p>
 
                       {/* CTA Button */}
                       <div className="flex items-center gap-2 text-black group-hover:gap-4 transition-all duration-300">
-                        <span className="text-sm uppercase tracking-widest font-light font-futura-pt-light">
+                        <span className="text-sm font-light font-futura-pt-light">
                           Explore
                         </span>
                         <ArrowRight 

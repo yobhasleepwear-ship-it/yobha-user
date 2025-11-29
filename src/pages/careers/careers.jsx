@@ -158,10 +158,10 @@ const Careers = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 md:py-8">
           {/* Compact Heading */}
           <div className="mb-6 md:mb-8">
-            <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+            <h1 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-4 font-futura-pt-book">
               Join Our Team
             </h1>
-            <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
+            <p className="text-black text-sm md:text-base font-light leading-relaxed font-futura-pt-light">
               Discover opportunities to grow your career with us
             </p>
           </div>
@@ -180,7 +180,7 @@ const Careers = () => {
                     value={searchQuery}
                     onChange={handleSearchChange}
                     placeholder="Search jobs by title, description, skills, location..."
-                    className="w-full pl-2 pr-10 py-3 md:py-3.5 focus:outline-none bg-transparent text-gray-900 font-light placeholder:text-gray-400 text-sm md:text-base"
+                    className="w-full pl-2 pr-10 py-3 md:py-3.5 focus:outline-none bg-transparent text-black font-light placeholder:text-gray-400 text-sm md:text-base font-futura-pt-light"
                   />
                   {searchQuery && (
                     <button
@@ -200,7 +200,7 @@ const Careers = () => {
                 <select
                   value={selectedCountry}
                   onChange={handleCountryChange}
-                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 rounded-md transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 rounded-md transition-all duration-300 bg-white text-black font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer font-futura-pt-light"
                 >
                   <option value="">All Countries</option>
                   {getUniqueCountries().map((country) => (
@@ -215,7 +215,7 @@ const Careers = () => {
                 <select
                   value={selectedJobType}
                   onChange={handleJobTypeChange}
-                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 rounded-md transition-all duration-300 bg-white text-gray-900 font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer"
+                  className="w-full px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-900 rounded-md transition-all duration-300 bg-white text-black font-light text-sm md:text-base shadow-sm hover:shadow-md cursor-pointer font-futura-pt-light"
                 >
                   <option value="">All Job Types</option>
                   {getUniqueJobTypes().map((jobType) => (
@@ -229,7 +229,7 @@ const Careers = () => {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="px-5 py-3 border border-gray-900/40 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap rounded-md"
+                  className="px-5 py-3 border border-gray-900/40 text-black text-sm font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap rounded-md font-futura-pt-light"
                 >
                   Clear Filters
                 </button>
@@ -239,11 +239,11 @@ const Careers = () => {
             {/* Results count - Compact */}
             {!isLoading && (
               <div className="flex items-center justify-between pt-3 border-t border-gray-200/30">
-                <div className="text-xs md:text-sm text-gray-600 font-light">
-                  <span className="text-gray-900 font-light">{filteredJobs.length}</span> of <span className="text-gray-900 font-light">{jobs.length}</span> job{jobs.length !== 1 ? 's' : ''} {hasActiveFilters && 'found'}
+                <div className="text-sm md:text-base text-black font-light font-futura-pt-light">
+                  <span className="text-black font-futura-pt-book">{filteredJobs.length}</span> of <span className="text-black font-futura-pt-book">{jobs.length}</span> job{jobs.length !== 1 ? 's' : ''} {hasActiveFilters && 'found'}
                 </div>
                 {hasActiveFilters && searchQuery && (
-                  <span className="px-2 py-1 text-xs uppercase tracking-wide text-gray-600 bg-gray-100/50 font-light">
+                  <span className="px-2 py-1 text-sm text-black bg-gray-100/50 font-light font-futura-pt-light">
                     "{searchQuery}"
                   </span>
                 )}
@@ -260,26 +260,26 @@ const Careers = () => {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-24">
               <Loader2 className="w-12 h-12 text-gray-400 animate-spin mb-4" />
-              <p className="text-gray-500 text-sm font-light uppercase tracking-wide">Loading opportunities...</p>
+              <p className="text-black text-sm md:text-base font-light font-futura-pt-light">Loading opportunities...</p>
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="text-center py-24">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100/50 mb-6">
                 <Briefcase className="w-10 h-10 text-gray-300" />
               </div>
-              <h3 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+              <h3 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-4 font-futura-pt-book">
                 {hasActiveFilters ? "No Results Found" : "No Open Positions"}
               </h3>
-              <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light mb-2 max-w-md mx-auto">
+              <p className="text-black text-sm md:text-base font-light leading-relaxed font-futura-pt-light mb-2 max-w-md mx-auto">
                 {hasActiveFilters ? "No jobs match your search criteria." : "No job openings at the moment."}
               </p>
-              <p className="text-gray-500 text-sm font-light">
+              <p className="text-black text-sm md:text-base font-light font-futura-pt-light">
                 {hasActiveFilters ? "Try adjusting your filters or search terms." : "Check back soon for new opportunities."}
               </p>
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="mt-6 px-6 py-3 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300"
+                  className="mt-6 px-6 py-3 border border-gray-900/30 text-black text-sm font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 font-futura-pt-light"
                 >
                   Clear All Filters
                 </button>
@@ -303,18 +303,18 @@ const Careers = () => {
                       <div className="mb-5 min-h-[120px] flex flex-col justify-between">
                           {job.department && (
                           <div className="mb-3">
-                            <span className="inline-block px-3 py-1 text-xs uppercase tracking-[0.2em] text-gray-500 bg-gray-100/50 font-light border border-gray-200/50">
+                            <span className="inline-block px-3 py-1 text-xs text-black bg-gray-100/50 font-light border border-gray-200/50 font-futura-pt-light">
                               {job.department}
                             </span>
                           {job.jobId && (
-                              <span className="inline-block ml-2 px-2 py-1 text-xs uppercase tracking-[0.2em] text-gray-400 font-light">
+                              <span className="inline-block ml-2 px-2 py-1 text-xs text-black font-light font-futura-pt-light">
                               {job.jobId}
                             </span>
                           )}
                           </div>
                         )}
                         <h3
-                          className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light group-hover:text-gray-700 transition-colors duration-300"
+                          className="text-base md:text-base font-light text-black mb-4 font-futura-pt-book group-hover:text-gray-700 transition-colors duration-300"
                           style={{ display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", minHeight: "72px" }}
                         >
                           {job.jobTitle}
@@ -324,19 +324,19 @@ const Careers = () => {
                       {/* Info Section */}
                       <div className="space-y-2.5 mb-6 min-h-[80px] flex flex-col justify-between">
                           {job.location && (
-                          <div className="flex items-center gap-2.5 text-sm text-gray-600">
+                          <div className="flex items-center gap-2.5 text-sm text-black">
                             <MapPin size={16} className="text-gray-400 flex-shrink-0" />
-                              <span className="font-light">
+                              <span className="font-light font-futura-pt-light">
                                 {job.location.remote 
-                                ? <span className="text-gray-500 ">Remote</span>
+                                ? <span className="text-black">Remote</span>
                                   : `${job.location.city || ''}${job.location.state ? `, ${job.location.state}` : ''}${job.location.country ? `, ${job.location.country}` : ''}`}
                               </span>
                             </div>
                           )}
                           {job.jobType && (
-                          <div className="flex items-center gap-2.5 text-sm text-gray-600">
+                          <div className="flex items-center gap-2.5 text-sm text-black">
                             <Clock size={16} className="text-gray-400 flex-shrink-0" />
-                              <span className="font-light">{job.jobType}</span>
+                              <span className="font-light font-futura-pt-light">{job.jobType}</span>
                             </div>
                           )}
                         </div>
@@ -344,7 +344,7 @@ const Careers = () => {
                       {/* Description Section */}
                       <div className="flex-grow mb-6">
                         <p
-                          className="text-sm text-gray-600 font-light leading-relaxed overflow-hidden"
+                          className="text-sm md:text-base text-black font-light leading-relaxed overflow-hidden font-futura-pt-light"
                           style={{ display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", minHeight: "96px" }}
                         >
                           {job.jobDescription && job.jobDescription.length > 0
@@ -356,14 +356,14 @@ const Careers = () => {
                       {/* Salary Section */}
                       <div className="mb-6 pb-6 border-b border-gray-100 min-h-[80px] flex items-center">
                         {job.salaryRange ? (
-                          <div className="text-sm text-gray-600 font-light">
-                            <span className="text-xs uppercase tracking-[0.15em] text-gray-500 block mb-1">Salary Range</span>
-                            <span className="text-base font-light text-gray-900">
-                              {job.salaryRange.currency} {job.salaryRange.min?.toLocaleString()} - {job.salaryRange.max?.toLocaleString()}
+                          <div className="text-sm md:text-base text-black font-light font-futura-pt-light">
+                            <span className="text-sm text-black block mb-1 font-light font-futura-pt-book">Salary Range</span>
+                            <span className="text-base font-light text-black font-futura-pt-light">
+                              <span className="font-futura-pt-light font-light">{job.salaryRange.currency} {job.salaryRange.min?.toLocaleString()} - {job.salaryRange.max?.toLocaleString()}</span>
                             </span>
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-400 italic">
+                          <span className="text-sm md:text-base text-black italic font-light font-futura-pt-light">
                             Compensation details will be discussed during the hiring process.
                           </span>
                         )}
@@ -375,7 +375,7 @@ const Careers = () => {
                           e.stopPropagation();
                           handleJobClick(job.id);
                         }}
-                        className="w-full mt-auto px-6 py-3.5 border border-gray-900/30 text-gray-900 text-xs uppercase tracking-[0.2em] font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 group-hover:shadow-md"
+                        className="w-full mt-auto px-6 py-3.5 border border-gray-900/30 text-black text-sm font-light hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 group-hover:shadow-md font-futura-pt-light"
                       >
                         View Details
                       </button>

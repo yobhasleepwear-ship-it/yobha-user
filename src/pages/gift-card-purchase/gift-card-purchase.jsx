@@ -300,25 +300,25 @@ const GiftCardPurchase = () => {
               </div>
 
               {/* Thank You Message */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black uppercase tracking-widest mb-4 font-futura-pt-light">
+              <h1 className="text-2xl md:text-3xl font-light text-black mb-4 font-futura-pt-book">
                 Thank You for Your Purchase!
               </h1>
-              <p className="text-text-medium text-base md:text-lg font-light mb-8 font-futura-pt-light">
+              <p className="text-black text-base md:text-lg font-light mb-8 font-futura-pt-light">
                 Your gift card has been successfully purchased
               </p>
 
               {/* Gift Card Code Section */}
               <div className="bg-gray-50 border border-gray-200 p-6 md:p-8 mb-6">
-                <p className="text-sm uppercase tracking-wider text-text-medium font-light mb-4 font-futura-pt-light">
+                <p className="text-base text-black font-light mb-4 font-futura-pt-book">
                   Your Gift Card Code
                 </p>
                 <div className="flex items-center justify-center gap-4 mb-4">
-                  <code className="text-2xl md:text-3xl font-mono font-light text-black tracking-widest font-futura-pt-light">
+                  <code className="text-2xl md:text-3xl font-mono font-light text-black font-futura-pt-light">
                     {giftCardCode}
                   </code>
                   <button
                     onClick={handleCopyCode}
-                    className={`flex items-center gap-2 px-4 py-2 border transition-all duration-200 font-light font-futura-pt-light text-sm uppercase tracking-wider ${
+                    className={`flex items-center gap-2 px-4 py-2 border transition-all duration-200 font-light font-futura-pt-light text-sm ${
                       copied
                         ? "border-green-500 bg-green-50 text-green-700"
                         : "border-black bg-white text-black hover:bg-black hover:text-white"
@@ -338,18 +338,18 @@ const GiftCardPurchase = () => {
                   </button>
                 </div>
                 {giftCardAmount && (
-                  <p className="text-sm text-text-medium font-light font-futura-pt-light">
-                    Amount: {giftCardCurrency === "INR" ? `₹${giftCardAmount}` : `$${giftCardAmount}`}
+                  <p className="text-sm text-black font-light font-futura-pt-light">
+                    Amount: <span className="font-sans">{giftCardCurrency === "INR" ? `₹${giftCardAmount}` : `$${giftCardAmount}`}</span>
                   </p>
                 )}
               </div>
 
               {/* Info Message */}
               <div className="bg-white border border-gray-200 p-6 mb-8 text-left">
-                <p className="text-sm text-text-medium font-light mb-3 font-futura-pt-light">
-                  <strong className="text-black font-light">Important:</strong>
+                <p className="text-sm text-black font-light mb-3 font-futura-pt-light">
+                  <span className="font-futura-pt-book">Important:</span>
                 </p>
-                <ul className="text-sm text-text-medium font-light space-y-2 font-futura-pt-light list-disc list-inside">
+                <ul className="text-sm text-black font-light space-y-2 font-futura-pt-light list-disc list-inside">
                   <li>This gift card code has been sent to the recipient's email address</li>
                   <li>You can use this code at checkout to apply the gift card balance</li>
                   <li>Keep this code safe and secure</li>
@@ -366,13 +366,13 @@ const GiftCardPurchase = () => {
                     setGiftCardCurrency("");
                     localStorage.removeItem("giftCardSuccess");
                   }}
-                  className="px-8 py-3 border border-black bg-white text-black uppercase tracking-widest text-sm font-light hover:bg-black hover:text-white transition-all duration-200 font-futura-pt-light"
+                  className="px-8 py-3 border border-black bg-white text-black text-sm font-light hover:bg-black hover:text-white transition-all duration-200 font-futura-pt-light"
                 >
                   Purchase Another
                 </button>
                 <button
                   onClick={() => navigate("/home")}
-                  className="px-8 py-3 bg-black text-white uppercase tracking-widest text-sm font-light hover:bg-gray-900 transition-all duration-200 font-futura-pt-light"
+                  className="px-8 py-3 bg-black text-white text-sm font-light hover:bg-gray-900 transition-all duration-200 font-futura-pt-light"
                 >
                   Continue Shopping
                 </button>
@@ -396,10 +396,10 @@ const GiftCardPurchase = () => {
                 <Gift size={32} className="text-white" strokeWidth={1.5} />
               </div>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-black uppercase tracking-widest mb-4 font-futura-pt-light">
+            <h1 className="text-2xl md:text-3xl font-light text-black mb-4 font-futura-pt-book">
               Gift Card
             </h1>
-            <p className="text-text-medium text-base md:text-lg font-light tracking-wide font-futura-pt-light">
+            <p className="text-black text-base md:text-lg font-light font-futura-pt-light">
               Share the gift of luxury with a YOBHA gift card
             </p>
           </div>
@@ -413,14 +413,14 @@ const GiftCardPurchase = () => {
             {/* Left Column - Form */}
             <div className="w-full">
               <div className="bg-white border border-gray-200 p-8 md:p-10 lg:p-12">
-                <h2 className="text-2xl md:text-3xl font-light text-black uppercase tracking-widest mb-8 font-futura-pt-light">
+                <h2 className="text-base md:text-lg font-light text-black mb-8 font-futura-pt-book">
                   Purchase Gift Card
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Email */}
                   <div>
-                    <label className="block mb-2 text-sm uppercase tracking-wider text-black font-light font-futura-pt-light">
+                    <label className="block mb-2 text-sm text-black font-light font-futura-pt-book">
                       <Mail size={16} className="inline-block mr-2" strokeWidth={1.5} />
                       Email Address
                     </label>
@@ -436,7 +436,7 @@ const GiftCardPurchase = () => {
 
                   {/* Amount Options */}
                   <div>
-                    <label className="block mb-3 text-sm uppercase tracking-wider text-black font-light font-futura-pt-light">
+                    <label className="block mb-3 text-sm text-black font-light font-futura-pt-book">
                       <DollarSign size={16} className="inline-block mr-2" strokeWidth={1.5} />
                       Gift Card Amount
                     </label>
@@ -469,7 +469,7 @@ const GiftCardPurchase = () => {
 
                   {/* Country */}
                   <div>
-                    <label className="block mb-2 text-sm uppercase tracking-wider text-black font-light font-futura-pt-light">
+                    <label className="block mb-2 text-sm text-black font-light font-futura-pt-book">
                       <MapPin size={16} className="inline-block mr-2" strokeWidth={1.5} />
                       Country
                     </label>
@@ -486,7 +486,7 @@ const GiftCardPurchase = () => {
                   {/* Currency Display */}
                   <div className="pt-2 pb-2">
                     <div className="flex items-center gap-2">
-                      <p className="text-sm text-text-medium font-light font-futura-pt-light">
+                      <p className="text-sm text-black font-light font-futura-pt-light">
                         Selected Currency:
                       </p>
                       <span className="text-sm text-black font-light font-futura-pt-light">
@@ -499,7 +499,7 @@ const GiftCardPurchase = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-4 px-6 uppercase tracking-widest text-sm font-light transition-all duration-200 flex items-center justify-center gap-2 font-futura-pt-light mt-6 ${
+                    className={`w-full py-4 px-6 text-sm font-light transition-all duration-200 flex items-center justify-center gap-2 font-futura-pt-light mt-6 ${
                       loading
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-black text-white hover:bg-gray-900"
@@ -522,10 +522,10 @@ const GiftCardPurchase = () => {
             <div className="w-full">
               <div className="space-y-8 lg:pl-4">
                 <div>
-                  <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-widest mb-6 font-futura-pt-light">
+                  <h3 className="text-base md:text-lg font-light text-black mb-6 font-futura-pt-book">
                     Gift Card Details
                   </h3>
-                  <ul className="space-y-4 text-text-medium font-light text-sm md:text-base leading-relaxed font-futura-pt-light">
+                  <ul className="space-y-4 text-black font-light text-sm md:text-base leading-relaxed font-futura-pt-light">
                     <li className="flex items-start">
                       <span className="text-black mr-3 mt-1  flex-shrink-0">•</span>
                       <span className="font-futura-pt-light font-light">Gift card will be sent to the recipient's email address</span>
@@ -550,10 +550,10 @@ const GiftCardPurchase = () => {
                 </div>
 
                 <div className="border-t border-gray-200 pt-8">
-                  <h3 className="text-xl md:text-2xl font-light text-black uppercase tracking-widest mb-6 font-futura-pt-light">
+                  <h3 className="text-base md:text-lg font-light text-black mb-6 font-futura-pt-book">
                     How It Works
                   </h3>
-                  <ol className="space-y-4 text-text-medium font-light text-sm md:text-base leading-relaxed font-futura-pt-light">
+                  <ol className="space-y-4 text-black font-light text-sm md:text-base leading-relaxed font-futura-pt-light">
                     <li className="flex items-start">
                       <span className="text-black mr-3 font-light flex-shrink-0">1.</span>
                       <span className="font-futura-pt-light font-light">Enter recipient email and gift card amount</span>
