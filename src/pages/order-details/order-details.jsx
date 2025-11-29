@@ -135,11 +135,34 @@ const getStatusInfo = (status) => {
  * Format price to INR
  */
 const formatPrice = (price, currency = 'INR') => {
-  if (typeof price !== 'number') return '₹0';
-  const symbol = currency === 'INR' ? '₹' : currency;
-  return `${symbol}${price.toLocaleString('en-IN', { 
-    minimumFractionDigits: 0, 
-    maximumFractionDigits: 0 
+  if (price === null || price === undefined || price === "") return "0";
+  
+  const numericAmount = Number(price || 0);
+  if (Number.isNaN(numericAmount)) {
+    return String(price || 0);
+  }
+
+  const currencyCode = String(currency || "INR").toUpperCase();
+  const currencySymbols = {
+    INR: "₹",
+    USD: "$",
+    AED: "AED",
+    SAR: "SAR",
+    QAR: "QAR",
+    KWD: "KWD",
+    OMR: "OMR",
+    BHD: "BHD",
+    JOD: "JOD",
+    LBP: "LBP",
+    EGP: "EGP",
+    IQD: "IQD",
+  };
+
+  const symbol = currencySymbols[currencyCode] || currencyCode;
+
+  return `${symbol}${numericAmount.toLocaleString("en-IN", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   })}`;
 };
 
@@ -327,7 +350,7 @@ const OrderDetailPage = () => {
       <div className="flex items-center justify-center min-h-screen bg-white font-futura-pt-light">
         <div className="text-center">
           <div className="w-14 h-14 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-xs md:text-sm font-light font-futura-pt-light">
+          <p className="text-sm text-black font-light font-futura-pt-light">
             Loading Order...
           </p>
         </div>
@@ -340,15 +363,15 @@ const OrderDetailPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white font-futura-pt-light px-4">
         <Package size={48} className="text-gray-400 mb-4" strokeWidth={1.5} />
-        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+        <h2 className="text-2xl md:text-3xl font-light text-black mb-4 font-futura-pt-book">
           {error || 'Order Not Found'}
         </h2>
-        <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light mb-6 text-center max-w-md">
+        <p className="text-sm text-black font-light leading-relaxed font-futura-pt-light mb-6 text-center max-w-md">
           {error || 'The order you are looking for does not exist.'}
         </p>
         <button
           onClick={() => navigate("/orders")}
-          className="px-6 py-2 bg-black text-white uppercase text-xs tracking-wider hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
+          className="px-6 py-2 bg-black text-white text-sm hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
         >
           Back to Orders
         </button>
@@ -372,32 +395,31 @@ const OrderDetailPage = () => {
             className="flex items-center gap-2 text-gray-600 hover:text-black mb-6 transition-colors font-light font-futura-pt-light"
           >
             <ArrowLeft size={18} strokeWidth={1.5} />
-            <span className="text-xs sm:text-sm uppercase tracking-wider">Back to Orders</span>
+            <span className="text-xs sm:text-sm font-futura-pt-light">Back to Orders</span>
           </button>
 
           {/* Page Header */}
           <div className="mb-6">
-            <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+            <h1 className="text-2xl md:text-3xl font-light text-black mb-2 font-futura-pt-book">
               Order Details
             </h1>
-            <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
-                Order ID: <span className="text-black">{order.orderNo || order.id}</span>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+              <p className="text-sm text-black font-light font-futura-pt-light">
+                Order ID: <span className="font-futura-pt-book">{order.orderNo || order.id}</span>
               </p>
               
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 ${statusInfo.bg} border border-gray-200`}>
                 <StatusIcon size={14} className={statusInfo.color} strokeWidth={1.5} />
-                <span className={`text-xs font-light uppercase font-futura-pt-light ${statusInfo.color}`}>
+                <span className={`text-xs font-light font-futura-pt-light ${statusInfo.color}`}>
                   {statusInfo.text}
                 </span>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 mt-4 text-xs md:text-sm text-gray-600 font-light font-futura-pt-light">
-              <span>Placed: <span className="text-black">{formatDate(order.createdAt)}</span></span>
+            <div className="flex flex-wrap gap-4 mt-4 text-sm text-black font-light font-futura-pt-light">
+              <span>Placed: <span className="font-futura-pt-book">{formatDate(order.createdAt)}</span></span>
               {order.updatedAt && (
-                <span>Updated: <span className="text-black">{formatDate(order.updatedAt)}</span></span>
+                <span>Updated: <span className="font-futura-pt-book">{formatDate(order.updatedAt)}</span></span>
               )}
             </div>
           </div>
@@ -412,7 +434,7 @@ const OrderDetailPage = () => {
             {isGiftCard && (
               <div className="bg-white border border-gray-200">
                 <div className="px-4 sm:px-5 md:px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase font-futura-pt-light flex items-center gap-2">
+                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book flex items-center gap-2">
                     <Gift size={20} strokeWidth={1.5} className="text-black" />
                     Gift Card Purchase
                   </h2>
@@ -420,19 +442,21 @@ const OrderDetailPage = () => {
                 <div className="p-4 sm:p-5 md:p-6">
                   <div className="space-y-3">
                     <div>
-                      <p className="text-gray-600 text-xs md:text-sm font-light font-futura-pt-light mb-1">
+                      <p className="text-base text-black font-light font-futura-pt-book mb-0.5">
                         Gift Card Number
                       </p>
-                      <p className="text-black text-sm md:text-base font-light font-futura-pt-light">
+                      <p className="text-base font-light text-black font-futura-pt-light">
                         {order.giftCardNumber}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-600 text-xs md:text-sm font-light font-futura-pt-light mb-1">
+                      <p className="text-base text-black font-light font-futura-pt-book mb-0.5">
                         Gift Card Amount
                       </p>
-                      <p className="text-black text-lg md:text-xl font-light font-futura-pt-light">
-                        {formatPrice(order.giftCardAmount || order.totalAmount)}
+                      <p className="text-base font-light text-black font-futura-pt-light">
+                        <span className="font-sans">
+                          {formatPrice(order.giftCardAmount || order.totalAmount)}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -444,7 +468,7 @@ const OrderDetailPage = () => {
             {!isGiftCard && order.items.length > 0 && (
               <div className="bg-white border border-gray-200">
                 <div className="px-4 sm:px-5 md:px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase font-futura-pt-light">
+                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                     Order Items ({totalItems})
                   </h2>
                 </div>
@@ -476,7 +500,7 @@ const OrderDetailPage = () => {
 
                         <div className="flex-1 min-w-0">
                           <h3 
-                            className="font-light text-black text-sm sm:text-base md:text-lg mb-2 line-clamp-2 hover:underline cursor-pointer uppercase font-futura-pt-light"
+                            className="font-light text-black text-base mb-2 line-clamp-2 hover:underline cursor-pointer font-futura-pt-book"
                             onClick={() => item.productId && navigate(`/productDetail/${item.productId}`)}
                           >
                             {item.productName}
@@ -484,30 +508,34 @@ const OrderDetailPage = () => {
                           
                           <div className="space-y-1 mb-3">
                             {item.variantSku && (
-                              <p className="text-gray-600 text-xs font-light font-futura-pt-light">
-                                SKU: <span className="text-black">{item.variantSku}</span>
+                              <p className="text-sm font-light text-black font-futura-pt-light">
+                                SKU: <span className="font-futura-pt-book">{item.variantSku}</span>
                               </p>
                             )}
-                            <p className="text-gray-600 text-xs font-light font-futura-pt-light">
-                              Quantity: <span className="text-black">{item.quantity}</span>
+                            <p className="text-sm font-light text-black font-futura-pt-light">
+                              Quantity: <span className="font-futura-pt-book">{item.quantity}</span>
                             </p>
-                            <p className="text-gray-600 text-xs font-light font-futura-pt-light">
-                              Unit Price: <span className="text-black">{formatPrice(item.unitPrice, item.currency)}</span>
+                            <p className="text-sm font-light text-black font-futura-pt-light">
+                              Unit Price: <span className="font-futura-pt-book font-sans">{formatPrice(item.unitPrice, item.currency)}</span>
                             </p>
                           </div>
 
                           <div className="flex flex-wrap items-baseline gap-2">
-                            <span className="text-base sm:text-lg md:text-xl font-light text-black font-futura-pt-light">
-                              {formatPrice(item.lineTotal, item.currency)}
+                            <span className="text-base font-light text-black font-futura-pt-light">
+                              <span className="font-sans">
+                                {formatPrice(item.lineTotal, item.currency)}
+                              </span>
                             </span>
                             {item.compareAtPrice && (
                               <>
                                 <span className="text-xs sm:text-sm text-gray-400 line-through font-light font-futura-pt-light">
-                                  {formatPrice(item.compareAtPrice * item.quantity, item.currency)}
+                                  <span className="font-sans">
+                                    {formatPrice(item.compareAtPrice * item.quantity, item.currency)}
+                                  </span>
                                 </span>
                                 {savingsAmount > 0 && (
-                                  <span className="text-xs bg-black text-white px-2 py-0.5 uppercase tracking-wider font-light font-futura-pt-light">
-                                    Saved {formatPrice(savingsAmount, item.currency)}
+                                  <span className="text-xs bg-black text-white px-2 py-0.5 font-light font-futura-pt-light">
+                                    Saved <span className="font-sans">{formatPrice(savingsAmount, item.currency)}</span>
                                   </span>
                                 )}
                               </>
@@ -525,7 +553,7 @@ const OrderDetailPage = () => {
             {order.shippingAddress && (
               <div className="bg-white border border-gray-200">
                 <div className="px-4 sm:px-5 md:px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase font-futura-pt-light flex items-center gap-2">
+                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book flex items-center gap-2">
                     <MapPin size={20} strokeWidth={1.5} className="text-black" />
                     Delivery Address
                   </h2>
@@ -533,34 +561,34 @@ const OrderDetailPage = () => {
 
                 <div className="p-4 sm:p-5 md:p-6">
                   <div className="space-y-2">
-                    <p className="text-sm sm:text-base font-light text-black font-futura-pt-light">
+                    <p className="text-base font-light text-black font-futura-pt-light">
                       {order.shippingAddress.fullName || order.shippingAddress.name}
                     </p>
-                    <p className="text-gray-600 text-xs sm:text-sm font-light font-futura-pt-light">
+                    <p className="text-sm font-light text-black font-futura-pt-light">
                       {order.shippingAddress.addressLine1 || order.shippingAddress.address}
                       {order.shippingAddress.addressLine2 && `, ${order.shippingAddress.addressLine2}`}
                     </p>
-                    <p className="text-gray-600 text-xs sm:text-sm font-light font-futura-pt-light">
+                    <p className="text-sm font-light text-black font-futura-pt-light">
                       {order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.pincode}
                     </p>
-                    <p className="text-gray-600 text-xs sm:text-sm font-light font-futura-pt-light">
+                    <p className="text-sm font-light text-black font-futura-pt-light">
                       {order.shippingAddress.country}
                     </p>
                     {order.shippingAddress.landmark && (
-                      <p className="text-gray-600 text-xs font-light font-futura-pt-light italic">
+                      <p className="text-sm font-light text-black font-futura-pt-light italic">
                         Landmark: {order.shippingAddress.landmark}
                       </p>
                     )}
                     
                     <div className="pt-3 mt-3 border-t border-gray-200 space-y-1">
                       {order.shippingAddress.phone && (
-                        <div className="flex items-center gap-2 text-gray-600 text-xs sm:text-sm font-light font-futura-pt-light">
+                        <div className="flex items-center gap-2 text-black text-sm font-light font-futura-pt-light">
                           <Phone size={14} strokeWidth={1.5} />
                           <span>{order.shippingAddress.phone}</span>
                         </div>
                       )}
                       {order.shippingAddress.email && (
-                        <div className="flex items-center gap-2 text-gray-600 text-xs sm:text-sm font-light font-futura-pt-light">
+                        <div className="flex items-center gap-2 text-black text-sm font-light font-futura-pt-light">
                           <Mail size={14} strokeWidth={1.5} />
                           <span>{order.shippingAddress.email}</span>
                         </div>
@@ -576,7 +604,7 @@ const OrderDetailPage = () => {
           <div className="lg:col-span-1">
             <div className="bg-white border border-gray-200 lg:sticky lg:top-24">
               <div className="px-4 sm:px-5 md:px-6 py-4 border-b border-gray-200">
-                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase font-futura-pt-light">
+                <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                   Order Summary
                 </h2>
               </div>
@@ -584,38 +612,44 @@ const OrderDetailPage = () => {
               <div className="p-4 sm:p-5 md:p-6">
                 {/* Price Breakdown */}
                 <div className="space-y-3 pb-4 border-b border-gray-200">
-                  <div className="flex justify-between text-xs md:text-sm">
-                    <span className="text-gray-600 font-light font-futura-pt-light">Subtotal</span>
+                  <div className="flex justify-between text-base">
+                    <span className="text-black font-light font-futura-pt-light">Subtotal</span>
                     <span className="text-black font-light font-futura-pt-light">
-                      {formatPrice(order.subTotal)}
+                      <span className="font-sans">
+                        {formatPrice(order.subTotal)}
+                      </span>
                     </span>
                   </div>
 
                   {order.discount > 0 && (
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="text-gray-600 font-light font-futura-pt-light">Discount</span>
+                    <div className="flex justify-between text-base">
+                      <span className="text-black font-light font-futura-pt-light">Discount</span>
                       <span className="text-black font-light font-futura-pt-light">
-                        -{formatPrice(order.discount)}
+                        -<span className="font-sans">{formatPrice(order.discount)}</span>
                       </span>
                     </div>
                   )}
 
-                  <div className="flex justify-between text-xs md:text-sm">
-                    <span className="text-gray-600 font-light font-futura-pt-light">Shipping</span>
+                  <div className="flex justify-between text-base">
+                    <span className="text-black font-light font-futura-pt-light">Shipping</span>
                     {order.shipping === 0 ? (
                       <span className="text-black font-light font-futura-pt-light">FREE</span>
                     ) : (
                       <span className="text-black font-light font-futura-pt-light">
-                        {formatPrice(order.shipping)}
+                        <span className="font-sans">
+                          {formatPrice(order.shipping)}
+                        </span>
                       </span>
                     )}
                   </div>
 
                   {order.tax > 0 && (
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="text-gray-600 font-light font-futura-pt-light">Tax</span>
+                    <div className="flex justify-between text-base">
+                      <span className="text-black font-light font-futura-pt-light">Tax</span>
                       <span className="text-black font-light font-futura-pt-light">
-                        {formatPrice(order.tax)}
+                        <span className="font-sans">
+                          {formatPrice(order.tax)}
+                        </span>
                       </span>
                     </div>
                   )}
@@ -623,21 +657,23 @@ const OrderDetailPage = () => {
 
                 {/* Total */}
                 <div className="flex justify-between pt-4 pb-4 md:pb-6 border-b border-gray-200">
-                  <span className="text-sm sm:text-base md:text-lg font-light text-black uppercase font-futura-pt-light">
+                  <span className="text-base font-light text-black font-futura-pt-book">
                     Total Paid
                   </span>
-                  <span className="text-lg sm:text-xl md:text-2xl font-light text-black font-futura-pt-light">
-                    {formatPrice(order.total || order.totalAmount)}
+                  <span className="text-base font-light text-black font-futura-pt-light">
+                    <span className="font-sans">
+                      {formatPrice(order.total || order.totalAmount)}
+                    </span>
                   </span>
                 </div>
 
                 {/* Tracking & Delivery Info */}
                 {order.trackingNumber && (
                   <div className="py-4 border-b border-gray-200">
-                    <p className="text-gray-600 text-xs font-light uppercase font-futura-pt-light mb-2">
+                    <p className="text-base font-light text-black mb-0.5 font-futura-pt-book">
                       Tracking Number
                     </p>
-                    <p className="text-black text-sm font-light font-futura-pt-light">
+                    <p className="text-base font-light text-black font-futura-pt-light">
                       {order.trackingNumber}
                     </p>
                   </div>
@@ -648,8 +684,8 @@ const OrderDetailPage = () => {
                     <div className="flex items-start gap-3">
                       <Truck size={16} className="text-gray-600 mt-0.5" strokeWidth={1.5} />
                       <div>
-                        <p className="text-gray-600 text-xs font-light uppercase font-futura-pt-light mb-1">Estimated Delivery</p>
-                        <p className="text-black text-sm font-light font-futura-pt-light">
+                        <p className="text-base font-light text-black mb-0.5 font-futura-pt-book">Estimated Delivery</p>
+                        <p className="text-base font-light text-black font-futura-pt-light">
                           {new Date(order.estimatedDelivery).toLocaleDateString('en-IN', { 
                             day: 'numeric', 
                             month: 'long',
@@ -666,8 +702,8 @@ const OrderDetailPage = () => {
                     <div className="flex items-start gap-3">
                       <CheckCircle2 size={16} className="text-black mt-0.5" strokeWidth={1.5} />
                       <div>
-                        <p className="text-gray-600 text-xs font-light uppercase font-futura-pt-light mb-1">Delivered On</p>
-                        <p className="text-black text-sm font-light font-futura-pt-light">
+                        <p className="text-base font-light text-black mb-0.5 font-futura-pt-book">Delivered On</p>
+                        <p className="text-base font-light text-black font-futura-pt-light">
                           {formatDate(order.deliveredAt)}
                         </p>
                       </div>
@@ -688,7 +724,7 @@ const OrderDetailPage = () => {
                     return canReturn ? (
                       <button
                         onClick={() => setShowReturnModal(true)}
-                        className="w-full border border-gray-300 text-black py-3 font-light hover:border-black hover:bg-gray-50 transition-colors uppercase tracking-wider text-xs sm:text-sm font-futura-pt-light flex items-center justify-center gap-2"
+                        className="w-full border border-gray-300 text-black py-3 font-light hover:border-black hover:bg-gray-50 transition-colors text-xs sm:text-sm font-futura-pt-light flex items-center justify-center gap-2"
                       >
                         <RotateCcw size={16} strokeWidth={1.5} />
                         Return
@@ -702,7 +738,7 @@ const OrderDetailPage = () => {
                         // TODO: Implement reorder functionality
                         console.log('Reorder items:', order.items);
                       }}
-                      className="w-full border border-gray-300 text-black py-3 font-light hover:border-black hover:bg-gray-50 transition-colors uppercase tracking-wider text-xs sm:text-sm font-futura-pt-light"
+                      className="w-full border border-gray-300 text-black py-3 font-light hover:border-black hover:bg-gray-50 transition-colors text-xs sm:text-sm font-futura-pt-light"
                     >
                       Reorder
                     </button>
@@ -734,7 +770,7 @@ const OrderDetailPage = () => {
           <div className="bg-white w-full sm:max-w-2xl sm:w-full sm:max-h-[90vh] h-screen sm:h-auto flex flex-col" onClick={(e) => e.stopPropagation()}>
             {/* Header */}
             <div className="px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between border-b border-gray-100">
-              <h2 className="text-base sm:text-lg font-light text-black font-futura-pt-light">
+              <h2 className="text-base sm:text-lg font-light text-black font-futura-pt-book">
                 Request Return
               </h2>
               <button
@@ -749,7 +785,7 @@ const OrderDetailPage = () => {
             <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5 space-y-5">
               {/* Select Items */}
               <div>
-                <p className="text-xs sm:text-sm text-gray-700 mb-3 font-light font-futura-pt-light">
+                <p className="text-xs sm:text-sm text-black mb-3 font-light font-futura-pt-light">
                   Select items to return:
                 </p>
                 <div className="space-y-2">
@@ -791,11 +827,11 @@ const OrderDetailPage = () => {
                             <h3 className="text-xs sm:text-sm font-light text-black mb-1 font-futura-pt-light">
                               {item.productName}
                             </h3>
-                            <p className="text-xs text-gray-600 font-light font-futura-pt-light">
-                              Qty: {item.quantity} × {formatPrice(item.unitPrice, item.currency)}
+                            <p className="text-sm text-black font-light font-futura-pt-light">
+                              Qty: {item.quantity} × <span className="font-sans">{formatPrice(item.unitPrice, item.currency)}</span>
                             </p>
                             {item.variantSku && (
-                              <p className="text-xs text-gray-500 font-light font-futura-pt-light mt-0.5">
+                              <p className="text-sm text-black font-light font-futura-pt-light mt-0.5">
                                 SKU: {item.variantSku}
                               </p>
                             )}
@@ -804,7 +840,7 @@ const OrderDetailPage = () => {
 
                         {isSelected && (
                           <div className="mt-3 pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
-                            <label className="text-xs text-gray-700 mb-1.5 block font-light font-futura-pt-light">
+                            <label className="text-sm text-black mb-1.5 block font-light font-futura-pt-book">
                               Reason (optional):
                             </label>
                             <input
@@ -824,7 +860,7 @@ const OrderDetailPage = () => {
 
               {/* General Return Reason */}
               <div>
-                <label className="text-xs sm:text-sm text-gray-700 mb-1.5 block font-light font-futura-pt-light">
+                <label className="text-sm text-black mb-1.5 block font-light font-futura-pt-book">
                   General return reason (optional):
                 </label>
                 <textarea
@@ -838,7 +874,7 @@ const OrderDetailPage = () => {
 
               {/* Return Images */}
               <div>
-                <p className="text-xs sm:text-sm text-gray-700 mb-2 font-light font-futura-pt-light">
+                <p className="text-sm text-black mb-2 font-light font-futura-pt-light">
                   Upload return images (optional):
                 </p>
                 <ImageUploader
@@ -848,7 +884,7 @@ const OrderDetailPage = () => {
                 />
                 {returnImages.length > 0 && (
                   <div className="mt-3">
-                    <p className="text-xs text-gray-600 mb-2 font-light">
+                    <p className="text-xs text-black mb-2 font-light font-futura-pt-light">
                       Uploaded ({returnImages.length})
                     </p>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">

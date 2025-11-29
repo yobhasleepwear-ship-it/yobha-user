@@ -54,8 +54,37 @@ const OrdersPage = () => {
     });
   };
 
-  const formatPrice = (price, cur) =>
-    `${cur}${Number(price || 0).toLocaleString("en-IN")}`;
+  const formatPrice = (price, currency = "INR") => {
+    if (price === null || price === undefined || price === "") return "0";
+    
+    const numericAmount = Number(price || 0);
+    if (Number.isNaN(numericAmount)) {
+      return String(price || 0);
+    }
+
+    const currencyCode = String(currency || "INR").toUpperCase();
+    const currencySymbols = {
+      INR: "₹",
+      USD: "$",
+      AED: "AED",
+      SAR: "SAR",
+      QAR: "QAR",
+      KWD: "KWD",
+      OMR: "OMR",
+      BHD: "BHD",
+      JOD: "JOD",
+      LBP: "LBP",
+      EGP: "EGP",
+      IQD: "IQD",
+    };
+
+    const symbol = currencySymbols[currencyCode] || currencyCode;
+
+    return `${symbol}${numericAmount.toLocaleString("en-IN", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`;
+  };
 
   const getStatusColor = (status) => {
     switch ((status || "").toLowerCase()) {
@@ -96,7 +125,7 @@ const OrdersPage = () => {
       <div className="flex items-center justify-center min-h-screen bg-white font-futura-pt-light">
         <div className="text-center">
           <div className="w-14 h-14 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-xs md:text-sm font-light font-futura-pt-light">
+          <p className="text-sm text-black font-light font-futura-pt-light">
             Loading Orders...
           </p>
         </div>
@@ -108,12 +137,12 @@ const OrdersPage = () => {
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white font-futura-pt-light">
-        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+        <h2 className="text-2xl md:text-3xl font-light text-black mb-4 font-futura-pt-book">
           {error}
         </h2>
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-black text-white uppercase text-xs tracking-wider hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
+          className="px-6 py-2 bg-black text-white text-sm hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
         >
           Retry
         </button>
@@ -126,15 +155,15 @@ const OrdersPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white font-futura-pt-light px-4">
         <Package size={48} className="text-gray-400 mb-4" strokeWidth={1.5} />
-        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+        <h2 className="text-2xl md:text-3xl font-light text-black mb-4 font-futura-pt-book">
           No Orders Yet
         </h2>
-        <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light mb-6">
+        <p className="text-sm text-black font-light leading-relaxed font-futura-pt-light mb-6">
           Start shopping to see your orders here.
         </p>
         <button
           onClick={() => navigate("/products")}
-          className="flex items-center gap-2 bg-black text-white px-6 py-3 uppercase text-xs tracking-wider hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
+          className="flex items-center gap-2 bg-black text-white px-6 py-3 text-sm hover:bg-gray-900 transition-colors font-light font-futura-pt-light"
         >
           Browse Products
           <ChevronRight size={16} strokeWidth={1.5} />
@@ -149,11 +178,10 @@ const OrdersPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
         {/* Page Header */}
         <div className="mb-8 md:mb-10">
-          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+          <h1 className="text-2xl md:text-3xl font-light text-black mb-2 font-futura-pt-book">
             My Orders
           </h1>
-          <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
-          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
+          <p className="text-sm text-black font-light font-futura-pt-light">
             View and track all your orders
           </p>
         </div>
@@ -173,10 +201,10 @@ const OrdersPage = () => {
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-5 md:p-6 border-b border-gray-200">
                   <div className="flex-1">
-                    <h2 className="text-xs sm:text-sm font-light text-black uppercase mb-2 font-futura-pt-light">
-                      Order ID: <span className="font-light">{ order.id}</span>
+                    <h2 className="text-base font-light text-black mb-0.5 font-futura-pt-book">
+                      Order ID: <span className="font-light font-futura-pt-light">{ order.id}</span>
                     </h2>
-                    <p className="text-gray-600 text-xs font-light font-futura-pt-light">
+                    <p className="text-sm font-light text-black font-futura-pt-light">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
@@ -187,7 +215,7 @@ const OrdersPage = () => {
                       className={statusInfo.color}
                       strokeWidth={1.5}
                     />
-                    <span className={`text-xs font-light uppercase font-futura-pt-light ${statusInfo.color}`}>
+                    <span className={`text-xs font-light font-futura-pt-light ${statusInfo.color}`}>
                       {statusInfo.text}
                     </span>
                   </div>
@@ -231,12 +259,12 @@ const OrdersPage = () => {
                     )}
 
                     <div className="flex-1">
-                      <h3 className="text-sm sm:text-base font-light text-black mb-1 font-futura-pt-light">
+                      <h3 className="text-base font-light text-black mb-1 font-futura-pt-book">
                         {isGiftCard
                           ? "Gift Card Purchase"
                           : order?.items?.[0]?.productName || "Product Order"}
                       </h3>
-                      <p className="text-gray-600 text-xs font-light font-futura-pt-light">
+                      <p className="text-sm font-light text-black font-futura-pt-light">
                         {isGiftCard
                           ? `Gift Card No: ${order.giftCardNumber}`
                           : `${order.items?.length || 0} item(s)`}
@@ -246,11 +274,13 @@ const OrdersPage = () => {
 
                   <div className="text-left sm:text-right flex sm:block items-center justify-between sm:justify-end gap-4">
                     <div>
-                      <p className="text-gray-600 text-xs font-light uppercase font-futura-pt-light mb-1">
+                      <p className="text-base font-light text-black mb-0.5 font-futura-pt-book">
                         Total Amount
                       </p>
-                      <p className="text-lg sm:text-xl font-light text-black font-futura-pt-light">
-                        {formatPrice(order.giftCardNumber===''?order.subTotal:order.total ,order.currency)}
+                      <p className="text-base font-light text-black font-futura-pt-light">
+                        <span className="font-sans">
+                          {formatPrice(order.giftCardNumber===''?order.subTotal:order.total ,order.currency)}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -271,7 +301,7 @@ const OrdersPage = () => {
                           setShowBuybackModal(true);
                         }
                       }}
-                      className="flex items-center gap-2 text-xs sm:text-sm text-black hover:text-gray-600 transition-colors font-light font-futura-pt-light uppercase tracking-wider"
+                      className="flex items-center gap-2 text-xs sm:text-sm text-black hover:text-gray-600 transition-colors font-light font-futura-pt-light"
                     >
                       <RotateCcw size={16} strokeWidth={1.5} />
                       Buyback
@@ -279,7 +309,7 @@ const OrdersPage = () => {
                   )}
                   <button
                     onClick={() => navigate(`/order-details/${order.id}`)}
-                    className="flex items-center gap-2 text-xs sm:text-sm text-black hover:text-gray-600 transition-colors font-light font-futura-pt-light uppercase tracking-wider"
+                    className="flex items-center gap-2 text-xs sm:text-sm text-black hover:text-gray-600 transition-colors font-light font-futura-pt-light"
                   >
                     View Details
                     <ChevronRight size={16} strokeWidth={1.5} />
@@ -296,7 +326,7 @@ const OrdersPage = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl md:text-2xl font-light uppercase tracking-[0.1em] text-black">
+              <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                 Select Item for Buyback
               </h2>
               <button
@@ -312,7 +342,7 @@ const OrdersPage = () => {
               </button>
             </div>
             <div className="p-6">
-              <p className="text-sm text-gray-600 mb-4 font-light">
+              <p className="text-sm text-black mb-4 font-light font-futura-pt-light">
                 Please select which item from this order you'd like to submit for buyback.
               </p>
               <div className="space-y-3">
@@ -339,10 +369,10 @@ const OrdersPage = () => {
                         )}
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-light text-black mb-1">
+                        <p className="text-base font-light text-black mb-1 font-futura-pt-book">
                           {item.productName || "Product"}
                         </p>
-                        <p className="text-xs text-gray-600 font-light">
+                        <p className="text-sm text-black font-light font-futura-pt-light">
                           Product ID: {item.productId || "N/A"}
                         </p>
                       </div>

@@ -318,24 +318,24 @@ const Wallet = () => {
 
   if (loading && walletData.recentActivity.length === 0) {
     return (
-      <div className="min-h-screen bg-white font-futura flex items-center justify-center">
+      <div className="min-h-screen bg-white font-futura-pt-light flex items-center justify-center">
         <div className="text-center">
-          <div className="text-text-dark text-lg uppercase tracking-wider">Loading...</div>
+          <div className="text-black text-base font-light font-futura-pt-light">Loading...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white font-futura">
+    <div className="min-h-screen bg-white font-futura-pt-light">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
         {/* Page Title */}
         <h1 
-          className={`text-2xl md:text-3xl lg:text-4xl font-light text-text-dark uppercase tracking-wider mb-3 md:mb-4 text-center transition-all duration-1000 ${
+          className={`text-2xl md:text-3xl font-light text-black mb-2 text-center transition-all duration-1000 font-futura-pt-book ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
           }`}
         >
-          MY YOBHA WALLET
+          My YOBHA Wallet
         </h1>
         {/* <p 
           className={`text-sm md:text-base font-light text-text-medium text-center mb-8 md:mb-12 leading-relaxed transition-all duration-1000 delay-100 ${
@@ -352,15 +352,15 @@ const Wallet = () => {
           }`}
         >
           <div className="relative inline-block">
-            <div className="text-5xl md:text-6xl lg:text-7xl font-light text-text-dark tracking-tight mb-2 animate-pulse-slow">
+            <div className="text-5xl md:text-6xl lg:text-7xl font-light text-black mb-2 animate-pulse-slow font-futura-pt-book">
               {animatedBalance}
             </div>
             {/* Subtle glow effect */}
-            <div className="absolute inset-0 text-5xl md:text-6xl lg:text-7xl font-light text-text-dark/20 blur-xl -z-10 animate-glow">
+            <div className="absolute inset-0 text-5xl md:text-6xl lg:text-7xl font-light text-black/20 blur-xl -z-10 animate-glow font-futura-pt-book">
               {animatedBalance}
             </div>
           </div>
-          <div className="text-sm md:text-base uppercase tracking-widest text-text-medium font-light mt-2">
+          <div className="text-sm md:text-base text-black font-light mt-2 font-futura-pt-light">
             Credits
           </div>
         </div>
@@ -371,12 +371,12 @@ const Wallet = () => {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <h2 className="text-lg md:text-xl font-light text-text-dark uppercase tracking-wider mb-6 md:mb-8">
+          <h2 className="text-base md:text-lg font-light text-black mb-6 md:mb-8 font-futura-pt-book">
             Recent Activity
           </h2>
           <div className="space-y-3 md:space-y-4">
             {walletData.recentActivity.length === 0 ? (
-              <div className="text-text-light text-sm md:text-base font-light text-center py-8">
+              <div className="text-sm md:text-base font-light text-black text-center py-8 font-futura-pt-light">
                 No activity yet
               </div>
             ) : (
@@ -391,14 +391,14 @@ const Wallet = () => {
                   }}
                 >
                   <div className="flex-1">
-                    <div className="text-sm md:text-base font-light text-text-dark">
+                    <div className="text-sm md:text-base font-light text-black font-futura-pt-light">
                       {formatReason(activity.reason, activity.operation, activity.points)}
                     </div>
-                    <div className="text-xs md:text-sm text-text-light mt-1">
+                    <div className="text-xs md:text-sm text-black mt-1 font-futura-pt-light">
                       {formatDate(activity.createdAt)}
                     </div>
                   </div>
-                  <div className="text-xs md:text-sm text-text-light font-light ml-4">
+                  <div className="text-xs md:text-sm text-black font-light ml-4 font-futura-pt-light">
                     Balance: {activity.balanceAfter}
                   </div>
                 </div>
@@ -411,7 +411,7 @@ const Wallet = () => {
             <button
               onClick={loadMore}
               disabled={loading}
-              className="mt-6 text-sm uppercase tracking-wider text-text-dark hover:text-text-medium underline font-light transition-colors disabled:opacity-50"
+              className="mt-6 text-sm text-black hover:text-black underline font-light transition-colors disabled:opacity-50 font-futura-pt-light"
             >
               {loading ? "Loading..." : "Load More"}
             </button>
@@ -424,16 +424,16 @@ const Wallet = () => {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <h2 className="text-lg md:text-xl font-light text-text-dark uppercase tracking-wider mb-4 md:mb-6">
+          <h2 className="text-base md:text-lg font-light text-black mb-4 md:mb-6 font-futura-pt-book">
             Your Impact
           </h2>
-          <p className="text-sm md:text-base font-light text-text-medium mb-4 md:mb-6 leading-relaxed">
+          <p className="text-sm md:text-base font-light text-black mb-4 md:mb-6 leading-relaxed font-futura-pt-light">
             You've helped reduce waste and protect the planet.
           </p>
           <div className="space-y-2 md:space-y-3">
             {walletData.impact.renewed > 0 && (
               <div 
-                className={`text-sm md:text-base font-light text-text-dark transition-all duration-500 delay-800 ${
+                className={`text-sm md:text-base font-light text-black transition-all duration-500 delay-800 font-futura-pt-light ${
                   isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
                 }`}
               >
@@ -442,7 +442,7 @@ const Wallet = () => {
             )}
             {walletData.impact.recycled > 0 && (
               <div 
-                className={`text-sm md:text-base font-light text-text-dark transition-all duration-500 delay-900 ${
+                className={`text-sm md:text-base font-light text-black transition-all duration-500 delay-900 font-futura-pt-light ${
                   isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
                 }`}
               >
@@ -450,28 +450,22 @@ const Wallet = () => {
               </div>
             )}
             {walletData.impact.renewed === 0 && walletData.impact.recycled === 0 && (
-              <div className="text-sm md:text-base font-light text-text-light">
+              <div className="text-sm md:text-base font-light text-black font-futura-pt-light">
                 • Start your journey by submitting items for renewal or recycling
               </div>
             )}
           </div>
         </div>
 
-        {/* ACTIONS - Two refined, minimal buttons */}
+        {/* ACTIONS */}
         <div 
           className={`flex flex-col sm:flex-row gap-4 md:gap-6 transition-all duration-1000 delay-1000 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           <button
-            onClick={handleRedeemCredits}
-            className="flex-1 px-6 md:px-8 py-3 md:py-4 text-sm md:text-base uppercase tracking-widest font-light text-text-dark border border-text-dark hover:bg-text-dark hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 transform"
-          >
-            Redeem Credits
-          </button>
-          <button
             onClick={handleSubmitNewItem}
-            className="flex-1 px-6 md:px-8 py-3 md:py-4 text-sm md:text-base uppercase tracking-widest font-light text-text-dark border border-text-dark hover:bg-text-dark hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 transform"
+            className="flex-1 px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-light text-black border border-black hover:bg-black hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 transform font-futura-pt-light"
           >
             Submit New Item
           </button>

@@ -5,7 +5,7 @@ const TRADE_IN_OPTIONS = [
   {
     id: "credit",
     title: "Trade-in for Credit",
-    description: "Return your YOBHA piece and earn Care Credit.",
+    description: "Return your YOBHA garment and earn Care Credit.",
     icon: CreditCard,
   },
   {
@@ -33,7 +33,7 @@ const BuybackModal = ({ isOpen, onClose, onSelectOption, order }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl md:text-2xl font-light uppercase tracking-[0.1em] text-black">
+          <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
             Choose Buyback Option
           </h2>
           <button
@@ -48,14 +48,14 @@ const BuybackModal = ({ isOpen, onClose, onSelectOption, order }) => {
         <div className="p-6">
           {order && (
             <div className="mb-6 p-4 bg-gray-50 border border-gray-200">
-              <p className="text-xs uppercase tracking-[0.2em] text-gray-600 mb-2 font-light">
+              <p className="text-sm text-black mb-2 font-light font-futura-pt-book">
                 Order Details
               </p>
-              <p className="text-sm font-light text-black">
-                Order ID: <span className="font-medium">{order.id || order.orderNo}</span>
+              <p className="text-base font-light text-black font-futura-pt-light">
+                Order ID: <span className="font-futura-pt-book">{order.id || order.orderNo}</span>
               </p>
               {order.items && order.items.length > 0 && (
-                <p className="text-sm font-light text-gray-700 mt-1">
+                <p className="text-sm font-light text-black mt-1 font-futura-pt-light">
                   {order.items.length} item(s) in this order
                 </p>
               )}
@@ -77,11 +77,11 @@ const BuybackModal = ({ isOpen, onClose, onSelectOption, order }) => {
                     <IconComponent className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
                   </div>
                   
-                  <h3 className="text-sm md:text-base lg:text-lg font-light uppercase tracking-[0.15em] mb-3 transition-colors leading-tight flex-shrink-0 text-black" style={{ fontWeight: '300' }}>
+                  <h3 className="text-base md:text-lg lg:text-xl font-light mb-3 transition-colors leading-tight flex-shrink-0 text-black font-futura-pt-book">
                     {option.title}
                   </h3>
                   
-                  <p className="text-xs md:text-sm leading-relaxed transition-colors tracking-normal mt-auto text-center flex-shrink-0 text-gray-700" style={{ fontWeight: '300' }}>
+                  <p className="text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 text-black font-light font-futura-pt-light">
                     {option.description}
                   </p>
                 </button>
