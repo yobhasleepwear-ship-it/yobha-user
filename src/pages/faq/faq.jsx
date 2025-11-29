@@ -3,7 +3,7 @@ import FAQ from "../../comman/faq/faq";
 
 const FAQPage = () => {
   return (
-    <div className="min-h-screen bg-premium-cream font-sweet-sans">
+    <div className="min-h-screen bg-white font-futura-pt-light">
       {/* Hero Section */}
       <section className="relative py-16 bg-gradient-to-br from-premium-beige via-premium-cream to-premium-warm-white overflow-hidden">
         <div className="absolute inset-0 opacity-5">
@@ -14,10 +14,10 @@ const FAQPage = () => {
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-gray-900 uppercase tracking-widest mb-4">
+          <h1 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-4 font-futura-pt-book">
             FAQ
           </h1>
-          <p className="text-text-medium text-xl font-light tracking-wide max-w-2xl mx-auto">
+          <p className="text-black text-sm md:text-base font-light max-w-2xl mx-auto font-futura-pt-light">
             Find answers to frequently asked questions about YOBHA's luxury sleepwear and lifestyle products.
           </p>
         </div>

@@ -52,15 +52,15 @@ const FAQ = () => {
   ];
 
   return (
-    <section id="faq" className="bg-white py-12 sm:py-20 font-futura">
+    <section id="faq" className="bg-white py-12 sm:py-20 font-futura-pt-light">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Heading */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-black uppercase tracking-widest mb-4 sm:mb-5">
+          <h2 className="text-base md:text-lg font-light text-black mb-4 sm:mb-5 font-futura-pt-book">
             Frequently Asked Questions
           </h2>
           <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-black mx-auto rounded-full"></div>
-          <p className="mt-3 sm:mt-4 text-text-dark text-xs sm:text-sm tracking-wide uppercase">
+          <p className="mt-3 sm:mt-4 text-black text-xs sm:text-sm font-light font-futura-pt-light">
             Calm • Connection • Conscious Living
           </p>
         </div>
@@ -84,7 +84,7 @@ const FAQ = () => {
                     : 'hover:bg-premium-beige/20'
                 }`}
               >
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-black uppercase tracking-wide pr-3 sm:pr-4 md:pr-6 leading-tight">
+                <h3 className="text-sm md:text-base font-light text-black pr-3 sm:pr-4 md:pr-6 leading-tight font-futura-pt-book">
                   {faq.question}
                 </h3>
                 <div className="flex-shrink-0">
@@ -98,7 +98,7 @@ const FAQ = () => {
 
               {expandedFaq === index && (
                 <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 border-t border-luxury-gold/20 bg-luxury-gold/5">
-                  <p className="text-text-dark leading-relaxed pt-4 sm:pt-6 text-sm sm:text-base">
+                  <p className="text-black leading-relaxed pt-4 sm:pt-6 text-sm sm:text-base font-light font-futura-pt-light">
                     {faq.answer}
                   </p>
                 </div>

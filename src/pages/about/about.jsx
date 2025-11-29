@@ -2,15 +2,15 @@ import React from "react";
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-white font-futura">
+    <div className="min-h-screen bg-white font-futura-pt-light">
       {/* Hero Section - Compact */}
       <section className="relative py-8 bg-gradient-to-br from-premium-beige via-premium-cream to-premium-warm-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-light font-futura  text-black uppercase tracking-widest mb-4">
+            <h1 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-4 font-futura-pt-book">
             Why YOBHA
             </h1>
-            <p className="text-text-medium text-lg font-light tracking-wide font-futura">
+            <p className="text-black text-sm md:text-base font-light font-futura-pt-light">
               Redefining the essence of modern comfort
             </p>
           </div>
@@ -23,20 +23,20 @@ const About = () => {
           {/* Content */}
           <div className="space-y-6">
             <div className="text-center lg:text-left">
-              <h2 className="text-4xl md:text-5xl font-light  text-black uppercase tracking-widest mb-6">
+              <h2 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-6 font-futura-pt-book">
                 YOBHA
               </h2>
             </div>
             
-            <p className="text-text-dark text-base leading-relaxed font-light">
+            <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
               "We create pieces that honor the quiet beauty of comfort — refined essentials that bring peace and elegance to life's everyday rituals.
             </p>
             
-            <p className="text-text-dark text-base leading-relaxed font-light">
+            <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
               With a design-first approach and uncompromising attention to detail, YOBHA blends luxury craftsmanship with effortless wearability. Each piece is thoughtfully made to celebrate stillness, softness, and the art of being at home — within yourself and your space.
             </p>
             
-            <p className="text-text-dark text-base leading-relaxed font-light">
+            <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
               Guided by conscious creation and timeless design, YOBHA stands for a new kind of luxury — one that feels as good as it looks, and endures beyond seasons."
             </p>
           </div>
@@ -49,7 +49,7 @@ const About = () => {
                   <div className="w-24 h-24 mx-auto mb-4 border-2 border-luxury-gold rounded-full flex items-center justify-center">
                     <span className="text-3xl font-bold text-luxury-gold">Y</span>
                   </div>
-                  <p className="text-text-medium text-xs uppercase tracking-widest font-medium">
+                  <p className="text-black text-sm font-light font-futura-pt-light">
                     Luxury Redefined
                   </p>
                 </div>
@@ -63,7 +63,7 @@ const About = () => {
       <section className="bg-white py-8">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-semibold text-black uppercase tracking-wide mb-3">
+            <h2 className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book">
               Our Philosophy
             </h2>
             <div className="w-16 h-1 bg-luxury-gold mx-auto"></div>
@@ -71,19 +71,19 @@ const About = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-semibold text-black uppercase tracking-wide mb-3">
+              <h3 className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book">
                 Beyond Sleep
               </h3>
-              <p className="text-text-dark text-base leading-relaxed font-light">
+              <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
                 YOBHA extends beyond sleep. Our world embraces loungewear, homewear, daywear, kidswear, and petwear, crafting a seamless universe of elevated essentials that connect you to your most authentic, grounded self.
               </p>
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-black uppercase tracking-wide mb-3">
+              <h3 className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book">
                 Home as State of Mind
               </h3>
-              <p className="text-text-dark text-base leading-relaxed font-light">
+              <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
                 At YOBHA, home becomes a state of mind — and comfort becomes couture. Every piece is designed to create a sanctuary of tranquility and elegance in your daily life.
               </p>
             </div>
@@ -95,7 +95,7 @@ const About = () => {
       <section className="bg-premium-beige py-8">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-semibold text-black uppercase tracking-wide mb-3">
+            <h2 className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book">
               Our Values
             </h2>
             <div className="w-16 h-1 bg-luxury-gold mx-auto"></div>
@@ -106,10 +106,10 @@ const About = () => {
               <div className="w-16 h-16 mx-auto mb-4 border-2 border-luxury-gold rounded-full flex items-center justify-center">
                 <span className="text-xl">✨</span>
               </div>
-              <h3 className="text-lg font-bold text-black uppercase tracking-wide mb-3">
+              <h3 className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book">
                 Tranquility
               </h3>
-              <p className="text-text-dark text-sm leading-relaxed font-light">
+              <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
                 Creating peaceful moments through thoughtful design and serene aesthetics.
               </p>
             </div>
@@ -118,10 +118,10 @@ const About = () => {
               <div className="w-16 h-16 mx-auto mb-4 border-2 border-luxury-gold rounded-full flex items-center justify-center">
                 <span className="text-xl">🎨</span>
               </div>
-              <h3 className="text-lg font-bold text-black uppercase tracking-wide mb-3">
+              <h3 className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book">
                 Elegance
               </h3>
-              <p className="text-text-dark text-sm leading-relaxed font-light">
+              <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
                 Timeless silhouettes that celebrate the art of being effortlessly sophisticated.
               </p>
             </div>
@@ -130,10 +130,10 @@ const About = () => {
               <div className="w-16 h-16 mx-auto mb-4 border-2 border-luxury-gold rounded-full flex items-center justify-center">
                 <span className="text-xl">🏠</span>
               </div>
-              <h3 className="text-lg font-bold text-black uppercase tracking-wide mb-3">
+              <h3 className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book">
                 Comfort
               </h3>
-              <p className="text-text-dark text-sm leading-relaxed font-light">
+              <p className="text-black text-sm md:text-base leading-relaxed font-light font-futura-pt-light">
                 Elevated essentials that connect you to your most authentic, grounded self.
               </p>
             </div>
