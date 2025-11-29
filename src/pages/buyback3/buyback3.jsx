@@ -41,7 +41,7 @@ const TRADE_IN_OPTIONS = [
   {
     id: "credit",
     title: "Trade-in for Credit",
-    description: "Return your YOBHA piece and earn Care Credit.",
+    description: "Return your YOBHA garment and earn Care Credit.",
     icon: CreditCard,
   },
   {
@@ -60,24 +60,74 @@ const TRADE_IN_OPTIONS = [
 
 const CONDITION_QUESTIONS = [
   {
-    id: "clean",
-    prompt: "Is it clean and wearable?",
-    options: ["Yes", "Slightly used", "Needs minor repair"],
+    id: "washes",
+    prompt: "How many times has the item been washed?",
+    options: [
+      { label: "0–2 washes (Almost new)", value: "A", points: 3 },
+      { label: "3–6 washes (Lightly used)", value: "B", points: 2 },
+      { label: "7–12 washes (Used but okay)", value: "C", points: 1 },
+      { label: "12+ washes (Heavily used)", value: "D", points: 0 },
+    ],
+  },
+  {
+    id: "stains",
+    prompt: "Any visible stains or discoloration?",
+    options: [
+      { label: "None", value: "A", points: 3 },
+      { label: "Very small / faint", value: "B", points: 2 },
+      { label: "Noticeable but removable", value: "C", points: 1 },
+      { label: "Large / permanent stains", value: "D", points: 0 },
+    ],
   },
   {
     id: "damage",
-    prompt: "Any visible stains or damage?",
-    options: ["None", "Minor", "Major"],
+    prompt: "Any damage such as holes, tears, or broken parts?",
+    options: [
+      { label: "No damage", value: "A", points: 3 },
+      { label: "Minor repairable issue (small hole / loose thread)", value: "B", points: 2 },
+      { label: "Broken zipper/buttons", value: "C", points: 1 },
+      { label: "Large tear / burn / major damage", value: "D", points: 0 },
+    ],
   },
   {
-    id: "tag",
-    prompt: "Does it still have YOBHA tag/label?",
-    options: ["Yes", "Faded", "Missing"],
+    id: "peeling",
+    prompt: "Any peeling, cracking, or fabric coating damage?",
+    options: [
+      { label: "No peeling", value: "A", points: 3 },
+      { label: "Light wear (no flakes)", value: "B", points: 2 },
+      { label: "Small peeling/cracks", value: "C", points: 1 },
+      { label: "Large peeling or delamination", value: "D", points: 0 },
+    ],
   },
   {
-    id: "fastening",
-    prompt: "Are all zippers/buttons fine?",
-    options: ["Yes", "Few issues", "Broken"],
+    id: "tags",
+    prompt: "Do the original tags/labels still exist?",
+    options: [
+      { label: "Tag & care label intact", value: "A", points: 3 },
+      { label: "Tag faded but readable", value: "B", points: 2 },
+      { label: "Partially missing tag", value: "C", points: 1 },
+      { label: "Tag fully removed", value: "D", points: 0 },
+    ],
+  },
+  {
+    id: "altered",
+    prompt: "Has the garment been altered or tailored?",
+    options: [
+      { label: "No alteration", value: "A", points: 3 },
+      { label: "Minor hem adjustment", value: "B", points: 2 },
+      { label: "Tailored/resized", value: "C", points: 1 },
+      { label: "Altered significantly", value: "D", points: 0 },
+    ],
+  },
+  {
+    id: "customised",
+    prompt: "Has the product been personalised/ customised (prints, embroidery, patches, initials etc.)?",
+    options: [
+      { label: "No customisation", value: "A", points: 3 },
+      { label: "Small removable add-on (patch/badge)", value: "B", points: 2 },
+      { label: "Minor custom embroidery/printing", value: "C", points: 1 },
+      { label: "Heavy personalisation (names/initials/large prints)", value: "D", points: 0 },
+    ],
   },
 ];
 
@@ -97,6 +147,7 @@ const Buyback3 = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [orderMethod, setOrderMethod] = useState(null); // "findOrder" or "noOrderId"
+  const [refundPercentage, setRefundPercentage] = useState(null);
   const [invoiceUrl, setInvoiceUrl] = useState("");
   const [productImages, setProductImages] = useState([]); // Max 4 images
   const [productId, setProductId] = useState("");
@@ -269,11 +320,16 @@ const Buyback3 = () => {
 
   const conditionSummary = useMemo(
     () =>
-      CONDITION_QUESTIONS.map((question) => ({
-        id: question.id,
-        prompt: question.prompt,
-        value: conditionResponses[question.id],
-      })).filter((entry) => Boolean(entry.value)),
+      CONDITION_QUESTIONS.map((question) => {
+        const selectedValue = conditionResponses[question.id];
+        const selectedOption = question.options.find((opt) => opt.value === selectedValue);
+        return {
+          id: question.id,
+          prompt: question.prompt,
+          value: selectedOption ? `${selectedOption.value}. ${selectedOption.label}` : selectedValue,
+          points: selectedOption ? selectedOption.points : 0,
+        };
+      }).filter((entry) => Boolean(entry.value)),
     [conditionResponses]
   );
 
@@ -358,6 +414,44 @@ const Buyback3 = () => {
     }));
   };
 
+  // Calculate total points from condition responses
+  const calculatePoints = useMemo(() => {
+    let totalPoints = 0;
+    CONDITION_QUESTIONS.forEach((question) => {
+      const selectedAnswer = conditionResponses[question.id];
+      if (selectedAnswer) {
+        const option = question.options.find((opt) => opt.value === selectedAnswer);
+        if (option) {
+          totalPoints += option.points;
+        }
+      }
+    });
+    return totalPoints;
+  }, [conditionResponses]);
+
+  // Determine condition and percentage based on points
+  const getConditionDetails = useMemo(() => {
+    if (calculatePoints >= 17 && calculatePoints <= 21) {
+      return {
+        condition: "Eligible (Good condition)",
+        percentage: 20,
+        eligible: true,
+      };
+    } else if (calculatePoints >= 12 && calculatePoints <= 16) {
+      return {
+        condition: "Minor repair check needed (Manual review)",
+        percentage: 10,
+        eligible: true,
+      };
+    } else {
+      return {
+        condition: "Not eligible",
+        percentage: 0,
+        eligible: false,
+      };
+    }
+  }, [calculatePoints]);
+
   const handleBack = () => {
     setStepAnimation("slideOut");
     setTimeout(() => {
@@ -422,10 +516,14 @@ const Buyback3 = () => {
 
     try {
       // Map condition responses to quiz format
-      const quiz = CONDITION_QUESTIONS.map((question) => ({
-        ques: question.prompt,
-        ans: conditionResponses[question.id] || "",
-      }));
+      const quiz = CONDITION_QUESTIONS.map((question) => {
+        const selectedValue = conditionResponses[question.id];
+        const selectedOption = question.options.find((opt) => opt.value === selectedValue);
+        return {
+          ques: question.prompt,
+          ans: selectedOption ? selectedOption.label : (selectedValue || ""),
+        };
+      });
 
       // Validate product images
       if (productImages.length === 0) {
@@ -469,6 +567,8 @@ const Buyback3 = () => {
       const response = await createBuyback(payload);
       
       if (response) {
+        // Store refund percentage before showing completion
+        setRefundPercentage(getConditionDetails.percentage);
         message.success("Buyback request submitted successfully!");
         setShowCompletion(true);
       }
@@ -489,6 +589,7 @@ const Buyback3 = () => {
     setSelectedItem(null);
     setConditionResponses({});
     setShowCompletion(false);
+    setRefundPercentage(null);
     setStepAnimation("fadeIn");
     setOrderConfirmed(false);
     setSubmitError(null);
@@ -1013,37 +1114,40 @@ const Buyback3 = () => {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Condition Questions */}
                 {CONDITION_QUESTIONS.map((question, idx) => (
                   <div
                     key={question.id}
-                    className="space-y-2"
+                    className="space-y-3"
                   >
-                    <p className="text-sm text-black mb-2 font-light font-futura-pt-light">
-                      {question.prompt}
+                    <p className="text-sm md:text-base text-black mb-3 font-light font-futura-pt-book">
+                      {idx + 1}. {question.prompt}
                     </p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="space-y-2">
                       {question.options.map((option) => {
-                        const isSelected = conditionResponses[question.id] === option;
+                        const isSelected = conditionResponses[question.id] === option.value;
                         return (
                           <button
-                            key={option}
+                            key={option.value}
                             type="button"
-                            onClick={() => handleConditionChange(question.id, option)}
-                            className={`border px-3 py-1.5 text-xs transition-colors font-light ${
+                            onClick={() => handleConditionChange(question.id, option.value)}
+                            className={`w-full text-left border-2 px-4 py-3 text-xs md:text-sm transition-colors font-light font-futura-pt-light ${
                               isSelected
                                 ? "border-black bg-black text-white"
                                 : "border-gray-300 bg-white text-black hover:border-black"
                             }`}
                           >
-                            {option}
+                            <span className="font-futura-pt-book font-light mr-2">{option.value}.</span>
+                            {option.label}
                           </button>
                         );
                       })}
                     </div>
                   </div>
                 ))}
+
+                {/* Points and Condition Display */}
 
                 {/* Product Images Upload */}
                 <div>
@@ -1190,7 +1294,7 @@ const Buyback3 = () => {
         {/* Simple Header - No Card/Shadow */}
         <header className="mb-8 md:mb-10 text-center">
           <h1 className="text-2xl md:text-3xl lg:text-4xl text-black leading-tight font-futura-pt-book font-light">
-            Renew Your YOBHA Piece
+            Renew Your YOBHA Garment
           </h1>
         </header>
 
@@ -1246,40 +1350,49 @@ const Buyback3 = () => {
             <section className="px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10">
               {renderStepContent()}
 
-              <div className="mt-8 md:mt-10 flex flex-col md:flex-row md:flex-wrap md:items-center gap-3">
-                <div className="flex flex-wrap items-center gap-3">
-                  {activeStep > 1 && activeStep <= 5 && (
-                    <button
-                      type="button"
-                      onClick={handleBack}
-                      className="border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm text-black transition-all duration-300 hover:bg-black hover:text-white font-light flex items-center gap-2 group font-futura-pt-light"
-                    >
-                      <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" strokeWidth={2} />
-                      Go Back
-                    </button>
-                  )}
-                  {activeStep >= 1 && activeStep <= 4 && activeStep !== 2 && (
-                    <button
-                      type="button"
-                      onClick={handleContinue}
-                      disabled={!isContinueEnabled}
-                      className={`px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center gap-2 group font-futura-pt-light ${
-                        isContinueEnabled
-                          ? "border-2 border-black bg-black text-white hover:bg-gray-900"
-                          : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
-                      }`}
-                    >
-                      Continue
-                      <ChevronRight className={`w-4 h-4 transition-transform ${isContinueEnabled ? "group-hover:translate-x-1" : ""}`} strokeWidth={2} />
-                    </button>
-                  )}
-                  {activeStep === 5 && (
-                    <>
+              <div className="mt-8 md:mt-10 space-y-3 md:space-y-0">
+                {/* Error message - full width on all screens */}
+                {activeStep === 5 && submitError && (
+                  <div className="w-full border border-red-200 bg-red-50 px-6 py-4 text-sm text-red-700 font-light flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
+                    {submitError}
+                  </div>
+                )}
+                
+                {/* Buttons container */}
+                <div className="flex flex-col md:flex-row md:flex-wrap md:items-center gap-3">
+                  <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 flex-1">
+                    {activeStep > 1 && activeStep <= 5 && (
+                      <button
+                        type="button"
+                        onClick={handleBack}
+                        className="w-full sm:w-auto border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm text-black transition-all duration-300 hover:bg-black hover:text-white font-light flex items-center justify-center gap-2 group font-futura-pt-light"
+                      >
+                        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" strokeWidth={2} />
+                        Go Back
+                      </button>
+                    )}
+                    {activeStep >= 1 && activeStep <= 4 && activeStep !== 2 && (
+                      <button
+                        type="button"
+                        onClick={handleContinue}
+                        disabled={!isContinueEnabled}
+                        className={`w-full sm:w-auto px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center justify-center gap-2 group font-futura-pt-light ${
+                          isContinueEnabled
+                            ? "border-2 border-black bg-black text-white hover:bg-gray-900"
+                            : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
+                        }`}
+                      >
+                        Continue
+                        <ChevronRight className={`w-4 h-4 transition-transform ${isContinueEnabled ? "group-hover:translate-x-1" : ""}`} strokeWidth={2} />
+                      </button>
+                    )}
+                    {activeStep === 5 && (
                       <button
                         type="button"
                         onClick={handleConfirm}
                         disabled={!canConfirm || isSubmitting}
-                        className={`px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center gap-2 font-futura-pt-light ${
+                        className={`w-full sm:w-auto px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center justify-center gap-2 font-futura-pt-light ${
                           canConfirm && !isSubmitting
                             ? "border-2 border-black bg-black text-white hover:bg-gray-900"
                             : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
@@ -1297,23 +1410,17 @@ const Buyback3 = () => {
                           </>
                         )}
                       </button>
-                      {submitError && (
-                        <div className="w-full border border-red-200 bg-red-50 px-6 py-4 text-sm text-red-700 font-light flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
-                          {submitError}
-                        </div>
-                      )}
-                    </>
-                  )}
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="w-full sm:w-auto md:w-auto md:ml-auto border-2 border-gray-400 px-6 py-3 md:px-8 md:py-3.5 text-xs md:text-sm text-gray-600 transition-all duration-300 hover:border-black hover:text-black hover:bg-gray-50 font-light flex items-center justify-center gap-2 font-futura-pt-light"
+                  >
+                    <RotateCcw className="w-4 h-4" strokeWidth={2} />
+                    Reset
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="w-1/2 md:w-auto md:ml-auto mx-auto md:mx-0 border-2 border-gray-400 px-6 py-3 md:px-8 md:py-3.5 text-xs md:text-sm text-gray-600 transition-all duration-300 hover:border-black hover:text-black hover:bg-gray-50 font-light flex items-center justify-center gap-2 font-futura-pt-light"
-                >
-                  <RotateCcw className="w-4 h-4" strokeWidth={2} />
-                  Reset
-                </button>
               </div>
             </section>
           </>
@@ -1330,8 +1437,28 @@ const Buyback3 = () => {
               Completion
             </p>
             <h2 className="mt-2 text-3xl md:text-4xl lg:text-5xl font-light leading-tight mb-8 text-center font-futura-pt-book">
-              Thank you for extending the life of your YOBHA piece.
+              Thank you for extending the life of your YOBHA garment.
             </h2>
+            {refundPercentage !== null && refundPercentage > 0 && (
+              <div className="max-w-2xl mx-auto mb-8 p-6 border-2 border-white/30 bg-white/10 backdrop-blur-sm">
+                <p className="text-sm md:text-base text-white/90 font-light mb-3 text-center font-futura-pt-light">
+                  Refund Percentage
+                </p>
+                <p className="text-4xl md:text-5xl lg:text-6xl font-light mb-2 text-center font-futura-pt-book">
+                  Upto {refundPercentage}%
+                </p>
+                <p className="text-xs md:text-sm text-white/80 font-light text-center font-futura-pt-light">
+                  of product price will be given back
+                </p>
+              </div>
+            )}
+            {refundPercentage === 0 && (
+              <div className="max-w-2xl mx-auto mb-8 p-6 border-2 border-white/30 bg-white/10 backdrop-blur-sm">
+                <p className="text-sm md:text-base text-white/90 font-light text-center font-futura-pt-light">
+                  No credit will be given for this item based on the condition assessment.
+                </p>
+              </div>
+            )}
             <p className="max-w-2xl mx-auto text-sm md:text-base lg:text-lg leading-[1.8] text-white/80 font-light mb-12 text-center font-futura-pt-light">
               Your contribution supports circular luxury and conscious comfort.
             </p>
