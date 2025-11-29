@@ -1,36 +1,72 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, ShoppingBag, Trash2, ArrowRight, Bell } from "lucide-react";
+import { Heart, Trash2, ArrowRight, ShoppingBag } from "lucide-react";
 import { getWishlist, removeFromWishlists } from "../../service/wishlist";
+import { invalidateWishlistCache } from "../../service/wishlistCache";
 import { addToCart } from "../../service/productAPI";
+import { useDispatch } from "react-redux";
+import { setCartCount } from "../../redux/cartSlice";
+import { setWishlistCount, decrementWishlistCount } from "../../redux/wishlistSlice";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
+import ProductCard from "../product/components/product-card";
 
 
-const formatPrice = (price, currency = 'INR') => {
-  if (typeof price !== 'number') return '₹0';
-  const symbol = currency === 'INR' ? '₹' : currency;
-  return `${symbol}${price.toLocaleString('en-IN', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  })}`;
-};
-
-
-const calculateDiscountPercent = (originalPrice, currentPrice) => {
-  if (!originalPrice || !currentPrice || originalPrice <= currentPrice) return 0;
-  return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+// Transform wishlist item to product format for ProductCard
+const transformWishlistItemToProduct = (wishlistItem) => {
+  const product = wishlistItem?.product || {};
+  
+  // Get images - try different possible fields
+  let images = [];
+  if (product.images && Array.isArray(product.images)) {
+    images = product.images.map(img => typeof img === 'string' ? img : (img.url || img.thumbnailUrl || ''));
+  } else if (product.thumbnailUrl) {
+    images = [product.thumbnailUrl];
+  } else if (product.image) {
+    images = [product.image];
+  }
+  
+  // Get price list from product or construct from available data
+  let priceList = product.priceList || [];
+  if (!priceList.length && product.unitPrice) {
+    // Construct a basic price list entry
+    const savedCountry = localStorage.getItem('selectedCountry');
+    const parsedCountry = savedCountry ? JSON.parse(savedCountry) : { code: 'IN' };
+    priceList = [{
+      country: parsedCountry?.code || 'IN',
+      size: wishlistItem.desiredSize || product.availableSizes?.[0] || '',
+      priceAmount: product.unitPrice,
+      currency: product.currency || 'INR'
+    }];
+  }
+  
+  return {
+    id: product.productObjectId || product.id || wishlistItem.id,
+    productId: product.productId || product.id,
+    name: product.name || 'Untitled Product',
+    price: product.unitPrice || product.price || 0,
+    priceList: priceList,
+    images: images.length > 0 ? images : [],
+    available: product.available !== false,
+    productMainCategory: product.productMainCategory || '',
+    availableColors: product.availableColors || [],
+    availableSizes: product.availableSizes || [],
+    category: product.category || '',
+    wishlistItemId: wishlistItem.id // Store original wishlist item ID for removal
+  };
 };
 
 const WishlistPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // API State
   const [wishlistItems, setWishlistItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [recentVisited, setRecentVisited] = useState([]);
+  const [movingToCart, setMovingToCart] = useState({}); // Track which item is being moved
 
   // Check if user is authenticated
   const isAuthenticated = () => {
@@ -67,7 +103,10 @@ const WishlistPage = () => {
     try {
       const response = await getWishlist();
       console.log(response.data, "res")
-      setWishlistItems(response.data || [])
+      const items = response.data || [];
+      setWishlistItems(items);
+      // Update wishlist count in Redux
+      dispatch(setWishlistCount(items.length));
     }
     catch (err) {
       // Handle errors - if 401, clear token and show empty state
@@ -88,53 +127,101 @@ const WishlistPage = () => {
     }
   }
   // Remove from wishlist
-
-  const removeFromWishlist = async (productId) => {
+  const removeFromWishlist = async (wishlistItemId, e) => {
+    if (e) {
+      e.stopPropagation();
+    }
     try {
-      const response = await removeFromWishlists(productId)
-      fetchWishList();
+      const response = await removeFromWishlists(wishlistItemId);
+      // Invalidate cache so other components get fresh data
+      invalidateWishlistCache();
+      await fetchWishList();
       message.success('Item removed from Wishlist!');
     } catch (err) {
       message.error("removeFromWishlist error:", err.response?.data || err.message);
       throw err;
     }
   };
+
   // Move to cart
-  const moveToCart = async (item) => {
+  const moveToCart = async (item, e) => {
+    if (e) {
+      e.stopPropagation();
+    }
 
-    const cartData = {
-      productId: item.product.productId,
-      variantSku: item.product.variantSku,
-      quantity: item.desiredQuantity,
-      size: item.desiredSize,
-      color: item.desiredColor
-    };
+    const product = item?.product || {};
+    setMovingToCart(prev => ({ ...prev, [item.id]: true }));
+
     try {
-      await addToCart(cartData);
+      // Prepare cart data
+      const cartData = {
+        productId: product.productId,
+        variantSku: product.variantSku || '',
+        quantity: item.desiredQuantity || 1,
+        size: item.desiredSize || '',
+        color: item.desiredColor || '',
+        currency: product.currency || 'INR',
+        note: item.note || ''
+      };
 
+      // Add to cart using localStorage (matching product-description page logic)
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      
+      const safeProduct = JSON.parse(
+        JSON.stringify(product, (key, value) => {
+          if (typeof value === "function") return undefined;
+          if (key.startsWith("__react")) return undefined;
+          return value;
+        })
+      );
 
+      // Restrict to one country
+      const savedCountry = localStorage.getItem('selectedCountry');
+      const parsedCountry = savedCountry ? JSON.parse(savedCountry) : { code: 'IN' };
+      const selectedCountry = parsedCountry?.code || 'IN';
+      
+      const existingCountry = cart.length > 0 ? cart[0].country : null;
+      if (existingCountry && existingCountry !== selectedCountry) {
+        message.error(`You can only add items from ${existingCountry}.`);
+        setMovingToCart(prev => ({ ...prev, [item.id]: false }));
+        return;
+      }
 
-      removeFromWishlist(item.id);
+      const itemIndex = cart.findIndex(
+        (cartItem) => cartItem.id === (product.productObjectId || product.id) && cartItem.size === cartData.size
+      );
 
-      message.success('Item moved to cart!');
+      if (itemIndex !== -1) {
+        cart[itemIndex] = {
+          ...cart[itemIndex],
+          quantity: (cart[itemIndex].quantity || 1) + (cartData.quantity || 1),
+        };
+      } else {
+        cart.push({
+          ...safeProduct,
+          id: product.productObjectId || product.id,
+          size: cartData.size,
+          country: selectedCountry,
+          quantity: cartData.quantity,
+          color: cartData.color,
+          monogram: '',
+          note: cartData.note
+        });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      dispatch(setCartCount(cart.length));
+      
+      // Remove from wishlist after adding to cart
+      await removeFromWishlist(item.id);
+      
+      message.success(`${product.name || "Product"} moved to bag!`);
+    } catch (err) {
+      console.error("Error moving to cart:", err);
+      message.error("Failed to move item to bag. Please try again.");
+    } finally {
+      setMovingToCart(prev => ({ ...prev, [item.id]: false }));
     }
-    catch (err) {
-      message.error("something went wrong")
-      console.log(err || "something went wrong")
-    }
-
-  };
-
-  // Toggle notify when back in stock
-  const toggleNotification = (itemId) => {
-    setWishlistItems(items =>
-      items.map(item =>
-        item.id === itemId
-          ? { ...item, notifyWhenBackInStock: !item.notifyWhenBackInStock }
-          : item
-      )
-    );
-    // TODO: Call API to update notification preference
   };
 
   // Loading state
@@ -145,7 +232,7 @@ const WishlistPage = () => {
       >
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-text-medium text-sm uppercase tracking-wider">Loading Wishlist...</p>
+          <p className="text-text-medium text-sm font-light font-futura-pt-light">Loading Wishlist...</p>
         </div>
       </div>
     );
@@ -158,13 +245,13 @@ const WishlistPage = () => {
         className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
       >
         <div className="text-center max-w-md px-4">
-          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book">
             Something Went Wrong
           </h2>
           <p className="text-gray-600 text-xs md:text-sm mb-8 font-light font-futura-pt-light">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-sm"
+            className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors text-sm font-futura-pt-light"
           >
             Try Again
           </button>
@@ -183,7 +270,7 @@ const WishlistPage = () => {
         <div className="mb-8 md:mb-12">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+              <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book">
                 My Wishlist
               </h1>
               <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
@@ -193,7 +280,7 @@ const WishlistPage = () => {
             {wishlistItems.length > 0 && (
               <button
                 onClick={() => navigate("/products")}
-                className="flex items-center gap-2 text-black hover:text-text-medium transition-colors border-b-2 border-black hover:border-text-medium uppercase text-sm tracking-wider font-light"
+                className="flex items-center gap-2 text-black hover:text-text-medium transition-colors border-b-2 border-black hover:border-text-medium text-sm font-light font-futura-pt-light"
               >
                 Continue Shopping
                 <ArrowRight size={18} strokeWidth={1.5} />
@@ -210,7 +297,7 @@ const WishlistPage = () => {
                 <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
                   <Heart size={40} className="text-text-light md:w-12 md:h-12" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">
+                <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 font-futura-pt-book">
                   Your Wishlist is Empty
                 </h2>
                 <p className="text-gray-600 text-xs md:text-sm mb-4 font-light leading-relaxed font-futura-pt-light">
@@ -222,7 +309,7 @@ const WishlistPage = () => {
                 {!isAuthenticated() && (
                   <button
                     onClick={() => navigate("/login")}
-                    className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors uppercase tracking-wider text-xs md:text-sm mb-8 rounded-3xl"
+                    className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors text-xs md:text-sm mb-8 rounded-3xl font-futura-pt-light"
                   >
                     Sign In
                   </button>
@@ -235,7 +322,7 @@ const WishlistPage = () => {
             {recentVisited.length > 0 && (
               <div className="mt-8 md:mt-10">
                 <div className="mb-6 md:mb-8">
-                  <h2 className="text-lg sm:text-lg md:text-xl lg:text-xl font-light text-black uppercase mb-2 font-futura-pt-light text-center">
+                  <h2 className="text-lg sm:text-lg md:text-xl lg:text-xl font-light text-black mb-2 font-futura-pt-book text-center">
                     Recently Viewed
                   </h2>
                 </div>
@@ -278,7 +365,7 @@ const WishlistPage = () => {
 
                         {/* Product Info */}
                         <div className="p-4 flex flex-col flex-1">
-                          <h3 className="font-light text-black text-sm mb-2 line-clamp-2 uppercase tracking-tight">
+                          <h3 className="font-light text-black text-sm mb-2 line-clamp-2 font-futura-pt-light">
                             {item.name || item.title || 'Untitled Product'}
                           </h3>
                         </div>
@@ -290,110 +377,48 @@ const WishlistPage = () => {
             )}
           </>
         ) : (
-          /* Wishlist Grid */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          /* Wishlist Grid - Using ProductCard Style */
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 sm:gap-4">
             {wishlistItems.map((item) => {
-              const product = item?.product || {};
-              const discountPercent = calculateDiscountPercent(product.compareAtPrice, product.unitPrice);
-
+              const product = transformWishlistItemToProduct(item);
+              const isMoving = movingToCart[item.id] || false;
+              
               return (
-                <div
-                  key={item.id}
-                  className="group bg-white border border-text-light/20 overflow-hidden hover:shadow-lg transition-all flex flex-col"
-                >
-                  {/* Product Image */}
-                  <div
-                    className="relative aspect-square overflow-hidden bg-premium-beige cursor-pointer"
-                    onClick={() => navigate(`/productDetail/${product.productObjectId}`)}
-                  >
-                    <img
-                      src={product.thumbnailUrl}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=';
-                      }}
-                    />
-
-                    {/* Remove Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeFromWishlist(item.id);
-                      }}
-                      className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm hover:bg-red-50 text-black hover:text-red-500 transition-all z-10"
-                      aria-label="Remove from wishlist"
-                    >
-                      <Trash2 size={16} strokeWidth={1.5} />
-                    </button>
-
-                    {/* Discount Badge */}
-                    {discountPercent > 0 && (
-                      <div className="absolute top-3 left-3 bg-black text-white px-2.5 py-1 text-xs font-light uppercase tracking-wider">
-                        {discountPercent}% OFF
-                      </div>
-                    )}
-
-                    {/* Free Shipping Badge */}
-                    {product.freeShipping && (
-                      <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-black px-2.5 py-1 text-xs font-light uppercase tracking-wider">
-                        Free Shipping
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Product Info */}
-                  <div className="p-4 flex flex-col flex-1">
-                    <h3
-                      className="font-light text-black text-base mb-2 line-clamp-2 hover:underline cursor-pointer uppercase tracking-tight"
-                      onClick={() => navigate(`/productDetail/${product.productObjectId}`)}
-                    >
-                      {product.name}
-                    </h3>
-
-                    {/* Variant Info */}
-                    <div className="flex flex-wrap gap-2 text-xs text-text-medium mb-3">
-                      {item.desiredColor && (
-                        <span className="capitalize">Color: <span className="text-black font-light">{item.desiredColor}</span></span>
-                      )}
-                      {item.desiredSize && (
-                        <span>Size: <span className="text-black font-light">{item.desiredSize}</span></span>
-                      )}
-                    </div>
-
-                    {/* Note */}
-                    {item.note && (
-                      <p className="text-xs text-text-light italic mb-3 line-clamp-1">
-                        Note: {item.note}
-                      </p>
-                    )}
-
-                    {/* Price */}
-                    <div className="flex flex-wrap items-baseline gap-2 mb-4">
-                      <span className="text-xl font-light text-black">
-                        {formatPrice(product.unitPrice, product.currency)}
-                      </span>
-                      {product.compareAtPrice && (
-                        <span className="text-sm text-text-light line-through">
-                          {formatPrice(product.compareAtPrice, product.currency)}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="mt-auto space-y-2">
-                      {/* Notify Me Button */}
+                <div key={item.id} className="relative group/wishlist-item">
+                  {/* ProductCard Component */}
+                  <ProductCard product={product} />
+                  
+                  {/* Action Buttons - Clean minimal design, shows on hover */}
+                  <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover/wishlist-item:opacity-100 transition-opacity duration-300 z-30">
+                    <div className="flex gap-2">
+                      {/* Move to Bag Button */}
                       <button
-                        disabled
-                        className="w-full py-3 bg-premium-beige text-black border border-text-light/30 
-               font-light text-xs uppercase tracking-wider flex items-center 
-               justify-center gap-2 cursor-not-allowed opacity-60"
+                        onClick={(e) => moveToCart(item, e)}
+                        disabled={isMoving}
+                        className="flex-1 bg-white text-black py-2.5 px-4 text-xs sm:text-sm font-light hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-futura-pt-light shadow-lg"
                       >
-                        <Bell size={14} strokeWidth={1.5} />
-                        Notify Me
+                        {isMoving ? (
+                          <>
+                            <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                            <span>Moving...</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag size={16} strokeWidth={1.5} />
+                            <span>Move to Bag</span>
+                          </>
+                        )}
+                      </button>
+                      
+                      {/* Remove Button */}
+                      <button
+                        onClick={(e) => removeFromWishlist(item.id, e)}
+                        className="p-2.5 sm:p-3 bg-white hover:bg-red-50 text-black hover:text-red-500 transition-all duration-200 shadow-lg"
+                        aria-label="Remove from wishlist"
+                      >
+                        <Trash2 size={16} strokeWidth={1.5} />
                       </button>
                     </div>
-
                   </div>
                 </div>
               );

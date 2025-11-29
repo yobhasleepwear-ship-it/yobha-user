@@ -17,9 +17,13 @@ import {
 import { addToCart, getCartDetails, getProductDescription, submitReview, getFilteredProducts } from "../../service/productAPI";
 import { useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
-import { addToWishlist } from "../../service/wishlist";
+import { incrementWishlistCount } from "../../redux/wishlistSlice";
+import { addToWishlist, getWishlist } from "../../service/wishlist";
+import { getCachedWishlist, invalidateWishlistCache } from "../../service/wishlistCache";
 import { message } from "../../comman/toster-message/ToastContainer";
 import ProductCard from "../product/components/product-card";
+import * as localStorageService from "../../service/localStorageService";
+import { LocalStorageKeys } from "../../constants/localStorageKeys";
 
 const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
   if (!Array.isArray(priceList) || priceList.length === 0) return 0;
@@ -193,7 +197,7 @@ const ProductDetailPage = () => {
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [isImageFull, setIsImageFull] = useState(false);
   const [currentImageFull, setCurrentImageFull] = useState(null);
@@ -318,6 +322,40 @@ const ProductDetailPage = () => {
       fetchProductDetail(productId);
     }
   }, [productId, fetchProductDetail]);
+
+  // Check if product is in wishlist on mount
+  useEffect(() => {
+    let isMounted = true;
+    const checkWishlist = async () => {
+      try {
+        const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+        if (token && product && product.productId) {
+          // Use cached wishlist to prevent multiple API calls
+          const response = await getCachedWishlist(getWishlist);
+          if (isMounted && response && response.data) {
+            const wishlistItems = response.data;
+            // Check if current product is in wishlist
+            const isInWishlist = wishlistItems.some(
+              (item) => item.product?.productId === product.productId
+            );
+            setIsWishlisted(isInWishlist);
+          }
+        }
+      } catch (error) {
+        // Silently fail if user is not authenticated or wishlist check fails
+        if (isMounted) {
+          console.error("Error checking wishlist:", error);
+        }
+      }
+    };
+    if (product && product.productId) {
+      checkWishlist();
+    }
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [product?.productId, productId]); // Only depend on productId to prevent unnecessary re-renders
 
   useEffect(() => {
     if (product) {
@@ -676,6 +714,10 @@ const ProductDetailPage = () => {
     try {
       const result = await addToWishlist(productId, payload);
       console.log("Added to wishlist:", result);
+      // Invalidate cache so next check will fetch fresh data
+      invalidateWishlistCache();
+      setIsWishlisted(true);
+      dispatch(incrementWishlistCount());
       message.success("Product added to wishlist!");
     } catch (err) {
       console.error("Failed to add to wishlist:", err);

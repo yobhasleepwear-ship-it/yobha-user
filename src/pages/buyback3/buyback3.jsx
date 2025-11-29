@@ -1467,14 +1467,14 @@ const Buyback3 = () => {
                 <Mail className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <span>You'll receive an email confirmation</span>
               </li>
-              <li className="flex items-start gap-4">
+              {/* <li className="flex items-start gap-4">
                 <Package className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <span>Prepaid shipping label is generated</span>
               </li>
               <li className="flex items-start gap-4">
                 <Clock className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <span>Inspection updates follow via email</span>
-              </li>
+              </li> */}
             </ul>
             <div className="mt-16 text-sm md:text-base text-white/60 font-light space-y-3 text-center font-futura-pt-light">
               <div className="flex items-center justify-center gap-2">
@@ -1483,7 +1483,7 @@ const Buyback3 = () => {
               </div>
               <div className="flex items-center justify-center gap-2">
                 <Globe className="w-4 h-4" strokeWidth={1.5} />
-                <p>yobha.in</p>
+                <p>yobha.world</p>
               </div>
             </div>
           </section>

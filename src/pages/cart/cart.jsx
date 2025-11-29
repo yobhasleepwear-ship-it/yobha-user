@@ -70,18 +70,17 @@ const CartPage = () => {
 
   const handleAddToWishlist = async (productId, item) => {
     const itemKey = `${productId}_${item.size || ""}`;
-    const selectedVariant = item.variants.find(
-      (v) => v.color === item.color && v.size === item.size
-    );
+    const selectedVariant = (item.variants && Array.isArray(item.variants))
+      ? item.variants.find((v) => v.color === item.color && v.size === item.size)
+      : null;
 
     const payload = {
       productId: item.productId,
-      size: selectedVariant?.sku || '',
-      desiredQuantity: item.quantity,
-      desiredSize: item.size,
-      desiredColor: item.color,
+      size: selectedVariant?.sku || item.size || '',
+      desiredQuantity: item.quantity || 1,
+      desiredSize: item.size || '',
+      desiredColor: item.color || item.variantColor || '',
       notifyWhenBackInStock: true,
-
     }
 
     try {
@@ -124,15 +123,21 @@ const CartPage = () => {
 
 
   const getCorrectPrice = (item) => {
-    console.log(item)
+    if (!item) return 0;
+    
     const product = item || {};
-
-    const priceList = item?.priceList || [];
+    const priceList = item?.priceList || product?.priceList || [];
+    
+    if (!Array.isArray(priceList) || priceList.length === 0) {
+      return product?.unitPrice || item?.price || product?.price || 0;
+    }
+    
     const matchingPrice = priceList.find(price =>
-      price.country === product.country &&
-      price.size === item.size
+      price && price.country === (product.country || item.country) &&
+      price.size === (item.size || product.size)
     );
-    return matchingPrice ? matchingPrice.priceAmount : (product?.unitPrice || 0);
+    
+    return matchingPrice?.priceAmount || product?.unitPrice || item?.price || product?.price || 0;
   };
 
 
@@ -216,8 +221,16 @@ const CartPage = () => {
                       {/* Image */}
                       <div className="w-full sm:w-28 md:w-32 h-32 flex-shrink-0 bg-premium-beige overflow-hidden cursor-pointer"
                         onClick={() => navigate(`/productDetail/${product.id}`)}>
-                        <img src={product.images[0].thumbnailUrl} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                          onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'} />
+                        <img 
+                          src={
+                            (product.images && Array.isArray(product.images) && product.images.length > 0)
+                              ? (product.images[0]?.thumbnailUrl || product.images[0]?.url || product.images[0] || product.thumbnailUrl || product.image || '')
+                              : (product.thumbnailUrl || product.image || '')
+                          } 
+                          alt={product.name || 'Product'} 
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'} 
+                        />
                       </div>
 
                       {/* Details */}
@@ -263,13 +276,15 @@ const CartPage = () => {
                         {/* Price */}
                         <div className="mb-4">
                           {(() => {
-                            const matchedPrice = product.priceList.find(
+                            const priceList = product.priceList || item.priceList || [];
+                            const matchedPrice = priceList.find(
                               (e) =>
-                                e.country?.trim().toUpperCase() === product.country?.trim().toUpperCase() &&
-                                e.size?.trim().toUpperCase() === product.size?.trim().toUpperCase()
+                                e.country?.trim().toUpperCase() === (product.country || item.country)?.trim().toUpperCase() &&
+                                e.size?.trim().toUpperCase() === (product.size || item.size)?.trim().toUpperCase()
                             );
-                            const currency = product.priceList.find((e) => (e.country === product.country && e.size === product.size))?.currency;
-                            const priceFormatted = formatPrice(matchedPrice?.priceAmount, currency);
+                            const currency = matchedPrice?.currency || product.currency || item.currency || 'INR';
+                            const priceAmount = matchedPrice?.priceAmount || product.unitPrice || item.price || product.price || 0;
+                            const priceFormatted = formatPrice(priceAmount, currency);
                             return (
                               <span className="text-base md:text-lg font-light text-black font-futura-pt-light">
                                 <span className="font-sans">{priceFormatted.symbol}</span>

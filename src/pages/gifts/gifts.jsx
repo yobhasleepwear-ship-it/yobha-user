@@ -3,7 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown, ChevronUp, SlidersHorizontal, X, Heart } from "lucide-react";
 // eslint-disable-next-line no-unused-vars
 import { getFilteredProducts } from "../../service/productAPI"; // Will be used when API is enabled
-import { addToWishlist } from "../../service/wishlist";
+import { addToWishlist, getWishlist } from "../../service/wishlist";
+import { getCachedWishlist, invalidateWishlistCache } from "../../service/wishlistCache";
+import { useDispatch } from "react-redux";
+import { incrementWishlistCount } from "../../redux/wishlistSlice";
 import { message } from "../../comman/toster-message/ToastContainer";
 import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
@@ -36,6 +39,7 @@ const debounce = (func, delay) => {
 
 const Gifts = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const categoryParam = searchParams.get('category');
@@ -322,6 +326,46 @@ const Gifts = () => {
 
     debouncedFilterUpdate();
   }, [priceRange]);
+
+  // Check wishlist on mount and when products change
+  useEffect(() => {
+    let isMounted = true;
+    const checkWishlist = async () => {
+      try {
+        const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+        if (token && products.length > 0) {
+          // Use cached wishlist to prevent multiple API calls
+          const response = await getCachedWishlist(getWishlist);
+          if (isMounted && response && response.data) {
+            const wishlistItems = response.data;
+            const wishlistProductIds = new Set();
+            wishlistItems.forEach((item) => {
+              // Extract product ID from wishlist item
+              const productId = item.product?.id || item.product?.productId;
+              if (productId) {
+                wishlistProductIds.add(productId);
+              }
+            });
+            setWishlistItems(wishlistProductIds);
+          }
+        }
+      } catch (error) {
+        // Silently fail if user is not authenticated or wishlist check fails
+        if (isMounted) {
+          console.error("Error checking wishlist:", error);
+        }
+      }
+    };
+    
+    // Only check if products array has items and is stable (not empty)
+    if (products.length > 0) {
+      checkWishlist();
+    }
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [products.length]); // Only depend on products.length to prevent unnecessary re-renders
 
   // Fetch products when category or filters change
   useEffect(() => {
@@ -746,7 +790,10 @@ const Gifts = () => {
 
       // Use product.id for the API call (this is the product object ID)
       await addToWishlist(productId, payload);
+      // Invalidate cache so next check will fetch fresh data
+      invalidateWishlistCache();
       setWishlistItems(prev => new Set([...prev, productId]));
+      dispatch(incrementWishlistCount());
       message.success("Added to wishlist");
     } catch (error) {
       console.error("Failed to add to wishlist:", error);
@@ -1288,7 +1335,7 @@ const Gifts = () => {
                         <Heart
                           size={18}
                           strokeWidth={1.5}
-                          className={`transition-colors ${wishlistItems.has(product?.id) ? "text-gray-200 fill-black" : "text-gray-700"}`}
+                          className={`transition-colors ${wishlistItems.has(product?.id) ? "text-black fill-black" : "text-black"}`}
                         />
                       )}
                     </button>

@@ -5,9 +5,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 import logoImage from "../../assets/yobhaLogo.png";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setWishlistCount } from "../../redux/wishlistSlice";
 import { getFilteredProducts } from "../../service/productAPI";
 import { useTranslation } from "react-i18next";
+import { getWishlist } from "../../service/wishlist";
+import { getCachedWishlist } from "../../service/wishlistCache";
 import Sidebar from "./Sidebar";
 
 const HeaderWithSidebar2 = () => {
@@ -16,7 +19,9 @@ const HeaderWithSidebar2 = () => {
 
   const isHomePage = location.pathname === "/home";
 
+  const dispatch = useDispatch();
   const cartCount = useSelector(state => state.cart.count);
+  const wishlistCount = useSelector(state => state.wishlist.count);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [cartAnimation, setCartAnimation] = useState(false);
@@ -108,6 +113,41 @@ const HeaderWithSidebar2 = () => {
     window.addEventListener("storage", checkAuth); // update if storage changes
     return () => window.removeEventListener("storage", checkAuth);
   }, []);
+
+  // Fetch wishlist count
+  useEffect(() => {
+    const fetchWishlistCount = async () => {
+      try {
+        const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+        if (token) {
+          const response = await getCachedWishlist(getWishlist);
+          if (response && response.data) {
+            const count = Array.isArray(response.data) ? response.data.length : 0;
+            dispatch(setWishlistCount(count));
+          } else {
+            dispatch(setWishlistCount(0));
+          }
+        } else {
+          dispatch(setWishlistCount(0));
+        }
+      } catch (error) {
+        // Silently fail if user is not authenticated or wishlist check fails
+        dispatch(setWishlistCount(0));
+      }
+    };
+
+    fetchWishlistCount();
+    
+    // Refresh wishlist count when storage changes (e.g., after login/logout)
+    const handleStorageChange = () => {
+      fetchWishlistCount();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [dispatch, isAuthenticated]);
 
 
 
@@ -325,10 +365,15 @@ const HeaderWithSidebar2 = () => {
             {/* Wishlist Icon */}
             <Link
               to="/wishlist"
-              className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 ${iconColorClass} transition-colors duration-300 relative`}
+              className={`flex items-center justify-center w-7 h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 ${iconColorClass} transition-colors duration-300 relative overflow-visible`}
               title="Wishlist"
             >
               <Heart size={18} className="md:w-5 md:h-5" strokeWidth={1.8} />
+              {wishlistCount > 0 && (
+                <span className={`absolute -top-0.5 -right-0.5 ${isHeaderTransparent ? "bg-white text-black" : "bg-black text-white"} text-[10px] md:text-xs w-3.5 h-3.5 md:w-4 md:h-4 lg:w-5 lg:h-5 rounded-full flex items-center justify-center font-light shadow-lg transition-all duration-300`}>
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
 
             {/* Cart Icon */}

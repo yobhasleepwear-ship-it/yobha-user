@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
-import { addToWishlist } from "../../../service/wishlist";
+import { addToWishlist, getWishlist } from "../../../service/wishlist";
+import { getCachedWishlist, invalidateWishlistCache } from "../../../service/wishlistCache";
+import { useDispatch } from "react-redux";
+import { incrementWishlistCount } from "../../../redux/wishlistSlice";
 import { message } from "../../../comman/toster-message/ToastContainer";
 import * as localStorageService from "../../../service/localStorageService";
 import { LocalStorageKeys } from "../../../constants/localStorageKeys";
@@ -28,6 +31,7 @@ import { LocalStorageKeys } from "../../../constants/localStorageKeys";
  */
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = JSON.parse(savedCountry);
   const [selectedCountry] = useState(parsedCountry?.code || "IN");
@@ -94,11 +98,20 @@ const ProductCard = ({ product }) => {
   // Format price
   const formatPrice = (price, currency = 'INR') => {
     if (typeof price !== 'number') return '₹0.00';
-    const symbol = currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency;
-    return `${symbol} ${price.toLocaleString('en-IN', {
+    // Use proper currency symbols with font-sans for better rendering
+    let symbol = '';
+    if (currency === 'INR') {
+      symbol = '₹';
+    } else if (currency === 'USD') {
+      symbol = '$';
+    } else {
+      symbol = currency;
+    }
+    const formattedNumber = price.toLocaleString('en-IN', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
-    })}`;
+    });
+    return `${symbol} ${formattedNumber}`;
   };
 
 
@@ -143,7 +156,10 @@ const ProductCard = ({ product }) => {
       };
 
       await addToWishlist(product.id, payload);
+      // Invalidate cache so next check will fetch fresh data
+      invalidateWishlistCache();
       setIsWishlisted(true);
+      dispatch(incrementWishlistCount());
       message.success("Added to wishlist");
     } catch (error) {
       console.error("Failed to add to wishlist:", error);
@@ -236,21 +252,40 @@ const ProductCard = ({ product }) => {
     };
   }, []);
 
+  // Get stable productId reference to avoid unnecessary re-renders
+  const productProductId = useMemo(() => product?.productId, [product?.productId]);
+  
   // Check if product is in wishlist on mount
   useEffect(() => {
+    let isMounted = true;
     const checkWishlist = async () => {
       try {
         const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
-        if (token) {
-          // You can implement getWishlist check here if needed
-          // For now, we'll rely on the state after adding
+        if (token && productId && productProductId) {
+          // Use cached wishlist to prevent multiple API calls
+          const response = await getCachedWishlist(getWishlist);
+          if (isMounted && response && response.data) {
+            const wishlistItems = response.data;
+            // Check if current product is in wishlist by comparing productId
+            const isInWishlist = wishlistItems.some(
+              (item) => item.product?.productId === productProductId || item.product?.id === productId
+            );
+            setIsWishlisted(isInWishlist);
+          }
         }
       } catch (error) {
-        console.error("Error checking wishlist:", error);
+        // Silently fail if user is not authenticated or wishlist check fails
+        if (isMounted) {
+          console.error("Error checking wishlist:", error);
+        }
       }
     };
     checkWishlist();
-  }, [productId]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [productId, productProductId]); // Depend on stable productId values
 
   // Intersection Observer for fade-in animation
   useEffect(() => {
@@ -385,7 +420,16 @@ const ProductCard = ({ product }) => {
             transform: isHovered ? 'translateX(2px)' : 'translateX(0)'
           }}
         >
-          {formatPrice(productPrice, currency)}
+          {(() => {
+            const priceStr = formatPrice(productPrice, currency);
+            const parts = priceStr.split(' ');
+            return (
+              <>
+                <span className="font-sans">{parts[0]}</span>
+                <span> {parts.slice(1).join(' ')}</span>
+              </>
+            );
+          })()}
         </p>
       </div>
     </div>
