@@ -395,11 +395,10 @@ const AccountPage2 = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
         {/* Page Header */}
         <div className="mb-8 md:mb-12">
-          <h1 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+          <h1 className="text-2xl md:text-3xl font-light text-black mb-2 font-futura-pt-book">
             My Profile
           </h1>
-          <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
-          <p className="text-gray-600 text-xs md:text-sm font-light leading-relaxed font-futura-pt-light">
+          <p className="text-sm text-black font-light font-futura-pt-light">
             Manage your profile and preferences
           </p>
         </div>
@@ -411,7 +410,7 @@ const AccountPage2 = () => {
               <div className="px-6 md:px-8 py-6 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <User size={20} className="text-gray-600" />
-                  <h2 className="text-lg sm:text-xl md:text-xl font-light text-black uppercase font-futura-pt-light">
+                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                     Profile Information
                   </h2>
                 </div>
@@ -419,7 +418,7 @@ const AccountPage2 = () => {
               <div className="p-6 md:p-8 space-y-6">
                 {/* Name */}
                 <div>
-                  <label className="text-xs uppercase text-gray-500 font-light mb-3 block">
+                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book">
                     Full Name
                   </label>
                   {editingField === "name" ? (
@@ -429,12 +428,12 @@ const AccountPage2 = () => {
                         value={tempData.name || ""}
                         onChange={(e) => setTempData({ ...tempData, name: e.target.value })}
                         placeholder={LocalUserData.fullName || "Enter your full name"}
-                        className="flex-1 px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base"
+                        className="flex-1 px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base font-futura-pt-light"
                       />
                       <button
                         onClick={saveEdit}
                         disabled={savingName}
-                        className="px-4 py-3 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-3 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
                       >
                         {savingName ? (
                           <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
@@ -451,7 +450,7 @@ const AccountPage2 = () => {
                     </div>
                   ) : (
                     <div className="group/item flex items-center justify-between p-4 bg-gray-50 border border-gray-200">
-                      <span className="text-black font-light text-base md:text-lg">
+                      <span className="text-base font-light text-black font-futura-pt-light">
                         {LocalUserData.fullName || ""}
                       </span>
                       <button
@@ -466,12 +465,12 @@ const AccountPage2 = () => {
 
                 {/* Email - Read Only */}
                 <div>
-                  <label className="text-xs uppercase text-gray-500 font-light mb-3 block flex items-center gap-2">
+                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book flex items-center gap-2">
                     <Mail size={14} />
                     Email Address
                   </label>
                   <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 min-h-[56px]">
-                    <span className="text-black font-light text-base md:text-lg">
+                    <span className="text-base font-light text-black font-futura-pt-light">
                       {LocalUserData.email || ""}
                     </span>
                   </div>
@@ -479,16 +478,16 @@ const AccountPage2 = () => {
 
                 {/* Phone - Read Only */}
                 <div>
-                  <label className="text-xs uppercase text-gray-500 font-light mb-3 block flex items-center gap-2">
+                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book flex items-center gap-2">
                     <Phone size={14} />
                     Phone Number
                   </label>
                   <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200">
-                    <span className="text-black font-light text-base md:text-lg">
+                    <span className="text-base font-light text-black font-futura-pt-light">
                       {LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber || ""}
                     </span>
                     {(LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber) && (
-                      <span className="text-xs uppercase px-2 py-1 bg-gray-100 text-gray-600 font-light border border-gray-200">
+                      <span className="text-xs px-2 py-1 bg-gray-100 text-black font-light border border-gray-200 font-futura-pt-light">
                         Verified
                       </span>
                     )}
@@ -502,7 +501,7 @@ const AccountPage2 = () => {
               <div className="px-6 md:px-8 py-6 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <MapPin size={20} className="text-gray-600" />
-                  <h2 className="text-lg sm:text-xl md:text-xl font-light text-black uppercase font-futura-pt-light">
+                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                     Addresses
                   </h2>
                 </div>
@@ -516,28 +515,28 @@ const AccountPage2 = () => {
                       placeholder={LocalUserData.fullName || LocalUserData.name || "Full Name"}
                       value={tempData.fullName || ""}
                       onChange={(e) => setTempData({ ...tempData, fullName: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
                     />
                     <input
                       type="text"
                       placeholder="Address Line 1"
                       value={tempData.line1 || ""}
                       onChange={(e) => setTempData({ ...tempData, line1: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
                     />
                     <input
                       type="text"
                       placeholder="Address Line 2"
                       value={tempData.line2 || ""}
                       onChange={(e) => setTempData({ ...tempData, line2: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
                     />
                     <input
                       type="text"
                       placeholder="Mobile Number"
                       value={tempData.MobileNumnber || ""}
                       onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
                     />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <input
@@ -575,7 +574,7 @@ const AccountPage2 = () => {
                       <button
                         onClick={saveEdit}
                         disabled={savingAddress}
-                        className="flex-1 px-6 py-3 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 px-6 py-3 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
                       >
                         {savingAddress ? (
                           <>
@@ -592,7 +591,7 @@ const AccountPage2 = () => {
                       <button
                         onClick={cancelEdit}
                         disabled={savingAddress}
-                        className="px-6 py-3 border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors text-xs uppercase font-light disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-6 py-3 border border-gray-300 text-black hover:bg-gray-100 transition-colors text-sm font-light disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
                       >
                         Cancel
                       </button>
@@ -624,32 +623,32 @@ const AccountPage2 = () => {
                               </button>
                             </div>
                             <div className="pr-16 sm:pr-20">
-                              <p className="text-black font-light mb-2 text-base md:text-lg">{addr.fullName}</p>
-                              <p className="text-gray-600 font-light mb-1 text-sm">
+                              <p className="text-base font-light text-black mb-2 font-futura-pt-book">{addr.fullName}</p>
+                              <p className="text-sm font-light text-black mb-1 font-futura-pt-light">
                                 {addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}
                               </p>
-                              <p className="text-gray-600 font-light mb-1 text-sm">
+                              <p className="text-sm font-light text-black mb-1 font-futura-pt-light">
                                 {addr.city}, {addr.state} - {addr.zip}
                               </p>
-                              <p className="text-gray-600 font-light mt-1 text-sm">
+                              <p className="text-sm font-light text-black mt-1 font-futura-pt-light">
                                 {addr.mobileNumner || "No mobile number"}
                               </p>
-                              <p className="text-gray-600 font-light text-sm">{addr.country}</p>
+                              <p className="text-sm font-light text-black font-futura-pt-light">{addr.country}</p>
                             </div>
                           </div>
                         ))
                       ) : (
                         <div className="text-center py-12">
                           <MapPin size={48} className="mx-auto text-gray-300 mb-4" />
-                          <p className="text-gray-600 text-base font-light">No addresses found</p>
-                          <p className="text-gray-500 text-sm font-light mt-1">Add your first address to get started</p>
+                          <p className="text-base font-light text-black font-futura-pt-light">No addresses found</p>
+                            <p className="text-sm font-light text-black mt-1 font-futura-pt-light">Add your first address to get started</p>
                         </div>
                       )}
                     </div>
                     <div className="flex justify-center">
                       <button
                         onClick={() => startEdit("address")}
-                        className="w-1/2 px-6 py-3.5 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                        className="w-1/2 px-6 py-3.5 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 font-futura-pt-light"
                       >
                         <Edit3 size={16} />
                         Add Address
@@ -666,14 +665,14 @@ const AccountPage2 = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Wallet size={20} className="text-gray-600" />
-                  <h2 className="text-lg sm:text-xl md:text-xl font-light text-black uppercase font-futura-pt-light">
+                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                     Wallet History
                   </h2>
                 </div>
                 {walletBalance > 0 && (
                   <div className="text-right">
-                    <p className="text-xs uppercase text-gray-500 font-light">Balance</p>
-                    <p className="text-lg font-light text-black">{walletBalance} Credits</p>
+                    <p className="text-sm text-black font-light font-futura-pt-book">Balance</p>
+                    <p className="text-base font-light text-black font-futura-pt-light">{walletBalance} Credits</p>
                   </div>
                 )}
               </div>
@@ -682,15 +681,15 @@ const AccountPage2 = () => {
               {isLoadingWallet ? (
                 <div className="text-center py-8">
                   <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-gray-600 text-sm font-light">Loading wallet history...</p>
+                  <p className="text-sm font-light text-black font-futura-pt-light">Loading wallet history...</p>
                 </div>
               ) : walletHistory.length === 0 ? (
                 <div className="text-center py-8">
                   <Wallet size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-600 text-sm font-light">No wallet activity yet</p>
+                  <p className="text-sm font-light text-black font-futura-pt-light">No wallet activity yet</p>
                   <button
                     onClick={() => navigate("/wallet")}
-                    className="mt-4 px-4 py-2 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors"
+                    className="mt-4 px-4 py-2 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors font-futura-pt-light"
                   >
                     View Full Wallet
                   </button>
@@ -704,14 +703,14 @@ const AccountPage2 = () => {
                         className="flex items-center justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex-1">
-                          <p className="text-sm font-light text-black mb-1">
+                          <p className="text-sm font-light text-black mb-1 font-futura-pt-light">
                             {formatWalletReason(item.reason, item.operation, item.points)}
                           </p>
-                          <p className="text-xs font-light text-gray-500">
+                          <p className="text-xs font-light text-black font-futura-pt-light">
                             {formatDate(item.createdAt)}
                           </p>
                         </div>
-                        <div className="text-xs font-light text-gray-500 ml-4">
+                        <div className="text-xs font-light text-black ml-4 font-futura-pt-light">
                           Balance: {item.balanceAfter}
                         </div>
                       </div>
@@ -720,7 +719,7 @@ const AccountPage2 = () => {
                   <div className="flex justify-center">
                     <button
                       onClick={() => navigate("/wallet")}
-                      className="w-1/2 px-4 py-2 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                      className="w-1/2 px-4 py-2 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
                     >
                       View Full Wallet History
                       <ChevronRight size={14} strokeWidth={1.5} />
@@ -737,7 +736,7 @@ const AccountPage2 = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Package size={20} className="text-gray-600" />
-                  <h2 className="text-lg sm:text-xl md:text-xl font-light text-black uppercase font-futura-pt-light">
+                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                     My Orders
                   </h2>
                 </div>
@@ -747,12 +746,12 @@ const AccountPage2 = () => {
               {isLoadingOrders ? (
                 <div className="text-center py-8">
                   <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-gray-600 text-sm font-light">Loading orders...</p>
+                  <p className="text-sm font-light text-black font-futura-pt-light">Loading orders...</p>
                 </div>
               ) : orders.length === 0 ? (
                 <div className="text-center py-8">
                   <Package size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-600 text-sm font-light">No orders yet</p>
+                  <p className="text-sm font-light text-black font-futura-pt-light">No orders yet</p>
                 </div>
               ) : (
                 <>
@@ -792,15 +791,15 @@ const AccountPage2 = () => {
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-light text-gray-500 mb-1">
+                              <p className="text-xs font-light text-black mb-1 font-futura-pt-light">
                                 Order ID: {order.id || order.orderNo}
                               </p>
-                              <p className="text-sm font-light text-black mb-1 truncate">
+                              <p className="text-sm font-light text-black mb-1 truncate font-futura-pt-book">
                                 {isGiftCard
                                   ? "Gift Card Purchase"
                                   : firstItem?.productName || "Product Order"}
                               </p>
-                              <p className="text-xs font-light text-gray-600">
+                              <p className="text-xs font-light text-black font-futura-pt-light">
                                 {formatDate(order.createdAt)}
                               </p>
                             </div>
@@ -814,7 +813,7 @@ const AccountPage2 = () => {
                     <div className="flex justify-center">
                       <button
                         onClick={() => navigate("/orders")}
-                        className="w-1/2 px-4 py-2 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                        className="w-1/2 px-4 py-2 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 font-futura-pt-light"
                       >
                         View All
                         <ChevronRight size={14} strokeWidth={1.5} />
@@ -829,10 +828,10 @@ const AccountPage2 = () => {
           {/* Refer & Earn Section */}
           <div className="mt-8 md:mt-12">
             <div className="mb-6 md:mb-8">
-              <h2 className="text-xl sm:text-2xl md:text-2xl font-light text-black uppercase mb-2 font-futura-pt-light">
+              <h2 className="text-base md:text-lg font-light text-black mb-2 font-futura-pt-book">
                 Refer & Earn
               </h2>
-              <p className="text-gray-600 text-sm md:text-base font-light">
+              <p className="text-sm text-black font-light font-futura-pt-light">
                 Invite your friends and earn exciting rewards
               </p>
             </div>
@@ -842,7 +841,7 @@ const AccountPage2 = () => {
               <div className="px-6 md:px-8 py-6 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <Gift size={20} className="text-gray-600" />
-                  <h3 className="text-lg sm:text-xl md:text-xl font-light text-black uppercase font-futura-pt-light">
+                  <h3 className="text-base md:text-lg font-light text-black font-futura-pt-book">
                     Refer Your Friend
                   </h3>
                 </div>
@@ -851,7 +850,7 @@ const AccountPage2 = () => {
               <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
                 {/* Email */}
                 <div>
-                  <label className="text-xs uppercase text-gray-500 font-light mb-3 block flex items-center gap-2">
+                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book block flex items-center gap-2">
                     <Mail size={14} /> Friend's Email
                   </label>
                   <input
@@ -860,13 +859,13 @@ const AccountPage2 = () => {
                     value={formData.friendEmail}
                     onChange={handleChange}
                     placeholder="Enter your friend's email"
-                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base"
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base font-futura-pt-light"
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label className="text-xs uppercase text-gray-500 font-light mb-3 block flex items-center gap-2">
+                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book block flex items-center gap-2">
                     <Phone size={14} /> Friend's Phone Number
                   </label>
                   <input
@@ -875,7 +874,7 @@ const AccountPage2 = () => {
                     value={formData.friendPhone}
                     onChange={handleChange}
                     placeholder="Enter your friend's phone number"
-                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base"
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base font-futura-pt-light"
                   />
                 </div>
 
@@ -884,7 +883,7 @@ const AccountPage2 = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 px-6 py-3.5 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-6 py-3.5 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
                   >
                     <Send size={16} />
                     {loading ? "Sending..." : "Send Invite"}
@@ -892,7 +891,7 @@ const AccountPage2 = () => {
                   <button
                     type="button"
                     onClick={handleShare}
-                    className="flex-1 px-6 py-3.5 border border-black text-black text-xs uppercase font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 px-6 py-3.5 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 font-futura-pt-light"
                   >
                     Share
                   </button>
@@ -902,7 +901,7 @@ const AccountPage2 = () => {
 
             {/* Country Selector */}
             <div className="mt-6">
-              <label className="text-xs uppercase text-gray-500 font-light mb-3 block flex items-center gap-2">
+              <label className="text-sm text-black font-light mb-2 font-futura-pt-book block flex items-center gap-2">
                 <MapPin size={14} />
                 Country
               </label>
