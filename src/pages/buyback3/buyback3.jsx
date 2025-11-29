@@ -529,7 +529,12 @@ const Buyback3 = () => {
   }, [activeStep, selectedOptionId, isAuthenticated, selectedOrder, selectedItem, allConditionsAnswered, orderMethod, invoiceUrl, productId, productImages.length]);
 
   const renderStepContent = () => {
-    const animationClass = stepAnimation === "slideIn" ? "animate-slideIn" : stepAnimation === "slideOut" ? "animate-slideOut" : "animate-fadeIn";
+    const animationClass =
+      stepAnimation === "slideIn"
+        ? "animate-slideIn"
+        : stepAnimation === "slideOut"
+        ? "animate-slideOut"
+        : "animate-fadeIn";
 
     switch (activeStep) {
       case 1:
@@ -537,8 +542,8 @@ const Buyback3 = () => {
           <div className={`space-y-6 md:space-y-8 ${animationClass}`}>
             <div>
               <div className="text-center mb-6 md:mb-8">
-                <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-gray-500 font-light mb-2">Step 1</p>
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-light uppercase tracking-[0.12em] text-black leading-tight" style={{ fontWeight: '300' }}>
+                <p className="text-sm md:text-sm lg:text-sm sm:text-xs text-black font-light mb-2 font-futura-pt-light">Step 1</p>
+                <h2 className="text-lg md:text-lg lg:text-lg sm:text-md text-black leading-tight font-futura-pt-book font-light">
                   Choose Your Option
                 </h2>
               </div>
@@ -568,16 +573,20 @@ const Buyback3 = () => {
                     </div>
                     
                     {/* Title - Always Below Icon, Same Size */}
-                    <h3 className={`text-sm md:text-base lg:text-lg font-light uppercase tracking-[0.15em] mb-3 transition-colors leading-tight flex-shrink-0 ${
-                      isSelected ? "text-white" : "text-black"
-                    }`} style={{ fontWeight: '300' }}>
+                    <h3
+                      className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
+                        isSelected ? "text-white" : "text-black"
+                      }`}
+                    >
                       {option.title}
                     </h3>
                     
                     {/* Description - Always Bottom, Same Size */}
-                    <p className={`text-xs md:text-sm leading-relaxed transition-colors tracking-normal mt-auto text-center flex-shrink-0 ${
-                      isSelected ? "text-white/90" : "text-gray-700"
-                    }`} style={{ fontWeight: '300' }}>
+                    <p
+                      className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
+                        isSelected ? "text-white/90" : "text-black"
+                      }`}
+                    >
                       {option.description}
                     </p>
                     
@@ -600,16 +609,15 @@ const Buyback3 = () => {
                     <Package className="w-6 h-6 text-gray-400" strokeWidth={1.5} />
                   </div>
                 </div>
-                <p className="text-base md:text-lg font-light text-black mb-3" style={{ fontWeight: '400' }}>
+                <p className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book font-light">
                   Please login to continue
                 </p>
-                <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed text-gray-700 font-light mb-6 tracking-normal" style={{ fontWeight: '300' }}>
+                <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed text-black font-light mb-6 font-futura-pt-light">
                   You need to be logged in to proceed with your buyback request.
                 </p>
                 <button
                   onClick={handleLoginRedirect}
-                  className="inline-flex items-center gap-2 border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm uppercase tracking-[0.2em] text-black transition-all duration-300 hover:bg-black hover:text-white font-light group"
-                  style={{ fontWeight: '400' }}
+                  className="inline-flex items-center gap-2 border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm text-black transition-all duration-300 hover:bg-black hover:text-white font-light group font-futura-pt-light"
                 >
                   Go to Login
                   <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
@@ -623,8 +631,8 @@ const Buyback3 = () => {
           <div className={`space-y-6 md:space-y-8 ${animationClass}`}>
             <div>
               <div className="text-center mb-6 md:mb-8">
-                <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-gray-500 font-light mb-2">Step 2</p>
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-light uppercase tracking-[0.12em] text-black leading-tight" style={{ fontWeight: '300' }}>
+                <p className="text-sm md:text-sm lg:text-sm sm:text-xs text-black font-light mb-2 font-futura-pt-light">Step 2</p>
+                <h2 className="text-lg md:text-lg lg:text-lg sm:text-md text-black leading-tight font-futura-pt-book font-light">
                   Select Method
                 </h2>
               </div>
@@ -636,16 +644,15 @@ const Buyback3 = () => {
                     <Package className="w-6 h-6 text-gray-400" strokeWidth={1.5} />
                   </div>
                 </div>
-                <p className="text-base md:text-lg font-light uppercase tracking-[0.15em] text-black mb-3" style={{ fontWeight: '400' }}>
+                <p className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book font-light">
                   Sign in to continue
                 </p>
-                <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed text-gray-700 font-light mb-6 tracking-normal" style={{ fontWeight: '300' }}>
+                <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed text-black font-light mb-6 font-futura-pt-light">
                   Your current progress remains saved. Once authenticated, you can proceed with your buyback request.
                 </p>
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-2 border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm uppercase tracking-[0.2em] text-black transition-all duration-300 hover:bg-black hover:text-white font-light group"
-                  style={{ fontWeight: '400' }}
+                  className="inline-flex items-center gap-2 border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm text-black transition-all duration-300 hover:bg-black hover:text-white font-light group font-futura-pt-light"
                 >
                   Go to login
                   <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
@@ -668,14 +675,18 @@ const Buyback3 = () => {
                   }`}>
                     <Package className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
                   </div>
-                  <h3 className={`text-sm md:text-base lg:text-lg font-light uppercase tracking-[0.15em] mb-3 transition-colors leading-tight flex-shrink-0 ${
-                    orderMethod === "findOrder" ? "text-white" : "text-black"
-                  }`} style={{ fontWeight: '300' }}>
+                  <h3
+                    className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
+                      orderMethod === "findOrder" ? "text-white" : "text-black"
+                    }`}
+                  >
                     Find Your Order
                   </h3>
-                  <p className={`text-xs md:text-sm leading-relaxed transition-colors tracking-normal mt-auto text-center flex-shrink-0 ${
-                    orderMethod === "findOrder" ? "text-white/90" : "text-gray-700"
-                  }`} style={{ fontWeight: '300' }}>
+                  <p
+                    className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
+                      orderMethod === "findOrder" ? "text-white/90" : "text-black"
+                    }`}
+                  >
                     Select from your order history
                   </p>
                   {orderMethod === "findOrder" && (
@@ -700,14 +711,18 @@ const Buyback3 = () => {
                   }`}>
                     <FileText className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
                   </div>
-                  <h3 className={`text-sm md:text-base lg:text-lg font-light uppercase tracking-[0.15em] mb-3 transition-colors leading-tight flex-shrink-0 ${
-                    orderMethod === "noOrderId" ? "text-white" : "text-black"
-                  }`} style={{ fontWeight: '300' }}>
+                  <h3
+                    className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
+                      orderMethod === "noOrderId" ? "text-white" : "text-black"
+                    }`}
+                  >
                     Don't Have Order ID
                   </h3>
-                  <p className={`text-xs md:text-sm leading-relaxed transition-colors tracking-normal mt-auto text-center flex-shrink-0 ${
-                    orderMethod === "noOrderId" ? "text-white/90" : "text-gray-700"
-                  }`} style={{ fontWeight: '300' }}>
+                  <p
+                    className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
+                      orderMethod === "noOrderId" ? "text-white/90" : "text-black"
+                    }`}
+                  >
                     Upload invoice or bill instead
                   </p>
                   {orderMethod === "noOrderId" && (
@@ -725,8 +740,8 @@ const Buyback3 = () => {
           <div className={`space-y-6 md:space-y-8 ${animationClass}`}>
             <div>
               <div className="text-center mb-6 md:mb-8">
-                <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-gray-500 font-light mb-2">Step 3</p>
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-light uppercase tracking-[0.12em] text-black leading-tight" style={{ fontWeight: '300' }}>
+                <p className="text-sm md:text-sm lg:text-sm sm:text-xs text-black font-light mb-2 font-futura-pt-light">Step 3</p>
+                <h2 className="text-lg md:text-lg lg:text-lg sm:text-md text-black leading-tight font-futura-pt-book font-light">
                   {orderMethod === "findOrder" ? "Find Your Order" : "Upload Invoice/Bill"}
                 </h2>
               </div>
@@ -736,31 +751,30 @@ const Buyback3 = () => {
                 <div className="space-y-4 md:space-y-5">
                   {/* Order Dropdown */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm uppercase tracking-[0.2em] text-black font-light flex items-center gap-2 mb-2" style={{ fontWeight: '400' }}>
+                    <label className="text-sm text-black font-light flex items-center gap-2 mb-2 font-futura-pt-book">
                       <Package className="w-4 h-4" strokeWidth={2} />
                       Select Your Order
                     </label>
                     {isLoadingOrders ? (
                       <div className="border-2 border-gray-300 bg-white px-6 py-8 text-center">
                         <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-black" strokeWidth={1.5} />
-                        <p className="text-sm text-gray-600 font-light tracking-wide" style={{ fontWeight: '300' }}>Loading orders...</p>
+                        <p className="text-sm text-black font-light font-futura-pt-light">Loading orders...</p>
                       </div>
                     ) : filteredOrders.length === 0 ? (
                       <div className="border-2 border-gray-300 bg-white px-6 py-8 text-center">
                         <AlertCircle className="w-6 h-6 mx-auto mb-2 text-gray-400" strokeWidth={1.5} />
-                        <p className="text-sm uppercase tracking-[0.25em] text-gray-600 font-light" style={{ fontWeight: '300' }}>No orders available.</p>
+                        <p className="text-sm text-black font-light font-futura-pt-light">No orders available.</p>
                       </div>
                     ) : (
                       <div className="relative">
                         <button
                           type="button"
                           onClick={() => setDropdownOpen(!dropdownOpen)}
-                          className={`w-full border-2 bg-white px-4 py-3 md:py-3.5 text-left text-sm uppercase tracking-[0.15em] text-black focus:outline-none font-light transition-all duration-300 flex items-center justify-between ${
+                          className={`w-full border-2 bg-white px-4 py-3 md:py-3.5 text-left text-sm text-black focus:outline-none font-light transition-all duration-300 flex items-center justify-between ${
                             dropdownOpen 
                               ? "border-black" 
                               : "border-gray-400 hover:border-black"
                           }`}
-                          style={{ fontWeight: '300' }}
                         >
                           <span className="truncate flex items-center gap-3">
                             {selectedOrder ? (
@@ -826,13 +840,13 @@ const Buyback3 = () => {
                                       )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-sm md:text-base uppercase tracking-[0.1em] text-black font-light leading-tight mb-1">
+                                      <p className="text-sm md:text-base text-black font-light leading-tight mb-1 font-futura-pt-book">
                                         {order.id}
                                       </p>
-                                      <p className="text-xs md:text-sm text-gray-700 font-light truncate">
+                                      <p className="text-xs md:text-sm text-black font-light truncate font-futura-pt-light">
                                         {firstItem.name || "Order"}
                                       </p>
-                          <p className="text-xs text-gray-700 font-light mt-1" style={{ fontWeight: '300' }}>
+                                      <p className="text-xs text-black font-light mt-1 font-futura-pt-light">
                             {order.items.length} item{order.items.length !== 1 ? "s" : ""}
                           </p>
                                     </div>
@@ -853,18 +867,18 @@ const Buyback3 = () => {
 
                   {/* Order Details Display */}
                   {selectedOrder && !orderConfirmed && (
-                    <div className="border-2 border-gray-300 bg-white px-4 py-5 md:px-5 md:py-6 animate-fadeIn transition-all duration-200 hover:border-black">
-                      <div className="mb-5">
+                    <div className="animate-fadeIn transition-all duration-200">
+                      <div className="mb-6">
                         <div className="flex items-center gap-2 mb-3">
                           <Package className="w-4 h-4 text-black" strokeWidth={1.5} />
-                          <p className="text-sm uppercase tracking-[0.2em] text-black font-light" style={{ fontWeight: '400' }}>
+                          <p className="text-sm text-black font-light font-futura-pt-book">
                             Order Details
                           </p>
                         </div>
-                        <h3 className="text-base md:text-lg uppercase tracking-[0.15em] mb-2 font-light text-black leading-tight" style={{ fontWeight: '300' }}>
+                        <h3 className="text-base md:text-lg mb-2 font-light text-black leading-tight font-futura-pt-book">
                           {selectedOrder.id}
                         </h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-700 font-light tracking-normal mb-4" style={{ fontWeight: '300' }}>
+                        <div className="flex items-center gap-2 text-sm text-black font-light mb-4 font-futura-pt-light">
                           <Calendar className="w-4 h-4" strokeWidth={1.5} />
                           <span>
                             Placed on{" "}
@@ -878,14 +892,14 @@ const Buyback3 = () => {
                       </div>
 
                       {/* Order Items */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2 mb-3">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 mb-4">
                           <Filter className="w-4 h-4 text-black" strokeWidth={1.5} />
-                          <p className="text-sm uppercase tracking-[0.2em] text-black font-light" style={{ fontWeight: '400' }}>
+                          <p className="text-sm text-black font-light font-futura-pt-book">
                             Items in this order ({selectedOrder.items.length})
                           </p>
                         </div>
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="space-y-3">
                           {selectedOrder.items.map((item) => {
                             const isSelected = selectedItem?.id === item.id;
                             return (
@@ -893,11 +907,11 @@ const Buyback3 = () => {
                                 key={item.id}
                                 type="button"
                                 onClick={() => handleItemSelect(item)}
-                                className={`border-2 bg-white p-5 flex items-center gap-4 hover:shadow-md transition-all duration-200 rounded-sm text-left ${
-                                  isSelected ? "border-black bg-black text-white" : "border-gray-200 hover:border-black"
+                                className={`w-full flex items-center gap-3 md:gap-4 py-3 px-2 transition-all duration-200 text-left ${
+                                  isSelected ? "bg-black text-white" : "hover:bg-gray-50"
                                 }`}
                               >
-                                <div className={`w-20 h-20 md:w-24 md:h-24 flex-shrink-0 bg-gradient-to-br ${item.hue} overflow-hidden rounded-sm border border-gray-100`}>
+                                <div className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-gradient-to-br ${item.hue} overflow-hidden rounded-sm`}>
                                   {item.image ? (
                                     <img
                                       src={item.image}
@@ -905,18 +919,24 @@ const Buyback3 = () => {
                                       className="w-full h-full object-cover"
                                     />
                                   ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs font-light">
+                                    <div className={`w-full h-full flex items-center justify-center text-xs font-light ${
+                                      isSelected ? "text-white/70" : "text-gray-300"
+                                    }`}>
                                       No Image
                                     </div>
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-sm md:text-base uppercase tracking-[0.1em] font-light leading-tight mb-1 truncate ${
-                                    isSelected ? "text-white" : "text-black"
-                                  }`}>
+                                  <p
+                                    className={`text-sm md:text-base font-light leading-tight mb-1 truncate font-futura-pt-book ${
+                                      isSelected ? "text-white" : "text-black"
+                                    }`}
+                                  >
                                     {item.name}
                                   </p>
-                                  <p className={`text-xs font-light ${isSelected ? "text-white/90" : "text-gray-700"}`} style={{ fontWeight: '300' }}>
+                                  <p
+                                    className={`text-xs font-light ${isSelected ? "text-white/90" : "text-black"} font-futura-pt-light`}
+                                  >
                                     Size: {item.size}
                                   </p>
                                 </div>
@@ -935,7 +955,7 @@ const Buyback3 = () => {
             ) : orderMethod === "noOrderId" ? (
               <div className="space-y-5">
                 <div>
-                  <p className="text-sm text-gray-700 mb-3 font-light" style={{ fontWeight: '300' }}>
+                  <p className="text-sm text-black mb-3 font-light font-futura-pt-light">
                     Upload Invoice / Bill
                   </p>
                   <ImageUploader
@@ -943,13 +963,21 @@ const Buyback3 = () => {
                     onUploadComplete={handleInvoiceUpload}
                   />
                   {invoiceUrl && (
-                    <p className="mt-3 text-xs text-gray-600 font-light">
-                      Invoice uploaded. <a href={invoiceUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">View</a>
+                    <p className="mt-3 text-xs text-gray-600 font-light font-futura-pt-light">
+                      Invoice uploaded.{" "}
+                      <a
+                        href={invoiceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        View
+                      </a>
                     </p>
                   )}
                 </div>
                 <div>
-                  <label className="text-sm text-gray-700 mb-2 block font-light" style={{ fontWeight: '300' }}>
+                  <label className="text-sm text-black mb-2 block font-light font-futura-pt-light">
                     Product ID
                   </label>
                   <input
@@ -958,7 +986,6 @@ const Buyback3 = () => {
                     onChange={(e) => setProductId(e.target.value)}
                     placeholder="Enter Product ID"
                     className="w-full border border-gray-300 bg-white px-3 py-2 text-sm text-black focus:outline-none focus:border-black font-light"
-                    style={{ fontWeight: '300' }}
                   />
                 </div>
               </div>
@@ -970,8 +997,8 @@ const Buyback3 = () => {
           <div className={`space-y-6 md:space-y-8 ${animationClass}`}>
             <div>
               <div className="text-center mb-6 md:mb-8">
-                <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-gray-500 font-light mb-2">Step 4</p>
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-light uppercase tracking-[0.12em] text-black leading-tight" style={{ fontWeight: '300' }}>
+                <p className="text-sm md:text-sm lg:text-sm sm:text-xs text-black font-light mb-2 font-futura-pt-light">Step 4</p>
+                <h2 className="text-lg md:text-lg lg:text-lg sm:text-md text-black leading-tight font-futura-pt-book font-light">
                   Condition Check
                 </h2>
               </div>
@@ -979,9 +1006,9 @@ const Buyback3 = () => {
             {((orderMethod === "findOrder" && !selectedItem) || (orderMethod === "noOrderId" && !invoiceUrl)) ? (
               <div className="border-2 border-dashed border-gray-300 bg-white px-6 py-12 text-center">
                 <Package className="w-10 h-10 mx-auto mb-3 text-gray-400" strokeWidth={1.5} />
-                <p className="text-sm uppercase tracking-[0.2em] text-gray-600 font-light" style={{ fontWeight: '300' }}>
-                  {orderMethod === "findOrder" 
-                    ? "Select an item in Step 3 to begin the condition check." 
+                <p className="text-sm text-black font-light font-futura-pt-light">
+                  {orderMethod === "findOrder"
+                    ? "Select an item in Step 3 to begin the condition check."
                     : "Complete Step 3 to begin the condition check."}
                 </p>
               </div>
@@ -993,7 +1020,7 @@ const Buyback3 = () => {
                     key={question.id}
                     className="space-y-2"
                   >
-                    <p className="text-sm text-gray-700 mb-2 font-light" style={{ fontWeight: '300' }}>
+                    <p className="text-sm text-black mb-2 font-light font-futura-pt-light">
                       {question.prompt}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -1009,7 +1036,6 @@ const Buyback3 = () => {
                                 ? "border-black bg-black text-white"
                                 : "border-gray-300 bg-white text-black hover:border-black"
                             }`}
-                            style={{ fontWeight: '300' }}
                           >
                             {option}
                           </button>
@@ -1021,7 +1047,7 @@ const Buyback3 = () => {
 
                 {/* Product Images Upload */}
                 <div>
-                  <p className="text-sm text-gray-700 mb-3 font-light" style={{ fontWeight: '300' }}>
+                  <p className="text-sm text-black mb-3 font-light font-futura-pt-light">
                     Upload Product Images (Max 4)
                   </p>
                   <ImageUploader
@@ -1031,7 +1057,7 @@ const Buyback3 = () => {
                   />
                   {productImages.length > 0 && (
                     <div className="mt-4">
-                      <p className="text-xs text-gray-600 mb-2 font-light">
+                      <p className="text-xs text-gray-600 mb-2 font-light font-futura-pt-light">
                         Uploaded ({productImages.length}/4)
                       </p>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -1064,8 +1090,8 @@ const Buyback3 = () => {
           <div className={`space-y-6 md:space-y-8 ${animationClass}`}>
             <div>
               <div className="text-center mb-6 md:mb-8">
-                <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-gray-500 font-light mb-2">Step 5</p>
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-light uppercase tracking-[0.12em] text-black leading-tight" style={{ fontWeight: '300' }}>
+                <p className="text-sm md:text-sm lg:text-sm sm:text-xs text-black font-light mb-2 font-futura-pt-light">Step 5</p>
+                <h2 className="text-lg md:text-lg lg:text-lg sm:text-md text-black leading-tight font-futura-pt-book font-light">
                   Confirm
                 </h2>
               </div>
@@ -1077,21 +1103,21 @@ const Buyback3 = () => {
                     const IconComponent = selectedOption.icon;
                     return <IconComponent className="w-4 h-4 text-black" strokeWidth={1.5} />;
                   })()}
-                  <p className="text-sm uppercase tracking-[0.2em] text-black font-light" style={{ fontWeight: '400' }}>
+                  <p className="text-sm text-black font-light font-futura-pt-book">
                     Selected option
                   </p>
                 </div>
                 {selectedOption ? (
                   <>
-                    <h3 className="text-base md:text-lg uppercase tracking-[0.15em] mb-2 font-light text-black leading-tight" style={{ fontWeight: '300' }}>
+                    <h3 className="text-base md:text-lg mb-2 font-light text-black leading-tight font-futura-pt-book">
                       {selectedOption.title}
                     </h3>
-                    <p className="text-sm text-gray-700 font-light tracking-normal leading-relaxed" style={{ fontWeight: '300' }}>
+                    <p className="text-sm text-black font-light leading-relaxed font-futura-pt-light">
                       {selectedOption.description}
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm uppercase tracking-[0.25em] text-gray-500 font-light">
+                  <p className="text-sm text-gray-500 font-light font-futura-pt-light">
                     No option selected.
                   </p>
                 )}
@@ -1099,21 +1125,21 @@ const Buyback3 = () => {
               <div className="border-2 border-gray-300 bg-white px-4 py-5 md:px-5 md:py-6 transition-all duration-200 hover:border-black">
                 <div className="flex items-center gap-2 mb-4">
                   <Package className="w-4 h-4 text-black" strokeWidth={1.5} />
-                  <p className="text-sm uppercase tracking-[0.2em] text-black font-light" style={{ fontWeight: '400' }}>Selected item</p>
+                  <p className="text-sm text-black font-light font-futura-pt-book">Selected item</p>
                 </div>
                 {selectedItem ? (
                   <>
-                    <h3 className="text-base md:text-lg uppercase tracking-[0.15em] mb-2 font-light text-black leading-tight" style={{ fontWeight: '300' }}>
+                    <h3 className="text-base md:text-lg mb-2 font-light text-black leading-tight font-futura-pt-book">
                       {selectedItem.name}
                     </h3>
-                    <div className="flex items-center gap-3 text-sm text-gray-700 font-light tracking-normal" style={{ fontWeight: '300' }}>
+                    <div className="flex items-center gap-3 text-sm text-black font-light font-futura-pt-light">
                       <span>Order: {selectedOrder?.id}</span>
                       <span>·</span>
                       <span>Size: {selectedItem.size}</span>
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm uppercase tracking-[0.25em] text-gray-500 font-light">
+                  <p className="text-sm text-gray-500 font-light font-futura-pt-light">
                     No item selected.
                   </p>
                 )}
@@ -1121,12 +1147,12 @@ const Buyback3 = () => {
               <div className="border-2 border-gray-300 bg-white px-4 py-5 md:px-5 md:py-6 lg:col-span-2 transition-all duration-200 hover:border-black">
                 <div className="flex items-center gap-2 mb-4">
                   <CheckCircle2 className="w-4 h-4 text-black" strokeWidth={1.5} />
-                  <p className="text-sm uppercase tracking-[0.2em] text-black font-light" style={{ fontWeight: '400' }}>
+                  <p className="text-sm text-black font-light font-futura-pt-book">
                     Condition summary
                   </p>
                 </div>
                 {conditionSummary.length === 0 ? (
-                  <p className="text-sm uppercase tracking-[0.25em] text-gray-500 font-light">
+                  <p className="text-sm text-gray-500 font-light font-futura-pt-light">
                     Complete the condition check to view the summary.
                   </p>
                 ) : (
@@ -1134,12 +1160,16 @@ const Buyback3 = () => {
                     {conditionSummary.map((entry) => (
                       <div
                         key={entry.id}
-                        className="border-2 border-gray-300 bg-white px-4 py-3 text-sm uppercase tracking-[0.15em] transition-all duration-200 flex items-start gap-2 hover:border-black"
+                        className="border-2 border-gray-300 bg-white px-4 py-3 text-sm transition-all duration-200 flex items-start gap-2 hover:border-black"
                       >
                         <Check className="w-3.5 h-3.5 text-gray-400 mt-0.5 flex-shrink-0" strokeWidth={2} />
                         <div className="flex-1">
-                          <span className="block text-gray-600 mb-1.5 font-light text-xs tracking-[0.2em]" style={{ fontWeight: '300' }}>{entry.prompt}</span>
-                          <span className="block text-black font-light" style={{ fontWeight: '400' }}>{entry.value}</span>
+                          <span className="block text-black mb-1.5 font-light text-xs font-futura-pt-light">
+                            {entry.prompt}
+                          </span>
+                          <span className="block text-black font-light font-futura-pt-book">
+                            {entry.value}
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -1155,11 +1185,11 @@ const Buyback3 = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white font-futura-pt-light antialiased">
+    <div className="min-h-screen bg-white font-futura-pt-light antialiased text-black">
       <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8 md:py-8 lg:py-10">
         {/* Simple Header - No Card/Shadow */}
         <header className="mb-8 md:mb-10 text-center">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-light uppercase tracking-[0.1em] text-black leading-tight">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl text-black leading-tight font-futura-pt-book font-light">
             Renew Your YOBHA Piece
           </h1>
         </header>
@@ -1175,7 +1205,7 @@ const Buyback3 = () => {
                     <React.Fragment key={step.id}>
                       <div className="flex min-w-[90px] md:min-w-[110px] flex-col items-center gap-3 md:gap-4 text-center">
                         <div
-                          className={`relative flex h-12 w-12 md:h-14 md:w-14 items-center justify-center border text-sm md:text-base font-light tracking-[0.15em] uppercase transition-all duration-500 rounded-full ${
+                          className={`relative flex h-12 w-12 md:h-14 md:w-14 items-center justify-center border text-sm md:text-base font-light transition-all duration-500 rounded-full ${
                             isActive
                               ? "border-black bg-black text-white scale-105"
                               : isComplete
@@ -1189,12 +1219,12 @@ const Buyback3 = () => {
                           {step.id}
                         </div>
                         <span
-                          className={`text-[9px] md:text-[10px] uppercase tracking-[0.25em] transition-colors font-light leading-tight ${
+                          className={`text-md md:text-sm sm:text-xs transition-colors font-light leading-tight font-futura-pt-light ${
                             isActive
-                              ? "text-black font-medium"
+                              ? "text-black "
                               : isComplete
-                              ? "text-gray-700"
-                              : "text-gray-400"
+                              ? "text-gray-900"
+                              : "text-gray-700"
                           }`}
                         >
                           {step.title}
@@ -1216,72 +1246,70 @@ const Buyback3 = () => {
             <section className="px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10">
               {renderStepContent()}
 
-              <div className="mt-8 md:mt-10 flex flex-wrap items-center gap-3">
-                {activeStep > 1 && activeStep <= 5 && (
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                      className="border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm uppercase tracking-[0.2em] text-black transition-all duration-300 hover:bg-black hover:text-white font-light flex items-center gap-2 group"
-                    style={{ fontWeight: '400' }}
-                  >
-                    <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" strokeWidth={2} />
-                    Go Back
-                  </button>
-                )}
-                {activeStep >= 1 && activeStep <= 4 && activeStep !== 2 && (
-                  <button
-                    type="button"
-                    onClick={handleContinue}
-                    disabled={!isContinueEnabled}
-                      className={`px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm uppercase tracking-[0.2em] transition-all duration-300 font-light flex items-center gap-2 group ${
+              <div className="mt-8 md:mt-10 flex flex-col md:flex-row md:flex-wrap md:items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  {activeStep > 1 && activeStep <= 5 && (
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      className="border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm text-black transition-all duration-300 hover:bg-black hover:text-white font-light flex items-center gap-2 group font-futura-pt-light"
+                    >
+                      <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" strokeWidth={2} />
+                      Go Back
+                    </button>
+                  )}
+                  {activeStep >= 1 && activeStep <= 4 && activeStep !== 2 && (
+                    <button
+                      type="button"
+                      onClick={handleContinue}
+                      disabled={!isContinueEnabled}
+                      className={`px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center gap-2 group font-futura-pt-light ${
                         isContinueEnabled
                           ? "border-2 border-black bg-black text-white hover:bg-gray-900"
                           : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
                       }`}
-                      style={{ fontWeight: '400' }}
-                  >
-                    Continue
-                    <ChevronRight className={`w-4 h-4 transition-transform ${isContinueEnabled ? "group-hover:translate-x-1" : ""}`} strokeWidth={2} />
-                  </button>
-                )}
-                {activeStep === 5 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleConfirm}
-                      disabled={!canConfirm || isSubmitting}
-                      className={`px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm uppercase tracking-[0.2em] transition-all duration-300 font-light flex items-center gap-2 ${
-                        canConfirm && !isSubmitting
-                          ? "border-2 border-black bg-black text-white hover:bg-gray-900"
-                          : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
-                      }`}
-                      style={{ fontWeight: '400' }}
                     >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
-                          Submitting...
-                        </>
-                      ) : (
-                        <>
-                          Confirm & Continue
-                          <CheckCircle className="w-4 h-4" strokeWidth={2} />
-                        </>
-                      )}
+                      Continue
+                      <ChevronRight className={`w-4 h-4 transition-transform ${isContinueEnabled ? "group-hover:translate-x-1" : ""}`} strokeWidth={2} />
                     </button>
-                    {submitError && (
-                      <div className="w-full border border-red-200 bg-red-50 px-6 py-4 text-sm text-red-700 font-light flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
-                        {submitError}
-                      </div>
-                    )}
-                  </>
-                )}
+                  )}
+                  {activeStep === 5 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleConfirm}
+                        disabled={!canConfirm || isSubmitting}
+                        className={`px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center gap-2 font-futura-pt-light ${
+                          canConfirm && !isSubmitting
+                            ? "border-2 border-black bg-black text-white hover:bg-gray-900"
+                            : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
+                        }`}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            Confirm & Continue
+                            <CheckCircle className="w-4 h-4" strokeWidth={2} />
+                          </>
+                        )}
+                      </button>
+                      {submitError && (
+                        <div className="w-full border border-red-200 bg-red-50 px-6 py-4 text-sm text-red-700 font-light flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
+                          {submitError}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="ml-auto border-2 border-gray-400 px-6 py-3 md:px-8 md:py-3.5 text-xs md:text-sm uppercase tracking-[0.2em] text-gray-600 transition-all duration-300 hover:border-black hover:text-black hover:bg-gray-50 font-light flex items-center gap-2"
-                  style={{ fontWeight: '400' }}
+                  className="w-1/2 md:w-auto md:ml-auto mx-auto md:mx-0 border-2 border-gray-400 px-6 py-3 md:px-8 md:py-3.5 text-xs md:text-sm text-gray-600 transition-all duration-300 hover:border-black hover:text-black hover:bg-gray-50 font-light flex items-center justify-center gap-2 font-futura-pt-light"
                 >
                   <RotateCcw className="w-4 h-4" strokeWidth={2} />
                   Reset
@@ -1298,14 +1326,16 @@ const Buyback3 = () => {
                 <CheckCircle2 className="w-12 h-12 text-white" strokeWidth={1.5} />
               </div>
             </div>
-            <p className="text-[10px] md:text-xs uppercase tracking-[0.35em] text-white/70 mb-6 font-light text-center">Completion</p>
-            <h2 className="mt-2 text-3xl md:text-4xl lg:text-5xl font-light uppercase tracking-[0.08em] leading-tight mb-8 text-center">
+            <p className="text-[10px] md:text-xs text-white/70 mb-6 font-light text-center font-futura-pt-light">
+              Completion
+            </p>
+            <h2 className="mt-2 text-3xl md:text-4xl lg:text-5xl font-light leading-tight mb-8 text-center font-futura-pt-book">
               Thank you for extending the life of your YOBHA piece.
             </h2>
-            <p className="max-w-2xl mx-auto text-sm md:text-base lg:text-lg leading-[1.8] text-white/80 font-light mb-12 tracking-wide text-center">
+            <p className="max-w-2xl mx-auto text-sm md:text-base lg:text-lg leading-[1.8] text-white/80 font-light mb-12 text-center font-futura-pt-light">
               Your contribution supports circular luxury and conscious comfort.
             </p>
-            <ul className="space-y-5 text-sm md:text-base uppercase tracking-[0.2em] text-white/90 font-light max-w-md mx-auto">
+            <ul className="space-y-5 text-sm md:text-base text-white/90 font-light max-w-md mx-auto font-futura-pt-light">
               <li className="flex items-start gap-4">
                 <Mail className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <span>You'll receive an email confirmation</span>
@@ -1319,7 +1349,7 @@ const Buyback3 = () => {
                 <span>Inspection updates follow via email</span>
               </li>
             </ul>
-            <div className="mt-16 text-sm md:text-base uppercase tracking-[0.25em] text-white/60 font-light space-y-3 text-center">
+            <div className="mt-16 text-sm md:text-base text-white/60 font-light space-y-3 text-center font-futura-pt-light">
               <div className="flex items-center justify-center gap-2">
                 <Mail className="w-4 h-4" strokeWidth={1.5} />
                 <p>support@yobha.world</p>
