@@ -89,7 +89,7 @@ const LoginPage = () => {
   };
   const handleGoogleLogin = () => {
 
-    const returnUrl = "http://localhost:3000/home";
+    const returnUrl = localStorageService.getValue("redirectAfterLogin") || "/home";
     window.location.href = `https://backend.yobha.world/api/GoogleAuth/google/redirect?params=${encodeURIComponent(returnUrl)}`;
   };
 

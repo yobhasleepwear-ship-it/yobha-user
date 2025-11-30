@@ -392,7 +392,7 @@ const WishlistPage = () => {
                   <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover/wishlist-item:opacity-100 transition-opacity duration-300 z-30">
                     <div className="flex gap-2">
                       {/* Move to Bag Button */}
-                      <button
+                      {/* <button
                         onClick={(e) => moveToCart(item, e)}
                         disabled={isMoving}
                         className="flex-1 bg-white text-black py-2.5 px-4 text-xs sm:text-sm font-light hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-futura-pt-light shadow-lg"
@@ -408,7 +408,7 @@ const WishlistPage = () => {
                             <span>Move to Bag</span>
                           </>
                         )}
-                      </button>
+                      </button> */}
                       
                       {/* Remove Button */}
                       <button

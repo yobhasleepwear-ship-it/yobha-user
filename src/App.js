@@ -57,7 +57,7 @@ function AppContent() {
    <ScrollToTop>
       {!countryConfirmed ? (
         <div style={{ padding: "10px" }}>
-          <CountryDropdown onConfirmed={() => { setCountryConfirmed(true); navigate('/home'); }} />
+          <CountryDropdown onConfirmed={() => { setCountryConfirmed(true); }} />
         </div>
       ) : (
         <Router />

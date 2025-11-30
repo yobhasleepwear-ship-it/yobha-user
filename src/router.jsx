@@ -39,6 +39,8 @@ const Wallet = lazy(() => import("./pages/wallet/wallet"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
+    { path: "/", element: <Home /> },
+
     { path: "/home", element: <Home /> },
     { path: '/login', element: <Login /> },
     { path: "/products/:category?", element: <ProductsPage /> },
