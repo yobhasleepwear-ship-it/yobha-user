@@ -7,8 +7,9 @@ import { CreateOrder } from "../../service/order";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { getCoupons } from "../../service/coupans";
 import { createOrder, updatePayment } from "../../service/orderService";
-import { removeKey } from "../../service/localStorageService";
-import { useSelector } from "react-redux";
+import { removeKey, setValue, getValue } from "../../service/localStorageService";
+import { useSelector, useDispatch } from "react-redux";
+import { setCartCount } from "../../redux/cartSlice";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -29,9 +30,10 @@ const CheckoutPage = () => {
   const { pageProps } = useParams();
   console.log(pageProps, "GiftCardPurchase")
   const location = useLocation();
-  const { checkoutProd, selectedCountry, selectedSize, quantity } = location.state || {};
+  const { checkoutProd, selectedCountry, selectedSize, quantity, selectedItems } = location.state || {};
   console.log(checkoutProd, selectedCountry, selectedSize, quantity, "product")
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {  giftCardAmount, currency, orderCountry } = useSelector(
     (state) => state.giftCard
   );
@@ -131,8 +133,8 @@ const CheckoutPage = () => {
     fetchAddresses();
 
 
-    if (checkoutProd && checkoutProd.length > 0 || pageProps == 'buynow') {
-      const items = checkoutProd.items || []
+    if ((checkoutProd && (checkoutProd.length > 0 || (checkoutProd.items && checkoutProd.items.length > 0))) || pageProps == 'buynow') {
+      const items = checkoutProd?.items || checkoutProd || []
       console.log(items, "items")
       setCartItems(items)
       const subTotal = items.reduce((sum, item) => {
@@ -187,6 +189,48 @@ const CheckoutPage = () => {
   }, [checkoutProd]);
 
 
+
+  // Helper function to generate item key (same logic as cart page)
+  const getItemKey = (item) => {
+    return `${item.id}_${item.size || ""}`;
+  };
+
+  // Helper function to remove only ordered items from cart
+  const removeOrderedItemsFromCart = (orderedItems) => {
+    try {
+      const fullCart = getValue("cart") || [];
+      if (!Array.isArray(fullCart) || fullCart.length === 0) {
+        return;
+      }
+
+      // Create a set of ordered item keys for quick lookup
+      // Use the same key format as cart page
+      const orderedItemKeys = new Set(
+        orderedItems.map(item => getItemKey(item))
+      );
+
+      // Filter out ordered items from the full cart
+      const remainingCart = fullCart.filter(item => {
+        const itemKey = getItemKey(item);
+        return !orderedItemKeys.has(itemKey);
+      });
+
+      // Update cart in localStorage
+      if (remainingCart.length > 0) {
+        setValue("cart", remainingCart);
+        dispatch(setCartCount(remainingCart.length));
+      } else {
+        // If cart is empty, remove it
+        removeKey("cart");
+        dispatch(setCartCount(0));
+      }
+    } catch (error) {
+      console.error("Error removing ordered items from cart:", error);
+      // Fallback: clear entire cart if there's an error
+      removeKey("cart");
+      dispatch(setCartCount(0));
+    }
+  };
 
   const handleOrder = async () => {
     console.log(selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "", "kkk")
@@ -258,7 +302,8 @@ const CheckoutPage = () => {
       }
       if (orderRes.razorpayOrderId == null) {
         message.success("Order Created Successfully , your orderId is " + orderPayload.orderId, 10000)
-        removeKey("cart");
+        // Remove only ordered items from cart, keep unselected items
+        removeOrderedItemsFromCart(cartItems);
         setCartItems([])
         return
       }
@@ -278,7 +323,8 @@ const CheckoutPage = () => {
           });
 
           message.success("Payment successful ✅");
-          removeKey("cart");
+          // Remove only ordered items from cart, keep unselected items
+          removeOrderedItemsFromCart(cartItems);
           setCartItems([])
         },
       };
