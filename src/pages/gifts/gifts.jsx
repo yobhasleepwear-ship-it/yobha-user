@@ -37,6 +37,109 @@ const debounce = (func, delay) => {
   };
 };
 
+/**
+ * Product Card with Image Carousel Component
+ */
+const ProductCardWithCarousel = ({ product, gridClass, index, productImages, productPrice, onProductClick, onWishlistClick, wishlistItems, wishlistLoading }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Auto carousel on hover
+  useEffect(() => {
+    if (productImages.length <= 1 || !isHovered) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isHovered, productImages.length]);
+
+  // Reset to first image when not hovered
+  useEffect(() => {
+    if (!isHovered) {
+      setCurrentImageIndex(0);
+    }
+  }, [isHovered]);
+
+  const currentImage = productImages[currentImageIndex] || productImages[0] || '';
+  const hasMultipleImages = productImages.length > 1;
+
+  return (
+    <div
+      className={`${gridClass} cursor-pointer group overflow-hidden bg-white border border-gray-100 hover:border-gray-300 transition-all duration-300`}
+      onClick={() => onProductClick(product)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative w-full h-full aspect-square overflow-hidden bg-gray-100">
+        {currentImage ? (
+          <div className="relative w-full h-full">
+            {productImages.map((img, imgIndex) => (
+              <img
+                key={imgIndex}
+                src={img}
+                alt={product.name || product.productName || 'Product'}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-600 ${
+                  imgIndex === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                } ${isHovered && hasMultipleImages ? 'scale-105' : 'scale-100'} transition-transform duration-500`}
+                onError={(e) => {
+                  // Only show placeholder if image fails, don't use dummy images
+                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=';
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <span className="text-gray-400 text-sm">No Image</span>
+          </div>
+        )}
+        
+        {/* Heart Icon - Top Right */}
+        <button
+          onClick={(e) => onWishlistClick(e, product)}
+          disabled={wishlistLoading[product?.id]}
+          className="absolute top-2 right-2 z-20 p-0 disabled:opacity-50"
+          style={{
+            backgroundColor: 'transparent',
+            border: 'none',
+            outline: 'none',
+            cursor: 'pointer'
+          }}
+          aria-label={wishlistItems.has(product?.id) ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          {wishlistLoading[product?.id] ? (
+            <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <Heart
+              size={18}
+              strokeWidth={1.5}
+              className={`transition-colors ${wishlistItems.has(product?.id) ? "text-black fill-black" : "text-black"}`}
+            />
+          )}
+        </button>
+        
+        {/* Product Name and Price Overlay - Shows on Hover */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex flex-col items-center justify-center gap-2 px-4">
+          <div className="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 text-center">
+            <p className="text-white text-sm md:text-base font-light mb-1 line-clamp-2 font-futura-pt-light">
+              {product.name || product.productName || 'Product'}
+            </p>
+            {productPrice && (
+              <p className="text-white text-lg md:text-xl font-light font-futura-pt-light">
+                <span className="font-sans">{productPrice}</span>
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Gifts = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,7 +163,7 @@ const Gifts = () => {
 
   // Flag to toggle between dummy data and API - Set to true to use dummy data
   // Change to false when ready to use real API
-  const USE_DUMMY_DATA = true;
+  const USE_DUMMY_DATA = false;
 
   // Filter State
   const [filters, setFilters] = useState({
@@ -402,35 +505,33 @@ const Gifts = () => {
           return;
         }
 
-        // API call - uncomment when ready to use real API
-        /*
-      const payload = {
-        q: '',
+        // API call
+        const payload = {
+          q: '',
           productSubCategory: categorySegment,
           minPrice: filters.minPrice || undefined,
           maxPrice: filters.maxPrice || undefined,
-        pageNumber: null,
-        pageSize: 100,
+          pageNumber: null,
+          pageSize: 100,
           sort: filters.sortBy || undefined,
-        country: null,
+          country: null,
           colors: filters.colors.length > 0 ? filters.colors : undefined,
           sizes: filters.sizes.length > 0 ? filters.sizes : undefined,
           fabric: filters.fabric.length > 0 ? filters.fabric : undefined,
-      };
+        };
 
         // Remove undefined values
         Object.keys(payload).forEach(key =>
           payload[key] === undefined && delete payload[key]
         );
 
-      const response = await getFilteredProducts(payload);
+        const response = await getFilteredProducts(payload);
 
-      if (response && response.success && response.data) {
-        setProducts(response.data.items || []);
-      } else {
-        setProducts([]);
-      }
-        */
+        if (response && response.success && response.data) {
+          setProducts(response.data.items || []);
+        } else {
+          setProducts([]);
+        }
     } catch (error) {
       console.error('Failed to fetch products:', error);
       setProducts([]);
@@ -701,12 +802,23 @@ const Gifts = () => {
     setShowCategoryDropdown(false);
   };
 
-  // Get product image
-  const getProductImage = (product) => {
+  // Get product images array - handles multiple formats
+  const getProductImages = (product) => {
     if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
-      return product.images[0].url || product.images[0].thumbnailUrl;
+      // Map images to extract URLs - handles both string URLs and objects
+      return product.images.map(img => {
+        if (typeof img === 'string') {
+          return img;
+        }
+        if (typeof img === 'object') {
+          return img.url || img.thumbnailUrl || '';
+        }
+        return '';
+      }).filter(url => url); // Remove empty strings
     }
-    return product?.image || '';
+    // Fallback to other image properties
+    const fallbackImage = product?.thumbnailUrl || product?.image || '';
+    return fallbackImage ? [fallbackImage] : [];
   };
 
   // Format price helper
@@ -808,8 +920,8 @@ const Gifts = () => {
   const getBannerImage = () => {
     if (products.length > 0) {
       const firstProduct = products[0];
-      const productImg = getProductImage(firstProduct);
-      if (productImg) return productImg;
+      const productImgs = getProductImages(firstProduct);
+      if (productImgs.length > 0) return productImgs[0];
     }
     // Fallback to category-specific dummy images
     const bannerMap = {
@@ -1099,7 +1211,7 @@ const Gifts = () => {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-3 sm:py-4">
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-1 sm:gap-2 text-black text-xs sm:text-sm md:text-base font-light font-futura-pt-book">
+              <div className="flex items-center gap-1 sm:gap-2 text-black text-sm sm:text-sm md:text-sm font-light font-futura-pt-light">
                 <span>{currentCategory.name}</span>
               </div>
               <span className="text-xs sm:text-sm text-gray-600 font-light">
@@ -1135,7 +1247,7 @@ const Gifts = () => {
                 <button
                   ref={categoryButtonRef2}
                   onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                  className="flex items-center gap-1 sm:gap-2 text-black hover:text-gray-600 transition-colors text-xs sm:text-sm md:text-base font-light font-futura-pt-book"
+                  className="flex items-center gap-1 sm:gap-2 text-black hover:text-gray-600 transition-colors text-sm sm:text-sm md:text-sm font-light font-futura-pt-light"
                 >
                   <span>{currentCategory.name}</span>
                   <ChevronDown size={14} className={`sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px] transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} strokeWidth={1.5} />
@@ -1288,73 +1400,22 @@ const Gifts = () => {
           <div className="grid grid-cols-4 gap-0 mb-12">
             {products.map((product, index) => {
               const gridClass = getGridLayout(index);
-              const productImage = getProductImage(product);
+              const productImages = getProductImages(product);
               const productPrice = formatPrice(product);
 
               return (
-                <div
+                <ProductCardWithCarousel
                   key={product.id || index}
-                  className={`${gridClass} cursor-pointer group overflow-hidden bg-white border border-gray-100 hover:border-gray-300 transition-all duration-300`}
-                  onClick={() => handleProductClick(product)}
-                >
-                  <div className="relative w-full h-full aspect-square overflow-hidden">
-                    {productImage ? (
-                      <img
-                        src={productImage}
-                        alt={product.name || product.productName || 'Product'}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        onError={(e) => {
-                          // Fallback to dummy image if product image fails
-                          e.target.src = dummyProductImages[index % dummyProductImages.length];
-                        }}
-                      />
-                    ) : (
-                      <img
-                        src={dummyProductImages[index % dummyProductImages.length]}
-                        alt="Product"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    )}
-                    
-                    {/* Heart Icon - Top Right */}
-                    <button
-                      onClick={(e) => handleWishlistClick(e, product)}
-                      disabled={wishlistLoading[product?.id]}
-                      className="absolute top-2 right-2 z-20 p-0 disabled:opacity-50"
-                      style={{
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        outline: 'none',
-                        cursor: 'pointer'
-                      }}
-                      aria-label={wishlistItems.has(product?.id) ? "Remove from wishlist" : "Add to wishlist"}
-                    >
-                      {wishlistLoading[product?.id] ? (
-                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                      ) : (
-                        <Heart
-                          size={18}
-                          strokeWidth={1.5}
-                          className={`transition-colors ${wishlistItems.has(product?.id) ? "text-black fill-black" : "text-black"}`}
-                        />
-                      )}
-                    </button>
-                    
-                    {/* Product Name and Price Overlay - Shows on Hover */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex flex-col items-center justify-center gap-2 px-4">
-                      <div className="transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 text-center">
-                        <p className="text-white text-sm md:text-base font-light mb-1 line-clamp-2 font-futura-pt-light">
-                          {product.name || product.productName || 'Product'}
-                        </p>
-                    {productPrice && (
-                          <p className="text-white text-lg md:text-xl font-light font-futura-pt-light">
-                            <span className="font-sans">{productPrice}</span>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  product={product}
+                  gridClass={gridClass}
+                  index={index}
+                  productImages={productImages}
+                  productPrice={productPrice}
+                  onProductClick={handleProductClick}
+                  onWishlistClick={handleWishlistClick}
+                  wishlistItems={wishlistItems}
+                  wishlistLoading={wishlistLoading}
+                />
               );
             })}
         </div>

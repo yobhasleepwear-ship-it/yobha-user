@@ -388,38 +388,20 @@ const WishlistPage = () => {
                   {/* ProductCard Component */}
                   <ProductCard product={product} />
                   
-                  {/* Action Buttons - Clean minimal design, shows on hover */}
-                  <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover/wishlist-item:opacity-100 transition-opacity duration-300 z-30">
-                    <div className="flex gap-2">
-                      {/* Move to Bag Button */}
-                      {/* <button
-                        onClick={(e) => moveToCart(item, e)}
-                        disabled={isMoving}
-                        className="flex-1 bg-white text-black py-2.5 px-4 text-xs sm:text-sm font-light hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-futura-pt-light shadow-lg"
-                      >
-                        {isMoving ? (
-                          <>
-                            <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                            <span>Moving...</span>
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingBag size={16} strokeWidth={1.5} />
-                            <span>Move to Bag</span>
-                          </>
-                        )}
-                      </button> */}
-                      
-                      {/* Remove Button */}
-                      <button
-                        onClick={(e) => removeFromWishlist(item.id, e)}
-                        className="p-2.5 sm:p-3 bg-white hover:bg-red-50 text-black hover:text-red-500 transition-all duration-200 shadow-lg"
-                        aria-label="Remove from wishlist"
-                      >
-                        <Trash2 size={16} strokeWidth={1.5} />
-                      </button>
-                    </div>
-                  </div>
+                  {/* Delete Button - Top Right Corner */}
+                  <button
+                    onClick={(e) => removeFromWishlist(item.id, e)}
+                    className="absolute top-2 right-2 z-30 p-1.5 bg-white/90 hover:bg-white text-black hover:text-red-500 transition-all duration-200 shadow-md hover:shadow-lg rounded-sm"
+                    aria-label="Remove from wishlist"
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      border: 'none',
+                      outline: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Trash2 size={18} strokeWidth={1.5} />
+                  </button>
                 </div>
               );
             })}

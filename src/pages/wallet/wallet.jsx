@@ -6,7 +6,7 @@ import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 
 // Toggle for dummy data - set to false to use real API
-const USE_DUMMY_DATA = true;
+const USE_DUMMY_DATA = false;
 
 // Count-up animation hook
 const useCountUp = (end, duration = 2000, start = 0) => {
