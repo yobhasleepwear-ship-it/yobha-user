@@ -324,6 +324,7 @@ const OrderDetailPage = () => {
         setReturnReasons({});
         setReturnImages([]);
         setReturnReason("");
+        navigate("/home")
         // Optionally refresh order details
         // fetchOrderDetail();
       }
