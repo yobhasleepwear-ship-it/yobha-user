@@ -173,10 +173,10 @@ const CartPage = () => {
   };
 
 
-  const removeItem = (itemId, size) => {
+  const removeItem = (itemId, size ,color) => {
     const itemKey = `${itemId}_${size || ""}`;
     setCartItems((prevCart) => {
-      const updated = prevCart.filter(item => !(item.id === itemId && item.size === size));
+      const updated = prevCart.filter(item => !(item.id === itemId && item.size === size && item.color === color));
       localStorage.setItem("cart", JSON.stringify(updated));
       dispatch(setCartCount(updated.length));
       return updated;
@@ -363,9 +363,9 @@ const CartPage = () => {
                         
                         {/* Product Options - Inline compact */}
                         <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-0.5 text-xs text-text-medium mb-1 font-futura-pt-light">
-                          {product.variantColor && (
+                          {product.color && (
                             <span className="text-text-medium">
-                              Color: <span className="text-black font-light">{product.variantColor}</span>
+                              Color: <span className="text-black font-light">{product.color}</span>
                             </span>
                           )}
                           {item.size && (
@@ -433,7 +433,7 @@ const CartPage = () => {
                           </button>
                           <button
                             type="button"
-                            onClick={() => removeItem(item.id, item.size)}
+                            onClick={() => removeItem(item.id, item.size ,item.color)}
                             className="text-text-medium hover:text-black transition-colors p-1 flex-shrink-0"
                             aria-label="Remove from cart"
                           >

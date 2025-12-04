@@ -611,7 +611,7 @@ const ProductDetailPage = () => {
 
 
     const itemIndex = cart.findIndex(
-      (item) => item.id === safeProduct.id && item.size === selectedSize
+      (item) => item.id === safeProduct.id && item.size === selectedSize &&item.color === selectedColor
     );
 
     if (itemIndex !== -1) {

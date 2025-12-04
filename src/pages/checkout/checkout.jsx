@@ -301,10 +301,11 @@ const CheckoutPage = () => {
         return;
       }
       if (orderRes.razorpayOrderId == null) {
-        message.success("Order Created Successfully , your orderId is " + orderPayload.orderId, 10000)
+        message.success("Order Created Successfully , your orderId is " + orderRes.orderId, 10000)
         // Remove only ordered items from cart, keep unselected items
         removeOrderedItemsFromCart(cartItems);
         setCartItems([])
+        navigate("/orders")
         return
       }
 
