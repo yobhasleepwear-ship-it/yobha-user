@@ -405,7 +405,7 @@ const OrderDetailPage = () => {
             </h1>
             <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
               <p className="text-sm text-black font-light font-futura-pt-light">
-                Order ID: <span className="font-futura-pt-light font-light">{order.orderNo || order.id}</span>
+                Order ID: <span className="font-futura-pt-light font-light">{order.orderNumber || order.id}</span>
               </p>
               
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 ${statusInfo.bg} border border-gray-200`}>
@@ -565,8 +565,8 @@ const OrderDetailPage = () => {
                       {order.shippingAddress.fullName || order.shippingAddress.name}
                     </p>
                     <p className="text-sm font-light text-black font-futura-pt-light">
-                      {order.shippingAddress.addressLine1 || order.shippingAddress.address}
-                      {order.shippingAddress.addressLine2 && `, ${order.shippingAddress.addressLine2}`}
+                      {order.shippingAddress.line1 || order.shippingAddress.line1}
+                      {order.shippingAddress.line2 && `, ${order.shippingAddress.line2}`}
                     </p>
                     <p className="text-sm font-light text-black font-futura-pt-light">
                       {order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.pincode}
@@ -581,10 +581,10 @@ const OrderDetailPage = () => {
                     )}
                     
                     <div className="pt-3 mt-3 border-t border-gray-200 space-y-1">
-                      {order.shippingAddress.phone && (
+                      {order.shippingAddress.mobileNumner && (
                         <div className="flex items-center gap-2 text-black text-sm font-light font-futura-pt-light">
                           <Phone size={14} strokeWidth={1.5} />
-                          <span>{order.shippingAddress.phone}</span>
+                          <span>{order.shippingAddress.mobileNumner}</span>
                         </div>
                       )}
                       {order.shippingAddress.email && (
