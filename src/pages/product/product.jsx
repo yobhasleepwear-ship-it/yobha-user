@@ -50,7 +50,7 @@ const ProductsPage = () => {
     sizes: [],
     fabric: [],
   });
-  console.log(filters,"filtersas")
+  console.log(filters, "filtersas")
 
   // API State
   const [products, setProducts] = useState([]);
@@ -101,18 +101,13 @@ const ProductsPage = () => {
     sortOptions: [
       { id: "price_desc", name: "Highest to Lowest" },
       { id: "price_asc", name: "Lowest to Highest" },
-      { id: "novelty", name: "Novelty" },
+      { id: "Latest", name: "Novelty" },
     ],
     fabricOptions: [
-      { id: "cotton", name: "Premium Cotton" },
-      { id: "satin", name: "Luxury Satin" },
-      { id: "silk", name: "Pure Mulberry Silk" },
-      { id: "modal", name: "Soft Modal Blend" },
-      { id: "viscose", name: "Breathable Viscose" },
-      { id: "rayon", name: "Lightweight Rayon" },
-      { id: "linen", name: "Cool Linen" },
-      { id: "jersey", name: "Stretch Jersey Knit" },
-      { id: "bamboo", name: "Eco-Friendly Bamboo Fabric" },
+      { id: "Cotton", name: "Cotton" },
+
+      { id: "Silk", name: "Silk" },
+
     ],
     colors: [],
     sizes: [],
@@ -207,17 +202,17 @@ const ProductsPage = () => {
     try {
       const payload = {
         q: '',
-        category: category ,
+        category: category,
         subCategory: filters.segment,
-        minPrice: filters.minPrice || undefined,
-        maxPrice: filters.maxPrice || undefined,
+        // minPrice: filters.minPrice || undefined,
+        // maxPrice: filters.maxPrice || undefined,
         pageNumber: null,
-        pageSize: pagination.pageSize,
-        sort: filters.sortBy || undefined,
+        pageSize: null,
+        sort: filters.sortBy,
         country: selectedCountry,
-        colors: filters.colors.length > 0 ? filters.colors : undefined,
-        sizes: filters.sizes.length > 0 ? filters.sizes : undefined,
-        fabric:filters.fabric
+        colors: filters.colors,
+        sizes: filters.sizes,
+        fabric: filters.fabric
       };
 
       // Remove undefined values
@@ -240,7 +235,7 @@ const ProductsPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [category, filters.segment, filters.minPrice, filters.maxPrice, filters.sortBy, filters.colors, filters.sizes, pagination.pageSize]);
+  }, [category, filters.segment, filters.minPrice, filters.maxPrice, filters.sortBy, filters.colors, filters.sizes, pagination.pageSize, filters.fabric,]);
 
   useEffect(() => {
     if (passedProducts.length > 0) {
@@ -316,7 +311,7 @@ const ProductsPage = () => {
       country: '',
       colors: [],
       sizes: [],
-      fabric:[]
+      fabric: []
     });
     // Clear the category from URL when clearing all filters
     navigate('/products', { replace: true });
@@ -539,13 +534,14 @@ const ProductsPage = () => {
                 className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
               />
               <span
-                className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.fabric === fabric.id
-                  ? "text-black"
-                  : "text-text-medium group-hover:text-black"
+                className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.fabric.includes(fabric.id)
+                    ? "text-black"
+                    : "text-text-medium group-hover:text-black"
                   }`}
               >
                 {fabric.name}
               </span>
+
             </label>
           ))}
         </div>
@@ -576,8 +572,8 @@ const ProductsPage = () => {
                   <div className="ml-3 flex items-center gap-3 flex-1">
                     <div
                       className={`w-6 h-6 rounded-full flex-shrink-0 ${isLightColor(displayHex)
-                          ? 'border-2 border-gray-400'
-                          : 'border border-gray-300'
+                        ? 'border-2 border-gray-400'
+                        : 'border border-gray-300'
                         }`}
                       style={{ backgroundColor: displayHex }}
                       title={color}
