@@ -538,12 +538,12 @@ const CartPage = () => {
                       });
                     }}
                     disabled={selectedItems.size === 0}
-                    className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark transition-colors text-sm md:text-base flex items-center justify-center gap-2 md:gap-3 disabled:bg-text-light disabled:cursor-not-allowed font-futura-pt-light"
+                    className="w-full bg-black text-white py-3 md:py-4 font-light hover:bg-text-dark rounded-full transition-colors text-sm md:text-base flex items-center justify-center gap-2 md:gap-3 disabled:bg-text-light disabled:cursor-not-allowed font-futura-pt-light"
                   >
                     Proceed to Checkout <ArrowRight size={18} strokeWidth={1.5} />
                   </button>
 
-                  <button onClick={() => navigate("/products")} className="w-full mt-3 border-2 border-text-light/30 text-black py-3 md:py-4 font-light hover:border-black transition-colors text-sm md:text-base font-futura-pt-light">
+                  <button onClick={() => navigate("/products")} className="w-full mt-3 border-2 rounded-full border-text-light/30 text-black py-3 md:py-4 font-light hover:border-black transition-colors text-sm md:text-base font-futura-pt-light">
                     Continue Shopping
                   </button>
                 </div>
