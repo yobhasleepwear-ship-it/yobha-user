@@ -133,6 +133,7 @@ const CONDITION_QUESTIONS = [
 
 const Buyback3 = () => {
   const [activeStep, setActiveStep] = useState(1);
+  const [highestStep, setHighestStep] = useState(1);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [orders, setOrders] = useState([]);
@@ -335,6 +336,10 @@ const Buyback3 = () => {
   );
 
   const handleOptionSelect = (optionId) => {
+    // Check if this is a new selection (option is changing)
+    const isNewSelection = selectedOptionId !== optionId;
+    
+    // Always update the option selection
     setSelectedOptionId(optionId);
     
     // Check if user is authenticated
@@ -350,11 +355,18 @@ const Buyback3 = () => {
     }
     
     setIsAuthenticated(true);
-    setStepAnimation("slideOut");
-    setTimeout(() => {
-      setActiveStep(2);
-      setStepAnimation("slideIn");
-    }, 300);
+    
+    // Only auto-advance if this is a new selection
+    // If the option is already selected (user navigating back), preserve state
+    // and let them use the Continue button instead
+    if (isNewSelection) {
+      setStepAnimation("slideOut");
+      setTimeout(() => {
+        setActiveStep(2);
+        setHighestStep((prev) => Math.max(prev, 2));
+        setStepAnimation("slideIn");
+      }, 300);
+    }
   };
 
   const handleLoginRedirect = () => {
@@ -372,12 +384,23 @@ const Buyback3 = () => {
   };
 
   const handleOrderMethodSelect = (method) => {
+    // Check if this is a new selection (method is changing)
+    const isNewSelection = orderMethod !== method;
+    
+    // Always update the method selection
     setOrderMethod(method);
-    setStepAnimation("slideOut");
-    setTimeout(() => {
-      setActiveStep(3);
-      setStepAnimation("slideIn");
-    }, 300);
+    
+    // Only auto-advance if this is a new selection
+    // If the method is already selected (user navigating back), preserve state
+    // and let them use the Continue button instead
+    if (isNewSelection) {
+      setStepAnimation("slideOut");
+      setTimeout(() => {
+        setActiveStep(3);
+        setHighestStep((prev) => Math.max(prev, 3));
+        setStepAnimation("slideIn");
+      }, 300);
+    }
   };
 
 
@@ -388,6 +411,7 @@ const Buyback3 = () => {
     setStepAnimation("slideOut");
     setTimeout(() => {
       setActiveStep(4);
+      setHighestStep((prev) => Math.max(prev, 4));
       setStepAnimation("slideIn");
     }, 300);
   };
@@ -456,18 +480,7 @@ const Buyback3 = () => {
   const handleBack = () => {
     setStepAnimation("slideOut");
     setTimeout(() => {
-      setActiveStep((prev) => {
-        const newStep = prev - 1;
-        if (newStep === 1) {
-          setSelectedOptionId(null);
-        } else if (newStep === 2) {
-          setOrderConfirmed(false);
-          setSelectedItem(null);
-        } else if (newStep === 3) {
-          setSelectedItem(null);
-        }
-        return newStep;
-      });
+      setActiveStep((prev) => Math.max(1, prev - 1));
       setStepAnimation("slideIn");
     }, 300);
   };
@@ -479,6 +492,20 @@ const Buyback3 = () => {
     setTimeout(() => {
       const nextStep = activeStep + 1;
       setActiveStep(nextStep);
+      setHighestStep((prev) => Math.max(prev, nextStep));
+      setStepAnimation("slideIn");
+    }, 300);
+  };
+
+  const handleStepClick = (targetStep) => {
+    // Allow navigation to any step that has been reached before (up to highestStep)
+    // This allows users to go back and then jump forward to any previously visited step
+    if (targetStep > highestStep) return;
+    
+    // Preserve all selections when navigating - don't clear any state
+    setStepAnimation("slideOut");
+    setTimeout(() => {
+      setActiveStep(targetStep);
       setStepAnimation("slideIn");
     }, 300);
   };
@@ -571,6 +598,7 @@ const Buyback3 = () => {
         // Store refund percentage before showing completion
         setRefundPercentage(getConditionDetails.percentage);
         message.success("Buyback request submitted successfully!");
+        setHighestStep((prev) => Math.max(prev, 5));
         setShowCompletion(true);
       }
     } catch (error) {
@@ -585,6 +613,7 @@ const Buyback3 = () => {
 
   const handleReset = () => {
     setActiveStep(1);
+    setHighestStep(1);
     setSelectedOptionId(null);
     setSelectedOrder(null);
     setSelectedItem(null);
@@ -1306,9 +1335,25 @@ const Buyback3 = () => {
                 {STEPS.map((step, index) => {
                   const isActive = step.id === activeStep;
                   const isComplete = step.id < activeStep || (step.id === 5 && showCompletion);
+                  // Allow clicking on any step that has been reached (up to highestStep)
+                  const canNavigate = step.id <= highestStep;
                   return (
                     <React.Fragment key={step.id}>
-                      <div className="flex min-w-[90px] md:min-w-[110px] flex-col items-center gap-3 md:gap-4 text-center">
+                      <div
+                        role={canNavigate ? "button" : undefined}
+                        tabIndex={canNavigate ? 0 : -1}
+                        onClick={() => canNavigate && handleStepClick(step.id)}
+                        onKeyDown={(event) => {
+                          if (canNavigate && (event.key === "Enter" || event.key === " ")) {
+                            event.preventDefault();
+                            handleStepClick(step.id);
+                          }
+                        }}
+                        aria-disabled={!canNavigate}
+                        className={`flex min-w-[90px] md:min-w-[110px] flex-col items-center gap-3 md:gap-4 text-center ${
+                          canNavigate ? "cursor-pointer" : "cursor-default"
+                        }`}
+                      >
                         <div
                           className={`relative flex h-12 w-12 md:h-14 md:w-14 items-center justify-center border text-sm md:text-base font-light transition-all duration-500 rounded-full ${
                             isActive
