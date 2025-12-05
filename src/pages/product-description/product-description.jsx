@@ -1238,7 +1238,7 @@ const ProductDetailPage = () => {
             {/* Monogram Input */}
             <div className="space-y-2">
               <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
-                Add Monogram (Optional)
+                Name Initials 
               </label>
               <div className="relative">
                 <input
