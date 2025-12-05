@@ -135,6 +135,28 @@ const ProductCard = ({ product }) => {
     const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
 
     if (!token) {
+      // Save pending wishlist action before redirecting to login
+      const payload = {
+        productId: product.productId ,
+        size: product.availableSizes?.[0] || '',
+        desiredQuantity: 1,
+        desiredSize: product.availableSizes?.[0] || '',
+        desiredColor: product.availableColors?.[0] || '',
+        notifyWhenBackInStock: false,
+      };
+      
+      const pendingWishlistAction = {
+        productId: product.id,
+        payload: payload,
+        timestamp: Date.now()
+      };
+      
+      localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
+      
+      // Save current path for redirect after login
+      const currentPath = window.location.pathname + window.location.search;
+      localStorageService.setValue("redirectAfterLogin", currentPath);
+      
       message.info("Please log in to add items to your wishlist.");
       navigate("/login");
       return;
@@ -162,6 +184,25 @@ const ProductCard = ({ product }) => {
       dispatch(incrementWishlistCount());
       message.success("Added to wishlist");
     } catch (error) {
+      // If 401 error, save pending action and let interceptor handle redirect
+      if (error?.response?.status === 401) {
+        const payload = {
+          productId: product.productId ,
+          size: product.availableSizes?.[0] || '',
+          desiredQuantity: 1,
+          desiredSize: product.availableSizes?.[0] || '',
+          desiredColor: product.availableColors?.[0] || '',
+          notifyWhenBackInStock: false,
+        };
+        
+        const pendingWishlistAction = {
+          productId: product.id,
+          payload: payload,
+          timestamp: Date.now()
+        };
+        
+        localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
+      }
       console.error("Failed to add to wishlist:", error);
       message.error("Unable to add to wishlist right now.");
     } finally {

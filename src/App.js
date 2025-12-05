@@ -15,6 +15,10 @@ import "./i18n";
 import { useTranslation } from "react-i18next";
 import CountryDropdown from "./countryDropdown";
 import LoginModal from "./pages/login/loginModal";
+import { addToWishlist } from "./service/wishlist";
+import { invalidateWishlistCache } from "./service/wishlistCache";
+import { incrementWishlistCount } from "./redux/wishlistSlice";
+import { message } from "./comman/toster-message/ToastContainer";
 
 function AppContent() {
   const dispatch = useDispatch();
@@ -28,6 +32,30 @@ function AppContent() {
     i18n.changeLanguage(savedLang);
     document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
   }, [i18n]);
+  // Helper function to execute pending wishlist action after login
+  const executePendingWishlistAction = async () => {
+    try {
+      const pendingActionStr = localStorageService.getValue("pendingWishlistAction");
+      if (pendingActionStr) {
+        const pendingAction = JSON.parse(pendingActionStr);
+        // Check if action is not too old (e.g., within 1 hour)
+        const oneHour = 60 * 60 * 1000;
+        if (Date.now() - pendingAction.timestamp < oneHour) {
+          await addToWishlist(pendingAction.productId, pendingAction.payload);
+          invalidateWishlistCache();
+          dispatch(incrementWishlistCount());
+          message.success("Product added to wishlist!");
+        }
+        // Clear pending action regardless of success/age
+        localStorageService.removeValue("pendingWishlistAction");
+      }
+    } catch (error) {
+      console.error("Failed to execute pending wishlist action:", error);
+      // Clear pending action on error to avoid retry loops
+      localStorageService.removeValue("pendingWishlistAction");
+    }
+  };
+
   useEffect(() => {
     console.log("🔍 Current URL:", window.location.href);
     const hash = window.location.hash;
@@ -37,10 +65,16 @@ function AppContent() {
         localStorageService.setValue(LocalStorageKeys.AuthToken, token);
         localStorageService.setValue(LocalStorageKeys.User, JSON.stringify({ provider: "Google" }));
         window.history.replaceState({}, document.title, window.location.pathname);
-        navigate("/home"); 
+        
+        // Execute pending wishlist action if any
+        executePendingWishlistAction();
+        
+        const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/home";
+        localStorageService.removeValue("redirectAfterLogin");
+        navigate(redirectTo, { replace: true }); 
       }
     }
-  }, [navigate]);
+  }, [navigate, dispatch]);
   const fetchCart = async () => {
     try {
      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];

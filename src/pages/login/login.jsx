@@ -9,9 +9,14 @@ import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import { Link, useNavigate } from "react-router-dom";
 import { message } from "../../comman/toster-message/ToastContainer";
+import { addToWishlist } from "../../service/wishlist";
+import { invalidateWishlistCache } from "../../service/wishlistCache";
+import { useDispatch } from "react-redux";
+import { incrementWishlistCount } from "../../redux/wishlistSlice";
 
 const LoginPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("phone");
   const [isSignup, setIsSignup] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -21,6 +26,30 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [countryCode, setCountryCode] = useState("+91");
   const [otp, setOtp] = useState("");
+
+  // Helper function to execute pending wishlist action after login
+  const executePendingWishlistAction = async () => {
+    try {
+      const pendingActionStr = localStorageService.getValue("pendingWishlistAction");
+      if (pendingActionStr) {
+        const pendingAction = JSON.parse(pendingActionStr);
+        // Check if action is not too old (e.g., within 1 hour)
+        const oneHour = 60 * 60 * 1000;
+        if (Date.now() - pendingAction.timestamp < oneHour) {
+          await addToWishlist(pendingAction.productId, pendingAction.payload);
+          invalidateWishlistCache();
+          dispatch(incrementWishlistCount());
+          message.success("Product added to wishlist!");
+        }
+        // Clear pending action regardless of success/age
+        localStorageService.removeValue("pendingWishlistAction");
+      }
+    } catch (error) {
+      console.error("Failed to execute pending wishlist action:", error);
+      // Clear pending action on error to avoid retry loops
+      localStorageService.removeValue("pendingWishlistAction");
+    }
+  };
 
 
   const handleSignup = async (e) => {
@@ -39,6 +68,10 @@ const LoginPage = () => {
       localStorageService.setValue(LocalStorageKeys.User, JSON.stringify(user));
 
       message.success("Account created successfully! Welcome to YOBHA");
+      
+      // Execute pending wishlist action if any
+      await executePendingWishlistAction();
+      
       const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/home";
       localStorageService.removeValue("redirectAfterLogin");
       navigate(redirectTo, { replace: true });
@@ -64,6 +97,10 @@ const LoginPage = () => {
       localStorageService.setValue(LocalStorageKeys.User, JSON.stringify(user));
 
       message.success("Login successful! Welcome to YOBHA");
+      
+      // Execute pending wishlist action if any
+      await executePendingWishlistAction();
+      
       const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/home";
       localStorageService.removeValue("redirectAfterLogin");
       navigate(redirectTo, { replace: true });
@@ -407,6 +444,10 @@ const LoginPage = () => {
 
                     message.success("Login successful! Welcome to YOBHA");
                     setShowOtpModal(false);
+                    
+                    // Execute pending wishlist action if any
+                    await executePendingWishlistAction();
+                    
                     const redirectTo = localStorageService.getValue("redirectAfterLogin") || "/home";
                     localStorageService.removeValue("redirectAfterLogin");
                     navigate(redirectTo, { replace: true });

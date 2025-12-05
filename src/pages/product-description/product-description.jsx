@@ -696,7 +696,8 @@ const ProductDetailPage = () => {
 
   // Wishlist toggle
   const handleAddToWishlist = async (productId) => {
-    setAddingToWishlist(true);
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+    
     const selectedVariant = product.variants.find(
       (v) => v.color === selectedColor && v.size === selectedSize
     );
@@ -708,8 +709,28 @@ const ProductDetailPage = () => {
       desiredSize: selectedSize,
       desiredColor: selectedColor,
       notifyWhenBackInStock: true,
+    };
 
+    // If not authenticated, save pending action and redirect to login
+    if (!token) {
+      const pendingWishlistAction = {
+        productId: productId,
+        payload: payload,
+        timestamp: Date.now()
+      };
+      
+      localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
+      
+      // Save current path for redirect after login
+      const currentPath = window.location.pathname + window.location.search;
+      localStorageService.setValue("redirectAfterLogin", currentPath);
+      
+      message.info("Please log in to add items to your wishlist.");
+      navigate("/login");
+      return;
     }
+
+    setAddingToWishlist(true);
 
     try {
       const result = await addToWishlist(productId, payload);
@@ -720,6 +741,16 @@ const ProductDetailPage = () => {
       dispatch(incrementWishlistCount());
       message.success("Product added to wishlist!");
     } catch (err) {
+      // If 401 error, save pending action and let interceptor handle redirect
+      if (err?.response?.status === 401) {
+        const pendingWishlistAction = {
+          productId: productId,
+          payload: payload,
+          timestamp: Date.now()
+        };
+        
+        localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
+      }
       console.error("Failed to add to wishlist:", err);
       message.error("Failed to add to wishlist");
     } finally {

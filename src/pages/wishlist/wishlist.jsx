@@ -308,7 +308,12 @@ const WishlistPage = () => {
                 </p>
                 {!isAuthenticated() && (
                   <button
-                    onClick={() => navigate("/login")}
+                    onClick={() => {
+                      // Save current path for redirect after login
+                      const currentPath = window.location.pathname + window.location.search;
+                      localStorageService.setValue("redirectAfterLogin", currentPath);
+                      navigate("/login");
+                    }}
                     className="inline-flex items-center gap-2 md:gap-3 bg-black text-white px-6 md:px-8 py-3 md:py-4 font-light hover:bg-text-dark transition-colors text-xs md:text-sm mb-8 rounded-3xl font-futura-pt-light"
                   >
                     Sign In
