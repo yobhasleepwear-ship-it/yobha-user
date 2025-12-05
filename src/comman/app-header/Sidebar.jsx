@@ -150,8 +150,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Gifts For Him", nav: "gifts-personalization", category: "Men" },
     { label: "Gifts For Family", nav: "gifts-personalization", category: "Family" },
     { label: "Gifts For Kids", nav: "gifts-personalization", category: "kids" },
-    { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" },
-    { label: "Personalisation", nav: "personalization" },
+    { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" }
+    ,
   ];
 
   const mainNavigationItems = [
