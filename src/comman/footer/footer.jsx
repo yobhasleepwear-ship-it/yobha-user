@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Facebook, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "../../assets/yobhaLogo.png";
@@ -23,6 +23,22 @@ const [newsletter , setNewsletter]=useState("")
   };
 
   const [selectedSidebarCountry, setSelectedSidebarCountry] = useState(resolveSavedCountry);
+
+  useEffect(() => {
+    const syncCountryFromStorage = () => setSelectedSidebarCountry(resolveSavedCountry());
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", syncCountryFromStorage);
+      window.addEventListener("yobha-country-change", syncCountryFromStorage);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("storage", syncCountryFromStorage);
+        window.removeEventListener("yobha-country-change", syncCountryFromStorage);
+      }
+    };
+  }, []);
   const handleSidebarCountryChange = (selectedCode) => {
     const chosen = countryOptions.find((option) => option.code === selectedCode);
     if (!chosen) return;
