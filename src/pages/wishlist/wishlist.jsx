@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, Trash2, ArrowRight, ShoppingBag } from "lucide-react";
+import { Heart, Trash2, ArrowRight, ShoppingBag, ShoppingCart, Bell } from "lucide-react";
 import { getWishlist, removeFromWishlists } from "../../service/wishlist";
 import { invalidateWishlistCache } from "../../service/wishlistCache";
-import { addToCart } from "../../service/productAPI";
+import { addToCart, getProductDescription } from "../../service/productAPI";
 import { useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
 import { setWishlistCount, decrementWishlistCount } from "../../redux/wishlistSlice";
@@ -12,11 +12,29 @@ import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 import ProductCard from "../product/components/product-card";
 
+export const countryOptions = [
+  { code: "IN", label: "India", currency: "INR" },
+  { code: "AE", label: "United Arab Emirates (UAE)", currency: "AED" },
+  { code: "SA", label: "Saudi Arabia", currency: "SAR" },
+  { code: "QA", label: "Qatar", currency: "QAR" },
+  { code: "KW", label: "Kuwait", currency: "KWD" },
+  { code: "OM", label: "Oman", currency: "OMR" },
+  { code: "BH", label: "Bahrain", currency: "BHD" },
+  { code: "JO", label: "Jordan", currency: "JOD" },
+  { code: "LB", label: "Lebanon", currency: "LBP" },
+  { code: "EG", label: "Egypt", currency: "EGP" },
+  { code: "IQ", label: "Iraq", currency: "IQD" },
+];
+const getCountryByCurrency = (currency) => {
+  return countryOptions.find(
+    (country) => country.currency.toUpperCase() === currency.toUpperCase()
+  ).code;
+};
 
 // Transform wishlist item to product format for ProductCard
 const transformWishlistItemToProduct = (wishlistItem) => {
   const product = wishlistItem?.product || {};
-  
+
   // Get images - try different possible fields
   let images = [];
   if (product.images && Array.isArray(product.images)) {
@@ -26,7 +44,7 @@ const transformWishlistItemToProduct = (wishlistItem) => {
   } else if (product.image) {
     images = [product.image];
   }
-  
+
   // Get price list from product or construct from available data
   let priceList = product.priceList || [];
   if (!priceList.length && product.unitPrice) {
@@ -40,7 +58,7 @@ const transformWishlistItemToProduct = (wishlistItem) => {
       currency: product.currency || 'INR'
     }];
   }
-  
+
   return {
     id: product.productObjectId || product.id || wishlistItem.id,
     productId: product.productId || product.id,
@@ -142,87 +160,67 @@ const WishlistPage = () => {
       throw err;
     }
   };
+  const handleLoginFromWishlist = () => {
+    const currentPath = window.location.pathname + window.location.search;
+    localStorageService.setValue("redirectAfterLogin", currentPath);
 
+    navigate('/login')
+  }
   // Move to cart
-  const moveToCart = async (item, e) => {
-    if (e) {
-      e.stopPropagation();
+  const handleAddToCart = async (item, selectedSize, selectedCountry, quantity, selectedColor) => {
+    const productDescription = await getProductDescription(item.product.productObjectId)
+    const product = productDescription.data
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+
+    const safeProduct = JSON.parse(
+      JSON.stringify(product, (key, value) => {
+        if (typeof value === "function") return undefined;
+        if (key.startsWith("__react")) return undefined;
+        return value;
+      })
+    );
+
+    // 🛑 Restrict to one country
+    const existingCountry = cart.length > 0 ? cart[0].country : null;
+    if (existingCountry && existingCountry !== selectedCountry) {
+      message.error(`You can only add items from ${existingCountry}.`);
+      return;
     }
 
-    const product = item?.product || {};
-    setMovingToCart(prev => ({ ...prev, [item.id]: true }));
 
-    try {
-      // Prepare cart data
-      const cartData = {
-        productId: product.productId,
-        variantSku: product.variantSku || '',
-        quantity: item.desiredQuantity || 1,
-        size: item.desiredSize || '',
-        color: item.desiredColor || '',
-        currency: product.currency || 'INR',
-        note: item.note || ''
+    const itemIndex = cart.findIndex(
+      (item) => item.id === safeProduct.id && item.size === selectedSize && item.color === selectedColor
+    );
+
+    if (itemIndex !== -1) {
+
+      cart[itemIndex] = {
+        ...cart[itemIndex],
+        quantity: 1,
+        note: "",
+        monogram: "",
       };
+    } else {
 
-      // Add to cart using localStorage (matching product-description page logic)
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      
-      const safeProduct = JSON.parse(
-        JSON.stringify(product, (key, value) => {
-          if (typeof value === "function") return undefined;
-          if (key.startsWith("__react")) return undefined;
-          return value;
-        })
-      );
-
-      // Restrict to one country
-      const savedCountry = localStorage.getItem('selectedCountry');
-      const parsedCountry = savedCountry ? JSON.parse(savedCountry) : { code: 'IN' };
-      const selectedCountry = parsedCountry?.code || 'IN';
-      
-      const existingCountry = cart.length > 0 ? cart[0].country : null;
-      if (existingCountry && existingCountry !== selectedCountry) {
-        message.error(`You can only add items from ${existingCountry}.`);
-        setMovingToCart(prev => ({ ...prev, [item.id]: false }));
-        return;
-      }
-
-      const itemIndex = cart.findIndex(
-        (cartItem) => cartItem.id === (product.productObjectId || product.id) && cartItem.size === cartData.size
-      );
-
-      if (itemIndex !== -1) {
-        cart[itemIndex] = {
-          ...cart[itemIndex],
-          quantity: (cart[itemIndex].quantity || 1) + (cartData.quantity || 1),
-        };
-      } else {
-        cart.push({
-          ...safeProduct,
-          id: product.productObjectId || product.id,
-          size: cartData.size,
-          country: selectedCountry,
-          quantity: cartData.quantity,
-          color: cartData.color,
-          monogram: '',
-          note: cartData.note
-        });
-      }
-
-      localStorage.setItem("cart", JSON.stringify(cart));
-      dispatch(setCartCount(cart.length));
-      
-      // Remove from wishlist after adding to cart
-      await removeFromWishlist(item.id);
-      
-      message.success(`${product.name || "Product"} moved to bag!`);
-    } catch (err) {
-      console.error("Error moving to cart:", err);
-      message.error("Failed to move item to bag. Please try again.");
-    } finally {
-      setMovingToCart(prev => ({ ...prev, [item.id]: false }));
+      cart.push({
+        ...safeProduct,
+        size: selectedSize,
+        country: selectedCountry,
+        quantity: 1,
+        country: selectedCountry,
+        monogram: "",
+        color: selectedColor,
+        note: "",
+      });
     }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    // setCartItems(cart);
+    dispatch(setCartCount(cart.length));
+    message.success(`${safeProduct.name || "Product"} added to cart!`);
   };
+
 
   // Loading state
   if (isLoading) {
@@ -338,7 +336,7 @@ const WishlistPage = () => {
                     const productImages = Array.isArray(item?.images) && item.images.length > 0
                       ? item.images
                       : item?.image ? [item.image] : [];
-                    
+
                     return (
                       <div
                         key={item.id}
@@ -387,26 +385,55 @@ const WishlistPage = () => {
             {wishlistItems.map((item) => {
               const product = transformWishlistItemToProduct(item);
               const isMoving = movingToCart[item.id] || false;
-              
+
               return (
                 <div key={item.id} className="relative group/wishlist-item">
                   {/* ProductCard Component */}
                   <ProductCard product={product} />
-                  
-                  {/* Delete Button - Top Right Corner */}
-                  <button
-                    onClick={(e) => removeFromWishlist(item.id, e)}
-                    className="absolute top-2 right-2 z-30 p-1.5 bg-white/90 hover:bg-white text-black hover:text-red-500 transition-all duration-200 shadow-md hover:shadow-lg rounded-sm"
-                    aria-label="Remove from wishlist"
-                    style={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      border: 'none',
-                      outline: 'none',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <Trash2 size={18} strokeWidth={1.5} />
-                  </button>
+                  <div className="absolute top-2 right-2 z-30 flex gap-2">
+                    {/* Delete Button - Top Right Corner */}
+                    <button
+                      onClick={(e) => removeFromWishlist(item.id, e)}
+                      className="p-1.5 bg-white/90 hover:bg-white text-black hover:text-red-500 transition-all duration-200 shadow-md hover:shadow-lg rounded-sm"
+                      aria-label="Remove from wishlist"
+                      style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        border: 'none',
+                        outline: 'none',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Trash2 size={18} strokeWidth={1.5} />
+                    </button>
+                    <button
+                      onClick={(e) => handleAddToCart(item, item.desiredSize, getCountryByCurrency(item.product.currency), item.quantity, item.desiredColor)}
+                      className=" p-1.5 bg-white/90 hover:bg-white text-black hover:text-green-600 transition-all duration-200 shadow-md hover:shadow-lg rounded-sm"
+                      aria-label="Add to cart"
+                      style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        border: 'none',
+                        outline: 'none',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <ShoppingCart size={18} strokeWidth={1.5} />
+                    </button>
+
+                    {/* Notify Me Button - Bottom Left Corner */}
+                    <button
+                      // onClick={(e) => notifyMe(product, e)}
+                      className="p-1.5 bg-white/90 hover:bg-white text-black hover:text-blue-600 transition-all duration-200 shadow-md hover:shadow-lg rounded-sm"
+                      aria-label="Notify me"
+                      style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        border: 'none',
+                        outline: 'none',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Bell size={18} strokeWidth={1.5} />
+                    </button>
+                  </div>
                 </div>
               );
             })}

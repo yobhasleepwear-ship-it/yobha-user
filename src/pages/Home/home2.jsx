@@ -24,6 +24,9 @@ const HomePage2 = () => {
   const [isPortrait, setIsPortrait] = useState(false);
   const [recentVisited, setRecentVisited] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+   const savedCountry = localStorage.getItem('selectedCountry');
+    const parsedCountry = JSON.parse(savedCountry);
+    const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code || "IN");
   const [products, setProducts] = useState([]);
   const accessoriesRef = useRef(null);
   const [isAccDragging, setIsAccDragging] = useState(false);
@@ -120,7 +123,8 @@ const HomePage2 = () => {
         pageNumber: null,
         pageSize: 12,
         sort: "latest",
-        country: null,
+        country: selectedCountry,
+       
       };
       const response = await getFilteredProducts(payload);
       if (response && response.success && response.data) {

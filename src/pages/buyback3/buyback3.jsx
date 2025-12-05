@@ -288,6 +288,7 @@ const Buyback3 = () => {
       
       return {
         id: order.orderNo || order.id,
+        orderNumber:order.orderNumber,
         placedOn: order.createdAt,
         category: firstItem.category || "General",
         collection: firstItem.collection || "Standard",
@@ -942,7 +943,7 @@ const Buyback3 = () => {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <p className="text-sm md:text-base text-black font-light leading-tight mb-1 font-futura-pt-book">
-                                        {order.id}
+                                        {order.orderNumber}
                                       </p>
                                       <p className="text-xs md:text-sm text-black font-light truncate font-futura-pt-light">
                                         {firstItem.name || "Order"}
@@ -977,7 +978,7 @@ const Buyback3 = () => {
                           </p>
                         </div>
                         <h3 className="text-base md:text-lg mb-2 font-light text-black leading-tight font-futura-pt-book">
-                          {selectedOrder.id}
+                          {selectedOrder.orderNumber}
                         </h3>
                         <div className="flex items-center gap-2 text-sm text-black font-light mb-4 font-futura-pt-light">
                           <Calendar className="w-4 h-4" strokeWidth={1.5} />

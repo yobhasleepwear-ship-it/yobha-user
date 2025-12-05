@@ -201,20 +201,20 @@ const ProductsPage = () => {
 
   }, [priceRange]);
 
-  // Fetch products from API - memoized to prevent unnecessary re-creation
+
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     try {
       const payload = {
         q: '',
-        category: category || null,
+        category: category ,
         subCategory: filters.segment,
         minPrice: filters.minPrice || undefined,
         maxPrice: filters.maxPrice || undefined,
         pageNumber: null,
         pageSize: pagination.pageSize,
         sort: filters.sortBy || undefined,
-        country: null,
+        country: selectedCountry,
         colors: filters.colors.length > 0 ? filters.colors : undefined,
         sizes: filters.sizes.length > 0 ? filters.sizes : undefined,
         fabric:filters.fabric
@@ -254,11 +254,9 @@ const ProductsPage = () => {
 
     if (!location.state?.products) {
       fetchProducts();
-
     }
 
-
-  }, [category, filters.categories, filters.sortBy, pagination.pageNumber, priceRange, filters.country, filters.subCategories, filters.segment, filters.colors, filters.sizes, fetchProducts, location.state?.products]);
+  }, [category, filters.categories, filters.sortBy, pagination.pageNumber, priceRange, filters.country, filters.subCategories, filters.segment, filters.colors, filters.sizes, filters.fabric, location.state?.products]);
 
   // Handle filter changes - memoized to prevent unnecessary re-renders
   const updateFilter = useCallback((key, value) => {
