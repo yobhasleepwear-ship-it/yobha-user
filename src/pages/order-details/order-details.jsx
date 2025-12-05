@@ -46,6 +46,7 @@ const formatOrderDetailData = (orderData) => {
           currency: item?.currency || 'INR',
           thumbnailUrl: item?.thumbnailUrl || item?.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+',
           slug: item?.slug || '',
+          isReturned : item?.isReturned || false,
         }))
       : [],
     
@@ -187,6 +188,7 @@ const OrderDetailPage = () => {
 
   // API State
   const [order, setOrder] = useState(null);
+  console.log(order)
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -722,7 +724,7 @@ const OrderDetailPage = () => {
                     // Debug: Uncomment to see status in console
                     // console.log('Order Status:', status, 'Can Return:', canReturn, 'Order:', order);
                     
-                    return canReturn ? (
+                    return canReturn || order.isReturned !== true? (
                       <button
                         onClick={() => setShowReturnModal(true)}
                         className="w-full border border-gray-300 text-black py-3 font-light hover:border-black hover:bg-gray-50 transition-colors text-xs sm:text-sm font-futura-pt-light flex items-center justify-center gap-2"
@@ -808,6 +810,7 @@ const OrderDetailPage = () => {
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => handleReturnItemToggle(item)}
+                              disabled={item.isReturned} 
                               className="w-4 h-4 border-gray-300 text-black focus:ring-black cursor-pointer"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -826,7 +829,7 @@ const OrderDetailPage = () => {
 
                           <div className="flex-1 min-w-0">
                             <h3 className="text-xs sm:text-sm font-light text-black mb-1 font-futura-pt-light">
-                              {item.productName}
+                              {item.productName} 
                             </h3>
                             <p className="text-sm text-black font-light font-futura-pt-light">
                               Qty: {item.quantity} × <span className="font-sans">{formatPrice(item.unitPrice, item.currency)}</span>
@@ -836,10 +839,13 @@ const OrderDetailPage = () => {
                                 SKU: {item.variantSku}
                               </p>
                             )}
+                            {item.isReturned&& <h3 className="text-xs sm:text-sm font-light text-black mb-1 font-futura-pt-light">
+                              Return In Progress 
+                            </h3>}
                           </div>
                         </div>
 
-                        {isSelected && (
+                        {(isSelected  )&& (
                           <div className="mt-3 pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
                             <label className="text-sm text-black mb-1.5 block font-light font-futura-pt-book">
                               Reason (optional):
@@ -854,7 +860,7 @@ const OrderDetailPage = () => {
                           </div>
                         )}
                       </div>
-                    );
+                    )
                   })}
                 </div>
               </div>
