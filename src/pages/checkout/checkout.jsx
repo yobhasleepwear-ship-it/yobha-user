@@ -486,7 +486,8 @@ const CheckoutPage = () => {
     setEditingAddressId(addressToEdit.id);
     setAddress({
       fullName: addressToEdit.fullName,
-      phone: addressToEdit.phone,
+      // API returns mobile number as `mobileNumner` (typo in backend); fall back to `phone`
+      phone: addressToEdit.mobileNumner || addressToEdit.phone || '',
       addressLine1: addressToEdit.line1,
       addressLine2: addressToEdit.line2 || '',
       city: addressToEdit.city,
@@ -520,7 +521,8 @@ const CheckoutPage = () => {
       // Map form fields to API expected fields
       const addressPayload = {
         fullName: address.fullName,
-        phone: address.phone,
+        // Backend expects this exact key (matches addAddress)
+        MobileNumnber: address.phone,
         line1: address.addressLine1,
         line2: address.addressLine2 || '',
         city: address.city,
