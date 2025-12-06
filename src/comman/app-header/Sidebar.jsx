@@ -150,8 +150,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Gifts For Him", nav: "gifts-personalization", category: "Men" },
     { label: "Gifts For Family", nav: "gifts-personalization", category: "Family" },
     { label: "Gifts For Kids", nav: "gifts-personalization", category: "kids" },
-    { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" }
-    ,
+    { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" },
+    { label: "Personalisation", nav: "personalization", category: null },
   ];
 
   const mainNavigationItems = [
@@ -404,6 +404,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                   let subRoutePath = subItem.nav;
                   if (subItem.category) {
                     subRoutePath = `/gifts?category=${subItem.category}`;
+                  } else if (subItem.nav === "personalization") {
+                    subRoutePath = `/personalization`;
                   }
                   return (
                     <Link
@@ -456,6 +458,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                 let subRoutePath = subItem.nav;
                 if (subItem.category) {
                   subRoutePath = `/gifts?category=${subItem.category}`;
+                } else if (subItem.nav === "personalization") {
+                  subRoutePath = `/personalization`;
                 }
                 return (
                   <Link
