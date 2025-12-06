@@ -9,7 +9,7 @@ import { getLoyaltyAudit } from "../../service/wallet";
 import CountryDropdown from "../../countryDropdown";
 
 // Toggle for dummy data - set to false to use real API
-const USE_DUMMY_DATA = true;
+const USE_DUMMY_DATA = false;
 
 const AccountPage2 = () => {
   const navigate = useNavigate();
