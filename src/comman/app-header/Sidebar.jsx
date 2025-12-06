@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { X, ChevronDown, ChevronRight, User, Package, LogOut, Recycle, ArrowLeft, Wallet } from "lucide-react";
+import { X, ChevronDown, ChevronRight, User, Package, LogOut, Recycle, ArrowLeft, Wallet, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "../../assets/yobhaLogo.png";
 import LanguageSwitcher from "../../LanguageSwitcher";
@@ -326,6 +326,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                       >
                         <Package size={16} />
                         <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{t("navbar.account.orders." + i18n.language)}</span>
+                      </Link>
+                      <Link
+                        to="/returns"
+                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        onClick={onClose}
+                      >
+                        <RotateCcw size={16} />
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">Returns</span>
                       </Link>
                       <button
                         onClick={() => {

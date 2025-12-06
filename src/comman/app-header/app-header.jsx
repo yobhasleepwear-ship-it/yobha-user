@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { LogOut, Menu, X, User, Heart, Package, Search, ChevronDown, ChevronRight, Loader2, Recycle } from "lucide-react";
+import { LogOut, Menu, X, User, Heart, Package, Search, ChevronDown, ChevronRight, Loader2, Recycle, RotateCcw } from "lucide-react";
 import { BsBag } from "react-icons/bs";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
@@ -585,6 +585,14 @@ const HeaderWithSidebar = () => {
                             <Package size={16} />
                             <span>{t("navbar.account.orders." + i18n.language)}</span>
                           </Link>
+                          <Link
+                            to="/returns"
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-luxury-gold/5 transition-all duration-300 text-xs md:text-sm text-black hover:text-black font-normal uppercase tracking-widest"
+                            onClick={() => setIsAccountDropdownOpen(false)}
+                          >
+                            <RotateCcw size={16} />
+                            <span>Returns</span>
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -823,6 +831,14 @@ const HeaderWithSidebar = () => {
                             >
                               <Package size={16} />
                               <span>{t("navbar.account.orders." + i18n.language)}</span>
+                            </Link>
+                            <Link
+                              to="/returns"
+                              className="flex items-center gap-3 py-2 text-[10px] uppercase tracking-[0.28em] text-black transition-colors duration-300 hover:text-black"
+                              onClick={() => setSidebarOpen(false)}
+                            >
+                              <RotateCcw size={16} />
+                              <span>Returns</span>
                             </Link>
                             <button
                               onClick={() => {

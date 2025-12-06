@@ -36,6 +36,7 @@ const BuybackAll = lazy(() => import("./pages/buyback-all/buyback-all"));
 const BuybackDetails = lazy(() => import("./pages/buyback-details/buyback-details"));
 const Gifts = lazy(() => import("./pages/gifts/gifts"));
 const Wallet = lazy(() => import("./pages/wallet/wallet"));
+const Returns = lazy(() => import("./pages/returns/returns"));
 const Router = () => {
   const routes = [
     // { path: "/", element: <Navigate to="/home" replace /> },
@@ -75,7 +76,8 @@ const Router = () => {
     ,    { path: '/buyback/all', element: <BuybackAll /> }
     ,{ path: '/buyback/details/:id', element: <BuybackDetails /> }
     ,{ path: '/gifts', element: <Gifts /> }
-    ,{ path: '/wallet', element: <Wallet /> }
+    ,    { path: '/wallet', element: <Wallet /> }
+    ,{ path: '/returns', element: <Returns /> }
   ];
 
   return (
