@@ -202,18 +202,19 @@ const ProductsPage = () => {
     try {
       const payload = {
         q: '',
-        category: category,
-        subCategory: filters.segment,
-        // minPrice: filters.minPrice || undefined,
-        // maxPrice: filters.maxPrice || undefined,
-        pageNumber: null,
-        pageSize: null,
-        sort: filters.sortBy,
+        category:category,
+        subCategory: filters.segment || "",
+        // minPrice: filters.minPrice ?? null,
+        // maxPrice: filters.maxPrice ?? null,
+        pageNumber: 1,
+        pageSize: 20,
+        sort: filters.sortBy || "latest",
         country: selectedCountry,
-        colors: filters.colors,
-        sizes: filters.sizes,
-        fabric: filters.fabric
+        colors: filters.colors || [],
+        sizes: filters.sizes || [],
+        fabric: filters.fabric || []
       };
+
 
       // Remove undefined values
       Object.keys(payload).forEach(key =>
@@ -535,8 +536,8 @@ const ProductsPage = () => {
               />
               <span
                 className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.fabric.includes(fabric.id)
-                    ? "text-black"
-                    : "text-text-medium group-hover:text-black"
+                  ? "text-black"
+                  : "text-text-medium group-hover:text-black"
                   }`}
               >
                 {fabric.name}

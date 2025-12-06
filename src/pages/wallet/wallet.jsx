@@ -63,7 +63,7 @@ const Wallet = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const pageSize = 20;
+  const pageSize = 200;
   
   // Animated balance count
   const animatedBalance = useCountUp(walletData.balance, 2000);

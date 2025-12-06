@@ -118,7 +118,7 @@ const AccountPage2 = () => {
         response = createDummyWalletData();
       } else {
         // Use real API
-        response = await getLoyaltyAudit(1, 20);
+        response = await getLoyaltyAudit(1, 200);
       }
 
       if (response && response.items) {
