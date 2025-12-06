@@ -188,7 +188,55 @@ const CheckoutPage = () => {
     }
   }, [checkoutProd]);
 
+  // Check for giftAddress from personalization after cart items are loaded
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      const itemWithGiftAddress = cartItems.find(item => item.giftAddress);
+      if (itemWithGiftAddress && itemWithGiftAddress.giftAddress) {
+        const giftAddr = itemWithGiftAddress.giftAddress;
+        // If giftAddress is a saved address object (has id), check if it exists in userAddresses
+        if (giftAddr.id) {
+          // Check if this address exists in the fetched addresses
+          const existingAddress = userAddresses.find(addr => addr.id === giftAddr.id);
+          if (existingAddress) {
+            setAddress(normalizeAddress(existingAddress));
+            setUseSavedAddress(true);
+          } else {
+            // If not found in userAddresses, normalize and use the giftAddress directly
+            setAddress(normalizeAddress(giftAddr));
+            setUseSavedAddress(true);
+          }
+        } else {
+          // If giftAddress is a recipient address (plain object), normalize and populate the form
+          setAddress(normalizeAddress(giftAddr));
+          setUseSavedAddress(false);
+        }
+      }
+    }
+  }, [cartItems, userAddresses]);
 
+  // Helper function to normalize address from API format to form format
+  const normalizeAddress = (addr) => {
+    if (!addr) return null;
+    return {
+      id: addr.id || null,
+      fullName: addr.fullName || '',
+      phone: addr.phone || addr.mobileNumner || addr.MobileNumnber || '',
+      addressLine1: addr.addressLine1 || addr.line1 || '',
+      addressLine2: addr.addressLine2 || addr.line2 || '',
+      city: addr.city || '',
+      state: addr.state || '',
+      pincode: addr.pincode || addr.zip || '',
+      country: addr.country || 'India',
+      landmark: addr.landmark || '',
+      // Keep original API fields for backward compatibility
+      line1: addr.line1 || addr.addressLine1 || '',
+      line2: addr.line2 || addr.addressLine2 || '',
+      zip: addr.zip || addr.pincode || '',
+      mobileNumner: addr.mobileNumner || addr.MobileNumnber || addr.phone || '',
+      MobileNumnber: addr.MobileNumnber || addr.mobileNumner || addr.phone || '',
+    };
+  };
 
   // Helper function to generate item key (same logic as cart page)
   const getItemKey = (item) => {
@@ -262,14 +310,14 @@ const CheckoutPage = () => {
         currency: cartItems[0].priceList.find((e) => e.country === cartItems[0].country).currency,
         productRequests: PurchasedProduct,
         shippingAddress: {
-          FullName: address.fullName,
-          Line1: address.line1,
-          AddressLine2: address.line2,
-          City: address.city,
-          State: address.state,
-          Zip: address.zip,
-          Country: address.country,
-          MobileNumner: address.mobileNumner
+          FullName: address.fullName || '',
+          Line1: address.line1 || address.addressLine1 || '',
+          AddressLine2: address.line2 || address.addressLine2 || '',
+          City: address.city || '',
+          State: address.state || '',
+          Zip: address.zip || address.pincode || '',
+          Country: address.country || 'India',
+          MobileNumner: address.mobileNumner || address.MobileNumnber || address.phone || ''
         },
         ShippingRemarks: ShippingRemarks,
         paymentMethod: selectedPayment ? selectedPayment.id : "",
@@ -347,7 +395,7 @@ const CheckoutPage = () => {
 
       // If addresses exist, use the first one by default
       if (addresses.length > 0) {
-        setAddress(addresses[0]);
+        setAddress(normalizeAddress(addresses[0]));
         setUseSavedAddress(true);
       } else {
         // If no addresses exist, set to manual entry mode
@@ -469,7 +517,7 @@ const CheckoutPage = () => {
         await fetchAddresses();
         // Switch to saved address mode and select the new address
         setUseSavedAddress(true);
-        setAddress(response.data);
+        setAddress(normalizeAddress(response.data));
       }
     } catch (err) {
       console.error("Failed to add address - Full error:", err);
@@ -543,7 +591,7 @@ const CheckoutPage = () => {
         setEditingAddressId(null);
         // Switch to saved address mode and select the updated address
         setUseSavedAddress(true);
-        setAddress(response.data);
+        setAddress(normalizeAddress(response.data));
       }
     } catch (err) {
       console.error("Failed to update address:", err);
@@ -806,7 +854,7 @@ const CheckoutPage = () => {
                             ? 'border-black bg-premium-beige'
                             : 'border-text-light/20 hover:border-text-dark bg-white'
                             }`}
-                          onClick={() => setAddress(addr)}
+                          onClick={() => setAddress(normalizeAddress(addr))}
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1 min-w-0">
@@ -814,7 +862,7 @@ const CheckoutPage = () => {
                                 <input
                                   type="radio"
                                   checked={address.id === addr.id}
-                                  onChange={() => setAddress(addr)}
+                                  onChange={() => setAddress(normalizeAddress(addr))}
                                   className="accent-black"
                                 />
                                 <h3 className="font-light text-black text-sm md:text-base font-futura-pt-book">
