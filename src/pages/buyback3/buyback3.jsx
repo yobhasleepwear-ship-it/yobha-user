@@ -1473,62 +1473,62 @@ const Buyback3 = () => {
         )}
 
         {showCompletion && (
-          <section className="mt-16 border border-black bg-black px-10 py-16 md:px-20 md:py-20 text-white animate-fadeIn shadow-2xl">
+          <section className="mt-16 border-2 border-black bg-white px-10 py-16 md:px-20 md:py-20 text-black animate-fadeIn shadow-2xl">
             <div className="flex justify-center mb-8">
-              <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border-2 border-white/30">
-                <CheckCircle2 className="w-12 h-12 text-white" strokeWidth={1.5} />
+              <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center border-2 border-black">
+                <CheckCircle2 className="w-12 h-12 text-black" strokeWidth={1.5} />
               </div>
             </div>
-            <p className="text-[10px] md:text-xs text-white/70 mb-6 font-light text-center font-futura-pt-light">
+            <p className="text-[10px] md:text-xs text-black/70 mb-6 font-light text-center font-futura-pt-light">
               Completion
             </p>
-            <h2 className="mt-2 text-3xl md:text-4xl lg:text-5xl font-light leading-tight mb-8 text-center font-futura-pt-book">
+            <h2 className="mt-2 text-xl md:text-xl lg:text-xl font-light leading-tight mb-8 text-center font-futura-pt-book">
               Thank you for extending the life of your YOBHA garment.
             </h2>
             {refundPercentage !== null && refundPercentage > 0 && (
-              <div className="max-w-2xl mx-auto mb-8 p-6 border-2 border-white/30 bg-white/10 backdrop-blur-sm">
-                <p className="text-sm md:text-base text-white/90 font-light mb-3 text-center font-futura-pt-light">
+              <div className="max-w-2xl mx-auto mb-8 p-6 border-2 border-black bg-white">
+                <p className="text-sm md:text-base text-black/90 font-light mb-3 text-center font-futura-pt-light">
                   Refund Percentage
                 </p>
-                <p className="text-4xl md:text-5xl lg:text-6xl font-light mb-2 text-center font-futura-pt-book">
+                <p className="text-xl md:text-xl lg:text-xl font-light mb-2 text-center font-futura-pt-book">
                   Upto {refundPercentage}%
                 </p>
-                <p className="text-xs md:text-sm text-white/80 font-light text-center font-futura-pt-light">
+                <p className="text-xs md:text-sm text-black/80 font-light text-center font-futura-pt-light">
                   of product price will be given back
                 </p>
               </div>
             )}
             {refundPercentage === 0 && (
-              <div className="max-w-2xl mx-auto mb-8 p-6 border-2 border-white/30 bg-white/10 backdrop-blur-sm">
-                <p className="text-sm md:text-base text-white/90 font-light text-center font-futura-pt-light">
+              <div className="max-w-2xl mx-auto mb-8 p-6 border-2 border-black bg-white">
+                <p className="text-sm md:text-base text-black/90 font-light text-center font-futura-pt-light">
                   No credit will be given for this item based on the condition assessment.
                 </p>
               </div>
             )}
-            <p className="max-w-2xl mx-auto text-sm md:text-base lg:text-lg leading-[1.8] text-white/80 font-light mb-12 text-center font-futura-pt-light">
+            <p className="max-w-2xl mx-auto text-sm md:text-base lg:text-lg leading-[1.8] text-black/80 font-light mb-12 text-center font-futura-pt-light">
               Your contribution supports circular luxury and conscious comfort.
             </p>
-            <ul className="space-y-5 text-sm md:text-base text-white/90 font-light max-w-md mx-auto font-futura-pt-light">
+            <ul className="space-y-5 text-sm md:text-base text-black/90 font-light max-w-md mx-auto font-futura-pt-light">
               <li className="flex items-start gap-4">
-                <Mail className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                <Mail className="w-5 h-5 text-black/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <span>You'll receive an email confirmation</span>
               </li>
               {/* <li className="flex items-start gap-4">
-                <Package className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                <Package className="w-5 h-5 text-black/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <span>Prepaid shipping label is generated</span>
               </li>
               <li className="flex items-start gap-4">
-                <Clock className="w-5 h-5 text-white/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                <Clock className="w-5 h-5 text-black/70 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                 <span>Inspection updates follow via email</span>
               </li> */}
             </ul>
-            <div className="mt-16 text-sm md:text-base text-white/60 font-light space-y-3 text-center font-futura-pt-light">
+            <div className="mt-16 text-sm md:text-base text-black/60 font-light space-y-3 text-center font-futura-pt-light">
               <div className="flex items-center justify-center gap-2">
-                <Mail className="w-4 h-4" strokeWidth={1.5} />
+                <Mail className="w-4 h-4 text-black" strokeWidth={1.5} />
                 <p>support@yobha.world</p>
               </div>
               <div className="flex items-center justify-center gap-2">
-                <Globe className="w-4 h-4" strokeWidth={1.5} />
+                <Globe className="w-4 h-4 text-black" strokeWidth={1.5} />
                 <p>yobha.world</p>
               </div>
             </div>

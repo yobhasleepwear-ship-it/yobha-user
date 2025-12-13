@@ -48,6 +48,8 @@ const [newsletter , setNewsletter]=useState("")
     if (typeof window !== "undefined") {
       window.localStorage.setItem("selectedCountry", JSON.stringify(chosen));
       window.dispatchEvent(new CustomEvent("yobha-country-change", { detail: chosen }));
+      // Refresh the page to update country in footer and other places
+      window.location.reload();
     }
   };
 
