@@ -17,7 +17,7 @@ const HeaderWithSidebar2 = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
 
-  const isHomePage = location.pathname === "/home";
+  const isHomePage = location.pathname === "/home" || location.pathname === "/";
 
   const dispatch = useDispatch();
   const cartCount = useSelector(state => state.cart.count);
