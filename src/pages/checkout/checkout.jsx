@@ -10,6 +10,7 @@ import { createOrder, updatePayment } from "../../service/orderService";
 import { removeKey, setValue, getValue } from "../../service/localStorageService";
 import { useSelector, useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
+import { getPinCodeDetails } from "../../service/delivery";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -131,7 +132,9 @@ const CheckoutPage = () => {
   // Fetch addresses and cart
   useEffect(() => {
     fetchAddresses();
-
+    if(address){
+      getPinCodeDetail(address.pincode)
+    }
 
     if ((checkoutProd && (checkoutProd.length > 0 || (checkoutProd.items && checkoutProd.items.length > 0))) || pageProps == 'buynow') {
       const items = checkoutProd?.items || checkoutProd || []
@@ -216,6 +219,14 @@ const CheckoutPage = () => {
   }, [cartItems, userAddresses]);
 
   // Helper function to normalize address from API format to form format
+  const getPinCodeDetail = async (pinCode) => {
+    try { 
+      const data = await getPinCodeDetails(826001);
+      console.log(data, "pincode details")
+    } catch (error) {
+      console.error("Error fetching pin code details:", error);
+    }
+  };
   const normalizeAddress = (addr) => {
     if (!addr) return null;
     return {

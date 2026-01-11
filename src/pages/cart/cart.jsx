@@ -473,7 +473,7 @@ const CartPage = () => {
                       })()}
                     </div>
 
-                    <div className="flex justify-between text-sm md:text-base">
+                    {/* <div className="flex justify-between text-sm md:text-base">
                       <span className="text-text-medium  font-futura-pt-light">Shipping</span>
                       {totals.shipping === 0 ? (
                         <span className="text-black font-light font-futura-pt-light">Free</span>
@@ -488,7 +488,7 @@ const CartPage = () => {
                           );
                         })()
                       )}
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex justify-between pt-4 pb-4 md:pb-6 border-b border-text-light/20">
@@ -507,12 +507,12 @@ const CartPage = () => {
 
                   {totals.shipping === 0 && (
                     <div className="space-y-3 py-4 border-b border-text-light/20">
-                      <div className="flex items-start gap-3">
+                      {/* <div className="flex items-start gap-3">
                         <Truck size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Free Shipping</p>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="flex items-start gap-3">
                         <RotateCcw size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                         <div className="flex-1 min-w-0">
