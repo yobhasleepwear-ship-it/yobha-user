@@ -19,3 +19,12 @@ export const getBuybackDetails = async ()=>{
         console.error(err)
     }
 }
+export const createBuybackPayment = async (buybackId) => {
+  try {
+    const response = await axiosService.Post(`/buyback/pay/${buybackId}`);
+    return response.data;
+  } catch (error) {
+    console.error("createBuybackPayment error:", error);
+    throw error;
+  }
+};

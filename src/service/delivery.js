@@ -1,12 +1,12 @@
-import axios from "axios";
+import * as axiosService from "./axiosService";
 
 // Replace with your actual token
 const DELHIVERY_TOKEN = "5e4dadacd6a2f52a891d608f37c9738d4f95f394";
 
 export const getPinCodeDetails = async (pinCode) => {
   try {
-    const response = await axios.get(
-      `https://track.delhivery.com/c/api/pin-codes/json/?filter_codes=${pinCode}`,
+    const response = await axiosService.Get(
+      `/Delivery/pincode/${pinCode}`,
       {
         headers: {
           Authorization: `Token ${DELHIVERY_TOKEN}`,

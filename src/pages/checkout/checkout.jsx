@@ -35,7 +35,7 @@ const CheckoutPage = () => {
   console.log(checkoutProd, selectedCountry, selectedSize, quantity, "product")
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {  giftCardAmount, currency, orderCountry } = useSelector(
+  const { giftCardAmount, currency, orderCountry } = useSelector(
     (state) => state.giftCard
   );
   // Address State
@@ -132,7 +132,7 @@ const CheckoutPage = () => {
   // Fetch addresses and cart
   useEffect(() => {
     fetchAddresses();
-    if(address){
+    if (address) {
       getPinCodeDetail(address.pincode)
     }
 
@@ -220,7 +220,7 @@ const CheckoutPage = () => {
 
   // Helper function to normalize address from API format to form format
   const getPinCodeDetail = async (pinCode) => {
-    try { 
+    try {
       const data = await getPinCodeDetails(826001);
       console.log(data, "pincode details")
     } catch (error) {
@@ -299,7 +299,7 @@ const CheckoutPage = () => {
         const monogramValue = (item.monogram || "").trim();
         const noteValue = (item.note || "").trim();
         let combinedMonogramNote = "";
-        
+
         if (monogramValue && noteValue) {
           combinedMonogramNote = `${monogramValue}-${noteValue}`;
         } else if (monogramValue) {
@@ -307,7 +307,7 @@ const CheckoutPage = () => {
         } else if (noteValue) {
           combinedMonogramNote = noteValue;
         }
-        
+
         return {
           id: item.id,
           size: item.size,
@@ -349,12 +349,12 @@ const CheckoutPage = () => {
         "paymentMethod": "razorpay",
         "giftCardAmount": giftCardAmount,
         "email": email,
-        "orderCountry": orderCountry 
-        
+        "orderCountry": orderCountry
+
       }
 
 
-      const orderRes = await createOrder(pageProps=="GiftCardPurchase"?giftCardPurchase: orderPayload);
+      const orderRes = await createOrder(pageProps == "GiftCardPurchase" ? giftCardPurchase : orderPayload);
       if (!orderRes.success) {
         message.error("Order creation failed ❌");
         return;
@@ -764,10 +764,39 @@ const CheckoutPage = () => {
   };
 
   // Get currency from cart items (assuming all items have the same currency)
+
   const getCurrency = () => {
-    if (!cartItems || cartItems.length === 0) return 'INR';
-    const firstItem = cartItems[0];
-    return firstItem?.product?.currency || 'INR';
+    const selectedCartItems = cartItems
+
+    // Default currency if no items selected
+    if (!selectedCartItems || selectedCartItems.length === 0) return 'INR';
+
+    // Mapping of country code to currency code
+    const countryCurrencyMap = [
+      { code: "IN", currency: "INR" },
+      { code: "AE", currency: "AED" },
+      { code: "SA", currency: "SAR" },
+      { code: "QA", currency: "QAR" },
+      { code: "KW", currency: "KWD" },
+      { code: "OM", currency: "OMR" },
+      { code: "BH", currency: "BHD" },
+      { code: "JO", currency: "JOD" },
+      { code: "LB", currency: "LBP" },
+      { code: "EG", currency: "EGP" },
+      { code: "IQ", currency: "IQD" },
+      { code: "US", currency: "USD" },
+      { code: "UK", currency: "GBP" },
+      { code: "CA", currency: "CAD" },
+      { code: "AU", currency: "AUD" }
+    ];
+
+    const countryCode = selectedCartItems[0]?.country;
+
+    // Find matching currency for the country
+    const matched = countryCurrencyMap.find(item => item.code === countryCode);
+
+    // Return matched currency, or default to INR
+    return matched ? matched.currency : 'INR';
   };
 
   // Format price based on currency - same as product description page

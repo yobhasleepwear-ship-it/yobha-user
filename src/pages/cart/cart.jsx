@@ -11,10 +11,10 @@ import { message } from "../../comman/toster-message/ToastContainer";
  */
 const formatPrice = (price, currency) => {
   if (typeof price !== 'number' || price === 0) return '0';
-  
+
   // Ensure currency is uppercase and valid
   const currencyCode = currency ? currency.toUpperCase() : 'INR';
-  
+
   // Currency symbol mapping
   const currencySymbols = {
     'INR': '₹',
@@ -30,15 +30,15 @@ const formatPrice = (price, currency) => {
     'EGP': 'EGP',
     'IQD': 'IQD'
   };
-  
+
   const symbol = currencySymbols[currencyCode] || currencyCode;
-  
+
   // Format the number with commas
   const formattedNumber = price.toLocaleString('en-IN', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   });
-  
+
   return { symbol, number: formattedNumber };
 };
 
@@ -173,7 +173,7 @@ const CartPage = () => {
   };
 
 
-  const removeItem = (itemId, size ,color) => {
+  const removeItem = (itemId, size, color) => {
     const itemKey = `${itemId}_${size || ""}`;
     setCartItems((prevCart) => {
       const updated = prevCart.filter(item => !(item.id === itemId && item.size === size && item.color === color));
@@ -192,19 +192,19 @@ const CartPage = () => {
 
   const getCorrectPrice = (item) => {
     if (!item) return 0;
-    
+
     const product = item || {};
     const priceList = item?.priceList || product?.priceList || [];
-    
+
     if (!Array.isArray(priceList) || priceList.length === 0) {
       return product?.unitPrice || item?.price || product?.price || 0;
     }
-    
+
     const matchingPrice = priceList.find(price =>
       price && price.country === (product.country || item.country) &&
       price.size === (item.size || product.size)
     );
-    
+
     return matchingPrice?.priceAmount || product?.unitPrice || item?.price || product?.price || 0;
   };
 
@@ -221,10 +221,39 @@ const CartPage = () => {
   };
 
   const getCurrency = () => {
-    const selectedCartItems = getSelectedCartItems();
-    if (!selectedCartItems || selectedCartItems.length === 0) return 'INR';
-    return selectedCartItems[0]?.product?.currency || 'INR';
-  };
+  const selectedCartItems = getSelectedCartItems();
+
+  // Default currency if no items selected
+  if (!selectedCartItems || selectedCartItems.length === 0) return 'INR';
+
+  // Mapping of country code to currency code
+  const countryCurrencyMap = [
+    { code: "IN", currency: "INR" },
+    { code: "AE", currency: "AED" },
+    { code: "SA", currency: "SAR" },
+    { code: "QA", currency: "QAR" },
+    { code: "KW", currency: "KWD" },
+    { code: "OM", currency: "OMR" },
+    { code: "BH", currency: "BHD" },
+    { code: "JO", currency: "JOD" },
+    { code: "LB", currency: "LBP" },
+    { code: "EG", currency: "EGP" },
+    { code: "IQ", currency: "IQD" },
+    { code: "US", currency: "USD" },
+    { code: "UK", currency: "GBP" },
+    { code: "CA", currency: "CAD" },
+    { code: "AU", currency: "AUD" }
+  ];
+
+  const countryCode = selectedCartItems[0]?.country;
+
+  // Find matching currency for the country
+  const matched = countryCurrencyMap.find(item => item.code === countryCode);
+
+  // Return matched currency, or default to INR
+  return matched ? matched.currency : 'INR';
+};
+
 
 
   const calculateTotals = () => {
@@ -299,151 +328,151 @@ const CartPage = () => {
               {/* Single Container for All Products - Myntra Style */}
               <div className="bg-white border border-text-light/20 overflow-hidden">
                 {cartItems.map((item, index) => {
-                const product = item || {};
-                const itemKey = getItemKey(item);
-                const isWishlisted = wishlistedItems.has(itemKey);
-                const isSelected = selectedItems.has(itemKey);
-                
-                // Get price info
-                const priceList = product.priceList || item.priceList || [];
-                const matchedPrice = priceList.find(
-                  (e) =>
-                    e.country?.trim().toUpperCase() === (product.country || item.country)?.trim().toUpperCase() &&
-                    e.size?.trim().toUpperCase() === (product.size || item.size)?.trim().toUpperCase()
-                );
-                const currency = matchedPrice?.currency || product.currency || item.currency || 'INR';
-                const priceAmount = matchedPrice?.priceAmount || product.unitPrice || item.price || product.price || 0;
-                const priceFormatted = formatPrice(priceAmount, currency);
-                
-                return (
-                  <div 
-                    key={item.id + item.size} 
-                    className={`flex items-center gap-2 sm:gap-3 md:gap-4 px-3 sm:px-4 md:px-5 py-3 sm:py-4 border-b ${index === cartItems.length - 1 ? 'border-b-0' : 'border-text-light/20'} ${isSelected ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-50/50 transition-colors overflow-hidden`}
-                  >
-                    {/* Checkbox */}
-                    <div className="flex items-center flex-shrink-0">
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => handleItemSelect(item)}
-                          className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-black focus:ring-offset-0 text-black cursor-pointer accent-black"
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </label>
-                    </div>
-                    
-                    {/* Image - Myntra style compact */}
-                    <div 
-                      className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0 bg-premium-beige overflow-hidden rounded cursor-pointer"
-                      onClick={() => navigate(`/productDetail/${product.id}`)}
+                  const product = item || {};
+                  const itemKey = getItemKey(item);
+                  const isWishlisted = wishlistedItems.has(itemKey);
+                  const isSelected = selectedItems.has(itemKey);
+
+                  // Get price info
+                  const priceList = product.priceList || item.priceList || [];
+                  const matchedPrice = priceList.find(
+                    (e) =>
+                      e.country?.trim().toUpperCase() === (product.country || item.country)?.trim().toUpperCase() &&
+                      e.size?.trim().toUpperCase() === (product.size || item.size)?.trim().toUpperCase()
+                  );
+                  const currency = matchedPrice?.currency || product.currency || item.currency || 'INR';
+                  const priceAmount = matchedPrice?.priceAmount || product.unitPrice || item.price || product.price || 0;
+                  const priceFormatted = formatPrice(priceAmount, currency);
+
+                  return (
+                    <div
+                      key={item.id + item.size}
+                      className={`flex items-center gap-2 sm:gap-3 md:gap-4 px-3 sm:px-4 md:px-5 py-3 sm:py-4 border-b ${index === cartItems.length - 1 ? 'border-b-0' : 'border-text-light/20'} ${isSelected ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-50/50 transition-colors overflow-hidden`}
                     >
-                      <img 
-                        src={
-                          (product.images && Array.isArray(product.images) && product.images.length > 0)
-                            ? (product.images[0]?.thumbnailUrl || product.images[0]?.url || product.images[0] || product.thumbnailUrl || product.image || '')
-                            : (product.thumbnailUrl || product.image || '')
-                        } 
-                        alt={product.name || 'Product'} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'} 
-                      />
-                    </div>
+                      {/* Checkbox */}
+                      <div className="flex items-center flex-shrink-0">
+                        <label className="flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleItemSelect(item)}
+                            className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-black focus:ring-offset-0 text-black cursor-pointer accent-black"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </label>
+                      </div>
 
-                    {/* Product Details - Myntra style horizontal layout */}
-                    <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4 overflow-hidden">
-                      {/* Left: Product Info */}
-                      <div className="flex-1 min-w-0 overflow-hidden">
-                        <h3 
-                          className="font-light text-black text-xs sm:text-sm md:text-base mb-1 line-clamp-2 hover:underline cursor-pointer font-futura-pt-book"
-                          onClick={() => navigate(`/productDetail/${product.id}`)}
-                        >
-                          {product.name}
-                        </h3>
-                        
-                        {/* Product Options - Inline compact */}
-                        <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-0.5 text-xs text-text-medium mb-1 font-futura-pt-light">
-                          {product.color && (
-                            <span className="text-text-medium">
-                              Color: <span className="text-black font-light">{product.color}</span>
-                            </span>
-                          )}
-                          {item.size && (
-                            <span className="text-text-medium">
-                              Size: <span className="text-black font-light">{item.size}</span>
-                            </span>
-                          )}
-                        </div>
-                        
-                        {/* Monogram badge */}
-                        {item.monogram && (
-                          <div className="inline-flex items-center border border-luxury-gold/30 bg-luxury-gold/5 px-2 py-0.5 text-xs text-luxury-gold font-futura-pt-light mt-1">
-                            <span className="font-light text-black font-futura-pt-light">{item.monogram}</span>
+                      {/* Image - Myntra style compact */}
+                      <div
+                        className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0 bg-premium-beige overflow-hidden rounded cursor-pointer"
+                        onClick={() => navigate(`/productDetail/${product.id}`)}
+                      >
+                        <img
+                          src={
+                            (product.images && Array.isArray(product.images) && product.images.length > 0)
+                              ? (product.images[0]?.thumbnailUrl || product.images[0]?.url || product.images[0] || product.thumbnailUrl || product.image || '')
+                              : (product.thumbnailUrl || product.image || '')
+                          }
+                          alt={product.name || 'Product'}
+                          className="w-full h-full object-cover"
+                          onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'}
+                        />
+                      </div>
+
+                      {/* Product Details - Myntra style horizontal layout */}
+                      <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4 overflow-hidden">
+                        {/* Left: Product Info */}
+                        <div className="flex-1 min-w-0 overflow-hidden">
+                          <h3
+                            className="font-light text-black text-xs sm:text-sm md:text-base mb-1 line-clamp-2 hover:underline cursor-pointer font-futura-pt-book"
+                            onClick={() => navigate(`/productDetail/${product.id}`)}
+                          >
+                            {product.name}
+                          </h3>
+
+                          {/* Product Options - Inline compact */}
+                          <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-0.5 text-xs text-text-medium mb-1 font-futura-pt-light">
+                            {product.color && (
+                              <span className="text-text-medium">
+                                Color: <span className="text-black font-light">{product.color}</span>
+                              </span>
+                            )}
+                            {item.size && (
+                              <span className="text-text-medium">
+                                Size: <span className="text-black font-light">{item.size}</span>
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </div>
 
-                      {/* Right: Price, Quantity, Actions - Myntra style */}
-                      <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
-                        {/* Price */}
-                        <div className="hidden sm:flex items-center flex-shrink-0">
-                          <span className="text-sm md:text-base font-light text-black font-futura-pt-light whitespace-nowrap">
-                            <span className="font-sans">{priceFormatted.symbol}</span>
-                            {priceFormatted.number}
-                          </span>
+                          {/* Monogram badge */}
+                          {item.monogram && (
+                            <div className="inline-flex items-center border border-luxury-gold/30 bg-luxury-gold/5 px-2 py-0.5 text-xs text-luxury-gold font-futura-pt-light mt-1">
+                              <span className="font-light text-black font-futura-pt-light">{item.monogram}</span>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Quantity Controls */}
-                        <div className="flex items-center border border-text-light/30 rounded flex-shrink-0">
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.size, -1)} 
-                            disabled={item.quantity <= 1} 
-                            className="p-1 sm:p-1.5 hover:bg-premium-beige transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
-                          >
-                            <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
-                          </button>
-                          <span className="px-2 sm:px-3 py-1 sm:py-1.5 font-light text-xs sm:text-sm md:text-base min-w-[28px] sm:min-w-[32px] text-center font-futura-pt-light flex-shrink-0">
-                            {item.quantity}
-                          </span>
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.size, 1)} 
-                            className="p-1 sm:p-1.5 hover:bg-premium-beige transition-colors flex-shrink-0"
-                          >
-                            <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
-                          </button>
-                        </div>
+                        {/* Right: Price, Quantity, Actions - Myntra style */}
+                        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
+                          {/* Price */}
+                          <div className="hidden sm:flex items-center flex-shrink-0">
+                            <span className="text-sm md:text-base font-light text-black font-futura-pt-light whitespace-nowrap">
+                              <span className="font-sans">{priceFormatted.symbol}</span>
+                              {priceFormatted.number}
+                            </span>
+                          </div>
 
-                        {/* Price on Mobile - Below quantity */}
-                        <div className="sm:hidden flex items-center flex-shrink-0">
-                          <span className="text-xs sm:text-sm font-light text-black font-futura-pt-light whitespace-nowrap">
-                            <span className="font-sans">{priceFormatted.symbol}</span>
-                            {priceFormatted.number}
-                          </span>
-                        </div>
+                          {/* Quantity Controls */}
+                          <div className="flex items-center border border-text-light/30 rounded flex-shrink-0">
+                            <button
+                              onClick={() => updateQuantity(item.id, item.size, -1)}
+                              disabled={item.quantity <= 1}
+                              className="p-1 sm:p-1.5 hover:bg-premium-beige transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                            >
+                              <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
+                            </button>
+                            <span className="px-2 sm:px-3 py-1 sm:py-1.5 font-light text-xs sm:text-sm md:text-base min-w-[28px] sm:min-w-[32px] text-center font-futura-pt-light flex-shrink-0">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.size, 1)}
+                              className="p-1 sm:p-1.5 hover:bg-premium-beige transition-colors flex-shrink-0"
+                            >
+                              <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />
+                            </button>
+                          </div>
 
-                        {/* Action buttons */}
-                        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => handleAddToWishlist(item.id, item)}
-                            className={`transition-colors p-1 flex-shrink-0 ${isWishlisted ? "text-black-500 hover:text-premium-beige-600" : "text-text-medium hover:text-premium-beige-500"}`}
-                            aria-label="Add to wishlist"
-                          >
-                            <Heart className="w-4 h-4 sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px]" strokeWidth={1.5} fill={isWishlisted ? "currentColor" : "none"} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => removeItem(item.id, item.size ,item.color)}
-                            className="text-text-medium hover:text-black transition-colors p-1 flex-shrink-0"
-                            aria-label="Remove from cart"
-                          >
-                            <Trash2 className="w-4 h-4 sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px]" strokeWidth={1.5} />
-                          </button>
+                          {/* Price on Mobile - Below quantity */}
+                          <div className="sm:hidden flex items-center flex-shrink-0">
+                            <span className="text-xs sm:text-sm font-light text-black font-futura-pt-light whitespace-nowrap">
+                              <span className="font-sans">{priceFormatted.symbol}</span>
+                              {priceFormatted.number}
+                            </span>
+                          </div>
+
+                          {/* Action buttons */}
+                          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => handleAddToWishlist(item.id, item)}
+                              className={`transition-colors p-1 flex-shrink-0 ${isWishlisted ? "text-black-500 hover:text-premium-beige-600" : "text-text-medium hover:text-premium-beige-500"}`}
+                              aria-label="Add to wishlist"
+                            >
+                              <Heart className="w-4 h-4 sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px]" strokeWidth={1.5} fill={isWishlisted ? "currentColor" : "none"} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeItem(item.id, item.size, item.color)}
+                              className="text-text-medium hover:text-black transition-colors p-1 flex-shrink-0"
+                              aria-label="Remove from cart"
+                            >
+                              <Trash2 className="w-4 h-4 sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px]" strokeWidth={1.5} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
+                  );
                 })}
               </div>
             </div>

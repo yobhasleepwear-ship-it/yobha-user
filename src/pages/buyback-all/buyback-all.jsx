@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getBuybackDetails } from "../../service/buyback";
+import { createBuybackPayment, getBuybackDetails } from "../../service/buyback";
 import { Package, CreditCard, Clock, CheckCircle, XCircle, AlertCircle, Star, ArrowRight } from "lucide-react";
 
 const BuybackAll = () => {
 	const [requests, setRequests] = useState([]);
+	console.log(requests,"requests")
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
@@ -103,6 +104,17 @@ const BuybackAll = () => {
 			maximumFractionDigits: 0,
 		})}`;
 	};
+	const handlePayBuyback = async (buybackId) => {
+  try {
+    const result = await createBuybackPayment(buybackId);
+    console.log("Payment successful:", result);
+    // You can also update state or show a success message
+  } catch (error) {
+    console.error("Payment failed:", error);
+    alert("Payment failed. Please try again.");
+  }
+};
+
 
 	return (
 		<div className="min-h-screen bg-white font-futura-pt-light text-black">
@@ -233,7 +245,7 @@ const BuybackAll = () => {
 											<div>
 												<p className="text-base text-black mb-0.5 font-light font-futura-pt-book">Amount</p>
 												<p className="text-base font-light text-black font-futura-pt-light">
-													<span className="font-sans">
+													<span className="font-sans" onClick={()=>handlePayBuyback(req.id)}>
 														{req.amount !== null && req.amount !== undefined
 															? formatCurrency(req.amount, req.currency)
 															: formatCurrency(0, req.currency)}
