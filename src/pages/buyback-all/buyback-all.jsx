@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createBuybackPayment, getBuybackDetails } from "../../service/buyback";
 import { Package, CreditCard, Clock, CheckCircle, XCircle, AlertCircle, Star, ArrowRight } from "lucide-react";
+import { message } from "../../comman/toster-message/ToastContainer";
 
 const BuybackAll = () => {
 	const [requests, setRequests] = useState([]);
-	console.log(requests,"requests")
+	console.log(requests, "requests")
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
@@ -104,17 +105,67 @@ const BuybackAll = () => {
 			maximumFractionDigits: 0,
 		})}`;
 	};
-	const handlePayBuyback = async (buybackId) => {
-  try {
-    const result = await createBuybackPayment(buybackId);
-    console.log("Payment successful:", result);
-    // You can also update state or show a success message
-  } catch (error) {
-    console.error("Payment failed:", error);
-    alert("Payment failed. Please try again.");
-  }
-};
+	// 	const handlePayBuyback = async (buybackId) => {
+	//   try {
+	//     const result = await createBuybackPayment(buybackId);
+	//     console.log("Payment successful:", result);
+	//     // You can also update state or show a success message
+	//   } catch (error) {
+	//     console.error("Payment failed:", error);
+	//     alert("Payment failed. Please try again.");
+	//   }
+	// };
 
+	const handlePayBuyback = async (buybackId) => {
+		try {
+			// 1️⃣ Create / get Razorpay order
+			const buybackRes = await createBuybackPayment(buybackId);
+			console.log(buybackRes, "buybackRes")
+			if (!buybackRes.success) {
+				message.error("Payment initiation failed ❌");
+				return;
+			}
+
+			if (!buybackRes.data.razorpayOrderId) {
+				message.error("Razorpay order not found ❌");
+				return;
+			}
+
+			// 2️⃣ Razorpay options (same pattern as order)
+			const options = {
+				key: "rzp_test_Rb7lQAPEkEa2Aw",
+				amount: buybackRes.data.amount * 100, // amount in paise
+				currency: "INR",
+				order_id: buybackRes.data.razorpayOrderId,
+
+				handler: (response) => {
+					console.log("Buyback payment success:", response);
+
+					message.success("Buyback payment successful ✅");
+
+					// 👉 No API call after success (as requested)
+					// 👉 You can just update UI state here if needed
+				},
+
+				theme: {
+					color: "#0d6efd",
+				},
+			};
+
+			// 3️⃣ Open Razorpay
+			const rzp = new window.Razorpay(options);
+			rzp.open();
+
+			rzp.on("payment.failed", (response) => {
+				console.error("Buyback payment failed:", response.error);
+				message.error(response.error.description || "Payment failed ❌");
+			});
+
+		} catch (error) {
+			console.error("handlePayBuyback error:", error);
+			message.error("Something went wrong ❌");
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-white font-futura-pt-light text-black">
@@ -245,11 +296,14 @@ const BuybackAll = () => {
 											<div>
 												<p className="text-base text-black mb-0.5 font-light font-futura-pt-book">Amount</p>
 												<p className="text-base font-light text-black font-futura-pt-light">
-													<span className="font-sans" onClick={()=>handlePayBuyback(req.id)}>
-														{req.amount !== null && req.amount !== undefined
-															? formatCurrency(req.amount, req.currency)
-															: formatCurrency(0, req.currency)}
-													</span>
+													<button
+														type="button"
+														onClick={() => handlePayBuyback(req.id)}
+														className="font-sans cursor-pointer underline"
+													>
+														{formatCurrency(req.amount, req.currency)}
+													</button>
+
 												</p>
 											</div>
 											<div>
