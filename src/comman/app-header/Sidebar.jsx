@@ -131,14 +131,14 @@ const Sidebar = ({ isOpen, onClose }) => {
       window.location.reload();
     }
   };
-
+//toggle accordion function
   const toggleAccordion = (section) => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
   };
-
+//handle logout
   const handleLogout = () => {
     localStorageService.clearAllExcept(["selectedCountry", "cart"]);
     setIsAuthenticated(false);
