@@ -155,7 +155,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" },
     { label: "Personalisation", nav: "personalization", category: null },
   ];
-
+//main nav items
   const mainNavigationItems = [
     { label: "Gifts & Personalization", nav: "gifts-personalization", giftCard: true, hasSubmenu: true },
     { label: "New", nav: "whats-new", special: true },
