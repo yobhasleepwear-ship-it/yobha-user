@@ -388,7 +388,7 @@ const ProductCard = ({ product }) => {
               key={index}
               src={img}
               alt={`${productName} - ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover ${index === currentImageIndex
+              className={`absolute inset-0 w-full h-full object-contain ${index === currentImageIndex
                 ? 'opacity-100'
                 : 'opacity-0'
                 }`}
