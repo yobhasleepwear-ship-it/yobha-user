@@ -64,8 +64,8 @@ const HomePage2 = () => {
   ];
 
   // Hero Video URLs (for hero section)
-  const portraitVideo = "https://vod.freecaster.com/louisvuitton/a04723c9-c426-48c6-9e45-b3cc5fecceba/yRedHpMc1t34Pr5gScX3GF4J_3.mp4";
-  const landscapeVideo = "https://vod.freecaster.com/louisvuitton/a04723ab-0c87-48cd-9a64-130562635d71/NEdEFmAPqMS9gxd4rFYAQRDw_11.mp4";
+  const portraitVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2FWhatsApp%20Video%202026-01-15%20at%2021.43.56.mp4?alt=media&token=89f48923-2c77-48b8-894d-fde7022a0624";
+  const landscapeVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2FWhatsApp%20Video%202026-01-15%20at%2021.43.56.mp4?alt=media&token=89f48923-2c77-48b8-894d-fde7022a0624";
 
   useEffect(() => {
     if(products.length===0){

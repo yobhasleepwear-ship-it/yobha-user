@@ -386,6 +386,7 @@ const CheckoutPage = () => {
           // Remove only ordered items from cart, keep unselected items
           removeOrderedItemsFromCart(cartItems);
           setCartItems([])
+          navigate("/orders"); 
         },
       };
 
