@@ -26,6 +26,20 @@ export const getPinCodeDetails = async (pinCode) => {
   }
 };
 
+export const TrackOrder = async (waybillNumber) => {
+  try {
+    const response = await axiosService.Get(
+      `/Delivery/track/${waybillNumber}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("TrackOrder error:", error);
+    throw error;
+  }
+};
+
+
+
 // Usage example
 // (async () => {
 //   const details = await getPinCodeDetails("560017");

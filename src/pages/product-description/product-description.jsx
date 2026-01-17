@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ShoppingBag,
@@ -192,6 +192,15 @@ const ProductDetailPage = () => {
 
   // const [selectedCountry] = useState(parsedCountry);
   const [cartItem, setCartItems] = useState([])
+  const IMAGES_PER_COLOR = 4;
+  const [colorIndex, setColorIndex] = useState(0);
+  const [productImage , setProductImage] = useState([])
+    const selectedImages = useMemo(() => {
+    const start = colorIndex * IMAGES_PER_COLOR;
+    const end = start + IMAGES_PER_COLOR;
+    return productImage.slice(start, end);
+  }, [colorIndex, productImage]);
+  console.log(productImage , "productImage")
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState('');
@@ -301,6 +310,7 @@ const ProductDetailPage = () => {
     try {
       const response = await getProductDescription(productId);
       setProduct(response.data);
+        setProductImage(response.data.images)
       setAverageProdRating(() => {
         const reviews = response.data.reviews || [];
         if (reviews.length === 0) return 0;
@@ -458,6 +468,7 @@ const ProductDetailPage = () => {
       const response = await getFilteredProducts(payload);
       if (response && response.success && response.data) {
         setProducts(response.data.items || []);
+        
       } else {
         setProducts([]);
       }
@@ -901,7 +912,7 @@ const ProductDetailPage = () => {
               <div className="relative w-full h-full">
                 {/* Mobile: Horizontal Layout */}
                 <div className="flex flex-row lg:hidden h-full">
-                  {product.images.map((image, index) => (
+                  {selectedImages.map((image, index) => (
                     <div 
                       key={index}
                       className="w-full flex items-center justify-center flex-shrink-0 h-full"
@@ -924,7 +935,7 @@ const ProductDetailPage = () => {
                 </div>
                 {/* Desktop: Vertical Layout */}
                 <div className="hidden lg:flex flex-col h-full">
-                  {product.images.map((image, index) => (
+                  {selectedImages.map((image, index) => (
                     <div 
                       key={index}
                       className="w-full flex items-center justify-center flex-shrink-0 h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px]"
@@ -960,7 +971,7 @@ const ProductDetailPage = () => {
               <>
                 {/* Mobile: Bottom Center */}
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-2 z-20 lg:hidden">
-                  {product.images.map((_, index) => (
+                  {selectedImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => {
@@ -982,7 +993,7 @@ const ProductDetailPage = () => {
                 </div>
                 {/* Desktop: Left Middle */}
                 <div className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
-                  {product.images.map((_, index) => (
+                  {selectedImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => {
@@ -1079,12 +1090,13 @@ const ProductDetailPage = () => {
                   </span>
                 </div>
                 <div className="flex gap-1.5 overflow-x-auto pb-1 pt-1 scrollbar-hide px-1 -mx-1">
-                  {product?.availableColors.map((color) => (
+                  {product?.availableColors.map((color ,index) => (
                     <button
                       key={color}
                       onClick={() => {
                         setSelectedColor(color);
                         setItemAddedToCart(false);
+                        setColorIndex(index);
                       }}
                       className={`flex-shrink-0 px-3 py-1.5 border transition-all duration-300 text-md lg:text-md md:text-md sm:text-sm font-light rounded-full relative group min-h-[28px] flex items-center justify-center ${selectedColor === color
                         ? 'border-black bg-black text-white'

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  ArrowLeft, Package, Truck, CheckCircle2, XCircle, 
+import {
+  ArrowLeft, Package, Truck, CheckCircle2, XCircle,
   Clock, MapPin, Phone, Mail, Gift, RotateCcw, X
 } from "lucide-react";
 import { getOrderDetails } from "../../service/order";
 import { createReturn } from "../../service/returns";
 import { message } from "../../comman/toster-message/ToastContainer";
 import ImageUploader from "../../comman/Image-Uploader/ImageUploader";
+import { TrackOrder } from "../../service/delivery";
 
 /**
  * Helper function to safely format order detail data from API
@@ -26,30 +27,30 @@ const formatOrderDetailData = (orderData) => {
     orderNo: data?.orderNo || data?.id || '',
     orderNumber: data?.orderNumber, // Prioritize orderNumber from API
     userId: data?.userId || '',
-    
+
     // Gift Card Info
     giftCardNumber: data?.giftCardNumber || null,
     giftCardAmount: data?.giftCardAmount || null,
-    
+
     // Items with null checks
     items: Array.isArray(data?.items) && data.items.length > 0
       ? data.items.map(item => ({
-          productId: item?.productId || '',
-          productObjectId: item?.productObjectId || '',
-          productName: item?.productName || 'Untitled Product',
-          variantSku: item?.variantSku || '',
-          variantId: item?.variantId || '',
-          quantity: typeof item?.quantity === 'number' ? item.quantity : 0,
-          unitPrice: typeof item?.unitPrice === 'number' ? item.unitPrice : 0,
-          lineTotal: typeof item?.lineTotal === 'number' ? item.lineTotal : 0,
-          compareAtPrice: typeof item?.compareAtPrice === 'number' ? item.compareAtPrice : null,
-          currency: item?.currency || 'INR',
-          thumbnailUrl: item?.thumbnailUrl || item?.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+',
-          slug: item?.slug || '',
-          isReturned : item?.isReturned || false,
-        }))
+        productId: item?.productId || '',
+        productObjectId: item?.productObjectId || '',
+        productName: item?.productName || 'Untitled Product',
+        variantSku: item?.variantSku || '',
+        variantId: item?.variantId || '',
+        quantity: typeof item?.quantity === 'number' ? item.quantity : 0,
+        unitPrice: typeof item?.unitPrice === 'number' ? item.unitPrice : 0,
+        lineTotal: typeof item?.lineTotal === 'number' ? item.lineTotal : 0,
+        compareAtPrice: typeof item?.compareAtPrice === 'number' ? item.compareAtPrice : null,
+        currency: item?.currency || 'INR',
+        thumbnailUrl: item?.thumbnailUrl || item?.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+',
+        slug: item?.slug || '',
+        isReturned: item?.isReturned || false,
+      }))
       : [],
-    
+
     // Pricing
     subTotal: typeof data?.subTotal === 'number' ? data.subTotal : (data?.totalAmount || 0),
     shipping: typeof data?.shipping === 'number' ? data.shipping : 0,
@@ -57,7 +58,7 @@ const formatOrderDetailData = (orderData) => {
     discount: typeof data?.discount === 'number' ? data.discount : 0,
     total: typeof data?.total === 'number' ? data.total : (data?.totalAmount || data?.giftCardAmount || 0),
     totalAmount: typeof data?.totalAmount === 'number' ? data.totalAmount : (data?.total || data?.giftCardAmount || 0),
-    
+
     // Status and dates
     status: data?.status || data?.paymentStatus || 'Pending',
     paymentStatus: data?.paymentStatus || data?.status || 'Pending',
@@ -77,7 +78,7 @@ const formatOrderDetailData = (orderData) => {
  */
 const getStatusInfo = (status) => {
   const normalizedStatus = (status || '').toLowerCase();
-  
+
   const statusMap = {
     paid: {
       icon: CheckCircle2,
@@ -128,7 +129,7 @@ const getStatusInfo = (status) => {
       bg: "bg-gray-100",
     }
   };
-  
+
   return statusMap[normalizedStatus] || statusMap.pending;
 };
 
@@ -137,7 +138,7 @@ const getStatusInfo = (status) => {
  */
 const formatPrice = (price, currency = 'INR') => {
   if (price === null || price === undefined || price === "") return "0";
-  
+
   const numericAmount = Number(price || 0);
   if (Number.isNaN(numericAmount)) {
     return String(price || 0);
@@ -173,13 +174,94 @@ const formatPrice = (price, currency = 'INR') => {
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-IN', { 
-    day: 'numeric', 
-    month: 'short', 
+  return date.toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
   });
+};
+const TrackingModal = ({ isOpen, onClose, trackingData }) => {
+  if (!isOpen) return null;
+  const formatDateTime = (dateTime) => {
+    if (!dateTime) return "N/A";
+
+    const date = new Date(dateTime.replace(" ", "T"));
+
+    return date.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const status =
+    trackingData?.ShipmentData?.[0]?.Shipment?.Status;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white w-full max-w-md mx-4 rounded-lg shadow-lg relative">
+
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-lg font-medium text-black font-futura-pt-book">
+            Shipment Tracking
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-black text-xl font-light hover:opacity-70"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-6 space-y-4">
+          <div>
+            <p className="text-sm text-gray-500 font-futura-pt-light">
+              Current Status
+            </p>
+            <p className="text-base text-black font-futura-pt-book">
+              {status?.Status || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-500 font-futura-pt-light">
+              Location
+            </p>
+            <p className="text-base text-black font-futura-pt-book">
+              {status?.StatusLocation || "N/A"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-500 font-futura-pt-light">
+              Date & Time
+            </p>
+            <p className="text-base text-black font-futura-pt-book">
+              {formatDateTime(status?.StatusDateTime)}
+            </p>
+          </div>
+
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="w-full py-2 text-sm font-medium text-white bg-black rounded hover:bg-gray-800 transition"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const OrderDetailPage = () => {
@@ -191,7 +273,7 @@ const OrderDetailPage = () => {
   console.log(order)
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Return State
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [selectedReturnItems, setSelectedReturnItems] = useState([]);
@@ -199,7 +281,8 @@ const OrderDetailPage = () => {
   const [returnImages, setReturnImages] = useState([]);
   const [returnReason, setReturnReason] = useState("");
   const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
-
+  const [isTrackingOpen, setIsTrackingOpen] = useState(false);
+  const [trackingData, setTrackingData] = useState(null);
   // Fetch order details
   useEffect(() => {
     const fetchOrderDetail = async () => {
@@ -214,11 +297,11 @@ const OrderDetailPage = () => {
 
       try {
         const response = await getOrderDetails(orderId);
-        
+
         if (response) {
           // Log raw API response to see the actual structure
           console.log('Raw Order API Response:', response);
-          
+
           const formattedOrder = formatOrderDetailData(response);
           if (formattedOrder) {
             // Extract orderNumber from API response - API returns orderNumber field
@@ -229,8 +312,8 @@ const OrderDetailPage = () => {
             } else if (apiData.orderNo) {
               formattedOrder.orderNumber = apiData.orderNo;
             }
-       
-            
+
+
             setOrder(formattedOrder);
           } else {
             setError('Invalid order data received');
@@ -259,6 +342,15 @@ const OrderDetailPage = () => {
       setReturnReasons(newReasons);
     } else {
       setSelectedReturnItems([...selectedReturnItems, item]);
+    }
+  };
+  const handleTrackOrder = async (awb) => {
+    try {
+      const data = await TrackOrder(awb);
+      setTrackingData(data);
+      setIsTrackingOpen(true);
+    } catch (error) {
+      console.error("Tracking failed", error);
     }
   };
 
@@ -299,8 +391,8 @@ const OrderDetailPage = () => {
 
       // Use orderNumber from API response - this should match what comes from orders API
       // Prioritize orderNumber as it's the field name used in orders API response
-      const orderNumber = order.orderNumber ;
-      
+      const orderNumber = order.orderNumber;
+
       const payload = {
         orderNumber: orderNumber,
         items: items,
@@ -311,14 +403,14 @@ const OrderDetailPage = () => {
       // Debug: Log payload to verify correct orderNumber
       console.log('Return Payload:', payload);
       console.log('Order Number used:', orderNumber);
-      console.log('Order object fields:', { 
-        orderNumber: order.orderNumber, 
-        orderNo: order.orderNo, 
-        id: order.id 
+      console.log('Order object fields:', {
+        orderNumber: order.orderNumber,
+        orderNo: order.orderNo,
+        id: order.id
       });
 
       const response = await createReturn(payload);
-      
+
       if (response) {
         message.success("Return request submitted successfully");
         setShowReturnModal(false);
@@ -383,14 +475,14 @@ const OrderDetailPage = () => {
   }
 
   const isGiftCard = order.giftCardNumber;
-  const statusInfo = getStatusInfo( order.paymentStatus);
+  const statusInfo = getStatusInfo(order.paymentStatus);
   const StatusIcon = statusInfo.icon;
   const totalItems = order.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
   return (
     <div className="bg-white min-h-screen font-futura-pt-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12">
-        
+
         {/* Back Button & Page Header */}
         <div className="mb-8 md:mb-10">
           <button
@@ -410,7 +502,7 @@ const OrderDetailPage = () => {
               <p className="text-sm text-black font-light font-futura-pt-light">
                 Order ID: <span className="font-futura-pt-light font-light">{order.orderNumber || order.id}</span>
               </p>
-              
+
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 ${statusInfo.bg} border border-gray-200`}>
                 <StatusIcon size={14} className={statusInfo.color} strokeWidth={1.5} />
                 <span className={`text-xs font-light font-futura-pt-light ${statusInfo.color}`}>
@@ -429,10 +521,10 @@ const OrderDetailPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-          
+
           {/* Left Column - Order Items & Details */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* Gift Card Info */}
             {isGiftCard && (
               <div className="bg-white border border-gray-200">
@@ -478,16 +570,16 @@ const OrderDetailPage = () => {
 
                 <div className="p-4 sm:p-5 md:p-6 space-y-4">
                   {order.items.map((item, index) => {
-                    const savingsAmount = item.compareAtPrice 
+                    const savingsAmount = item.compareAtPrice
                       ? (item.compareAtPrice - item.unitPrice) * item.quantity
                       : 0;
 
                     return (
-                      <div 
+                      <div
                         key={`${item.productId}-${index}`}
                         className="flex gap-4 pb-4 border-b border-gray-200 last:border-0 last:pb-0"
                       >
-                        <div 
+                        <div
                           className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 flex-shrink-0 bg-gray-50 border border-gray-200 overflow-hidden cursor-pointer"
                           onClick={() => item.productId && navigate(`/productDetail/${item.productId}`)}
                         >
@@ -502,13 +594,13 @@ const OrderDetailPage = () => {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <h3 
+                          <h3
                             className="font-light text-black text-base mb-2 line-clamp-2 hover:underline cursor-pointer font-futura-pt-book"
                             onClick={() => item.productId && navigate(`/productDetail/${item.productId}`)}
                           >
                             {item.productName}
                           </h3>
-                          
+
                           <div className="space-y-1 mb-3">
                             {item.variantSku && (
                               <p className="text-sm font-light text-black font-futura-pt-light">
@@ -582,7 +674,7 @@ const OrderDetailPage = () => {
                         Landmark: {order.shippingAddress.landmark}
                       </p>
                     )}
-                    
+
                     <div className="pt-3 mt-3 border-t border-gray-200 space-y-1">
                       {order.shippingAddress.mobileNumner && (
                         <div className="flex items-center gap-2 text-black text-sm font-light font-futura-pt-light">
@@ -671,14 +763,20 @@ const OrderDetailPage = () => {
                 </div>
 
                 {/* Tracking & Delivery Info */}
-                {order.trackingNumber && (
+                {order?.deliveryDetails?.awb  && (
                   <div className="py-4 border-b border-gray-200">
                     <p className="text-base font-light text-black mb-0.5 font-futura-pt-book">
                       Tracking Number
                     </p>
                     <p className="text-base font-light text-black font-futura-pt-light">
-                      {order.trackingNumber}
+                      {order?.deliveryDetails?.awb}
                     </p>
+                    <button
+                      onClick={() => handleTrackOrder(order?.deliveryDetails?.awb)}
+                      className="px-4 py-2 text-sm font-medium text-white bg-black rounded hover:bg-gray-800 transition"
+                    >
+                      Track Order
+                    </button>
                   </div>
                 )}
 
@@ -689,8 +787,8 @@ const OrderDetailPage = () => {
                       <div>
                         <p className="text-base font-light text-black mb-0.5 font-futura-pt-book">Estimated Delivery</p>
                         <p className="text-base font-light text-black font-futura-pt-light">
-                          {new Date(order.estimatedDelivery).toLocaleDateString('en-IN', { 
-                            day: 'numeric', 
+                          {new Date(order.estimatedDelivery).toLocaleDateString('en-IN', {
+                            day: 'numeric',
                             month: 'long',
                             year: 'numeric'
                           })}
@@ -720,11 +818,11 @@ const OrderDetailPage = () => {
                   {!isGiftCard && order.items && order.items.length > 0 && (() => {
                     const status = (order.status || order.paymentStatus || '').toLowerCase();
                     const canReturn = ['delivered', 'shipped', 'confirmed', 'processing', 'pending'].includes(status);
-                    
+
                     // Debug: Uncomment to see status in console
                     // console.log('Order Status:', status, 'Can Return:', canReturn, 'Order:', order);
-                    
-                    return canReturn || order.isReturned !== true? (
+
+                    return canReturn || order.isReturned !== true ? (
                       <button
                         onClick={() => setShowReturnModal(true)}
                         className="w-full border border-gray-300 text-black py-3 font-light hover:border-black hover:bg-gray-50 transition-colors text-xs sm:text-sm font-futura-pt-light flex items-center justify-center gap-2"
@@ -795,13 +893,12 @@ const OrderDetailPage = () => {
                   {order.items.map((item, index) => {
                     const itemKey = `${item.productId}-${item.productObjectId}`;
                     const isSelected = selectedReturnItems.some(i => `${i.productId}-${i.productObjectId}` === itemKey);
-                    
+
                     return (
                       <div
                         key={`${item.productId}-${index}`}
-                        className={`p-3 sm:p-4 cursor-pointer transition-colors ${
-                          isSelected ? "bg-gray-50" : "hover:bg-gray-50"
-                        }`}
+                        className={`p-3 sm:p-4 cursor-pointer transition-colors ${isSelected ? "bg-gray-50" : "hover:bg-gray-50"
+                          }`}
                         onClick={() => handleReturnItemToggle(item)}
                       >
                         <div className="flex items-start gap-3">
@@ -810,12 +907,12 @@ const OrderDetailPage = () => {
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => handleReturnItemToggle(item)}
-                              disabled={item.isReturned} 
+                              disabled={item.isReturned}
                               className="w-4 h-4 border-gray-300 text-black focus:ring-black cursor-pointer"
                               onClick={(e) => e.stopPropagation()}
                             />
                           </div>
-                          
+
                           <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 bg-gray-50 overflow-hidden">
                             <img
                               src={item.thumbnailUrl}
@@ -829,7 +926,7 @@ const OrderDetailPage = () => {
 
                           <div className="flex-1 min-w-0">
                             <h3 className="text-xs sm:text-sm font-light text-black mb-1 font-futura-pt-light">
-                              {item.productName} 
+                              {item.productName}
                             </h3>
                             <p className="text-sm text-black font-light font-futura-pt-light">
                               Qty: {item.quantity} × <span className="font-sans">{formatPrice(item.unitPrice, item.currency)}</span>
@@ -839,13 +936,13 @@ const OrderDetailPage = () => {
                                 SKU: {item.variantSku}
                               </p>
                             )}
-                            {item.isReturned&& <h3 className="text-xs sm:text-sm font-light text-black mb-1 font-futura-pt-light">
-                              Return In Progress 
+                            {item.isReturned && <h3 className="text-xs sm:text-sm font-light text-black mb-1 font-futura-pt-light">
+                              Return In Progress
                             </h3>}
                           </div>
                         </div>
 
-                        {(isSelected  )&& (
+                        {(isSelected) && (
                           <div className="mt-3 pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
                             <label className="text-sm text-black mb-1.5 block font-light font-futura-pt-book">
                               Reason (optional):
@@ -929,11 +1026,10 @@ const OrderDetailPage = () => {
               <button
                 onClick={handleSubmitReturn}
                 disabled={isSubmittingReturn || selectedReturnItems.length === 0}
-                className={`flex-1 py-2 sm:py-2.5 font-light text-xs sm:text-sm font-futura-pt-light transition-colors ${
-                  isSubmittingReturn || selectedReturnItems.length === 0
-                    ? "border border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
-                    : "border border-black bg-black text-white hover:bg-gray-900"
-                }`}
+                className={`flex-1 py-2 sm:py-2.5 font-light text-xs sm:text-sm font-futura-pt-light transition-colors ${isSubmittingReturn || selectedReturnItems.length === 0
+                  ? "border border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+                  : "border border-black bg-black text-white hover:bg-gray-900"
+                  }`}
               >
                 {isSubmittingReturn ? "Submitting..." : "Submit Return"}
               </button>
@@ -941,6 +1037,12 @@ const OrderDetailPage = () => {
           </div>
         </div>
       )}
+      <TrackingModal
+        isOpen={isTrackingOpen}
+        onClose={() => setIsTrackingOpen(false)}
+        trackingData={trackingData}
+      />
+
     </div>
   );
 };
