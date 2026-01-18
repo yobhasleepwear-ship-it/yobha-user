@@ -18,7 +18,7 @@ import { getFilteredProducts } from "../../service/productAPI";
 import { SubscribeNewsletter } from "../../service/notification";
 import { message } from "../../comman/toster-message/ToastContainer";
 import ProductCard from "../product/components/product-card";
-
+import RandomPic from "../../assets/randompic.png";
 const HomePage2 = () => {
   const navigate = useNavigate();
   const [isPortrait, setIsPortrait] = useState(false);
@@ -467,7 +467,7 @@ const HomePage2 = () => {
       <section className="relative w-full bg-white overflow-hidden">
         <div className="w-full">
           <img
-            src="https://in.louisvuitton.com/content/dam/lv/online/picture/allcountry/megamenu/new_formen/2025/MM_Men_New_Monogram_Heritage_Nov2025_DI3_jpg.jpg?wid=2400"
+            src={RandomPic}
             alt="YOBHA Collection"
             className="w-full h-auto object-cover object-center block"
             loading="lazy"
