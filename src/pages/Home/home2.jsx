@@ -13,7 +13,7 @@ import eyemask from "../../assets/EYEMASKS.jpg";
 import cushions from "../../assets/CUSHIONS.jpg";
 import BATHROBE_IMAGE from "../../assets/bathrobe.jpg";
 import TOWELS_IMAGE from "../../assets/towel.jpg";
-import BUYBACK_IMAGE from "../../assets/buyback-image.jpg";
+import BUYBACK_IMAGE from "../../assets/buybackfinal.png";
 import { getFilteredProducts } from "../../service/productAPI";
 import { SubscribeNewsletter } from "../../service/notification";
 import { message } from "../../comman/toster-message/ToastContainer";
