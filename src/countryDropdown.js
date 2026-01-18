@@ -74,7 +74,7 @@ export const CountrySelector = ({
       </button>
 
       {open && (
-        <div className={`${baseMenuClasses} ${menuAlignmentClass} ${menuClassName}`} role="listbox">
+        <div className={`${baseMenuClasses} ${menuAlignmentClass} ${menuClassName} max-h-60 overflow-y-auto pb-2` } role="listbox">
           {countryOptions.map((option) => (
             <button
               key={option.code}
