@@ -263,6 +263,7 @@ const [newsletter , setNewsletter]=useState("")
         <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-black font-light font-futura-pt-light">
             <p>©2026 Copyright @Yogya By Yogita Bhatia</p>
+            <p>Customer Care: 07935429061</p>
             <div className="flex gap-8">
               <Link
                 to="/privacy-policy"
