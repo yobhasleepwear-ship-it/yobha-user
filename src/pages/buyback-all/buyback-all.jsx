@@ -133,7 +133,7 @@ const BuybackAll = () => {
 
 			// 2️⃣ Razorpay options (same pattern as order)
 			const options = {
-				key: "rzp_test_Rb7lQAPEkEa2Aw",
+				key: "rzp_live_S50ndRcWPk7eP5",
 				amount: buybackRes.data.amount * 100, // amount in paise
 				currency: "INR",
 				order_id: buybackRes.data.razorpayOrderId,

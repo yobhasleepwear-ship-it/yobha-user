@@ -62,7 +62,7 @@ const ProductsPage = () => {
   });
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500000 });
   const [filterOptions, setFilterOptions] = useState({
-    segments: ["Women", "Men", "Kids", "Pets", "Couple", "Family", "Scrunchies", "Socks", "Eyemasks", "Headband", "Cushions"],
+    segments: ["Women", "Men", "Kids", "Pets", "Socks", "Eyemasks", "Headband"],
     categories: [
       { id: "Sleepwear", name: "Sleepwear" },
       { id: "Loungewear", name: "Loungewear" },

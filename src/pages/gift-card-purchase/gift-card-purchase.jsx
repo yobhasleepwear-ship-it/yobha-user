@@ -203,7 +203,7 @@ const GiftCardPurchase = () => {
 
       // Razorpay options
       const options = {
-        key: "rzp_test_Rb7lQAPEkEa2Aw",
+        key: "rzp_live_S50ndRcWPk7eP5",
         amount: parseFloat(amount) * 100,
         currency: currency,
         order_id: orderRes.razorpayOrderId,

@@ -461,8 +461,8 @@ const ProductCard = ({ product }) => {
             const parts = priceStr.split(' ');
             return (
               <>
-                <span className="font-sans">{parts[0]}</span>
-                <span> {parts.slice(1).join(' ')}</span>
+                <span className="font-light text-black">{parts[0]}</span>
+                <span className="font-light text-black"> {parts.slice(1).join(' ')}</span>
               </>
             );
           })()}

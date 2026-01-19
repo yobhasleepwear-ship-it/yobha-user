@@ -370,7 +370,7 @@ const CheckoutPage = () => {
 
 
       const options = {
-        key: "rzp_test_Rb7lQAPEkEa2Aw",
+        key: "rzp_live_S50ndRcWPk7eP5",
         amount: orderRes.total * 100,
         currency: cartItems[0].priceList.find((e) => e.country === cartItems[0].country).currency,
         order_id: orderRes.razorpayOrderId,
@@ -1608,7 +1608,7 @@ const CheckoutPage = () => {
                       <RotateCcw size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Easy Returns</p>
-                        <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">30-day return policy</p>
+                        <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">7 days return policy</p>
                       </div>
                     </div>
                   </div>

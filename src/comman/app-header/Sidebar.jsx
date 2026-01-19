@@ -17,10 +17,14 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedSidebarCountry, setSelectedSidebarCountry] = useState(null);
   const [isGiftsHovered, setIsGiftsHovered] = useState(false);
+  const [isAccessoriesHovered, setIsAccessoriesHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isGiftsSubmenuOpen, setIsGiftsSubmenuOpen] = useState(false);
+  const [isAccessoriesSubmenuOpen, setIsAccessoriesSubmenuOpen] = useState(false);
   const giftsSubmenuRef = useRef(null);
+  const accessoriesSubmenuRef = useRef(null);
   const giftsHoverTimeoutRef = useRef(null);
+  const accessoriesHoverTimeoutRef = useRef(null);
 
   const resolveSavedCountry = () => {
     if (typeof window === "undefined") return countryOptions[0];
@@ -72,8 +76,9 @@ const Sidebar = ({ isOpen, onClose }) => {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
-      // Close sub-sidebar when main sidebar closes
+      // Close sub-sidebars when main sidebar closes
       setIsGiftsSubmenuOpen(false);
+      setIsAccessoriesSubmenuOpen(false);
     }
     return () => {
       document.body.style.overflow = "";
@@ -111,11 +116,35 @@ const Sidebar = ({ isOpen, onClose }) => {
     };
   }, [isGiftsHovered]);
 
+  // Handle clicks outside accessories submenu
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (accessoriesSubmenuRef.current && !accessoriesSubmenuRef.current.contains(event.target)) {
+        // Check if click is not on the accessories menu item
+        const accessoriesMenuItem = event.target.closest('[data-accessories-menu]');
+        if (!accessoriesMenuItem) {
+          setIsAccessoriesHovered(false);
+        }
+      }
+    };
+
+    if (isAccessoriesHovered) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isAccessoriesHovered]);
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (giftsHoverTimeoutRef.current) {
         clearTimeout(giftsHoverTimeoutRef.current);
+      }
+      if (accessoriesHoverTimeoutRef.current) {
+        clearTimeout(accessoriesHoverTimeoutRef.current);
       }
     };
   }, []);
@@ -155,14 +184,9 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" },
     { label: "Personalisation", nav: "personalization", category: null },
   ];
-//main nav items
-  const mainNavigationItems = [
-    { label: "Gifts & Personalization", nav: "gifts-personalization", giftCard: true, hasSubmenu: true },
-    { label: "New", nav: "whats-new", special: true },
-    { label: "Men", nav: "Men" },
-    { label: "Women", nav: "Women" },
-    { label: t("navbar.collectionsItems.petWear." + i18n.language), nav: "PetWear" },
-    { label: "Family", nav: "Family" },
+
+  // Accessories submenu items
+  const accessoriesSubmenuItems = [
     { label: "Scrunchies", nav: "Scrunchies" },
     { label: "Socks", nav: "Socks" },
     { label: "Eye Masks", nav: "Eyemasks" },
@@ -170,10 +194,19 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Cushions", nav: "Cushions" },
     { label: "Bathrobe", nav: "Bathrobe" },
     { label: "Towels", nav: "Towels" },
+    { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "PetAccessories" },
+  ];
+//main nav items
+  const mainNavigationItems = [
+    { label: "Gifts & Personalization", nav: "gifts-personalization", giftCard: true, hasSubmenu: true },
+    { label: "New", nav: "whats-new", special: true },
+    { label: "Men", nav: "Men" },
+    { label: "Women", nav: "Women" },
+    { label: t("navbar.collectionsItems.petWear." + i18n.language), nav: "PetWear" },
     { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
     { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
     { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
-    { label: t("navbar.collectionsItems.petAccessories." + i18n.language), nav: "PetAccessories" },
+    { label: "Accessories", nav: "accessories", hasSubmenu: true },
   ];
 
   if (!isOpen) return null;
@@ -211,11 +244,12 @@ const Sidebar = ({ isOpen, onClose }) => {
               }
 
               // Handle Gifts & Personalization with submenu
-              if (item.hasSubmenu) {
+              if (item.hasSubmenu && item.label === "Gifts & Personalization") {
                 return (
                   <div
                     key={item.label}
                     className="relative"
+                    style={{ display: 'contents' }}
                     data-gifts-menu
                     onMouseEnter={() => {
                       if (!isMobile) {
@@ -239,7 +273,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     {isMobile && (
                       <button
                         onClick={() => setIsGiftsSubmenuOpen(true)}
-                        className="flex items-center justify-between w-full py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        className="flex items-center justify-between w-full py-3 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                       >
                         <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
                         <ChevronRight size={18} className="text-gray-700 ml-auto" />
@@ -249,12 +283,61 @@ const Sidebar = ({ isOpen, onClose }) => {
                     {/* Desktop: Regular link */}
                     {!isMobile && (
                       <Link
-                        to={routePath}
-                        className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        to={`/gifts-personalization`}
+                        className="py-3 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
                       </Link>
+                    )}
+                  </div>
+                );
+              }
+
+              // Handle Accessories with submenu
+              if (item.hasSubmenu && item.label === "Accessories") {
+                return (
+                  <div
+                    key={item.label}
+                    className="relative"
+                    style={{ display: 'contents' }}
+                    data-accessories-menu
+                    onMouseEnter={() => {
+                      if (!isMobile) {
+                        // Clear any pending timeout
+                        if (accessoriesHoverTimeoutRef.current) {
+                          clearTimeout(accessoriesHoverTimeoutRef.current);
+                        }
+                        setIsAccessoriesHovered(true);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (!isMobile) {
+                        // Add delay before closing to allow mouse to move to submenu
+                        accessoriesHoverTimeoutRef.current = setTimeout(() => {
+                          setIsAccessoriesHovered(false);
+                        }, 150);
+                      }
+                    }}
+                  >
+                    {/* Mobile: Button to open sub-sidebar */}
+                    {isMobile && (
+                      <button
+                        onClick={() => setIsAccessoriesSubmenuOpen(true)}
+                        className="flex items-center justify-between w-full py-3 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                      >
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
+                        <ChevronRight size={18} className="text-gray-700 ml-auto" />
+                      </button>
+                    )}
+                    
+                    {/* Desktop: No link, just trigger submenu */}
+                    {!isMobile && (
+                      <button
+                        className="w-full text-left py-3 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                      >
+                        <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
+                      </button>
                     )}
                   </div>
                 );
@@ -264,7 +347,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <Link
                   key={item.label}
                   to={routePath}
-                  className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                  className="py-3 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                   onClick={onClose}
                 >
                   <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{item.label}</span>
@@ -276,7 +359,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="pt-6 border-t border-gray-100 mt-2">
               <button
                 onClick={() => toggleAccordion("account")}
-                className="flex items-center justify-between w-full py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                className="flex items-center justify-between w-full py-3 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
               >
                 <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">Account</span>
                 {expandedSections.account ? (
@@ -290,7 +373,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                   {!isAuthenticated ? (
                     <Link
                       to="/login"
-                      className="block py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                      className="block py-3 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                       onClick={onClose}
                     >
                       <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{t("navbar.account.login." + i18n.language)}</span>
@@ -299,7 +382,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <>
                       <Link
                         to="/account"
-                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        className="flex items-center gap-3 py-3 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <User size={16} />
@@ -307,7 +390,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       </Link>
                       <Link
                         to="/buyback/all"
-                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        className="flex items-center gap-3 py-3 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <Recycle size={16} />
@@ -315,7 +398,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       </Link>
                       <Link
                         to="/wallet"
-                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        className="flex items-center gap-3 py-3 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <Wallet size={16} />
@@ -323,7 +406,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       </Link>
                       <Link
                         to="/orders"
-                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        className="flex items-center gap-3 py-3 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <Package size={16} />
@@ -331,7 +414,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       </Link>
                       <Link
                         to="/returns"
-                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                        className="flex items-center gap-3 py-3 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
                         onClick={onClose}
                       >
                         <RotateCcw size={16} />
@@ -342,7 +425,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                           onClose();
                           handleLogout();
                         }}
-                        className="flex items-center gap-3 py-4 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book text-left w-full"
+                        className="flex items-center gap-3 py-3 text-sm md:text-base text-gray-600 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book text-left w-full"
                       >
                         <LogOut size={16} />
                         <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">{t("navbar.account.logout." + i18n.language)}</span>
@@ -356,7 +439,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             {/* Ship To Section */}
           {selectedSidebarCountry && (
             <div className="pt-6 border-t border-gray-100 mt-2">
-              <p className="flex items-center gap-3 py-4 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">Ship To</p>
+              <p className="flex items-center gap-3 py-3 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">Ship To</p>
               <CountrySelector
                 value={selectedSidebarCountry?.code}
                 onSelect={handleSidebarCountryChange}
@@ -369,7 +452,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           )}
               {/* Language Switcher */}
             <div className="pt-6 border-t border-gray-100 mt-2">
-            <p className="flex items-center gap-3 py-4 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">Choose Language</p>  
+            <p className="flex items-center gap-3 py-3 text-sm md:text-base text-black transition-all duration-300 border-b border-gray-50 font-light group font-futura-pt-book">Choose Language</p>  
               <LanguageSwitcher />
             </div>
           </nav>
@@ -425,7 +508,53 @@ const Sidebar = ({ isOpen, onClose }) => {
               </nav>
             </div>
           )}
-        </aside>
+
+          {/* Desktop: Accessories Submenu */}
+          {isAccessoriesHovered && !isMobile && (
+            <div
+              ref={accessoriesSubmenuRef}
+              className="absolute left-full top-0 h-full w-80 bg-white border-l border-gray-100 animate-slideInRight z-[100001] font-futura-pt-book overflow-y-auto"
+              onMouseEnter={() => {
+                // Clear any pending timeout when mouse enters submenu
+                if (accessoriesHoverTimeoutRef.current) {
+                  clearTimeout(accessoriesHoverTimeoutRef.current);
+                }
+                setIsAccessoriesHovered(true);
+              }}
+              onMouseLeave={() => {
+                // Add delay before closing to allow mouse to return to main menu
+                accessoriesHoverTimeoutRef.current = setTimeout(() => {
+                  setIsAccessoriesHovered(false);
+                }, 150);
+              }}
+            >
+              {/* Submenu Header */}
+              <div className="flex items-center px-6 py-5 border-b border-gray-100 bg-white sticky top-0 z-10">
+                <h3 className="h-10 flex items-center text-sm md:text-base text-black font-light font-futura-pt-book">
+                  Accessories
+                </h3>
+              </div>
+
+              {/* Submenu Items */}
+              <nav className="flex flex-col px-8 py-6 space-y-0">
+                {accessoriesSubmenuItems.map((subItem) => {
+                  const subRoutePath = `/products/${subItem.nav.replace(/\s/g, "-")}`;
+                  return (
+                    <Link
+                      key={subItem.label}
+                      to={subRoutePath}
+                      className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book hover:bg-gray-50/30"
+                      onClick={onClose}
+                    >
+                      <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book inline-block">
+                        {subItem.label}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+          )}
 
         {/* Mobile: Gifts Sub-sidebar - Slides in from right */}
         {isMobile && isGiftsSubmenuOpen && (
@@ -482,6 +611,59 @@ const Sidebar = ({ isOpen, onClose }) => {
             </nav>
           </aside>
         )}
+
+        {/* Mobile: Accessories Sub-sidebar - Slides in from right */}
+        {isMobile && isAccessoriesSubmenuOpen && (
+          <aside className="absolute right-0 top-0 h-full w-full bg-white shadow-2xl animate-slideInRightMobile border-l border-gray-200 flex flex-col z-[100002] font-futura-pt-book">
+            {/* Header with Back Button */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <button
+                onClick={() => setIsAccessoriesSubmenuOpen(false)}
+                className="flex items-center gap-2 text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
+              >
+                <ArrowLeft size={20} />
+                <span className="text-sm md:text-base font-light font-futura-pt-book">Back</span>
+              </button>
+              <button
+                className="text-black hover:text-gray-700 transition-all duration-300 p-2 hover:bg-gray-50"
+                onClick={onClose}
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            {/* Submenu Title */}
+            <div className="px-6 py-4 border-b border-gray-100">
+              <h3 className="text-sm md:text-base text-black font-light font-futura-pt-book">
+                Accessories
+              </h3>
+            </div>
+
+            {/* Submenu Items */}
+            <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-6 space-y-0">
+              {accessoriesSubmenuItems.map((subItem) => {
+                const subRoutePath = `/products/${subItem.nav.replace(/\s/g, "-")}`;
+                return (
+                  <Link
+                    key={subItem.label}
+                    to={subRoutePath}
+                    className="py-4 text-sm md:text-base text-gray-800 transition-all duration-300 hover:text-black border-b border-gray-50 font-light group font-futura-pt-book"
+                    onClick={() => {
+                      setIsAccessoriesSubmenuOpen(false);
+                      onClose();
+                    }}
+                  >
+                    <span className="group-hover:border-b border-gray-800 transition-all duration-300 font-light font-futura-pt-book">
+                      {subItem.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </aside>
+        )}
+
+        </aside>
 
         <style jsx>{`
             @keyframes slideInLeft {

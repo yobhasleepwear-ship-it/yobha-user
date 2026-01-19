@@ -141,7 +141,7 @@ const TrendingNewArrivals = () => {
                   <h3 className="text-[#8b5f4b] font-semibold">{p.title}</h3>
                   <p className="text-black text-sm mt-1 line-clamp-2 flex-1">{p.description}</p>
                   <div className="mt-3">
-                    <span className="text-[#8b5f4b] font-semibold">{p.price}</span>
+                    <span className="text-[#8b5f4b] font-light">{p.price}</span>
                   </div>
                 </div>
               </article>

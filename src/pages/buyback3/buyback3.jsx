@@ -152,6 +152,9 @@ const Buyback3 = () => {
   const [invoiceUrl, setInvoiceUrl] = useState("");
   const [productImages, setProductImages] = useState([]); // Max 4 images
   const [productId, setProductId] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
+  const [isEligible, setIsEligible] = useState(null); // null = not checked, true = eligible, false = not eligible
+  const [purchaseDateChecked, setPurchaseDateChecked] = useState(false);
   const hasFetchedOrdersRef = useRef(false);
   const prevStepRef = useRef(1);
   const prevAuthRef = useRef(false);
@@ -334,6 +337,50 @@ const Buyback3 = () => {
       }).filter((entry) => Boolean(entry.value)),
     [conditionResponses]
   );
+
+  // Check purchase date eligibility
+  const checkPurchaseDateEligibility = (dateStr) => {
+    if (!dateStr) {
+      setIsEligible(null);
+      setPurchaseDateChecked(false);
+      return;
+    }
+
+    const purchaseDateObj = new Date(dateStr);
+    const today = new Date();
+    
+    // Set time to start of day for accurate comparison
+    purchaseDateObj.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    
+    // Calculate 6 months ago from today
+    const sixMonthsAgo = new Date(today);
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+    
+    // Check if purchase date is more than 6 months old (or exactly 6 months)
+    // If purchase date is before or equal to sixMonthsAgo, not eligible
+    if (purchaseDateObj <= sixMonthsAgo) {
+      setIsEligible(false);
+      setPurchaseDateChecked(true);
+      return false;
+    }
+    
+    setIsEligible(true);
+    setPurchaseDateChecked(true);
+    return true;
+  };
+
+  const handlePurchaseDateChange = (e) => {
+    const dateValue = e.target.value;
+    setPurchaseDate(dateValue);
+    if (dateValue) {
+      checkPurchaseDateEligibility(dateValue);
+    } else {
+      setIsEligible(null);
+      setPurchaseDateChecked(false);
+    }
+  };
 
   const handleOptionSelect = (optionId) => {
     // Check if this is a new selection (option is changing)
@@ -629,6 +676,9 @@ const Buyback3 = () => {
     setInvoiceUrl("");
     setProductImages([]);
     setProductId("");
+    setPurchaseDate("");
+    setIsEligible(null);
+    setPurchaseDateChecked(false);
     hasFetchedOrdersRef.current = false;
   };
 
@@ -642,6 +692,10 @@ const Buyback3 = () => {
   const isContinueEnabled = useMemo(() => {
     switch (activeStep) {
       case 1:
+        // For step 1, check purchase date eligibility first, then option selection
+        if (!purchaseDateChecked || !isEligible) {
+          return false;
+        }
         return Boolean(selectedOptionId && isAuthenticated);
       case 2:
         return Boolean(orderMethod);
@@ -657,7 +711,7 @@ const Buyback3 = () => {
       default:
         return false;
     }
-  }, [activeStep, selectedOptionId, isAuthenticated, selectedOrder, selectedItem, allConditionsAnswered, orderMethod, invoiceUrl, productId, productImages.length]);
+  }, [activeStep, selectedOptionId, isAuthenticated, selectedOrder, selectedItem, allConditionsAnswered, orderMethod, invoiceUrl, productId, productImages.length, purchaseDateChecked, isEligible]);
 
   const renderStepContent = () => {
     const animationClass =
@@ -679,81 +733,129 @@ const Buyback3 = () => {
                 </h2>
               </div>
             </div>
-            {/* Consistent Card Layout - Same Structure for All */}
-            <div className="grid gap-4 md:gap-5 md:grid-cols-3 mt-8 md:mt-10">
-              {TRADE_IN_OPTIONS.map((option) => {
-                const isSelected = selectedOptionId === option.id;
-                const IconComponent = option.icon;
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => handleOptionSelect(option.id)}
-                    className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${
-                      isSelected
-                        ? "bg-black text-white"
-                        : "bg-white border-2 border-gray-300 hover:border-black text-black"
-                    }`}
-                    style={{ height: '240px' }}
-                  >
-                    {/* Icon - Always Top, Same Size */}
-                    <div className={`mb-4 transition-colors flex-shrink-0 ${
-                      isSelected ? "text-white" : "text-black"
-                    }`}>
-                      <IconComponent className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
-                    </div>
-                    
-                    {/* Title - Always Below Icon, Same Size */}
-                    <h3
-                      className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
-                        isSelected ? "text-white" : "text-black"
-                      }`}
-                    >
-                      {option.title}
-                    </h3>
-                    
-                    {/* Description - Always Bottom, Same Size */}
-                    <p
-                      className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
-                        isSelected ? "text-white/90" : "text-black"
-                      }`}
-                    >
-                      {option.description}
-                    </p>
-                    
-                    {/* Selected Indicator - Top Right */}
-                    {isSelected && (
-                      <div className="absolute top-3 right-3 w-5 h-5 border-2 border-white rounded-full flex items-center justify-center bg-white/20">
-                        <Check className="w-3 h-3 text-white stroke-[3]" />
+
+            {/* Purchase Date Input Section */}
+            <div className="mb-8">
+              <label className="block text-sm md:text-base font-light text-black mb-3 font-futura-pt-book">
+                Date of Purchase <span className="text-red-500">*</span>
+              </label>
+              <div className="max-w-md">
+                <input
+                  type="date"
+                  value={purchaseDate}
+                  onChange={handlePurchaseDateChange}
+                  max={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-3 border-2 border-gray-300 focus:outline-none focus:border-black transition-colors text-sm md:text-base font-light font-futura-pt-light text-black"
+                  placeholder="Select purchase date"
+                />
+                {purchaseDateChecked && isEligible === false && (
+                  <div className="mt-4 p-4 bg-red-50 border-2 border-red-200 rounded">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm md:text-base font-light text-red-800 font-futura-pt-book mb-1">
+                          Not Eligible for Trade-In
+                        </p>
+                        <p className="text-xs md:text-sm text-red-700 font-light font-futura-pt-light">
+                          Your purchase date is more than 6 months ago. Unfortunately, you are not eligible to trade in this item. Items must be purchased within the last 6 months to be eligible for our buyback program.
+                        </p>
                       </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            
-            {/* Show login message if option selected but not authenticated */}
-            {selectedOptionId && !isAuthenticated && (
-              <div className="mt-6 md:mt-8 px-6 py-6 md:px-8 md:py-8 text-center">
-                <div className="flex justify-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                    <Package className="w-6 h-6 text-gray-400" strokeWidth={1.5} />
+                    </div>
                   </div>
-                </div>
-                <p className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book font-light">
-                  Please login to continue
-                </p>
-                <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed text-black font-light mb-6 font-futura-pt-light">
-                  You need to be logged in to proceed with your buyback request.
-                </p>
-                <button
-                  onClick={handleLoginRedirect}
-                  className="inline-flex items-center gap-2 border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm text-black transition-all duration-300 hover:bg-black hover:text-white font-light group font-futura-pt-light"
-                >
-                  Go to Login
-                  <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
-                </button>
+                )}
+                {purchaseDateChecked && isEligible === true && (
+                  <div className="mt-4 p-4 bg-green-50 border-2 border-green-200 rounded">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm md:text-base font-light text-green-800 font-futura-pt-light">
+                        You are eligible for trade-in! Please select an option below to continue.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
+            </div>
+
+            {/* Only show options if eligible */}
+            {isEligible === true && (
+              <>
+                {/* Consistent Card Layout - Same Structure for All */}
+                <div className="grid gap-4 md:gap-5 md:grid-cols-3 mt-8 md:mt-10">
+                  {TRADE_IN_OPTIONS.map((option) => {
+                    const isSelected = selectedOptionId === option.id;
+                    const IconComponent = option.icon;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => handleOptionSelect(option.id)}
+                        className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${
+                          isSelected
+                            ? "bg-black text-white"
+                            : "bg-white border-2 border-gray-300 hover:border-black text-black"
+                        }`}
+                        style={{ height: '240px' }}
+                      >
+                        {/* Icon - Always Top, Same Size */}
+                        <div className={`mb-4 transition-colors flex-shrink-0 ${
+                          isSelected ? "text-white" : "text-black"
+                        }`}>
+                          <IconComponent className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
+                        </div>
+                        
+                        {/* Title - Always Below Icon, Same Size */}
+                        <h3
+                          className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
+                            isSelected ? "text-white" : "text-black"
+                          }`}
+                        >
+                          {option.title}
+                        </h3>
+                        
+                        {/* Description - Always Bottom, Same Size */}
+                        <p
+                          className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
+                            isSelected ? "text-white/90" : "text-black"
+                          }`}
+                        >
+                          {option.description}
+                        </p>
+                        
+                        {/* Selected Indicator - Top Right */}
+                        {isSelected && (
+                          <div className="absolute top-3 right-3 w-5 h-5 border-2 border-white rounded-full flex items-center justify-center bg-white/20">
+                            <Check className="w-3 h-3 text-white stroke-[3]" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Show login message if option selected but not authenticated */}
+                {selectedOptionId && !isAuthenticated && (
+                  <div className="mt-6 md:mt-8 px-6 py-6 md:px-8 md:py-8 text-center">
+                    <div className="flex justify-center mb-4">
+                      <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                        <Package className="w-6 h-6 text-gray-400" strokeWidth={1.5} />
+                      </div>
+                    </div>
+                    <p className="text-base md:text-lg font-light text-black mb-3 font-futura-pt-book font-light">
+                      Please login to continue
+                    </p>
+                    <p className="mt-2 max-w-xl mx-auto text-sm leading-relaxed text-black font-light mb-6 font-futura-pt-light">
+                      You need to be logged in to proceed with your buyback request.
+                    </p>
+                    <button
+                      onClick={handleLoginRedirect}
+                      className="inline-flex items-center gap-2 border-2 border-black px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm text-black transition-all duration-300 hover:bg-black hover:text-white font-light group font-futura-pt-light"
+                    >
+                      Go to Login
+                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" strokeWidth={2} />
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         );
