@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const ComingSoon = () => {
-  const launchDate = new Date("2025-10-20T00:00:00").getTime();
+  const launchDate = new Date("2026-10-20T00:00:00").getTime();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const ComingSoon = () => {
 
       <div className="content">
         <h1>🚀 Coming Soon</h1>
-        <p className="launch-date">Launching on <strong>20th October 2025</strong></p>
+        <p className="launch-date">Launching on <strong>20th October 2026</strong></p>
 
         <div className="countdown">
           {["days", "hours", "minutes", "seconds"].map((unit) => (

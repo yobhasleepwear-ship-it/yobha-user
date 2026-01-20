@@ -224,7 +224,7 @@ const [newsletter , setNewsletter]=useState("")
               </h3>
               <div className="flex items-center gap-5">
                 <a
-                  href="https://www.facebook.com/share/1AKEpX6kqd/"
+                  href="https://www.facebook.com/maisonyobha"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
@@ -233,7 +233,7 @@ const [newsletter , setNewsletter]=useState("")
                   <Facebook size={22} strokeWidth={1.5} />
                 </a>
                 <a
-                  href="https://x.com/yobha_world"
+                  href="https://www.x.com/maisonyobha"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="X (formerly Twitter)"
@@ -244,7 +244,7 @@ const [newsletter , setNewsletter]=useState("")
                   </svg>
                 </a>
                 <a
-                  href="https://www.instagram.com/yobha.world"
+                  href="https://www.instagram.com/maisonyobha"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"

@@ -2,8 +2,8 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import MEN_IMAGE from "../../../assets/Men.png";
 import WOMEN_IMAGE from "../../../assets/Women.png";
-import KID_IMAGE from "../../../assets/kids-hero.jpg";
-import PET_IMAGE from "../../../assets/pet-hero.jpg";
+import KID_IMAGE from "../../../assets/kids-hero.png";
+import PET_IMAGE from "../../../assets/pet-hero.png";
 import COUPLE_IMAGE from "../../../assets/couple-hero1.jpg";
 import FAMILY_IMAGE from "../../../assets/family-hero.jpg";
 
@@ -14,6 +14,7 @@ const GenderGrid = () => {
 
   const genderCategories = [
     {
+
       id: "Women",
       title: "Women",
       description: "The art of elegance and grace",

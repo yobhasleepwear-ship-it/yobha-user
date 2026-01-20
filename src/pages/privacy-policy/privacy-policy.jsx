@@ -702,10 +702,10 @@ const PrivacyPolicy = () => {
         <div className="mt-12 md:mt-16 pt-8 border-t border-text-light/20">
           <div className="text-center space-y-2">
             <p className="text-black text-xs md:text-sm font-futura-pt-light font-light">
-              © 2025 YOBHA. All Rights Reserved.
+              © 2026 YOBHA. All Rights Reserved.
             </p>
             <p className="text-black text-xs md:text-sm font-futura-pt-light font-light">
-              Last Updated: October, 2025 | Version: 1.0/2025
+              Last Updated: October, 2026 | Version: 1.0/2026
             </p>
           </div>
         </div>

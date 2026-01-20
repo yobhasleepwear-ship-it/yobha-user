@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Facebook, Instagram } from "lucide-react";
 import MEN_IMAGE from "../../assets/Men.png";
 import WOMEN_IMAGE from "../../assets/Women.png";
-import KID_IMAGE from "../../assets/kids-hero.jpg";
-import PET_IMAGE from "../../assets/pet-hero.jpg";
-import COUPLE_IMAGE from "../../assets/couple-hero1.jpg";
-import FAMILY_IMAGE from "../../assets/family-hero.jpg";
+import KID_IMAGE from "../../assets/kids-hero.png";
+import PET_IMAGE from "../../assets/pet-hero.png";
+import RENEWAL_IMAGE from "../../assets/RENEW_IMAGE.png";
+import ART_OF_GIFTING_IMAGE from "../../assets/ART_OF_GIFTING_IMAGE.png";
+import PERSONALIZATION_IMAGE from "../../assets/PERSONALIZATION_IMAGE.png";
 import SCRUNCHIES from "../../assets/SCRUNCHIES.jpg";
 import Socks from "../../assets/SOCKS.jpg";
 import headband from "../../assets/HEADBAND.jpg";
@@ -435,7 +436,7 @@ const HomePage2 = () => {
                   }
                 }}
               >
-                <div className="relative h-[220px] sm:h-[280px] md:h-[380px] lg:h-[420px] xl:h-[480px] overflow-hidden bg-gray-50/50 border border-gray-100 group-hover:border-gray-200 transition-all duration-700 ease-out">
+                <div className="relative h-[220px] sm:h-[280px] md:h-[380px] lg:h-[420px] xl:h-[480px] overflow-hidden bg-gray-50/50 border border-gray-100 group-hover:border-gray-200 transition-all duration-700 ease-out" style={{ backgroundImage: `url(${category.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                     <div className="absolute inset-0 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]" />
                   </div>
@@ -445,8 +446,7 @@ const HomePage2 = () => {
                   <img
                     src={category.image}
                     alt={category.title}
-                    className={`h-full w-full object-cover transition-all duration-[1000ms] ease-out group-hover:scale-[1.05] group-hover:brightness-[1.03] ${category.id === "couple" ? "object-[center_top]" : ""}`}
-                    style={category.id === "couple" ? { objectPosition: "center top" } : {}}
+                    className={`h-full w-full object-cover transition-all duration-[1000ms] ease-out group-hover:scale-[1.05] group-hover:brightness-[1.03]`}
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -503,7 +503,7 @@ const HomePage2 = () => {
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
                 <img
-                  src={BUYBACK_IMAGE}
+                  src={RENEWAL_IMAGE}
                   alt="Services"
                   className="w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.03]"
                   onError={(e) => {
@@ -526,7 +526,7 @@ const HomePage2 = () => {
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
                 <img
-                  src={COUPLE_IMAGE}
+                  src={ART_OF_GIFTING_IMAGE}
                   alt="Art of Gifting"
                   className="w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.03]"
                   onError={(e) => {
@@ -549,7 +549,7 @@ const HomePage2 = () => {
             >
               <div className="relative w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden">
                 <img
-                  src={FAMILY_IMAGE}
+                  src={PERSONALIZATION_IMAGE}
                   alt="Personalisation"
                   className="w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.03]"
                   onError={(e) => {
@@ -915,7 +915,7 @@ const HomePage2 = () => {
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6">
             {/* Facebook Button */}
             <a
-              href="https://www.facebook.com/share/1AKEpX6kqd/"
+              href="https://www.facebook.com/maisonyobha"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 rounded-full"
@@ -926,7 +926,7 @@ const HomePage2 = () => {
               </div>
               {/* Text */}
               <span className="text-sm md:text-sm text-gray-900 group-hover:text-white transition-colors duration-500 font-light font-futura-pt-light">
-                FACEBOOK
+                MAISONYOBHA
               </span>
               {/* Arrow */}
               <svg
@@ -941,7 +941,7 @@ const HomePage2 = () => {
 
             {/* X (Twitter) Button */}
             <a
-              href="https://x.com/yobha_world"
+              href="https://www.x.com/maisonyobha"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 rounded-full"
@@ -954,7 +954,7 @@ const HomePage2 = () => {
               </div>
               {/* Text */}
               <span className="text-sm md:text-sm text-gray-900 group-hover:text-white transition-colors duration-500 font-light font-futura-pt-light">
-                X (TWITTER)
+                MAISONYOBHA
               </span>
               {/* Arrow */}
               <svg
@@ -969,7 +969,7 @@ const HomePage2 = () => {
 
             {/* Instagram Button */}
             <a
-              href="https://www.instagram.com/yobha.world"
+              href="https://www.instagram.com/maisonyobha"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 border border-gray-900/20 hover:border-gray-900 bg-transparent hover:bg-gray-900 transition-all duration-500 rounded-full"
@@ -980,7 +980,7 @@ const HomePage2 = () => {
               </div>
               {/* Text */}
               <span className="text-sm md:text-sm text-gray-900 group-hover:text-white transition-colors duration-500 font-light font-futura-pt-light">
-                INSTAGRAM
+                MAISONYOBHA
               </span>
               {/* Arrow */}
               <svg
