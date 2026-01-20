@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Facebook, Instagram } from "lucide-react";
+import Hero_video from "../../assets/Hero_Video.mp4";
 import MEN_IMAGE from "../../assets/Men.png";
 import WOMEN_IMAGE from "../../assets/Women.png";
 import KID_IMAGE from "../../assets/kids-hero.png";
@@ -66,8 +67,8 @@ const HomePage2 = () => {
   ];
 
   // Hero Video URLs (for hero section)
-  const portraitVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2FWhatsApp%20Video%202026-01-15%20at%2021.43.56.mp4?alt=media&token=89f48923-2c77-48b8-894d-fde7022a0624";
-  const landscapeVideo = "https://firebasestorage.googleapis.com/v0/b/yobhasleepwear-5ae76.firebasestorage.app/o/Hero-Video%2FWhatsApp%20Video%202026-01-15%20at%2021.43.56.mp4?alt=media&token=89f48923-2c77-48b8-894d-fde7022a0624";
+  const portraitVideo = Hero_video;
+  const landscapeVideo = Hero_video;
 
   useEffect(() => {
     if(products.length===0){
