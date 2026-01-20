@@ -86,7 +86,7 @@ const Personalization = () => {
     try {
       const payload = {
         q: "",
-        category: "",
+        category: "personalization",
         subCategory: "",
         minPrice: null,
         maxPrice: null,

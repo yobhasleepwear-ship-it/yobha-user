@@ -42,10 +42,10 @@ const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
 
 const formatPrice = (price, currency) => {
   if (typeof price !== 'number' || price === 0) return { symbol: '0', number: '' };
-  
+
   // Ensure currency is uppercase and valid
   const currencyCode = currency ? currency.toUpperCase() : 'INR';
-  
+
   // Currency symbol mapping
   const currencySymbols = {
     'INR': '₹',
@@ -61,15 +61,15 @@ const formatPrice = (price, currency) => {
     'EGP': 'EGP',
     'IQD': 'IQD'
   };
-  
+
   const symbol = currencySymbols[currencyCode] || currencyCode;
-  
+
   // Format the number with commas
   const formattedNumber = price.toLocaleString('en-IN', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   });
-  
+
   return { symbol, number: formattedNumber };
 };
 
@@ -194,13 +194,13 @@ const ProductDetailPage = () => {
   const [cartItem, setCartItems] = useState([])
   const IMAGES_PER_COLOR = 4;
   const [colorIndex, setColorIndex] = useState(0);
-  const [productImage , setProductImage] = useState([])
-    const selectedImages = useMemo(() => {
+  const [productImage, setProductImage] = useState([])
+  const selectedImages = useMemo(() => {
     const start = colorIndex * IMAGES_PER_COLOR;
     const end = start + IMAGES_PER_COLOR;
     return productImage.slice(start, end);
   }, [colorIndex, productImage]);
-  console.log(productImage , "productImage")
+  console.log(productImage, "productImage")
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState('');
@@ -310,7 +310,7 @@ const ProductDetailPage = () => {
     try {
       const response = await getProductDescription(productId);
       setProduct(response.data);
-        setProductImage(response.data.images)
+      setProductImage(response.data.images)
       setAverageProdRating(() => {
         const reviews = response.data.reviews || [];
         if (reviews.length === 0) return 0;
@@ -361,7 +361,7 @@ const ProductDetailPage = () => {
     if (product && product.productId) {
       checkWishlist();
     }
-    
+
     return () => {
       isMounted = false;
     };
@@ -401,18 +401,18 @@ const ProductDetailPage = () => {
 
     const handleScroll = () => {
       const isMobile = window.innerWidth < 1024; // lg breakpoint
-      
+
       if (isMobile) {
         // Horizontal scrolling on mobile
         const scrollLeft = scrollContainer.scrollLeft;
         const containerWidth = scrollContainer.clientWidth;
         const imageWidth = containerWidth; // Each image takes full container width
-        
+
         const newIndex = Math.min(
           Math.round(scrollLeft / imageWidth),
           product.images.length - 1
         );
-        
+
         if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
           setSelectedImageIndex(newIndex);
         }
@@ -421,12 +421,12 @@ const ProductDetailPage = () => {
         const scrollTop = scrollContainer.scrollTop;
         const containerHeight = scrollContainer.clientHeight;
         const imageHeight = containerHeight; // Each image takes full container height
-        
+
         const newIndex = Math.min(
           Math.round(scrollTop / imageHeight),
           product.images.length - 1
         );
-        
+
         if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
           setSelectedImageIndex(newIndex);
         }
@@ -468,7 +468,7 @@ const ProductDetailPage = () => {
       const response = await getFilteredProducts(payload);
       if (response && response.success && response.data) {
         setProducts(response.data.items || []);
-        
+
       } else {
         setProducts([]);
       }
@@ -622,7 +622,7 @@ const ProductDetailPage = () => {
 
 
     const itemIndex = cart.findIndex(
-      (item) => item.id === safeProduct.id && item.size === selectedSize &&item.color === selectedColor
+      (item) => item.id === safeProduct.id && item.size === selectedSize && item.color === selectedColor
     );
 
     if (itemIndex !== -1) {
@@ -642,7 +642,7 @@ const ProductDetailPage = () => {
         quantity: quantity,
         country: selectedCountry,
         monogram: monogram,
-        color:selectedColor,
+        color: selectedColor,
         note: notes
       });
     }
@@ -661,6 +661,7 @@ const ProductDetailPage = () => {
 
 
   const handleBuyNow = () => {
+  const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
 
     const selectedPrice =
       product.priceList.find(
@@ -678,7 +679,7 @@ const ProductDetailPage = () => {
           currency: selectedPrice.currency,
           variantSize: selectedSize,
           variantColor: selectedColor,
-          color:selectedColor,
+          color: selectedColor,
           country: selectedCountry,
           size: selectedSize,
           thumbnailUrl: product.images[0].url,
@@ -701,6 +702,14 @@ const ProductDetailPage = () => {
 
       ],
     };
+    if (!token){
+       const currentPath = window.location.pathname + window.location.search;
+      localStorageService.setValue("redirectAfterLogin", currentPath);
+
+      message.info("Please log to Buy Now the product.");
+      navigate("/login");
+      return
+    }
     navigate("/checkout/buynow", { state: { checkoutProd, selectedCountry, selectedSize, quantity } });
   };
 
@@ -708,7 +717,7 @@ const ProductDetailPage = () => {
   // Wishlist toggle
   const handleAddToWishlist = async (productId) => {
     const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
-    
+
     const selectedVariant = product.variants.find(
       (v) => v.color === selectedColor && v.size === selectedSize
     );
@@ -729,13 +738,13 @@ const ProductDetailPage = () => {
         payload: payload,
         timestamp: Date.now()
       };
-      
+
       localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
-      
+
       // Save current path for redirect after login
       const currentPath = window.location.pathname + window.location.search;
       localStorageService.setValue("redirectAfterLogin", currentPath);
-      
+
       message.info("Please log in to add items to your wishlist.");
       navigate("/login");
       return;
@@ -759,7 +768,7 @@ const ProductDetailPage = () => {
           payload: payload,
           timestamp: Date.now()
         };
-        
+
         localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
       }
       console.error("Failed to add to wishlist:", err);
@@ -901,11 +910,11 @@ const ProductDetailPage = () => {
           {/* Left Column - Full Product Image */}
           <div className="relative bg-white flex items-center justify-center h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px] group">
             {/* Main Product Image - Horizontal Scroll on Mobile, Vertical Scroll on Desktop */}
-            <div 
+            <div
               ref={imageScrollRef}
               className="relative w-full h-full overflow-x-scroll lg:overflow-x-hidden lg:overflow-y-scroll overflow-y-hidden scrollbar-hide"
-              style={{ 
-                scrollbarWidth: 'none', 
+              style={{
+                scrollbarWidth: 'none',
                 msOverflowStyle: 'none'
               }}
             >
@@ -913,7 +922,7 @@ const ProductDetailPage = () => {
                 {/* Mobile: Horizontal Layout */}
                 <div className="flex flex-row lg:hidden h-full">
                   {selectedImages.map((image, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="w-full flex items-center justify-center flex-shrink-0 h-full"
                       style={{ minWidth: '100%' }}
@@ -936,7 +945,7 @@ const ProductDetailPage = () => {
                 {/* Desktop: Vertical Layout */}
                 <div className="hidden lg:flex flex-col h-full">
                   {selectedImages.map((image, index) => (
-                    <div 
+                    <div
                       key={index}
                       className="w-full flex items-center justify-center flex-shrink-0 h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px]"
                     >
@@ -1090,7 +1099,7 @@ const ProductDetailPage = () => {
                   </span>
                 </div>
                 <div className="flex gap-1.5 overflow-x-auto pb-1 pt-1 scrollbar-hide px-1 -mx-1">
-                  {product?.availableColors.map((color ,index) => (
+                  {product?.availableColors.map((color, index) => (
                     <button
                       key={color}
                       onClick={() => {
@@ -1128,7 +1137,7 @@ const ProductDetailPage = () => {
                     Size guide
                   </button>
                 </div>
-                
+
                 {/* Desktop: Custom Dropdown */}
                 <div className="relative hidden lg:block" ref={sizeDropdownRef}>
                   <button
@@ -1139,13 +1148,13 @@ const ProductDetailPage = () => {
                     <span className={selectedSize ? 'text-black' : 'text-gray-400'}>
                       {selectedSize || 'Please select your size'}
                     </span>
-                    <ChevronDown 
-                      size={18} 
-                      className={`text-black transition-transform duration-200 ${isSizeDropdownOpen ? 'rotate-180' : ''}`} 
-                      strokeWidth={1.5} 
+                    <ChevronDown
+                      size={18}
+                      className={`text-black transition-transform duration-200 ${isSizeDropdownOpen ? 'rotate-180' : ''}`}
+                      strokeWidth={1.5}
                     />
                   </button>
-                  
+
                   {/* Custom Dropdown Menu */}
                   {isSizeDropdownOpen && (
                     <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto">
@@ -1154,11 +1163,10 @@ const ProductDetailPage = () => {
                           key={size}
                           type="button"
                           onClick={() => handleSizeSelect(size)}
-                          className={`w-full px-4 py-3 text-left text-sm font-light font-futura-pt-light transition-colors ${
-                            selectedSize === size
-                              ? 'bg-black text-white hover:bg-black'
-                              : 'text-black hover:bg-gray-50'
-                          }`}
+                          className={`w-full px-4 py-3 text-left text-sm font-light font-futura-pt-light transition-colors ${selectedSize === size
+                            ? 'bg-black text-white hover:bg-black'
+                            : 'text-black hover:bg-gray-50'
+                            }`}
                         >
                           {size}
                         </button>
@@ -1187,13 +1195,13 @@ const ProductDetailPage = () => {
             {isSizeModalOpen && (
               <>
                 {/* Backdrop */}
-                <div 
+                <div
                   className="fixed inset-0 bg-black/50 z-50 lg:hidden"
                   onClick={() => setIsSizeModalOpen(false)}
                 />
-                
+
                 {/* Modal Content */}
-                <div 
+                <div
                   ref={sizeModalRef}
                   onClick={handleModalContentClick}
                   className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 lg:hidden slide-up-from-bottom"
@@ -1219,11 +1227,10 @@ const ProductDetailPage = () => {
                         key={size}
                         type="button"
                         onClick={() => handleSizeSelect(size)}
-                        className={`w-full px-6 py-4 text-left text-sm font-light font-futura-pt-light transition-colors border-b border-gray-100 ${
-                          selectedSize === size
-                            ? 'bg-black text-white'
-                            : 'text-black hover:bg-gray-50'
-                        }`}
+                        className={`w-full px-6 py-4 text-left text-sm font-light font-futura-pt-light transition-colors border-b border-gray-100 ${selectedSize === size
+                          ? 'bg-black text-white'
+                          : 'text-black hover:bg-gray-50'
+                          }`}
                       >
                         {size}
                       </button>
@@ -1250,7 +1257,7 @@ const ProductDetailPage = () => {
             {/* Monogram Input */}
             <div className="space-y-2">
               <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
-                Name Initials 
+                Name Initials
               </label>
               <div className="relative">
                 <input
@@ -1404,15 +1411,18 @@ const ProductDetailPage = () => {
                       )}
                     </button>
                     {expandedSections.keyFeatures && (
-                      <ul className="space-y-1.5">
+                      <ul className="space-y-1.5 list-disc pl-4">
                         {product.keyFeatures.map((feature, index) => (
-                          <li key={index} className="text-xs text-black flex items-start font-light leading-relaxed font-futura-pt-thin">
-                            <span className="mr-2 mt-1">•</span>
-                            <span>{feature}</span>
+                          <li
+                            key={index}
+                            className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+                          >
+                            {feature}
                           </li>
                         ))}
                       </ul>
                     )}
+
                   </div>
                 )}
 
@@ -1433,10 +1443,13 @@ const ProductDetailPage = () => {
                       )}
                     </button>
                     {expandedSections.fabric && (
-                      <div className="text-xs text-black flex items-start font-light leading-relaxed font-futura-pt-thin">
-                        <span>{product.fabricType.join(', ')}</span>
-                      </div>
+                      <ul className="list-disc pl-4">
+                        <li className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
+                          {product.fabricType.join(', ')}
+                        </li>
+                      </ul>
                     )}
+
                   </div>
                 )}
 
@@ -1457,15 +1470,18 @@ const ProductDetailPage = () => {
                       )}
                     </button>
                     {expandedSections.careInstructions && (
-                      <ul className="space-y-1.5">
+                      <ul className="space-y-1.5 list-disc pl-4">
                         {product.careInstructions.map((instruction, index) => (
-                          <li key={index} className="text-xs text-text-medium flex items-start font-light leading-relaxed font-futura-pt-thin">
-                            <span className="mr-2 mt-1">•</span>
-                            <span>{instruction}</span>
+                          <li
+                            key={index}
+                            className="text-xs text-text-medium font-light leading-relaxed font-futura-pt-thin"
+                          >
+                            {instruction}
                           </li>
                         ))}
                       </ul>
                     )}
+
                   </div>
                 )}
               </div>
@@ -1473,7 +1489,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
         {/* Review Form Section */}
-        { false && <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
+        {false && <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
           <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
             Customer Reviews
           </h2>
@@ -1567,7 +1583,7 @@ const ProductDetailPage = () => {
               </form>
             </div>
           )}
-        </div> }
+        </div>}
 
         {/* Existing Reviews Section - Commented out */}
         {/* {product.reviews.length > 0 && (
@@ -1647,39 +1663,39 @@ const ProductDetailPage = () => {
                     const savedCountry = localStorage.getItem('selectedCountry');
                     const parsedCountry = savedCountry ? JSON.parse(savedCountry) : null;
                     const selectedCountry = parsedCountry?.code || "IN";
-                    
+
                     let productPrice = 0;
                     let currency = "INR";
-                    
+
                     if (product?.priceList && Array.isArray(product.priceList) && product.priceList.length > 0) {
                       const firstSize = product?.availableSizes?.[0];
                       let matchedPrice = product.priceList.find(
                         (e) => e.country === selectedCountry && e.size === firstSize
                       );
-                      
+
                       if (!matchedPrice) {
                         matchedPrice = product.priceList.find(
                           (e) => e.country === selectedCountry
                         );
                       }
-                      
+
                       if (!matchedPrice) {
                         matchedPrice = product.priceList[0];
                       }
-                      
+
                       productPrice = matchedPrice?.priceAmount || 0;
                       currency = matchedPrice?.currency || "INR";
                     }
-                    
+
                     if (productPrice === 0 && product?.price && product.price > 0) {
                       productPrice = product.price;
                       currency = product?.priceList?.[0]?.currency || "INR";
                     }
-                    
+
                     const productImages = Array.isArray(product?.images) && product.images.length > 0
                       ? product.images
                       : [];
-                    
+
                     const formatPrice = (price, curr = 'INR') => {
                       if (typeof price !== 'number' || price === 0) return '';
                       const symbol = curr === 'INR' ? '₹' : curr === 'USD' ? '$' : curr;
@@ -1813,8 +1829,8 @@ const ProductDetailPage = () => {
                   <button
                     onClick={() => handleUnitToggle('inches')}
                     className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'inches'
-                        ? 'bg-black text-white'
-                        : 'text-black/70 hover:text-black'
+                      ? 'bg-black text-white'
+                      : 'text-black/70 hover:text-black'
                       }`}
                   >
                     Inches
@@ -1822,8 +1838,8 @@ const ProductDetailPage = () => {
                   <button
                     onClick={() => handleUnitToggle('cm')}
                     className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'cm'
-                        ? 'bg-black text-white'
-                        : 'text-black/70 hover:text-black'
+                      ? 'bg-black text-white'
+                      : 'text-black/70 hover:text-black'
                       }`}
                   >
                     CM
@@ -1836,8 +1852,8 @@ const ProductDetailPage = () => {
                 <button
                   onClick={() => setShowFindSize(false)}
                   className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${!showFindSize
-                      ? 'border-black bg-black text-white'
-                      : 'border-text-light/20 text-black/70 hover:border-black/40'
+                    ? 'border-black bg-black text-white'
+                    : 'border-text-light/20 text-black/70 hover:border-black/40'
                     }`}
                 >
                   Size Chart
@@ -1845,8 +1861,8 @@ const ProductDetailPage = () => {
                 <button
                   onClick={() => setShowFindSize(true)}
                   className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${showFindSize
-                      ? 'border-black bg-black text-white'
-                      : 'border-text-light/20 text-black/70 hover:border-black/40'
+                    ? 'border-black bg-black text-white'
+                    : 'border-text-light/20 text-black/70 hover:border-black/40'
                     }`}
                 >
                   Find Your Size

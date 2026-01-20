@@ -177,12 +177,12 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   // Gifts submenu items
   const giftsSubmenuItems = [
-    { label: "Gifts For Her", nav: "gifts-personalization", category: "Women" },
-    { label: "Gifts For Him", nav: "gifts-personalization", category: "Men" },
-    { label: "Gifts For Family", nav: "gifts-personalization", category: "Family" },
-    { label: "Gifts For Kids", nav: "gifts-personalization", category: "kids" },
-    { label: "Gifts For Pets", nav: "gifts-personalization", category: "PetWear" },
-    { label: "Personalisation", nav: "personalization", category: null },
+    { label: "Gifts For Her", nav: "gifts-personalization", category: "Gift_For_Her" },
+    { label: "Gifts For Him", nav: "gifts-personalization", category: "Gift_For_Him" },
+    { label: "Gifts For Family", nav: "gifts-personalization", category: "Gift_For_Family" },
+    { label: "Gifts For Kids", nav: "gifts-personalization", category: "Gift_For_Kids" },
+    { label: "Gifts For Pets", nav: "gifts-personalization", category: "Gift_For_Pets" },
+    { label: "Personalisation", nav: "personalization", category: "Personalization" },
   ];
 
   // Accessories submenu items

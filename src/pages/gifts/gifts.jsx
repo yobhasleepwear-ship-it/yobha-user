@@ -239,15 +239,15 @@ const Gifts = () => {
   
   // Category mapping
   const categoryMap = {
-    'Women': { name: 'Gifts for Her', segment: 'Women', bannerImage: null },
-    'Men': { name: 'Gifts for Him', segment: 'Men', bannerImage: null },
-    'Family': { name: 'Gifts for Family', segment: 'Family', bannerImage: null },
-    'kids': { name: 'Gifts for Kids', segment: 'Kids', bannerImage: null },
-    'PetWear': { name: 'Gifts for Pets', segment: 'PetWear', bannerImage: null },
+    'Gift_For_Her': { name: 'Gifts for Her', segment: 'Gift_For_Her', bannerImage: null },
+    'Gift_For_Him': { name: 'Gifts for Him', segment: 'Gift_For_Him', bannerImage: null },
+    'Gift_For_Family': { name: 'Gifts for Family', segment: 'Gift_For_Family', bannerImage: null },
+    'Gift_For_Kids': { name: 'Gifts for Kids', segment: 'Gift_For_Kids', bannerImage: null },
+    'Gift_For_Pets': { name: 'Gifts for Pets', segment: 'Gift_For_Pets', bannerImage: null },
     'all': { name: 'All Gifts', segment: 'all', bannerImage: null },
   };
 
-  const currentCategory = categoryParam ? categoryMap[categoryParam] : categoryMap['Women'];
+  const currentCategory = categoryParam ? categoryMap[categoryParam] : categoryMap['Gift_For_Her'];
   const categorySegment = currentCategory?.segment || 'Women';
 
   // Dummy images array for products - memoized to prevent recreation
@@ -508,7 +508,7 @@ const Gifts = () => {
         // API call
         const payload = {
           q: '',
-          productSubCategory: categorySegment,
+          category: categorySegment,
           minPrice: filters.minPrice || undefined,
           maxPrice: filters.maxPrice || undefined,
           pageNumber: null,
@@ -1253,7 +1253,7 @@ const Gifts = () => {
           <div className="flex items-center justify-between py-3 sm:py-4">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-1 sm:gap-2 text-black text-sm sm:text-sm md:text-sm font-light font-futura-pt-light">
-                <span>{currentCategory.name}</span>
+                <span>{currentCategory?.name}</span>
               </div>
               <span className="text-xs sm:text-sm text-gray-600 font-light">
                 {products.length} {products.length === 1 ? 'item' : 'items'}

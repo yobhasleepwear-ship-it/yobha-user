@@ -1028,7 +1028,7 @@ const ProductsPage = () => {
                 <span className="text-4xl text-text-light">✕</span>
               </div>
               <h3 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-2 font-futura-pt-book">
-                No Products Found
+                Comming Soon
               </h3>
               <p className="text-gray-600 text-md md:text-md sm:text-sm font-light leading-relaxed font-futura-pt-light mb-8">
                 Try adjusting your filters to find what you're looking for
