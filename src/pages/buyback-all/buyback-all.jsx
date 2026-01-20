@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createBuybackPayment, getBuybackDetails } from "../../service/buyback";
+import { createBuybackPayment, getBuybackDetails, getPaymentStatusUpdated } from "../../service/buyback";
 import { Package, CreditCard, Clock, CheckCircle, XCircle, AlertCircle, Star, ArrowRight } from "lucide-react";
 import { message } from "../../comman/toster-message/ToastContainer";
 
@@ -142,6 +142,13 @@ const BuybackAll = () => {
 					console.log("Buyback payment success:", response);
 
 					message.success("Buyback payment successful ✅");
+					const payload = {
+						"id": requests.id,
+						"type": "Buyback", 
+						"orderStatus": "",
+						"paymentStatus": "Paid"
+					}
+					 getPaymentStatusUpdated(payload);
 
 					// 👉 No API call after success (as requested)
 					// 👉 You can just update UI state here if needed

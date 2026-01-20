@@ -8,6 +8,12 @@ import {
   Clock,
   ChevronRight,
   RotateCcw,
+
+ 
+  Truck,
+
+
+  Ban,
 } from "lucide-react";
 import { getOrders } from "../../service/order";
 import BuybackModal from "./BuybackModal";
@@ -86,38 +92,85 @@ const OrdersPage = () => {
     })}`;
   };
 
-  const getStatusColor = (status) => {
-    switch ((status || "").toLowerCase()) {
-      case "paid":
-        return {
-          color: "text-black",
-          bg: "bg-gray-100",
-          icon: CheckCircle2,
-          text: "Paid",
-        };
-      case "pending":
-        return {
-          color: "text-gray-600",
-          bg: "bg-gray-50",
-          icon: Clock,
-          text: "Pending",
-        };
-      case "failed":
-        return {
-          color: "text-gray-700",
-          bg: "bg-gray-100",
-          icon: XCircle,
-          text: "Failed",
-        };
-      default:
-        return {
-          color: "text-gray-600",
-          bg: "bg-gray-50",
-          icon: Clock,
-          text: "Pending",
-        };
-    }
-  };
+  
+const normalizeStatus = (status = "") =>
+  status.toLowerCase().replace(/\s+/g, "");
+
+const getStatusColor = (status) => {
+  switch (normalizeStatus(status)) {
+    case "pending":
+      return {
+        color: "text-gray-600",
+        bg: "bg-gray-50",
+        icon: Clock,
+        text: "Pending",
+      };
+
+    case "shipped":
+      return {
+        color: "text-blue-600",
+        bg: "bg-blue-50",
+        icon: Truck,
+        text: "Shipped",
+      };
+
+    case "intransit":
+      return {
+        color: "text-indigo-600",
+        bg: "bg-indigo-50",
+        icon: Truck,
+        text: "In Transit",
+      };
+
+    case "outfordelivery":
+      return {
+        color: "text-purple-600",
+        bg: "bg-purple-50",
+        icon: Truck,
+        text: "Out For Delivery",
+      };
+
+    case "delivered":
+      return {
+        color: "text-green-600",
+        bg: "bg-green-50",
+        icon: CheckCircle2,
+        text: "Delivered",
+      };
+
+    case "return":
+      return {
+        color: "text-orange-600",
+        bg: "bg-orange-50",
+        icon: RotateCcw,
+        text: "Returned",
+      };
+
+    case "cancelled":
+      return {
+        color: "text-red-600",
+        bg: "bg-red-50",
+        icon: Ban,
+        text: "Cancelled",
+      };
+
+    case "failed":
+      return {
+        color: "text-red-700",
+        bg: "bg-red-100",
+        icon: XCircle,
+        text: "Failed",
+      };
+
+    default:
+      return {
+        color: "text-gray-600",
+        bg: "bg-gray-50",
+        icon: Package,
+        text: status || "Unknown",
+      };
+  }
+};
 
   // Loading state
   if (isLoading) {
@@ -190,7 +243,7 @@ const OrdersPage = () => {
         <div className="space-y-4">
           {orders.map((order) => {
             const isGiftCard = order?.giftCardNumber;
-            const statusInfo = getStatusColor(order?.paymentStatus);
+            const statusInfo = getStatusColor(order?.status);
             const StatusIcon = statusInfo.icon;
 
             return (

@@ -28,3 +28,13 @@ export const createBuybackPayment = async (buybackId) => {
     throw error;
   }
 };
+
+export const getPaymentStatusUpdated = async (payload) => {
+  try {
+    const response = await axiosService.Post("/Admin/ChangeOrderStatus", payload);
+    return response.data;
+  } catch (error) {
+    console.error("createBuyback error:", error);
+    throw error;
+  }
+};

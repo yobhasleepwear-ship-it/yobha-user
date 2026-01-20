@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Package, Truck, CheckCircle2, XCircle,
-  Clock, MapPin, Phone, Mail, Gift, RotateCcw, X
+  Clock, MapPin, Phone, Mail, Gift, RotateCcw, X,
+  Ban
 } from "lucide-react";
 import { getOrderDetails } from "../../service/order";
 import { createReturn } from "../../service/returns";
@@ -76,61 +77,83 @@ const formatOrderDetailData = (orderData) => {
 /**
  * Get status display info - Black and White Theme
  */
+const normalizeStatus = (status = "") =>
+  status.toLowerCase().replace(/\s+/g, "");
+
 const getStatusInfo = (status) => {
-  const normalizedStatus = (status || '').toLowerCase();
+  switch (normalizeStatus(status)) {
+    case "pending":
+      return {
+        color: "text-gray-600",
+        bg: "bg-gray-50",
+        icon: Clock,
+        text: "Pending",
+      };
 
-  const statusMap = {
-    paid: {
-      icon: CheckCircle2,
-      text: "Paid",
-      color: "text-black",
-      bg: "bg-gray-100",
-    },
-    pending: {
-      icon: Clock,
-      text: "Pending",
-      color: "text-gray-600",
-      bg: "bg-gray-50",
-    },
-    confirmed: {
-      icon: CheckCircle2,
-      text: "Confirmed",
-      color: "text-black",
-      bg: "bg-gray-100",
-    },
-    processing: {
-      icon: Clock,
-      text: "Processing",
-      color: "text-gray-600",
-      bg: "bg-gray-50",
-    },
-    shipped: {
-      icon: Truck,
-      text: "Shipped",
-      color: "text-black",
-      bg: "bg-gray-100",
-    },
-    delivered: {
-      icon: CheckCircle2,
-      text: "Delivered",
-      color: "text-black",
-      bg: "bg-gray-100",
-    },
-    cancelled: {
-      icon: XCircle,
-      text: "Cancelled",
-      color: "text-gray-700",
-      bg: "bg-gray-100",
-    },
-    failed: {
-      icon: XCircle,
-      text: "Failed",
-      color: "text-gray-700",
-      bg: "bg-gray-100",
-    }
-  };
+    case "shipped":
+      return {
+        color: "text-blue-600",
+        bg: "bg-blue-50",
+        icon: Truck,
+        text: "Shipped",
+      };
 
-  return statusMap[normalizedStatus] || statusMap.pending;
+    case "intransit":
+      return {
+        color: "text-indigo-600",
+        bg: "bg-indigo-50",
+        icon: Truck,
+        text: "In Transit",
+      };
+
+    case "outfordelivery":
+      return {
+        color: "text-purple-600",
+        bg: "bg-purple-50",
+        icon: Truck,
+        text: "Out For Delivery",
+      };
+
+    case "delivered":
+      return {
+        color: "text-green-600",
+        bg: "bg-green-50",
+        icon: CheckCircle2,
+        text: "Delivered",
+      };
+
+    case "return":
+      return {
+        color: "text-orange-600",
+        bg: "bg-orange-50",
+        icon: RotateCcw,
+        text: "Returned",
+      };
+
+    case "cancelled":
+      return {
+        color: "text-red-600",
+        bg: "bg-red-50",
+        icon: Ban,
+        text: "Cancelled",
+      };
+
+    case "failed":
+      return {
+        color: "text-red-700",
+        bg: "bg-red-100",
+        icon: XCircle,
+        text: "Failed",
+      };
+
+    default:
+      return {
+        color: "text-gray-600",
+        bg: "bg-gray-50",
+        icon: Package,
+        text: status || "Unknown",
+      };
+  }
 };
 
 /**
@@ -475,7 +498,7 @@ const OrderDetailPage = () => {
   }
 
   const isGiftCard = order.giftCardNumber;
-  const statusInfo = getStatusInfo(order.paymentStatus);
+  const statusInfo = getStatusInfo(order.status);
   const StatusIcon = statusInfo.icon;
   const totalItems = order.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
