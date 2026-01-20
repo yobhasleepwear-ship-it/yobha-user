@@ -24,6 +24,8 @@ import { message } from "../../comman/toster-message/ToastContainer";
 import ProductCard from "../product/components/product-card";
 import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
+import SlidePanel from "./slider";
+import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 
 const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
   if (!Array.isArray(priceList) || priceList.length === 0) return 0;
@@ -231,6 +233,8 @@ const ProductDetailPage = () => {
   const sizeModalRef = React.useRef(null);
   const imageScrollRef = React.useRef(null);
   const [recommendedSize, setRecommendedSize] = useState(null);
+  const [activeSection, setActiveSection] = useState(null); // which section to show
+
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -289,6 +293,7 @@ const ProductDetailPage = () => {
   const [addingToCart, setAddingToCart] = useState(false);
   const [addingToWishlist, setAddingToWishlist] = useState(false);
   const [itemAddedToCart, setItemAddedToCart] = useState(false);
+  const [openSlider, setOpenSlider] = useState(false);
   // API State
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -304,7 +309,19 @@ const ProductDetailPage = () => {
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
+  const sections = {
+    description: product?.description,
+    keyFeatures: product?.keyFeatures,
+    fabric: product?.fabricType,
+    careInstructions: product?.careInstructions,
+  };
+    const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const fetchProductDetail = useCallback(async (productId) => {
     setIsLoading(true)
     try {
@@ -661,7 +678,7 @@ const ProductDetailPage = () => {
 
 
   const handleBuyNow = () => {
-  const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
 
     const selectedPrice =
       product.priceList.find(
@@ -702,8 +719,8 @@ const ProductDetailPage = () => {
 
       ],
     };
-    if (!token){
-       const currentPath = window.location.pathname + window.location.search;
+    if (!token) {
+      const currentPath = window.location.pathname + window.location.search;
       localStorageService.setValue("redirectAfterLogin", currentPath);
 
       message.info("Please log to Buy Now the product.");
@@ -1027,6 +1044,7 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Right Column - Product Info - Louis Vuitton Style */}
+
           <div className="bg-white px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:sticky lg:top-0 lg:self-start">
 
             {/* Product Header - Code and Name with Heart */}
@@ -1035,10 +1053,11 @@ const ProductDetailPage = () => {
                 <p className="text-xs text-gray-600 font-light font-futura-pt-light mb-1">
                   {product.productId || ''}
                 </p>
-                <h3 className="text-xl sm:text-sm md:text-md lg:text-xl text-black mb-2 font-light font-futura-pt-book">
+                <h3 className="text-xl sm:text-sm md:text-md lg:text-xl text-black  font-light font-futura-pt-book">
                   {product.name}
                 </h3>
               </div>
+
               {/* Heart Icon - Wishlist */}
               <button
                 onClick={() => handleAddToWishlist(product.id)}
@@ -1056,6 +1075,18 @@ const ProductDetailPage = () => {
                   />
                 )}
               </button>
+            </div>
+            <div className="">
+              {
+                product.fabricType.map((item, index) => (
+                  <div
+                    key={index}
+                    className="text-xs text-gray-500 font-light font-futura-pt-light"
+                  >
+                    {item}
+                  </div>
+                ))
+              }
             </div>
 
             {/* Price - Louis Vuitton Style */}
@@ -1376,117 +1407,188 @@ const ProductDetailPage = () => {
                 <RotateCcw size={20} className="text-text-medium mt-0.5" strokeWidth={1.5} />
                 <div>
                   <p className="text-sm font-light text-black">Easy Returns</p>
-                  <p className="text-xs text-text-medium">30-day return policy</p>
+                  <p className="text-xs text-text-medium">7-day return policy</p>
                 </div>
               </div>
             </div> */}
 
             {/* Description - Louis Vuitton Style */}
-            {product.description && (
+            {/* {product.description && (
               <div className="pt-4 border-t border-gray-200">
                 <p className="text-black text-sm leading-relaxed font-light font-futura-pt-light">
                   {product.description}
                 </p>
               </div>
-            )}
+            )} */}
 
             {/* Product Details */}
             {(product.keyFeatures.length > 0 || Object.keys(product.specifications).length > 0 || product.fabricType.length > 0) && (
-              <div className="space-y-5 pt-5 border-t border-text-light/10">
+              // <div className="space-y-5 pt-5 border-t border-text-light/10">
 
-                {/* Key Features */}
-                {product.keyFeatures.length > 0 && (
-                  <div>
+              //   {product.description && (
+              //     <div>
+              //       <button
+              //         onClick={() =>
+              //           setExpandedSections(prev => ({
+              //             ...prev,
+              //             description: !prev.description
+              //           }))
+              //         }
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Description
+              //         </h3>
+
+              //         {expandedSections.description ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
+
+              //       {expandedSections.description && (
+              //         <p className="text-xs text-black leading-relaxed font-light font-futura-pt-light">
+              //           {product.description}
+              //         </p>
+              //       )}
+              //     </div>
+              //   )}
+
+              //   {/* Key Features */}
+              //   {product.keyFeatures.length > 0 && (
+              //     <div>
+              //       <button
+              //         onClick={() => setExpandedSections(prev => ({ ...prev, keyFeatures: !prev.keyFeatures }))}
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Key Features
+              //         </h3>
+              //         {expandedSections.keyFeatures ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
+              //       {expandedSections.keyFeatures && (
+              //         <ul className="space-y-1.5 list-disc pl-4">
+              //           {product.keyFeatures.map((feature, index) => (
+              //             <li
+              //               key={index}
+              //               className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+              //             >
+              //               {feature}
+              //             </li>
+              //           ))}
+              //         </ul>
+              //       )}
+
+              //     </div>
+              //   )}
+
+              //   {/* Fabric Type */}
+              //   {product.fabricType.length > 0 && (
+              //     <div>
+              //       <button
+              //         onClick={() => setExpandedSections(prev => ({ ...prev, fabric: !prev.fabric }))}
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Fabric
+              //         </h3>
+              //         {expandedSections.fabric ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
+              //       {expandedSections.fabric && (
+              //         <ul className="list-disc pl-4">
+              //           <li className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
+              //             {product.fabricType.join(', ')}
+              //           </li>
+              //         </ul>
+              //       )}
+
+              //     </div>
+              //   )}
+
+
+              //   {/* Care Instructions */}
+              //   {product.careInstructions.length > 0 && (
+              //     <div>
+              //       <button
+              //         onClick={() => setExpandedSections(prev => ({ ...prev, careInstructions: !prev.careInstructions }))}
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Care Instructions
+              //         </h3>
+              //         {expandedSections.careInstructions ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
+              //       {expandedSections.careInstructions && (
+              //         <ul className="space-y-1.5 list-disc pl-4">
+              //           {product.careInstructions.map((instruction, index) => (
+              //             <li
+              //               key={index}
+              //               className="text-xs text-text-medium font-light leading-relaxed font-futura-pt-thin"
+              //             >
+              //               {instruction}
+              //             </li>
+              //           ))}
+              //         </ul>
+              //       )}
+
+              //     </div>
+              //   )}
+              // </div>
+              <div className="pt-5 border-t border-text-light/10">
+                {Object.keys(sections).map((section, index, arr) => {
+                  const content = sections[section];
+                  if (!content || (Array.isArray(content) && content.length === 0)) return null;
+
+                  const sectionName =
+                    section === "fabric"
+                      ? "Fabric"
+                      : section === "careInstructions"
+                        ? "Care Instructions"
+                        : section.charAt(0).toUpperCase() + section.slice(1);
+
+                  const isLast = index === arr.length - 1;
+
+                  return (
                     <button
-                      onClick={() => setExpandedSections(prev => ({ ...prev, keyFeatures: !prev.keyFeatures }))}
-                      className="flex items-center justify-between w-full text-left mb-2.5"
+                      key={section}
+                      onClick={() => {
+                        setActiveSection(section);
+                        setOpenSlider(true);
+                      }}
+                      className={`flex items-center justify-between w-full text-left py-3 ${!isLast ? "border-b border-text-light/20" : ""
+                        }`}
                     >
-                      <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-                        Key Features
+                      <h3 className="text-md font-light text-black font-futura-pt-light">
+                        {sectionName}
                       </h3>
-                      {expandedSections.keyFeatures ? (
-                        <Minus size={14} className="text-black" strokeWidth={2} />
-                      ) : (
-                        <Plus size={14} className="text-black" strokeWidth={2} />
-                      )}
+                       {isDesktop ? (
+              <FiChevronRight className="text-black" size={16} />
+            ) : (
+              <FiChevronDown className="text-black" size={16} />
+            )}
                     </button>
-                    {expandedSections.keyFeatures && (
-                      <ul className="space-y-1.5 list-disc pl-4">
-                        {product.keyFeatures.map((feature, index) => (
-                          <li
-                            key={index}
-                            className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
-                          >
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-
-                  </div>
-                )}
-
-                {/* Fabric Type */}
-                {product.fabricType.length > 0 && (
-                  <div>
-                    <button
-                      onClick={() => setExpandedSections(prev => ({ ...prev, fabric: !prev.fabric }))}
-                      className="flex items-center justify-between w-full text-left mb-2.5"
-                    >
-                      <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-                        Fabric
-                      </h3>
-                      {expandedSections.fabric ? (
-                        <Minus size={14} className="text-black" strokeWidth={2} />
-                      ) : (
-                        <Plus size={14} className="text-black" strokeWidth={2} />
-                      )}
-                    </button>
-                    {expandedSections.fabric && (
-                      <ul className="list-disc pl-4">
-                        <li className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
-                          {product.fabricType.join(', ')}
-                        </li>
-                      </ul>
-                    )}
-
-                  </div>
-                )}
-
-                {/* Care Instructions */}
-                {product.careInstructions.length > 0 && (
-                  <div>
-                    <button
-                      onClick={() => setExpandedSections(prev => ({ ...prev, careInstructions: !prev.careInstructions }))}
-                      className="flex items-center justify-between w-full text-left mb-2.5"
-                    >
-                      <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-                        Care Instructions
-                      </h3>
-                      {expandedSections.careInstructions ? (
-                        <Minus size={14} className="text-black" strokeWidth={2} />
-                      ) : (
-                        <Plus size={14} className="text-black" strokeWidth={2} />
-                      )}
-                    </button>
-                    {expandedSections.careInstructions && (
-                      <ul className="space-y-1.5 list-disc pl-4">
-                        {product.careInstructions.map((instruction, index) => (
-                          <li
-                            key={index}
-                            className="text-xs text-text-medium font-light leading-relaxed font-futura-pt-thin"
-                          >
-                            {instruction}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-
-                  </div>
-                )}
+                  );
+                })}
               </div>
+
+
             )}
           </div>
+
+
         </div>
         {/* Review Form Section */}
         {false && <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
@@ -2006,6 +2108,13 @@ const ProductDetailPage = () => {
           </div>
         </div>
       )}
+
+      <SlidePanel
+        open={openSlider}
+        onClose={() => setOpenSlider(false)}
+        sectionName={activeSection ? activeSection.replace(/([A-Z])/g, ' $1') : ""}
+        sectionContent={activeSection ? sections[activeSection] : null}
+      />
 
 
     </div>

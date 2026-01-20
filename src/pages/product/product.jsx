@@ -104,11 +104,16 @@ const ProductsPage = () => {
       { id: "Latest", name: "Novelty" },
     ],
     fabricOptions: [
-      { id: "Cotton", name: "Cotton" },
-
-      { id: "Silk", name: "Silk" },
-
+      { id: "SATIN", name: "SATIN" },
+      { id: "BLOSSOM", name: "BLOSSOM" },
+      { id: "VELVET", name: "VELVET" },
+      { id: "RIBBED_KNIT", name: "RIBBED KNIT" },
+      { id: "FLEECE", name: "FLEECE" },
+      { id: "WAFFLE", name: "WAFFLE" },
+      { id: "VELOUR", name: "VELOUR" },
+      { id: "MINK", name: "MINK" }
     ],
+
     colors: [],
     sizes: [],
   });
@@ -202,7 +207,7 @@ const ProductsPage = () => {
     try {
       const payload = {
         q: '',
-        category:category,
+        category: category,
         subCategory: filters.segment || "",
         // minPrice: filters.minPrice ?? null,
         // maxPrice: filters.maxPrice ?? null,

@@ -191,6 +191,33 @@ const CheckoutPage = () => {
     }
   }, [checkoutProd]);
 
+  // Auto-fill city (District) and state from pincode
+  useEffect(() => {
+    const fetchCityState = async () => {
+      if (address.pincode?.length === 6) {
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${address.pincode}`);
+          const data = await res.json();
+
+          if (data[0].Status === "Success" && data[0].PostOffice?.length) {
+            const firstPostOffice = data[0].PostOffice[0];
+            const { District, State } = firstPostOffice;
+
+            // Auto-fill only if user hasn’t typed anything
+            setAddress((prev) => ({
+              ...prev,
+              city: prev.city || District,
+              state: prev.state || State,
+            }));
+          }
+        } catch (err) {
+          console.error("Error fetching city/state:", err);
+        }
+      }
+    };
+
+    fetchCityState();
+  }, [address.pincode]);
   // Check for giftAddress from personalization after cart items are loaded
   useEffect(() => {
     if (cartItems.length > 0) {

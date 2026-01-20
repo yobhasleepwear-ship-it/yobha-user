@@ -546,7 +546,7 @@ const CartPage = () => {
                         <RotateCcw size={16} className="text-text-medium mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm md:text-base font-light text-black font-futura-pt-light">Easy Returns</p>
-                          <p className="text-xs md:text-sm font-light font-futura-pt-thin">30-day return policy</p>
+                          <p className="text-xs md:text-sm font-light font-futura-pt-thin">7-day return policy</p>
                         </div>
                       </div>
                     </div>

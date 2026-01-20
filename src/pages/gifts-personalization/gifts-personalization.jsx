@@ -9,17 +9,19 @@ const GiftsPersonalization = () => {
     {
       id: "personalize",
       title: "Personalize Your Product",
-      description: "Add a personal touch to your favorite YOBHA products with custom personalization options",
+      description:
+        "Add a personal touch to your favorite YOBHA products with custom personalization options",
       route: "/personalization",
       icon: Sparkles,
     },
-    {
-      id: "purchase",
-      title: "Purchase Gift Card",
-      description: "Gift for loved ones - Share the gift of luxury with a YOBHA gift card",
-      route: "/gift-card-purchase",
-      icon: Gift,
-    },
+    // You can add more options here
+    // {
+    //   id: "purchase",
+    //   title: "Purchase Gift Card",
+    //   description: "Gift for loved ones - Share the gift of luxury with a YOBHA gift card",
+    //   route: "/gift-card-purchase",
+    //   icon: Gift,
+    // },
   ];
 
   return (
@@ -41,22 +43,22 @@ const GiftsPersonalization = () => {
       {/* Options Section */}
       <section className="py-12 md:py-16 lg:py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-            {options.map((option, index) => {
+          <div className="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16">
+            {options.map((option) => {
               const IconComponent = option.icon;
               return (
                 <div
                   key={option.id}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer max-w-md w-full"
                   onClick={() => navigate(option.route)}
                 >
                   <div className="bg-white border border-gray-200 hover:border-black transition-all duration-300 h-full flex flex-col">
                     {/* Icon Section */}
                     <div className="p-8 md:p-12 lg:p-16 border-b border-gray-100 flex items-center justify-center">
                       <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 bg-black rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <IconComponent 
+                        <IconComponent
                           size={36}
-                          className="text-white" 
+                          className="text-white"
                           strokeWidth={1.5}
                         />
                       </div>
@@ -76,9 +78,9 @@ const GiftsPersonalization = () => {
                         <span className="text-sm font-light font-futura-pt-light">
                           Explore
                         </span>
-                        <ArrowRight 
-                          size={18} 
-                          className="group-hover:translate-x-2 transition-transform duration-300" 
+                        <ArrowRight
+                          size={18}
+                          className="group-hover:translate-x-2 transition-transform duration-300"
                           strokeWidth={1.5}
                         />
                       </div>
@@ -95,4 +97,3 @@ const GiftsPersonalization = () => {
 };
 
 export default GiftsPersonalization;
-

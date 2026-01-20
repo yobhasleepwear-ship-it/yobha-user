@@ -30,6 +30,33 @@ const AccountPage2 = () => {
   const [loading, setLoading] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
   const [savingName, setSavingName] = useState(false);
+useEffect(() => {
+  const fetchCityState = async () => {
+    if (tempData.zip?.length === 6) { // only when 6-digit ZIP
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${tempData.zip}`);
+        const data = await res.json();
+
+        if (data[0].Status === "Success" && data[0].PostOffice?.length) {
+          const firstPostOffice = data[0].PostOffice[0];
+               const { District, State, Country } = firstPostOffice;
+
+          // Only auto-fill if fields are empty
+          setTempData((prev) => ({
+            ...prev,
+            city: prev.city || District,
+            state: prev.state || State,
+             country: prev.country || Country,
+          }));
+        }
+      } catch (err) {
+        console.error("Error fetching city/state:", err);
+      }
+    }
+  };
+
+  fetchCityState();
+}, [tempData.zip]);
 
   // Create dummy wallet data for testing
   const createDummyWalletData = () => {
