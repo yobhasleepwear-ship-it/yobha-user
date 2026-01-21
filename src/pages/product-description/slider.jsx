@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import Giftimg from "../../assets/giftyobha.jpeg";
+import Giftimg from "../../assets/gifting.jpeg";
 /* ---------------- SECTION UI COMPONENTS ---------------- */
 
 function DescriptionUI({
@@ -23,7 +23,7 @@ function DescriptionUI({
                     keyFeatures.slice(1).map((feature, index) => (
                         <p
                             key={index}
-                            className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+                            className="text-xs text-black font-light leading-relaxed font-futura-pt-light"
                             style={{ fontWeight: 600 }}
                         >
                             {feature}
@@ -32,14 +32,14 @@ function DescriptionUI({
 
                 {/* Colour */}
                 {selectedColor && (
-                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin" style={{ fontWeight: 600 }}>
+                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-light" style={{ fontWeight: 600 }}>
                         Colour: {selectedColor}
                     </p>
                 )}
 
                 {/* Product Code */}
                 {productCode && (
-                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin" style={{ fontWeight: 600 }}>
+                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-light" style={{ fontWeight: 600 }}>
                         Product Code: {productCode}
                     </p>
                 )}
@@ -58,7 +58,7 @@ function CareInstructionsUI({ content }) {
             {content?.map((item, index) => (
                 <p
                     key={index}
-                    className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+                    className="text-xs text-black font-light leading-relaxed font-futura-pt-light"
                     style={{ fontWeight: 600 }}
                 >
                     {item}
@@ -72,14 +72,14 @@ function CareInstructionsUI({ content }) {
 function DeliveryReturnUI({ content }) {
     return (
         <div className="space-y-2 text-xs text-black font-light leading-relaxed">
-            <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin" style={{ fontWeight: 600 }}>{content}</p>
+            <p className="text-l text-black font-light leading-relaxed font-futura-pt-light" style={{ fontWeight: 600 }}>{content}</p>
         </div>
     );
 }
 
 function GiftPackagingUI({ content }) {
     return (
-        <> <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin mb-2" style={{ fontWeight: 600 }}>{content}</p>
+        <> <p className="text-l text-black font-light leading-relaxed font-futura-pt-light mb-2" style={{ fontWeight: 600 }}>{content}</p>
             <img
                 src={Giftimg} // 👈 change path if needed
                 alt="Gift Packaging"

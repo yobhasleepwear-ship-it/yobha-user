@@ -273,7 +273,7 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
     try {
       const payload = {
         q: "",
-        category: "personalization",
+        category: "Personalization",
         subCategory: "",
         minPrice: null,
         maxPrice: null,
