@@ -315,7 +315,11 @@ const ProductDetailPage = () => {
     fabric: product?.fabricType,
     careInstructions: product?.careInstructions,
   };
-    const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+
+  // Check if product subCategory is personalization
+  const isPersonalizationProduct = product?.subCategory?.toLowerCase() === 'personalization';
+
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
@@ -1286,6 +1290,7 @@ const ProductDetailPage = () => {
             )}
 
             {/* Monogram Input */}
+            {isPersonalizationProduct && (
             <div className="space-y-2">
               <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
                 Name Initials
@@ -1315,8 +1320,10 @@ const ProductDetailPage = () => {
                 </p>
               )}
             </div>
+            )}
 
             {/* Notes Input */}
+            {isPersonalizationProduct && (
             <div className="space-y-2">
               <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
                 Notes
@@ -1333,6 +1340,7 @@ const ProductDetailPage = () => {
                 className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400 resize-none"
               />
             </div>
+            )}
 
             {/* Action Buttons - Add to Cart & Buy Now */}
             <div className="flex flex-col gap-3">
