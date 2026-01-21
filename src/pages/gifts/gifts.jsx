@@ -1520,9 +1520,28 @@ const Gifts = () => {
             })}
         </div>
       ) : (
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-20 text-center">
-            <p className="text-gray-600 text-sm font-light">No products found for this category.</p>
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center py-24">
+          <div className="max-w-lg w-full text-center bg-gradient-to-b from-black/5 to-black/0 border border-text-light/20 rounded-sm p-12">
+            <div className="mb-8">
+              <h3 className="text-3xl lg:text-4xl font-light text-black mb-4 font-futura-pt-light tracking-wide">
+                Coming Soon
+              </h3>
+              <div className="w-12 h-0.5 bg-black mx-auto mb-6"></div>
+            </div>
+            <p className="text-base md:text-lg text-text-medium font-light leading-relaxed font-futura-pt-light mb-3">
+              This collection will be arriving soon
+            </p>
+            <p className="text-sm md:text-base text-gray-600 font-light mb-8 font-futura-pt-light">
+              Stay tuned for our exclusive new arrivals. We're carefully curating the perfect selection for you.
+            </p>
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="bg-black text-white px-8 py-2.5 font-light hover:bg-text-dark transition-all duration-300 text-sm font-futura-pt-light uppercase tracking-wide"
+              >
+                Clear All Filters
+              </button>
+            )}
           </div>
         </div>
       )}

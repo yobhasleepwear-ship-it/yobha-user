@@ -1063,25 +1063,28 @@ const ProductsPage = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20">
-            <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 mx-auto mb-6 border-2 border-text-light/20 flex items-center justify-center">
-                <span className="text-4xl text-text-light">✕</span>
+          <div className="flex justify-center items-center py-24">
+            <div className="max-w-lg mx-auto text-center bg-gradient-to-b from-black/5 to-black/0 border border-text-light/20 rounded-sm p-12">
+              <div className="mb-8">
+                <h3 className="text-3xl lg:text-4xl font-light text-black mb-4 font-futura-pt-light tracking-wide">
+                  Coming Soon
+                </h3>
+                <div className="w-12 h-0.5 bg-black mx-auto mb-6"></div>
               </div>
-              <h3 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-2 font-futura-pt-book">
-                Coming Soon
-              </h3>
-              <p className="text-gray-600 text-md md:text-md sm:text-sm font-light leading-relaxed font-futura-pt-light mb-8">
-                Try adjusting your filters to find what you're looking for
+              <p className="text-base md:text-lg text-text-medium font-light leading-relaxed font-futura-pt-light mb-3">
+                This collection will be arriving soon
               </p>
-              {hasActiveFilters && (
+              <p className="text-sm md:text-base text-gray-600 font-light mb-8 font-futura-pt-light">
+                Stay tuned for our exclusive new arrivals. We're carefully curating the perfect selection for you.
+              </p>
+              {/* {hasActiveFilters && (
                 <button
                   onClick={clearAllFilters}
-                  className="bg-black text-white px-8 py-3 font-light hover:bg-text-dark transition-colors text-sm font-futura-pt-light"
+                  className="bg-black text-white px-8 py-2.5 font-light hover:bg-text-dark transition-all duration-300 text-sm font-futura-pt-light uppercase tracking-wide"
                 >
                   Clear All Filters
                 </button>
-              )}
+              )} */}
             </div>
           </div>
         )}
