@@ -1181,10 +1181,10 @@ const Gifts = () => {
                   />
                   <div className="ml-3 flex items-center gap-3 flex-1">
                     <div
-                      className={`w-6 h-6 rounded-full flex-shrink-0 ${isLightColor(displayHex)
-                          ? 'border-2 border-gray-400'
-                          : 'border border-gray-300'
-                        }`}
+                      // className={`w-6 h-6 rounded-full flex-shrink-0 ${isLightColor(displayHex)
+                      //     ? 'border-2 border-gray-400'
+                      //     : 'border border-gray-300'
+                      //   }`}
                       style={{ backgroundColor: displayHex }}
                       title={color}
                     />
