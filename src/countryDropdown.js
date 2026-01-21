@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
+// List of countries
 export const countryOptions = [
   { code: "IN", label: "India" },
   { code: "AE", label: "United Arab Emirates (UAE)" },
@@ -14,6 +15,7 @@ export const countryOptions = [
   { code: "IQ", label: "Iraq" },
 ];
 
+// CountrySelector Component
 export const CountrySelector = ({
   value,
   onSelect,
@@ -22,6 +24,7 @@ export const CountrySelector = ({
   menuClassName = "",
   optionClassName = "",
   align = "left",
+  direction = "down", // 🆕 direction prop
   wrapperClassName = "",
   style,
 }) => {
@@ -35,7 +38,6 @@ export const CountrySelector = ({
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -45,10 +47,15 @@ export const CountrySelector = ({
     onSelect?.(code);
   };
 
-  const baseButtonClasses = "w-full flex items-center justify-between gap-3 border border-gray-200/50 bg-white px-4 py-3 text-left text-sm md:text-base font-light text-gray-900 transition-all duration-300 focus:outline-none focus:border-gray-900 hover:border-gray-300 shadow-sm hover:shadow-md font-futura-pt-book";
-  const baseMenuClasses = "absolute z-50 mt-2 w-full  max-h-auto md:max-h-80 overflow-y-auto bg-white border border-gray-200/50 shadow-lg font-futura-pt-book";
-  const baseOptionClasses = "block w-full text-left px-4 py-3 text-sm md:text-base font-light text-gray-900 hover:bg-gray-50 transition-colors font-futura-pt-book";
+  const baseButtonClasses =
+    "w-full flex items-center justify-between gap-3 border border-gray-200/50 bg-white px-4 py-3 text-left text-sm md:text-base font-light text-gray-900 transition-all duration-300 focus:outline-none focus:border-gray-900 hover:border-gray-300 shadow-sm hover:shadow-md font-futura-pt-book";
+  const baseMenuClasses =
+    "absolute z-50 w-full max-h-auto md:max-h-80 overflow-y-auto bg-white border border-gray-200/50 shadow-lg font-futura-pt-book";
+  const baseOptionClasses =
+    "block w-full text-left px-4 py-3 text-sm md:text-base font-light text-gray-900 hover:bg-gray-50 transition-colors font-futura-pt-book";
+
   const menuAlignmentClass = align === "right" ? "right-0" : "left-0";
+  const menuDirectionClass = direction === "up" ? "bottom-full mb-2" : "top-full mt-2"; // 🆕
 
   return (
     <div ref={containerRef} className={`relative ${wrapperClassName}`} style={style}>
@@ -63,7 +70,9 @@ export const CountrySelector = ({
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <svg
-          className={`h-4 w-4 transform transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"}`}
+          className={`h-4 w-4 transform transition-transform duration-200 ${
+            open ? "rotate-180" : "rotate-0"
+          }`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -74,7 +83,10 @@ export const CountrySelector = ({
       </button>
 
       {open && (
-        <div className={`${baseMenuClasses} ${menuAlignmentClass} ${menuClassName} max-h-60 overflow-y-auto pb-2` } role="listbox">
+        <div
+          className={`${baseMenuClasses} ${menuAlignmentClass} ${menuDirectionClass} ${menuClassName} max-h-60 overflow-y-auto pb-2`}
+          role="listbox"
+        >
           {countryOptions.map((option) => (
             <button
               key={option.code}
@@ -91,11 +103,12 @@ export const CountrySelector = ({
   );
 };
 
+// CountryDropdown Component
 const CountryDropdown = ({ onConfirmed }) => {
   const [detectedCountry, setDetectedCountry] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [apiFailed, setApiFailed] = useState(false); // 🆕 handle failure
+  const [apiFailed, setApiFailed] = useState(false);
 
   useEffect(() => {
     // Check if user already selected
@@ -111,9 +124,7 @@ const CountryDropdown = ({ onConfirmed }) => {
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
       .then((data) => {
-        const userCountry = countryOptions.find(
-          (c) => c.code === data.country_code
-        );
+        const userCountry = countryOptions.find((c) => c.code === data.country_code);
         if (userCountry) {
           setDetectedCountry(userCountry);
           setShowConfirmation(true);
@@ -153,14 +164,27 @@ const CountryDropdown = ({ onConfirmed }) => {
   if (apiFailed && !selectedCountry) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm font-futura-pt-light">
-        <div
-          className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-md w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black"
-        >
+        <div className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-md w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black">
           <div className="text-center mb-6">
             <div className="w-16 h-16 border border-black/15 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c1.1046 0 2-.8954 2-2s-.8954-2-2-2-2 .8954-2 2 .8954 2 2 2z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 0114 0z" />
+              <svg
+                className="w-8 h-8 text-black"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 11c1.1046 0 2-.8954 2-2s-.8954-2-2-2-2 .8954-2 2 .8954 2 2 2z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 0114 0z"
+                />
               </svg>
             </div>
             <h3 className="text-2xl md:text-3xl font-light uppercase tracking-[0.22em]">
@@ -169,7 +193,9 @@ const CountryDropdown = ({ onConfirmed }) => {
             <p className="text-sm font-light leading-relaxed text-black/70 mt-3">
               We couldn’t detect your location.
             </p>
-            <p className="text-xs font-light text-black/60 mt-2 uppercase tracking-[0.25em]">Please select your country to continue</p>
+            <p className="text-xs font-light text-black/60 mt-2 uppercase tracking-[0.25em]">
+              Please select your country to continue
+            </p>
           </div>
 
           <div className="space-y-4 text-left">
@@ -180,6 +206,7 @@ const CountryDropdown = ({ onConfirmed }) => {
               buttonClassName="bg-white border-black/15 text-sm tracking-[0.25em]"
               menuClassName="bg-white border-black/15"
               optionClassName="text-sm tracking-[0.22em]"
+              direction="up" // 🆕 opens upward
             />
           </div>
 
@@ -191,18 +218,31 @@ const CountryDropdown = ({ onConfirmed }) => {
     );
   }
 
-  // 🟢 Show detected confirmation (original)
+  // 🟢 Show detected confirmation
   if (showConfirmation && detectedCountry) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm font-futura-pt-light">
-        <div
-          className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-md w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black"
-        >
+        <div className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-md w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black">
           <div className="text-center mb-6">
             <div className="w-16 h-16 border border-black/15 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c1.1046 0 2-.8954 2-2s-.8954-2-2-2-2 .8954-2 2 .8954 2 2 2z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 0114 0z" />
+              <svg
+                className="w-8 h-8 text-black"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 11c1.1046 0 2-.8954 2-2s-.8954-2-2-2-2 .8954-2 2 .8954 2 2 2z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 0114 0z"
+                />
               </svg>
             </div>
             <h3 className="text-2xl md:text-3xl font-light uppercase tracking-[0.22em]">
@@ -211,9 +251,7 @@ const CountryDropdown = ({ onConfirmed }) => {
             <p className="text-sm font-light leading-relaxed text-black/70 mt-3">
               We detected your location as
             </p>
-            <p className="text-lg font-light tracking-[0.18em] mt-2">
-              {detectedCountry.label}
-            </p>
+            <p className="text-lg font-light tracking-[0.18em] mt-2">{detectedCountry.label}</p>
             <p className="text-xs font-light text-black/60 mt-2 uppercase tracking-[0.25em]">
               Is this correct?
             </p>
@@ -234,6 +272,7 @@ const CountryDropdown = ({ onConfirmed }) => {
               buttonClassName="bg-white border-black/15 text-sm tracking-[0.25em]"
               menuClassName="bg-white border-black/15"
               optionClassName="text-sm tracking-[0.22em]"
+              direction="up" // 🆕 opens upward
             />
           </div>
 
@@ -249,13 +288,21 @@ const CountryDropdown = ({ onConfirmed }) => {
   if (!selectedCountry) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm font-futura-pt-light">
-        <div
-          className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-sm w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black text-center"
-        >
+        <div className="bg-white border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-8 md:p-12 max-w-sm w-full mx-4 transform transition-all duration-500 animate-fadeInUp text-black text-center">
           <div className="text-center">
             <div className="w-16 h-16 border border-black/15 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-black animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v4m0 8v4m8-8h-4M8 12H4" />
+              <svg
+                className="w-8 h-8 text-black animate-spin"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 4v4m0 8v4m8-8h-4M8 12H4"
+                />
               </svg>
             </div>
             <h3 className="text-xl md:text-2xl font-light uppercase tracking-[0.22em] mb-2">
@@ -267,8 +314,14 @@ const CountryDropdown = ({ onConfirmed }) => {
 
             <div className="flex justify-center space-x-2 mt-6">
               <div className="w-2 h-2 bg-black rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-black/70 rounded-full animate-bounce" style={{ animationDelay: "0.12s" }}></div>
-              <div className="w-2 h-2 bg-black/50 rounded-full animate-bounce" style={{ animationDelay: "0.24s" }}></div>
+              <div
+                className="w-2 h-2 bg-black/70 rounded-full animate-bounce"
+                style={{ animationDelay: "0.12s" }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-black/50 rounded-full animate-bounce"
+                style={{ animationDelay: "0.24s" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -285,6 +338,7 @@ const CountryDropdown = ({ onConfirmed }) => {
       buttonClassName="text-gray-900"
       menuClassName="bg-white"
       optionClassName="text-gray-900"
+      direction="up" // 🆕 opens upward
     />
   );
 };
