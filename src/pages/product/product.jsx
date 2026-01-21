@@ -62,7 +62,8 @@ const ProductsPage = () => {
   });
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500000 });
   const [filterOptions, setFilterOptions] = useState({
-    segments: ["Women", "Men", "Kids", "Pets", "Socks", "Eyemasks", "Headband"],
+    segments: ["Women", "Men", "Kids", "Pets"],
+    accessories: ["Socks", "Eyemasks", "Headband", "Cushions", "Scrunchies"],
     categories: [
       // { id: "Sleepwear", name: "Sleepwear" },
       // { id: "Loungewear", name: "Loungewear" },
@@ -418,6 +419,7 @@ const ProductsPage = () => {
   // Memoized callbacks for accordion toggles to prevent re-renders
   const toggleSortBy = useCallback(() => toggleAccordion("sortBy"), [toggleAccordion]);
   const toggleGender = useCallback(() => toggleAccordion("gender"), [toggleAccordion]);
+  const toggleAccessories = useCallback(() => toggleAccordion("accessories"), [toggleAccordion]);
   const toggleFabric = useCallback(() => toggleAccordion("fabric"), [toggleAccordion]);
   const toggleColors = useCallback(() => toggleAccordion("colors"), [toggleAccordion]);
   const toggleSizes = useCallback(() => toggleAccordion("sizes"), [toggleAccordion]);
@@ -524,6 +526,37 @@ const ProductsPage = () => {
           ))}
         </div>
       </FilterAccordion>
+
+      {/* Accessories Filter */}
+      <FilterAccordion
+        title="Accessories"
+        isOpen={openAccordion === "accessories"}
+        onToggle={toggleAccessories}
+      >
+        <div className="space-y-3">
+          {filterOptions.accessories.map((accessory) => (
+            <label
+              key={accessory}
+              className="flex items-center cursor-pointer group"
+            >
+              <input
+                type="radio"
+                name="accessory"
+                checked={filters.segment === accessory}
+                onChange={() => updateFilter('segment', accessory)}
+                className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
+              />
+              <span className={`ml-3 text-sm tracking-wide transition-colors font-light font-futura-pt-light ${filters.segment === accessory
+                ? "text-black"
+                : "text-text-medium group-hover:text-black"
+                }`}>
+                {accessory}
+              </span>
+            </label>
+          ))}
+        </div>
+      </FilterAccordion>
+
       <FilterAccordion
         title="Fabric Type"
         isOpen={openAccordion === "fabric"}
@@ -1036,7 +1069,7 @@ const ProductsPage = () => {
                 <span className="text-4xl text-text-light">✕</span>
               </div>
               <h3 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black mb-2 font-futura-pt-book">
-                Comming Soon
+                Coming Soon
               </h3>
               <p className="text-gray-600 text-md md:text-md sm:text-sm font-light leading-relaxed font-futura-pt-light mb-8">
                 Try adjusting your filters to find what you're looking for

@@ -183,7 +183,8 @@ const Gifts = () => {
 
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500000 });
   const [filterOptions, setFilterOptions] = useState({
-    segments: ["Women", "Men", "Kids", "Pets", "Couple", "Family", "Scrunchies", "Socks", "Eyemasks", "Headband", "Cushions"],
+    segments: ["Women", "Men", "Kids", "Pets", "Couple", "Family"],
+    accessories: ["Scrunchies", "Socks", "Eyemasks", "Headband", "Cushions"],
     categories: [
       // { id: "Sleepwear", name: "Sleepwear" },
       // { id: "Loungewear", name: "Loungewear" },
@@ -708,6 +709,7 @@ const Gifts = () => {
   // Memoized callbacks for accordion toggles to prevent re-renders
   const toggleSortBy = useCallback(() => toggleAccordion("sortBy"), [toggleAccordion]);
   const toggleGender = useCallback(() => toggleAccordion("gender"), [toggleAccordion]);
+  const toggleAccessories = useCallback(() => toggleAccordion("accessories"), [toggleAccordion]);
   const toggleFabric = useCallback(() => toggleAccordion("fabric"), [toggleAccordion]);
   const toggleColors = useCallback(() => toggleAccordion("colors"), [toggleAccordion]);
   const toggleSizes = useCallback(() => toggleAccordion("sizes"), [toggleAccordion]);
@@ -1088,6 +1090,36 @@ const Gifts = () => {
                 : "text-gray-600 group-hover:text-black"
                 }`}>
                 {segment}
+              </span>
+            </label>
+          ))}
+        </div>
+      </FilterAccordion>
+
+      {/* Accessories Filter */}
+      <FilterAccordion
+        title="Accessories"
+        isOpen={openAccordion === "accessories"}
+        onToggle={toggleAccessories}
+      >
+        <div className="space-y-3">
+          {filterOptions.accessories.map((accessory) => (
+            <label
+              key={accessory}
+              className="flex items-center cursor-pointer group"
+            >
+              <input
+                type="radio"
+                name="accessory"
+                checked={filters.segment === accessory}
+                onChange={() => updateFilter('segment', accessory)}
+                className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
+              />
+              <span className={`ml-3 text-sm transition-colors font-light font-futura-pt-light ${filters.segment === accessory
+                ? "text-black"
+                : "text-gray-600 group-hover:text-black"
+                }`}>
+                {accessory}
               </span>
             </label>
           ))}
