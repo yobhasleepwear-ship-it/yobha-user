@@ -25,6 +25,8 @@ import headband from "../../assets/HEADBAND.jpg";
 import scrunchies from "../../assets/SCRUNCHIES.jpg";
 import socks from "../../assets/SOCKS.jpg";
 import towel from "../../assets/towel.jpg";
+import herVideo from "../../assets/her.MP4";
+import himVideo from "../../assets/him.MP4";
 
 /**
  * Helper function for debouncing
@@ -976,6 +978,15 @@ const Gifts = () => {
     return bannerMap[categorySegment] || heroImage;
   };
 
+  // Get banner media (video or image)
+  const getBannerMedia = () => {
+    const mediaMap = {
+      'Gift_For_Her': { type: 'video', src: herVideo },
+      'Gift_For_Him': { type: 'video', src: himVideo },
+    };
+    return mediaMap[categoryParam] || { type: 'image', src: getBannerImage() };
+  };
+
   // Accordion Component - Minimal Gucci-style (memoized to prevent unnecessary re-renders)
   const FilterAccordion = memo(({ title, isOpen, onToggle, children }) => (
     <div className="border-b border-text-light/10">
@@ -1265,11 +1276,23 @@ const Gifts = () => {
 
       {/* Large Hero Banner Image - Full Width */}
       <div ref={headerTriggerRef} className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] mb-0 overflow-hidden bg-gray-100">
-          <img
-            src={getBannerImage()}
-            alt={currentCategory.name}
-            className="w-full h-full object-cover"
-          />
+          {getBannerMedia().type === 'video' ? (
+            <video
+              src={getBannerMedia().src}
+              alt={currentCategory.name}
+              className="w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : (
+            <img
+              src={getBannerMedia().src}
+              alt={currentCategory.name}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
 
       {/* Category and Filter Bar - Below Hero Image (Sticky on Scroll) - Full Width */}
