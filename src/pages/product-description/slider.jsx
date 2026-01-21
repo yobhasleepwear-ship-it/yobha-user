@@ -1,6 +1,106 @@
 import { useEffect, useState, useRef } from "react";
+import Giftimg from "../../assets/giftyobha.jpeg";
+/* ---------------- SECTION UI COMPONENTS ---------------- */
 
-export default function SlidePanel({ open, onClose, sectionName, sectionContent }) {
+function DescriptionUI({ content, keyFeatures }) {
+    return (
+        <div className="space-y-3">
+            {/* Description */}
+            <p className="text-xs text-black leading-relaxed font-light font-futura-pt-light">
+                {content}
+            </p>
+
+            {/* Key Features (from index 1 onward) */}
+            {Array.isArray(keyFeatures) && keyFeatures.length > 1 && (
+                <div className="space-y-1.5">
+                    {keyFeatures.slice(1).map((feature, index) => (
+                        <p
+                            key={index}
+                            className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+                        >
+                            {feature}
+                        </p>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+
+
+function CareInstructionsUI({ content }) {
+    return (
+        <div className="space-y-1.5">
+            {content?.map((item, index) => (
+                <p
+                    key={index}
+                    className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+                >
+                    {item}
+                </p>
+            ))}
+        </div>
+    );
+}
+
+
+function DeliveryReturnUI({ content }) {
+    return (
+        <div className="space-y-2 text-xs text-black font-light leading-relaxed">
+            <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin">{content}</p>
+        </div>
+    );
+}
+
+function GiftPackagingUI({content}) {
+    return (
+        <>
+        <img
+            src={Giftimg} // 👈 change path if needed
+            alt="Gift Packaging"
+            style={{
+                width: "100%",
+                maxWidth: "320px",
+                height: "auto",
+                objectFit: "contain",
+            }}
+        />
+        <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin">{content}</p>
+        </>
+    );
+}
+
+/* ---------------- SECTION CONFIG ---------------- */
+
+const SECTION_CONFIG = {
+    description: {
+        title: "PRODUCT DETAILS",
+        component: DescriptionUI,
+    },
+    "care Instructions": {
+        title: "MATERIAL AND CARE",
+        component: CareInstructionsUI,
+    },
+    "delivery And Return": {
+        title: "DELIVERY & RETURNS",
+        component: DeliveryReturnUI,
+    },
+    "gift Packaging": {
+        title: "GIFT PACKAGING",
+        component: GiftPackagingUI,
+    },
+};
+
+/* ---------------- MAIN COMPONENT ---------------- */
+
+export default function SlidePanel({
+    open,
+    onClose,
+    sectionName,
+    sectionContent,
+    keyFeatures
+}) {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
     const panelRef = useRef();
 
@@ -20,17 +120,21 @@ export default function SlidePanel({ open, onClose, sectionName, sectionContent 
 
         if (open) {
             document.addEventListener("mousedown", handleClickOutside);
-            document.addEventListener("touchstart", handleClickOutside); // 👈 add this
+            document.addEventListener("touchstart", handleClickOutside);
         }
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("touchstart", handleClickOutside); // 👈 remove too
+            document.removeEventListener("touchstart", handleClickOutside);
         };
     }, [open, onClose]);
 
+    const sectionConfig = SECTION_CONFIG[sectionName];
+    if (!sectionConfig) return null;
 
-    if (!sectionContent) return null;
+    const SectionComponent = sectionConfig.component;
+
+    /* ---------------- STYLES ---------------- */
 
     const panelStyle = {
         position: "absolute",
@@ -46,15 +150,15 @@ export default function SlidePanel({ open, onClose, sectionName, sectionContent 
         transform: open
             ? "translate(0,0)"
             : isDesktop
-                ? "translateX(100%)"
-                : "translateY(-100%)",
+            ? "translateX(100%)"
+            : "translateY(-100%)",
         padding: "20px",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center", // vertical center
-        alignItems: "center",     // horizontal center
+        justifyContent: "center",
+        alignItems: "center",
         overflowY: "auto",
-        textAlign: "center",      // center text inside
+        textAlign: "center",
     };
 
     const closeButtonStyle = {
@@ -67,33 +171,26 @@ export default function SlidePanel({ open, onClose, sectionName, sectionContent 
         border: "none",
     };
 
+    /* ---------------- RENDER ---------------- */
+
     return (
         <div ref={panelRef} style={panelStyle}>
             <button style={closeButtonStyle} onClick={onClose}>
                 ✕
             </button>
 
-            <h3 className="text-md font-light text-black font-futura-pt-light mb-2.5"     style={{ fontWeight: 500, fontSize: "1.05rem" }}>
-                {sectionName}
+            <h3
+                className="text-md font-light text-black font-futura-pt-light mb-2.5"
+                style={{ fontWeight: 500, fontSize: "1.05rem" }}
+            >
+                {sectionConfig.title}
             </h3>
 
-            {Array.isArray(sectionContent) ? (
-                <ul className="space-y-1.5 list-disc pl-0" >
-                    {sectionContent.map((item, index) => (
-                        <li
-                            key={index}
-                                style={{ fontWeight: 400, fontSize: "1.00rem" }}
-                            className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
-                        >
-                            {item}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="text-xs text-black leading-relaxed font-light font-futura-pt-light">
-                    {sectionContent}
-                </p>
-            )}
+         <SectionComponent
+    content={sectionContent}
+    keyFeatures={sectionName === "description" ? keyFeatures : undefined}
+/>
+
         </div>
     );
 }
