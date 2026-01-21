@@ -2,7 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import Giftimg from "../../assets/giftyobha.jpeg";
 /* ---------------- SECTION UI COMPONENTS ---------------- */
 
-function DescriptionUI({ content, keyFeatures }) {
+function DescriptionUI({
+    content,
+    keyFeatures,
+    selectedColor,
+    productCode,
+}) {
     return (
         <div className="space-y-3">
             {/* Description */}
@@ -10,10 +15,12 @@ function DescriptionUI({ content, keyFeatures }) {
                 {content}
             </p>
 
-            {/* Key Features (from index 1 onward) */}
-            {Array.isArray(keyFeatures) && keyFeatures.length > 1 && (
-                <div className="space-y-1.5">
-                    {keyFeatures.slice(1).map((feature, index) => (
+            {/* Key Features + Meta (same style) */}
+            <div className="space-y-1.5">
+                {/* Key Features (from index 1 onward) */}
+                {Array.isArray(keyFeatures) &&
+                    keyFeatures.length > 1 &&
+                    keyFeatures.slice(1).map((feature, index) => (
                         <p
                             key={index}
                             className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
@@ -21,11 +28,26 @@ function DescriptionUI({ content, keyFeatures }) {
                             {feature}
                         </p>
                     ))}
-                </div>
-            )}
+
+                {/* Colour */}
+                {selectedColor && (
+                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
+                        Colour: {selectedColor}
+                    </p>
+                )}
+
+                {/* Product Code */}
+                {productCode && (
+                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
+                        Product Code: {productCode}
+                    </p>
+                )}
+            </div>
         </div>
     );
 }
+
+
 
 
 
@@ -100,6 +122,8 @@ export default function SlidePanel({
     sectionName,
     sectionContent,
     keyFeatures
+    ,selectedColor,
+    productCode
 }) {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
     const panelRef = useRef();
@@ -186,10 +210,13 @@ export default function SlidePanel({
                 {sectionConfig.title}
             </h3>
 
-         <SectionComponent
+    <SectionComponent
     content={sectionContent}
     keyFeatures={sectionName === "description" ? keyFeatures : undefined}
+    selectedColor={sectionName === "description" ? selectedColor : undefined}
+    productCode={sectionName === "description" ? productCode : undefined}
 />
+
 
         </div>
     );

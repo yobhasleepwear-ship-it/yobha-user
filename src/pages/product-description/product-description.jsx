@@ -2184,6 +2184,8 @@ return (
       sectionName={activeSection ? activeSection.replace(/([A-Z])/g, ' $1') : ""}
       sectionContent={activeSection ? sections[activeSection] : null}
       keyFeatures = {product?.keyFeatures}
+      selectedColor={selectedColor}
+      productCode={product.productId}
     />
 
 
