@@ -113,9 +113,8 @@ const ProductsPage = () => {
       { id: "VELOUR", name: "VELOUR" },
       { id: "MINK", name: "MINK" }
     ],
-
+    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     colors: [],
-    sizes: [],
   });
 
   // Extract unique colors and sizes from products using useMemo to prevent unnecessary recalculations
@@ -138,11 +137,15 @@ const ProductsPage = () => {
           }
         });
       }
-      // Extract sizes
+      // Extract sizes and split combined sizes like "M/L" into individual sizes
       if (Array.isArray(product.availableSizes)) {
         product.availableSizes.forEach((size) => {
           if (size && size.trim()) {
-            allSizes.add(size.trim());
+            // Split sizes that are combined with "/" (e.g., "M/L" -> "M", "L")
+            const sizesSplit = size.trim().split('/').map(s => s.trim());
+            sizesSplit.forEach(s => {
+              if (s) allSizes.add(s);
+            });
           }
         });
       }

@@ -185,9 +185,9 @@ const Gifts = () => {
   const [filterOptions, setFilterOptions] = useState({
     segments: ["Women", "Men", "Kids", "Pets", "Couple", "Family", "Scrunchies", "Socks", "Eyemasks", "Headband", "Cushions"],
     categories: [
-      { id: "Sleepwear", name: "Sleepwear" },
-      { id: "Loungewear", name: "Loungewear" },
-      { id: "Homewear", name: "Homewear" },
+      // { id: "Sleepwear", name: "Sleepwear" },
+      // { id: "Loungewear", name: "Loungewear" },
+      // { id: "Homewear", name: "Homewear" },
       { id: "Accessories", name: "Accessories" },
       { id: "PetWear", name: "Pet Wear" },
     ],
@@ -235,8 +235,8 @@ const Gifts = () => {
       { id: "jersey", name: "Stretch Jersey Knit" },
       { id: "bamboo", name: "Eco-Friendly Bamboo Fabric" },
     ],
+    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     colors: [],
-    sizes: [],
   });
   
   // Category mapping
@@ -364,11 +364,15 @@ const Gifts = () => {
           }
         });
       }
-      // Extract sizes
+      // Extract sizes and split combined sizes like "M/L" into individual sizes
       if (Array.isArray(product.availableSizes)) {
         product.availableSizes.forEach((size) => {
           if (size && size.trim()) {
-            allSizes.add(size.trim());
+            // Split sizes that are combined with "/" (e.g., "M/L" -> "M", "L")
+            const sizesSplit = size.trim().split('/').map(s => s.trim());
+            sizesSplit.forEach(s => {
+              if (s) allSizes.add(s);
+            });
           }
         });
       }
