@@ -203,9 +203,9 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: "Men", nav: "Men" },
     { label: "Women", nav: "Women" },
     { label: t("navbar.collectionsItems.petWear." + i18n.language), nav: "PetWear" },
-    { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
-    { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
-    { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
+    // { label: t("navbar.collectionsItems.sleepwear." + i18n.language), nav: "Sleepwear" },
+    // { label: t("navbar.collectionsItems.loungewear." + i18n.language), nav: "Loungewear" },
+    // { label: t("navbar.collectionsItems.homewear." + i18n.language), nav: "Homewear" },
     { label: "Accessories", nav: "accessories", hasSubmenu: true },
   ];
 
@@ -487,10 +487,10 @@ const Sidebar = ({ isOpen, onClose }) => {
               <nav className="flex flex-col px-8 py-6 space-y-0">
                 {giftsSubmenuItems.map((subItem) => {
                   let subRoutePath = subItem.nav;
-                  if (subItem.category) {
-                    subRoutePath = `/gifts?category=${subItem.category}`;
-                  } else if (subItem.nav === "personalization") {
+                  if (subItem.nav === "personalization") {
                     subRoutePath = `/personalization`;
+                  } else if (subItem.category) {
+                    subRoutePath = `/gifts?category=${subItem.category}`;
                   }
                   return (
                     <Link
@@ -587,10 +587,10 @@ const Sidebar = ({ isOpen, onClose }) => {
             <nav className="flex flex-col flex-1 overflow-y-auto px-6 py-6 space-y-0">
               {giftsSubmenuItems.map((subItem) => {
                 let subRoutePath = subItem.nav;
-                if (subItem.category) {
-                  subRoutePath = `/gifts?category=${subItem.category}`;
-                } else if (subItem.nav === "personalization") {
+                if (subItem.nav === "personalization") {
                   subRoutePath = `/personalization`;
+                } else if (subItem.category) {
+                  subRoutePath = `/gifts?category=${subItem.category}`;
                 }
                 return (
                   <Link

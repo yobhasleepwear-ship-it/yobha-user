@@ -64,9 +64,9 @@ const ProductsPage = () => {
   const [filterOptions, setFilterOptions] = useState({
     segments: ["Women", "Men", "Kids", "Pets", "Socks", "Eyemasks", "Headband"],
     categories: [
-      { id: "Sleepwear", name: "Sleepwear" },
-      { id: "Loungewear", name: "Loungewear" },
-      { id: "Homewear", name: "Homewear" },
+      // { id: "Sleepwear", name: "Sleepwear" },
+      // { id: "Loungewear", name: "Loungewear" },
+      // { id: "Homewear", name: "Homewear" },
       { id: "Accessories", name: "Accessories" },
       { id: "PetWear", name: "Pet Wear" },
     ],
