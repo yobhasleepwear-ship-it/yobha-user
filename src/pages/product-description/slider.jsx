@@ -11,7 +11,7 @@ function DescriptionUI({
     return (
         <div className="space-y-3">
             {/* Description */}
-            <p className="text-xs text-black leading-relaxed font-light font-futura-pt-light">
+            <p className="text-xs text-black leading-relaxed font-light font-futura-pt-light" style={{ fontWeight: 600 }}>
                 {content}
             </p>
 
@@ -24,6 +24,7 @@ function DescriptionUI({
                         <p
                             key={index}
                             className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+                            style={{ fontWeight: 600 }}
                         >
                             {feature}
                         </p>
@@ -31,14 +32,14 @@ function DescriptionUI({
 
                 {/* Colour */}
                 {selectedColor && (
-                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
+                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin" style={{ fontWeight: 600 }}>
                         Colour: {selectedColor}
                     </p>
                 )}
 
                 {/* Product Code */}
                 {productCode && (
-                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
+                    <p className="text-xs text-black font-light leading-relaxed font-futura-pt-thin" style={{ fontWeight: 600 }}>
                         Product Code: {productCode}
                     </p>
                 )}
@@ -58,6 +59,7 @@ function CareInstructionsUI({ content }) {
                 <p
                     key={index}
                     className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+                    style={{ fontWeight: 600 }}
                 >
                     {item}
                 </p>
@@ -70,25 +72,25 @@ function CareInstructionsUI({ content }) {
 function DeliveryReturnUI({ content }) {
     return (
         <div className="space-y-2 text-xs text-black font-light leading-relaxed">
-            <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin">{content}</p>
+            <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin" style={{ fontWeight: 600 }}>{content}</p>
         </div>
     );
 }
 
-function GiftPackagingUI({content}) {
+function GiftPackagingUI({ content }) {
     return (
-        <>
-        <img
-            src={Giftimg} // 👈 change path if needed
-            alt="Gift Packaging"
-            style={{
-                width: "100%",
-                maxWidth: "320px",
-                height: "auto",
-                objectFit: "contain",
-            }}
-        />
-        <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin">{content}</p>
+        <> <p className="text-l text-black font-light leading-relaxed font-futura-pt-thin mb-2" style={{ fontWeight: 600 }}>{content}</p>
+            <img
+                src={Giftimg} // 👈 change path if needed
+                alt="Gift Packaging"
+                style={{
+                    width: "100%",
+                    maxWidth: "320px",
+                    height: "auto",
+                    objectFit: "contain",
+                }}
+            />
+
         </>
     );
 }
@@ -122,7 +124,7 @@ export default function SlidePanel({
     sectionName,
     sectionContent,
     keyFeatures
-    ,selectedColor,
+    , selectedColor,
     productCode
 }) {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -174,15 +176,15 @@ export default function SlidePanel({
         transform: open
             ? "translate(0,0)"
             : isDesktop
-            ? "translateX(100%)"
-            : "translateY(-100%)",
+                ? "translateX(100%)"
+                : "translateY(-100%)",
         padding: "20px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         overflowY: "auto",
-        textAlign: "center",
+        textAlign: "left",
     };
 
     const closeButtonStyle = {
@@ -203,21 +205,24 @@ export default function SlidePanel({
                 ✕
             </button>
 
-            <h3
-                className="text-md font-light text-black font-futura-pt-light mb-2.5"
-                style={{ fontWeight: 500, fontSize: "1.05rem" }}
-            >
-                {sectionConfig.title}
-            </h3>
-
-    <SectionComponent
-    content={sectionContent}
-    keyFeatures={sectionName === "description" ? keyFeatures : undefined}
-    selectedColor={sectionName === "description" ? selectedColor : undefined}
-    productCode={sectionName === "description" ? productCode : undefined}
-/>
+            <div style={{display:'flex' , justifyContent:'flex-start' , flexDirection:'column'}}>
 
 
+                <h3
+                    className="text-md font-light text-black font-futura-pt-light mb-2.5"
+                    style={{ fontWeight: 600, fontSize: "1.05rem" }}
+                >
+                    {sectionConfig.title}
+                </h3>
+
+                <SectionComponent
+                    content={sectionContent}
+                    keyFeatures={sectionName === "description" ? keyFeatures : undefined}
+                    selectedColor={sectionName === "description" ? selectedColor : undefined}
+                    productCode={sectionName === "description" ? productCode : undefined}
+                />
+
+            </div>
         </div>
     );
 }
