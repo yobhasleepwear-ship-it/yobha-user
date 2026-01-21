@@ -9,6 +9,7 @@ import {
   X,
   Bookmark,
 } from "lucide-react";
+
 import { getFilteredProducts, getProductDescription } from "../../service/productAPI";
 import { getAddresses, addAddress } from "../../service/address";
 import { message } from "../../comman/toster-message/ToastContainer";
@@ -23,6 +24,74 @@ const Personalization = () => {
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = JSON.parse(savedCountry);
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code || "IN");
+
+  // Helper function to get hex color from color name or hex code
+  const getColorHex = (color) => {
+    if (!color) return '#CCCCCC';
+
+    // Check if color is already a hex code
+    const isHex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+    if (isHex) {
+      // Normalize 3-digit hex to 6-digit for consistency
+      if (color.length === 4) {
+        return `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`;
+      }
+      return color;
+    }
+
+    // Map common color names to hex codes
+    const colorNameToHex = {
+      'black': '#000000',
+      'white': '#FFFFFF',
+      'red': '#FF0000',
+      'blue': '#0000FF',
+      'green': '#008000',
+      'yellow': '#FFFF00',
+      'pink': '#FFC0CB',
+      'purple': '#800080',
+      'orange': '#FFA500',
+      'brown': '#A52A2A',
+      'gray': '#808080',
+      'grey': '#808080',
+      'navy': '#000080',
+      'beige': '#F5F5DC',
+      'cream': '#FFFDD0',
+      'tan': '#D2B48C',
+      'maroon': '#800000',
+      'burgundy': '#800020',
+      'ivory': '#FFFFF0',
+      'peach': '#FFE5B4',
+      'coral': '#FF7F50',
+      'rose': '#FF007F',
+      'lavender': '#E6E6FA',
+      'mint': '#98FB98',
+      'teal': '#008080',
+      'cyan': '#00FFFF',
+      'magenta': '#FF00FF',
+      'gold': '#FFD700',
+      'silver': '#C0C0C0',
+      'bronze': '#CD7F32',
+      'copper': '#B87333',
+      'olive': '#808000',
+      'lime': '#00FF00',
+      'aqua': '#00FFFF',
+      'turquoise': '#40E0D0',
+      'indigo': '#4B0082',
+      'violet': '#8A2BE2',
+    };
+
+    // Normalize color name (lowercase, trim)
+    const normalizedColor = color.toLowerCase().trim();
+    return colorNameToHex[normalizedColor] || '#CCCCCC';
+  };
+
+  // Helper function to check if color is light (needs stronger border)
+  const isLightColor = (hex) => {
+    if (!hex) return false;
+    const normalizedHex = hex.toLowerCase();
+    const lightColors = ['#ffffff', '#fff', '#fffff0', '#fffdd0', '#f5f5dc', '#ffe5b4', '#e6e6fa', '#98fb98'];
+    return lightColors.includes(normalizedHex);
+  };
 
   // Step management
   const [currentStep, setCurrentStep] = useState(0);
@@ -79,6 +148,124 @@ const Personalization = () => {
   // Saved personalizations
   const [savedPersonalizations, setSavedPersonalizations] = useState([]);
   const [showSavedPersonalizations, setShowSavedPersonalizations] = useState(false);
+
+  // Size Guide
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [sizeGuideUnit, setSizeGuideUnit] = useState('inches');
+  const [activeSizeTab, setActiveSizeTab] = useState('fitGroupA');
+
+  // Auto-fill city and state from pincode
+  useEffect(() => {
+    const fetchCityState = async () => {
+      if (newAddress.pincode?.length === 6) {
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${newAddress.pincode}`);
+          const data = await res.json();
+
+          if (data[0].Status === "Success" && data[0].PostOffice?.length) {
+            const firstPostOffice = data[0].PostOffice[0];
+            const { District, State } = firstPostOffice;
+
+            // Auto-fill only if user hasn't typed anything
+            setNewAddress((prev) => ({
+              ...prev,
+              city: prev.city || District,
+              state: prev.state || State,
+            }));
+          }
+        } catch (err) {
+          console.error("Error fetching city/state:", err);
+        }
+      }
+    };
+
+    fetchCityState();
+  }, [newAddress.pincode]);
+
+  // Auto-fill city and state from pincode for recipient address
+  useEffect(() => {
+    const fetchCityState = async () => {
+      if (recipientAddress.pincode?.length === 6) {
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${recipientAddress.pincode}`);
+          const data = await res.json();
+
+          if (data[0].Status === "Success" && data[0].PostOffice?.length) {
+            const firstPostOffice = data[0].PostOffice[0];
+            const { District, State } = firstPostOffice;
+
+            // Auto-fill only if user hasn't typed anything
+            setRecipientAddress((prev) => ({
+              ...prev,
+              city: prev.city || District,
+              state: prev.state || State,
+            }));
+          }
+        } catch (err) {
+          console.error("Error fetching city/state:", err);
+        }
+      }
+    };
+
+    fetchCityState();
+  }, [recipientAddress.pincode]);
+  
+// Size Guide Data
+const sizeGuideDataFitGroupA = [
+  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+];
+
+const sizeGuideDataFitGroupB = [
+  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+  { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
+  { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
+];
+
+const sizeGuideDataFitGroupC = [
+  { size: "S", bust: "36-37", waist: "28-29", hip: "38-39" },
+  { size: "M", bust: "38-40", waist: "30-32", hip: "40-42" },
+  { size: "L", bust: "41-43", waist: "33-35", hip: "43-45" },
+  { size: "XL", bust: "44-46", waist: "36-38", hip: "46-48" },
+];
+
+const sizeGuideDataFitGroupD = [
+  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+  { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
+  { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
+];
+
+const fitGroups = [
+  { id: 'fitGroupA', label: 'Robes', title: 'Robes', data: sizeGuideDataFitGroupA },
+  { id: 'fitGroupB', label: 'Women Sets', title: 'Women Sets', data: sizeGuideDataFitGroupB },
+  { id: 'fitGroupC', label: 'Men Sets', title: 'Men Sets', data: sizeGuideDataFitGroupC },
+  { id: 'fitGroupD', label: 'Tracksuits', title: 'Tracksuits', data: sizeGuideDataFitGroupD },
+];
+
+const sizeGuideData = sizeGuideDataFitGroupB;
+
+// Helper functions for unit conversion
+const inchesToCm = (inches) => (inches * 2.54).toFixed(1);
+const cmToInches = (cm) => (cm / 2.54).toFixed(1);
+const parseRange = (rangeStr) => {
+  const parts = rangeStr.split('-').map(part => parseFloat(part.trim()));
+  return parts.length === 2 ? parts : [parts[0], parts[0]];
+};
+const convertRange = (rangeStr, fromUnit, toUnit) => {
+  const [min, max] = parseRange(rangeStr);
+  if (fromUnit === toUnit) return rangeStr;
+  if (fromUnit === 'inches' && toUnit === 'cm') {
+    return `${inchesToCm(min)}-${inchesToCm(max)}`;
+  } else if (fromUnit === 'cm' && toUnit === 'inches') {
+    return `${cmToInches(min)}-${cmToInches(max)}`;
+  }
+  return rangeStr;
+};
 
   // Fetch products
   const fetchProducts = useCallback(async () => {
@@ -694,9 +881,17 @@ const Personalization = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Size Selection */}
           <div>
-            <h3 className="text-lg font-light text-black font-futura-pt-book mb-4">
-              Size
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-light text-black font-futura-pt-book">
+                Size
+              </h3>
+              <button
+                onClick={() => setIsSizeGuideOpen(true)}
+                className="text-sm text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors"
+              >
+                Size guide
+              </button>
+            </div>
             <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
               {productDetails.sizeOfProduct?.map((size) => (
                 <button
@@ -720,28 +915,33 @@ const Personalization = () => {
               Color
             </h3>
             <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-              {productDetails.availableColors?.map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  className="flex flex-col items-center gap-2"
-                >
-                  <div className={`w-12 h-12 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
-                    selectedColor === color
-                      ? 'border-black scale-110'
-                      : 'border-gray-300 hover:border-gray-400'
-                  }`}>
-                    {selectedColor === color && (
-                      <Check size={16} className="text-black" />
-                    )}
-                  </div>
-                  <span className={`text-xs font-light font-futura-pt-light ${
-                    selectedColor === color ? 'text-black' : 'text-gray-600'
-                  }`}>
-                    {color}
-                  </span>
-                </button>
-              ))}
+              {productDetails.availableColors?.map((color) => {
+                const displayHex = getColorHex(color);
+                return (
+                  <button
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
+                    className="flex flex-col items-center gap-2"
+                  >
+                    <div className={`w-12 h-12 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
+                      selectedColor === color
+                        ? 'border-black scale-110'
+                        : isLightColor(displayHex) ? 'border-gray-400' : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    style={{ backgroundColor: displayHex }}
+                    >
+                      {selectedColor === color && (
+                        <Check size={16} className={isLightColor(displayHex) ? "text-black" : "text-white"} />
+                      )}
+                    </div>
+                    <span className={`text-xs font-light font-futura-pt-light ${
+                      selectedColor === color ? 'text-black' : 'text-gray-600'
+                    }`}>
+                      {color}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -755,6 +955,115 @@ const Personalization = () => {
             Continue
           </button>
         </div>
+
+        {/* Size Guide Modal */}
+        {isSizeGuideOpen && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 py-4 z-[60] overflow-y-auto">
+            <div className="relative w-full max-w-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl my-auto max-h-[90vh] overflow-y-auto">
+              <button
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 text-black/60 hover:text-black transition-colors text-xl sm:text-2xl leading-none z-10"
+                onClick={() => setIsSizeGuideOpen(false)}
+                aria-label="Close size guide"
+              >
+                ✕
+              </button>
+
+              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl text-black mb-4 sm:mb-6 font-light font-futura-pt-book pr-8">
+                Size Guide
+              </h3>
+
+              {/* Unit Toggle */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-6 pb-4 border-b border-gray-200">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span className="text-sm sm:text-base text-gray-600 font-light font-futura-pt-light whitespace-nowrap">Unit:</span>
+                  <div className="flex items-center bg-gray-100 rounded-full p-1">
+                    <button
+                      onClick={() => setSizeGuideUnit('inches')}
+                      className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full ${
+                        sizeGuideUnit === 'inches'
+                          ? 'bg-black text-white'
+                          : 'text-black/70 hover:text-black'
+                      }`}
+                    >
+                      Inches
+                    </button>
+                    <button
+                      onClick={() => setSizeGuideUnit('cm')}
+                      className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full ${
+                        sizeGuideUnit === 'cm'
+                          ? 'bg-black text-white'
+                          : 'text-black/70 hover:text-black'
+                      }`}
+                    >
+                      CM
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fit Group Tabs */}
+              <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-gray-200">
+                {fitGroups.map((group) => (
+                  <button
+                    key={group.id}
+                    onClick={() => setActiveSizeTab(group.id)}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full border ${
+                      activeSizeTab === group.id
+                        ? 'border-black bg-black text-white'
+                        : 'border-gray-300 text-black/70 hover:border-black/40 hover:bg-black/5'
+                    }`}
+                  >
+                    {group.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Size Chart Table */}
+              <p className="text-sm sm:text-base font-light text-gray-600 mb-4">
+                Discover your perfect fit. If you are in-between sizes, we recommend choosing the larger size.
+              </p>
+
+              <div className="overflow-x-auto -mx-4 sm:mx-0">
+                <div className="inline-block min-w-full align-middle px-4 sm:px-0">
+                  <table className="min-w-full border border-gray-200">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="px-3 sm:px-4 py-2 md:py-3 text-left text-xs sm:text-sm font-light font-futura-pt-light text-black">Size</th>
+                        <th className="px-3 sm:px-4 py-2 md:py-3 text-left text-xs sm:text-sm font-light font-futura-pt-light text-black">
+                          Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                        </th>
+                        <th className="px-3 sm:px-4 py-2 md:py-3 text-left text-xs sm:text-sm font-light font-futura-pt-light text-black">
+                          Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                        </th>
+                        <th className="px-3 sm:px-4 py-2 md:py-3 text-left text-xs sm:text-sm font-light font-futura-pt-light text-black">
+                          Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fitGroups.find(g => g.id === activeSizeTab)?.data.map((row, idx) => (
+                        <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                          <td className="px-3 sm:px-4 py-2 md:py-3 text-xs sm:text-sm font-light font-futura-pt-light text-black">
+                            {row.size}
+                          </td>
+                          <td className="px-3 sm:px-4 py-2 md:py-3 text-xs sm:text-sm font-light font-futura-pt-light text-black/80">
+                            {convertRange(row.bust, 'inches', sizeGuideUnit)}
+                          </td>
+                          <td className="px-3 sm:px-4 py-2 md:py-3 text-xs sm:text-sm font-light font-futura-pt-light text-black/80">
+                            {convertRange(row.waist, 'inches', sizeGuideUnit)}
+                          </td>
+                          <td className="px-3 sm:px-4 py-2 md:py-3 text-xs sm:text-sm font-light font-futura-pt-light text-black/80">
+                            {convertRange(row.hip, 'inches', sizeGuideUnit)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };

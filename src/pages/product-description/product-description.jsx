@@ -75,12 +75,48 @@ const formatPrice = (price, currency) => {
   return { symbol, number: formattedNumber };
 };
 
-const sizeGuideData = [
+// Fit Group A: Robes (Men & Women)
+const sizeGuideDataFitGroupA = [
+  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+];
+
+// Fit Group B: Women Co-ord & Pajama Sets
+const sizeGuideDataFitGroupB = [
   { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
   { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
   { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
   { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
   { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
+];
+
+// Fit Group C: Men Lounge/Pajama/Short Sets
+const sizeGuideDataFitGroupC = [
+  { size: "S", bust: "36-37", waist: "28-29", hip: "38-39" },
+  { size: "M", bust: "38-40", waist: "30-32", hip: "40-42" },
+  { size: "L", bust: "41-43", waist: "33-35", hip: "43-45" },
+  { size: "XL", bust: "44-46", waist: "36-38", hip: "46-48" },
+];
+
+// Fit Group D: Tracksuits & Zip Sets (Men & Women)
+const sizeGuideDataFitGroupD = [
+  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+  { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
+  { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
+];
+
+// Default for backwards compatibility
+const sizeGuideData = sizeGuideDataFitGroupB;
+
+// Fit group configuration
+const fitGroups = [
+  { id: 'fitGroupA', label: 'Robes', title: 'Robes', data: sizeGuideDataFitGroupA },
+  { id: 'fitGroupB', label: 'Women Sets', title: 'Women Sets', data: sizeGuideDataFitGroupB },
+  { id: 'fitGroupC', label: 'Men Sets', title: 'Men Sets', data: sizeGuideDataFitGroupC },
+  { id: 'fitGroupD', label: 'Tracksuits', title: 'Tracksuits', data: sizeGuideDataFitGroupD },
 ];
 
 // Helper functions for unit conversion
@@ -222,6 +258,7 @@ const ProductDetailPage = () => {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [sizeGuideUnit, setSizeGuideUnit] = useState('inches'); // 'inches' or 'cm'
   const [showFindSize, setShowFindSize] = useState(false);
+  const [activeSizeTab, setActiveSizeTab] = useState('fitGroupA'); // Track active fit group tab
   const [userMeasurements, setUserMeasurements] = useState({
     bust: '',
     waist: '',
@@ -1918,7 +1955,7 @@ const ProductDetailPage = () => {
 
       {isSizeGuideOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 py-4 sm:py-6 z-[60] overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-white p-4 sm:p-6 md:p-8 shadow-xl my-auto max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl my-auto max-h-[90vh] overflow-y-auto">
             <button
               className="absolute top-3 right-3 sm:top-4 sm:right-4 text-black/60 hover:text-black transition-colors text-xl sm:text-2xl leading-none z-10"
               onClick={handleCloseSizeGuide}
@@ -1931,8 +1968,8 @@ const ProductDetailPage = () => {
               Size Guide
             </h3>
 
-            {/* Unit Toggle and Tabs */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 border-b border-text-light/20">
+            {/* Unit Toggle */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-6 pb-4 border-b border-text-light/20">
               <div className="flex items-center gap-2 sm:gap-3">
                 <span className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light whitespace-nowrap">Unit:</span>
                 <div className="flex items-center bg-premium-beige/30 rounded-full p-1">
@@ -1983,10 +2020,27 @@ const ProductDetailPage = () => {
             <div className="space-y-4 sm:space-y-6 text-sm sm:text-base md:text-base lg:text-base text-text-medium leading-relaxed font-futura-pt-light">
               {!showFindSize ? (
                 <>
+                  {/* Fit Group Tabs */}
+                  <div className="flex flex-wrap gap-2 mb-6 border-b border-text-light/20 pb-4">
+                    {fitGroups.map((group) => (
+                      <button
+                        key={group.id}
+                        onClick={() => setActiveSizeTab(group.id)}
+                        className={`px-3 sm:px-4 md:px-5 py-2 text-xs sm:text-sm md:text-base font-light font-futura-pt-light transition-all rounded-full border ${activeSizeTab === group.id
+                          ? 'border-black bg-black text-white'
+                          : 'border-text-light/20 text-black/70 hover:border-black/40 hover:bg-black/5'
+                          }`}
+                      >
+                        {group.label}
+                      </button>
+                    ))}
+                  </div>
+
                   {/* Size Chart View */}
                   <p className="text-sm sm:text-base md:text-base lg:text-base font-futura-pt-light">
-                    Discover your perfect fit. Refer to the measurement chart curated for our signature silhouettes. If you are in-between sizes, we recommend choosing the larger size for a more relaxed drape.
+                    <strong>{fitGroups.find(g => g.id === activeSizeTab)?.title}</strong> - Discover your perfect fit. Refer to the measurement chart curated for our signature silhouettes. If you are in-between sizes, we recommend choosing the larger size for a more relaxed drape.
                   </p>
+                  
                   <div className="overflow-x-auto -mx-4 sm:mx-0">
                     <div className="inline-block min-w-full align-middle px-4 sm:px-0">
                       <table className="min-w-full border border-premium-beige">
@@ -2005,7 +2059,7 @@ const ProductDetailPage = () => {
                           </tr>
                         </thead>
                         <tbody className="text-black/80">
-                          {sizeGuideData.map((row, idx) => (
+                          {fitGroups.find(g => g.id === activeSizeTab)?.data.map((row, idx) => (
                             <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-premium-beige/20'}>
                               <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light">
                                 {row.size}
