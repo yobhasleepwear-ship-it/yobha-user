@@ -72,14 +72,14 @@ function CareInstructionsUI({ content }) {
 function DeliveryReturnUI({ content }) {
     return (
         <div className="space-y-2 text-xs text-black font-light leading-relaxed">
-            <p className="text-l text-black font-light leading-relaxed font-futura-pt-light" style={{ fontWeight: 600 }}>{content}</p>
+            <p className="text-xs text-black font-light leading-relaxed font-futura-pt-light" style={{ fontWeight: 600 }}>{content}</p>
         </div>
     );
 }
 
 function GiftPackagingUI({ content }) {
     return (
-        <> <p className="text-l text-black font-light leading-relaxed font-futura-pt-light mb-2" style={{ fontWeight: 600 }}>{content}</p>
+        <> <p className="text-xs text-black font-light leading-relaxed font-futura-pt-light mb-2" style={{ fontWeight: 600 }}>{content}</p>
             <img
                 src={Giftimg} // 👈 change path if needed
                 alt="Gift Packaging"
