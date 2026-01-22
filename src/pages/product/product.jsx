@@ -20,6 +20,8 @@ const debounce = (func, delay) => {
 const ProductsPage = () => {
   const { category } = useParams();
   const location = useLocation();
+
+
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = JSON.parse(savedCountry);
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code || "IN");
@@ -1056,7 +1058,7 @@ const ProductsPage = () => {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} filter={filters} />
             ))}
           </div>
         ) : (

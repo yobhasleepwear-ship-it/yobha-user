@@ -96,7 +96,10 @@ const BuybackAll = () => {
 			LBP: "LBP",
 			EGP: "EGP",
 			IQD: "IQD",
+			RUB: "₽",
+			GBP: "£",
 		};
+
 
 		const symbol = currencySymbols[currencyCode] || currencyCode;
 
@@ -144,11 +147,11 @@ const BuybackAll = () => {
 					message.success("Buyback payment successful ✅");
 					const payload = {
 						"id": requests.id,
-						"type": "Buyback", 
+						"type": "Buyback",
 						"orderStatus": "",
 						"paymentStatus": "Paid"
 					}
-					 getPaymentStatusUpdated(payload);
+					getPaymentStatusUpdated(payload);
 
 					// 👉 No API call after success (as requested)
 					// 👉 You can just update UI state here if needed

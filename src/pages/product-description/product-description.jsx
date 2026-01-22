@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ShoppingBag,
   Heart,
@@ -61,8 +61,11 @@ const formatPrice = (price, currency) => {
     'JOD': 'JOD',
     'LBP': 'LBP',
     'EGP': 'EGP',
-    'IQD': 'IQD'
+    'IQD': 'IQD',
+    'GBP': '£',
+    'RUB': '₽'
   };
+
 
   const symbol = currencySymbols[currencyCode] || currencyCode;
 
@@ -209,6 +212,10 @@ const calculateRecommendedSize = (measurements, unit) => {
 
 const ProductDetailPage = () => {
   const { productId } = useParams();
+  const location = useLocation();
+  const filterColour = location.state?.filterColour;
+  console.log(filterColour, "filterColour")
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // UI State
@@ -224,7 +231,11 @@ const ProductDetailPage = () => {
     { code: "LB", label: "Lebanon" },
     { code: "EG", label: "Egypt" },
     { code: "IQ", label: "Iraq" },
+    { code: "RU", label: "Russia" },
+    { code: "GB", label: "United Kingdom (UK)" },
+    { code: "US", label: "United States (USA)" },
   ];
+
   const savedCountry = localStorage.getItem('selectedCountry');
   const parsedCountry = savedCountry ? JSON.parse(savedCountry) : countryOptions[0];
 
@@ -271,562 +282,539 @@ const ProductDetailPage = () => {
   const imageScrollRef = React.useRef(null);
   const [recommendedSize, setRecommendedSize] = useState(null);
   const [activeSection, setActiveSection] = useState(
-//     {
-//       "DElIVERY AND RETURN ": "We offer shipping across India and internationally. Orders within India are typically delivered within 3–7 working days from dispatch.International deliveries usually take 7–14 working days, depending on the destination and customs clearance.While most orders arrive within the estimated timeframe occasional delays may occur due to courier operations, customs processes, or unforeseen circumstances. Returns and exchanges are accepted within 7 days of delivery, provided items are unused,unwashed, and returned in their original condition with all tags intact.Customized or personalized items are not eligible for return or exchange.Once a returned item is received and approved after quality inspection, refunds(if applicable) will be processed to the original mode of payment within 5–7 working days."
-// }
+    //     {
+    //       "DElIVERY AND RETURN ": "We offer shipping across India and internationally. Orders within India are typically delivered within 3–7 working days from dispatch.International deliveries usually take 7–14 working days, depending on the destination and customs clearance.While most orders arrive within the estimated timeframe occasional delays may occur due to courier operations, customs processes, or unforeseen circumstances. Returns and exchanges are accepted within 7 days of delivery, provided items are unused,unwashed, and returned in their original condition with all tags intact.Customized or personalized items are not eligible for return or exchange.Once a returned item is received and approved after quality inspection, refunds(if applicable) will be processed to the original mode of payment within 5–7 working days."
+    // }
   ); // which section to show
 
-console.log(activeSection,"activeSection")
-// Close dropdown when clicking outside
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (sizeDropdownRef.current && !sizeDropdownRef.current.contains(event.target)) {
-      setIsSizeDropdownOpen(false);
+  console.log(activeSection, "activeSection")
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sizeDropdownRef.current && !sizeDropdownRef.current.contains(event.target)) {
+        setIsSizeDropdownOpen(false);
+      }
+    };
+
+    if (isSizeDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSizeDropdownOpen]);
+
+  // Handle size selection
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size);
+    setItemAddedToCart(false);
+    setIsSizeDropdownOpen(false);
+    setIsSizeModalOpen(false);
   };
 
-  if (isSizeDropdownOpen) {
-    document.addEventListener('mousedown', handleClickOutside);
-  }
-
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
+  // Handle mobile modal open
+  const handleMobileSizeClick = () => {
+    setIsSizeModalOpen(true);
   };
-}, [isSizeDropdownOpen]);
 
-// Handle size selection
-const handleSizeSelect = (size) => {
-  setSelectedSize(size);
-  setItemAddedToCart(false);
-  setIsSizeDropdownOpen(false);
-  setIsSizeModalOpen(false);
-};
-
-// Handle mobile modal open
-const handleMobileSizeClick = () => {
-  setIsSizeModalOpen(true);
-};
-
-// Handle desktop dropdown toggle
-const handleDesktopSizeClick = () => {
-  setIsSizeDropdownOpen(!isSizeDropdownOpen);
-};
-
-// Prevent body scroll when modal is open
-useEffect(() => {
-  if (isSizeModalOpen) {
-    document.body.style.overflow = 'hidden';
-  } else {
-    document.body.style.overflow = 'unset';
-  }
-
-  return () => {
-    document.body.style.overflow = 'unset';
+  // Handle desktop dropdown toggle
+  const handleDesktopSizeClick = () => {
+    setIsSizeDropdownOpen(!isSizeDropdownOpen);
   };
-}, [isSizeModalOpen]);
 
-// Prevent modal from closing when clicking inside modal content
-const handleModalContentClick = (e) => {
-  e.stopPropagation();
-};
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isSizeModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
 
-// Button Loading States
-const [addingToCart, setAddingToCart] = useState(false);
-const [addingToWishlist, setAddingToWishlist] = useState(false);
-const [itemAddedToCart, setItemAddedToCart] = useState(false);
-const [openSlider, setOpenSlider] = useState(false);
-// API State
-const [product, setProduct] = useState(null);
-const [isLoading, setIsLoading] = useState(true);
-const [error] = useState(null);
-const [newProducts, setProducts] = useState([])
-const [monogram, setMonogram] = useState("")
-const MONOGRAM_CHAR_LIMIT = 12;
-const [notes, setNotes] = useState("");
-// Review Form State
-const [averageProdRating, setAverageProdRating] = useState(0);
-const [showReviewForm, setShowReviewForm] = useState(false);
-const [reviewRating, setReviewRating] = useState(5);
-const [reviewComment, setReviewComment] = useState('');
-const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isSizeModalOpen]);
 
-const sections = {
-  description: product?.description,
-  // keyFeatures: product?.keyFeatures,
-  // fabric: product?.fabricType,
-  careInstructions: product?.careInstructions,
-  deliveryAndReturn: "We offer shipping across India and internationally. Orders within India are typically delivered within 3–7 working days from dispatch.International deliveries usually take 7–14 working days, depending on the destination and customs clearance.While most orders arrive within the estimated timeframe occasional delays may occur due to courier operations, customs processes, or unforeseen circumstances. Returns and exchanges are accepted within 7 days of delivery, provided items are unused,unwashed, and returned in their original condition with all tags intact.Customized or personalized items are not eligible for return or exchange.Once a returned item is received and approved after quality inspection, refunds(if applicable) will be processed to the original mode of payment within 5–7 working days.",
-  giftPackaging: "The item will be delivered in a signature YOBHA box , ideal for gifting ",
-};
+  // Prevent modal from closing when clicking inside modal content
+  const handleModalContentClick = (e) => {
+    e.stopPropagation();
+  };
 
-// Check if product subCategory is personalization
-const isPersonalizationProduct = product?.subCategory?.toLowerCase() === 'personalization';
+  // Button Loading States
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [addingToWishlist, setAddingToWishlist] = useState(false);
+  const [itemAddedToCart, setItemAddedToCart] = useState(false);
+  const [openSlider, setOpenSlider] = useState(false);
+  // API State
+  const [product, setProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error] = useState(null);
+  const [newProducts, setProducts] = useState([])
+  const [monogram, setMonogram] = useState("")
+  const MONOGRAM_CHAR_LIMIT = 12;
+  const [notes, setNotes] = useState("");
+  // Review Form State
+  const [averageProdRating, setAverageProdRating] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
-const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+  const sections = {
+    description: product?.description,
+    // keyFeatures: product?.keyFeatures,
+    // fabric: product?.fabricType,
+    careInstructions: product?.careInstructions,
+    deliveryAndReturn: "We offer shipping across India and internationally. Orders within India are typically delivered within 3–7 working days from dispatch.International deliveries usually take 7–14 working days, depending on the destination and customs clearance.While most orders arrive within the estimated timeframe occasional delays may occur due to courier operations, customs processes, or unforeseen circumstances. Returns and exchanges are accepted within 7 days of delivery, provided items are unused,unwashed, and returned in their original condition with all tags intact.Customized or personalized items are not eligible for return or exchange.Once a returned item is received and approved after quality inspection, refunds(if applicable) will be processed to the original mode of payment within 5–7 working days.",
+    giftPackaging: "The item will be delivered in a signature YOBHA box , ideal for gifting ",
+  };
 
-useEffect(() => {
-  const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
-const fetchProductDetail = useCallback(async (productId) => {
-  setIsLoading(true)
-  try {
-    const response = await getProductDescription(productId);
-    setProduct(response.data);
-    setProductImage(response.data.images)
-    setAverageProdRating(() => {
-      const reviews = response.data.reviews || [];
-      if (reviews.length === 0) return 0;
-      const total = reviews.reduce((sum, item) => sum + item.rating, 0);
-      return (total / reviews.length).toFixed(1);
-    });
-    fetchProducts(response?.data?.productMainCategory)
+  // Check if product subCategory is personalization
+  const isPersonalizationProduct = product?.subCategory?.toLowerCase() === 'personalization';
 
-  } catch (error) {
-    console.error("Error fetching product:", error);
-  }
-  finally {
-    setIsLoading(false)
-  }
-}, []);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
-useEffect(() => {
-  if (productId) {
-    fetchProductDetail(productId);
-  }
-}, [productId, fetchProductDetail]);
-
-// Check if product is in wishlist on mount
-useEffect(() => {
-  let isMounted = true;
-  const checkWishlist = async () => {
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  const fetchProductDetail = useCallback(async (productId) => {
+    setIsLoading(true)
     try {
-      const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
-      if (token && product && product.productId) {
-        // Use cached wishlist to prevent multiple API calls
-        const response = await getCachedWishlist(getWishlist);
-        if (isMounted && response && response.data) {
-          const wishlistItems = response.data;
-          // Check if current product is in wishlist
-          const isInWishlist = wishlistItems.some(
-            (item) => item.product?.productId === product.productId
-          );
-          setIsWishlisted(isInWishlist);
+      const response = await getProductDescription(productId);
+      setProduct(response.data);
+      setProductImage(response.data.images)
+      if (filterColour) {
+        setColorIndex(response.data.availableColors.indexOf(filterColour));
+      }
+
+      setAverageProdRating(() => {
+        const reviews = response.data.reviews || [];
+        if (reviews.length === 0) return 0;
+        const total = reviews.reduce((sum, item) => sum + item.rating, 0);
+        return (total / reviews.length).toFixed(1);
+      });
+      fetchProducts(response?.data?.productMainCategory)
+
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+    finally {
+      setIsLoading(false)
+    }
+  }, []);
+  useEffect(() => {
+    if (filterColour)
+      setSelectedColor(filterColour || '');
+  }, [filterColour]);
+  useEffect(() => {
+    if (productId) {
+      fetchProductDetail(productId);
+    }
+  }, [productId, fetchProductDetail]);
+
+  // Check if product is in wishlist on mount
+  useEffect(() => {
+    let isMounted = true;
+    const checkWishlist = async () => {
+      try {
+        const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+        if (token && product && product.productId) {
+          // Use cached wishlist to prevent multiple API calls
+          const response = await getCachedWishlist(getWishlist);
+          if (isMounted && response && response.data) {
+            const wishlistItems = response.data;
+            // Check if current product is in wishlist
+            const isInWishlist = wishlistItems.some(
+              (item) => item.product?.productId === product.productId
+            );
+            setIsWishlisted(isInWishlist);
+          }
+        }
+      } catch (error) {
+        // Silently fail if user is not authenticated or wishlist check fails
+        if (isMounted) {
+          console.error("Error checking wishlist:", error);
         }
       }
+    };
+    if (product && product.productId) {
+      checkWishlist();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [product?.productId, productId]); // Only depend on productId to prevent unnecessary re-renders
+
+  useEffect(() => {
+    if (product) {
+      if (product.availableColors.length > 0 && !selectedColor) {
+        setSelectedColor(product.availableColors[0]);
+      }
+      if (product.sizeOfProduct.length > 0 && !selectedSize) {
+        setSelectedSize(product.sizeOfProduct[0]);
+      }
+    }
+  }, [product, selectedColor, selectedSize]);
+
+  // Handle carousel responsive items per view
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      setItemsPerView(window.innerWidth >= 1024 ? 3 : 2);
+    };
+
+    updateItemsPerView();
+    window.addEventListener('resize', updateItemsPerView);
+    return () => window.removeEventListener('resize', updateItemsPerView);
+  }, []);
+
+
+  useEffect(() => {
+    setCarouselIndex(0);
+  }, [itemsPerView, newProducts.length]);
+
+  // Handle scroll to change images (both horizontal on mobile and vertical on desktop)
+  useEffect(() => {
+    const scrollContainer = imageScrollRef.current;
+    if (!scrollContainer || !product || product.images.length <= 1) return;
+
+    const handleScroll = () => {
+      const isMobile = window.innerWidth < 1024; // lg breakpoint
+
+      if (isMobile) {
+        // Horizontal scrolling on mobile
+        const scrollLeft = scrollContainer.scrollLeft;
+        const containerWidth = scrollContainer.clientWidth;
+        const imageWidth = containerWidth; // Each image takes full container width
+
+        const newIndex = Math.min(
+          Math.round(scrollLeft / imageWidth),
+          product.images.length - 1
+        );
+
+        if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
+          setSelectedImageIndex(newIndex);
+        }
+      } else {
+        // Vertical scrolling on desktop
+        const scrollTop = scrollContainer.scrollTop;
+        const containerHeight = scrollContainer.clientHeight;
+        const imageHeight = containerHeight; // Each image takes full container height
+
+        const newIndex = Math.min(
+          Math.round(scrollTop / imageHeight),
+          product.images.length - 1
+        );
+
+        if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
+          setSelectedImageIndex(newIndex);
+        }
+      }
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [product, selectedImageIndex]);
+
+  // Calculate recommended size when measurements change
+  useEffect(() => {
+    if (userMeasurements.bust && userMeasurements.waist && userMeasurements.hip) {
+      const recommended = calculateRecommendedSize(userMeasurements, sizeGuideUnit);
+      setRecommendedSize(recommended);
+    } else {
+      setRecommendedSize(null);
+    }
+  }, [userMeasurements, sizeGuideUnit]);
+
+  const fetchProducts = async (category) => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        q: "",
+        category: category,
+        subCategory: "",
+        minPrice: null,
+        maxPrice: null,
+        pageNumber: null,
+        pageSize: 4,
+        sort: "latest",
+        country: null,
+      };
+
+      const response = await getFilteredProducts(payload);
+      if (response && response.success && response.data) {
+        setProducts(response.data.items || []);
+
+      } else {
+        setProducts([]);
+      }
     } catch (error) {
-      // Silently fail if user is not authenticated or wishlist check fails
-      if (isMounted) {
-        console.error("Error checking wishlist:", error);
-      }
-    }
-  };
-  if (product && product.productId) {
-    checkWishlist();
-  }
-
-  return () => {
-    isMounted = false;
-  };
-}, [product?.productId, productId]); // Only depend on productId to prevent unnecessary re-renders
-
-useEffect(() => {
-  if (product) {
-    if (product.availableColors.length > 0 && !selectedColor) {
-      setSelectedColor(product.availableColors[0]);
-    }
-    if (product.sizeOfProduct.length > 0 && !selectedSize) {
-      setSelectedSize(product.sizeOfProduct[0]);
-    }
-  }
-}, [product, selectedColor, selectedSize]);
-
-// Handle carousel responsive items per view
-useEffect(() => {
-  const updateItemsPerView = () => {
-    setItemsPerView(window.innerWidth >= 1024 ? 3 : 2);
-  };
-
-  updateItemsPerView();
-  window.addEventListener('resize', updateItemsPerView);
-  return () => window.removeEventListener('resize', updateItemsPerView);
-}, []);
-
-
-useEffect(() => {
-  setCarouselIndex(0);
-}, [itemsPerView, newProducts.length]);
-
-// Handle scroll to change images (both horizontal on mobile and vertical on desktop)
-useEffect(() => {
-  const scrollContainer = imageScrollRef.current;
-  if (!scrollContainer || !product || product.images.length <= 1) return;
-
-  const handleScroll = () => {
-    const isMobile = window.innerWidth < 1024; // lg breakpoint
-
-    if (isMobile) {
-      // Horizontal scrolling on mobile
-      const scrollLeft = scrollContainer.scrollLeft;
-      const containerWidth = scrollContainer.clientWidth;
-      const imageWidth = containerWidth; // Each image takes full container width
-
-      const newIndex = Math.min(
-        Math.round(scrollLeft / imageWidth),
-        product.images.length - 1
-      );
-
-      if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
-        setSelectedImageIndex(newIndex);
-      }
-    } else {
-      // Vertical scrolling on desktop
-      const scrollTop = scrollContainer.scrollTop;
-      const containerHeight = scrollContainer.clientHeight;
-      const imageHeight = containerHeight; // Each image takes full container height
-
-      const newIndex = Math.min(
-        Math.round(scrollTop / imageHeight),
-        product.images.length - 1
-      );
-
-      if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
-        setSelectedImageIndex(newIndex);
-      }
-    }
-  };
-
-  scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-
-  return () => {
-    scrollContainer.removeEventListener('scroll', handleScroll);
-  };
-}, [product, selectedImageIndex]);
-
-// Calculate recommended size when measurements change
-useEffect(() => {
-  if (userMeasurements.bust && userMeasurements.waist && userMeasurements.hip) {
-    const recommended = calculateRecommendedSize(userMeasurements, sizeGuideUnit);
-    setRecommendedSize(recommended);
-  } else {
-    setRecommendedSize(null);
-  }
-}, [userMeasurements, sizeGuideUnit]);
-
-const fetchProducts = async (category) => {
-  setIsLoading(true);
-  try {
-    const payload = {
-      q: "",
-      category: category,
-      subCategory: "",
-      minPrice: null,
-      maxPrice: null,
-      pageNumber: null,
-      pageSize: 4,
-      sort: "latest",
-      country: null,
-    };
-
-    const response = await getFilteredProducts(payload);
-    if (response && response.success && response.data) {
-      setProducts(response.data.items || []);
-
-    } else {
+      console.error("Failed to fetch products:", error);
       setProducts([]);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-    setProducts([]);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
-// Handle review submission
-const handleSubmitReview = async (e) => {
-  e.preventDefault();
+  // Handle review submission
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
 
-  if (!reviewComment.trim()) {
-    message.error("Please enter a review comment");
-    return;
-  }
+    if (!reviewComment.trim()) {
+      message.error("Please enter a review comment");
+      return;
+    }
 
-  setIsSubmittingReview(true);
-  try {
-    const reviewData = {
-      rating: reviewRating,
-      comment: reviewComment.trim()
-    };
+    setIsSubmittingReview(true);
+    try {
+      const reviewData = {
+        rating: reviewRating,
+        comment: reviewComment.trim()
+      };
 
-    await submitReview(productId, reviewData);
-    message.success("Your opinion matters to us.");
+      await submitReview(productId, reviewData);
+      message.success("Your opinion matters to us.");
 
-    // Reset form
-    setReviewComment('');
-    setReviewRating(5);
-    setShowReviewForm(false);
+      // Reset form
+      setReviewComment('');
+      setReviewRating(5);
+      setShowReviewForm(false);
 
-    await fetchProductDetail(productId);
+      await fetchProductDetail(productId);
 
-  } catch (error) {
-    console.error("Error submitting review:", error);
-    message.error("Failed to submit review. Please try again.");
-  } finally {
-    setIsSubmittingReview(false);
-  }
-};
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      message.error("Failed to submit review. Please try again.");
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
-// const availableQuantity = product
-//   ? getAvailableQuantity(product.priceList, selectedCountry, selectedSize)
-//   : 0;
-const availableQuantity = 100000000000;
+  // const availableQuantity = product
+  //   ? getAvailableQuantity(product.priceList, selectedCountry, selectedSize)
+  //   : 0;
+  const availableQuantity = 100000000000;
 
-const handlePrevImage = () => {
-  if (!product || product.images.length === 0) return;
-  setSelectedImageIndex((prev) =>
-    prev === 0 ? product.images.length - 1 : prev - 1
-  );
-};
+  const handlePrevImage = () => {
+    if (!product || product.images.length === 0) return;
+    setSelectedImageIndex((prev) =>
+      prev === 0 ? product.images.length - 1 : prev - 1
+    );
+  };
 
-const handleNextImage = () => {
-  if (!product || product.images.length === 0) return;
-  setSelectedImageIndex((prev) =>
-    prev === product.images.length - 1 ? 0 : prev + 1
-  );
-};
+  const handleNextImage = () => {
+    if (!product || product.images.length === 0) return;
+    setSelectedImageIndex((prev) =>
+      prev === product.images.length - 1 ? 0 : prev + 1
+    );
+  };
 
-// Quantity controls
-const handleIncrement = () => {
-  if (quantity < availableQuantity) {
-    setQuantity(prev => prev + 1);
-    setItemAddedToCart(false);
-  }
-};
+  // Quantity controls
+  const handleIncrement = () => {
+    if (quantity < availableQuantity) {
+      setQuantity(prev => prev + 1);
+      setItemAddedToCart(false);
+    }
+  };
 
-const handleDecrement = () => {
-  if (quantity > 1) {
-    setQuantity(prev => prev - 1);
-    setItemAddedToCart(false);
-  }
-};
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+      setItemAddedToCart(false);
+    }
+  };
 
-const fetchCart = async () => {
+  const fetchCart = async () => {
 
-  try {
-    const response = await getCartDetails()
-    console.log(response.data.items.length);
-    dispatch(setCartCount(response.data.items.length));
-  }
-  catch (err) {
-    console.log(err || "something went wrong")
-  }
-  finally {
+    try {
+      const response = await getCartDetails()
+      console.log(response.data.items.length);
+      dispatch(setCartCount(response.data.items.length));
+    }
+    catch (err) {
+      console.log(err || "something went wrong")
+    }
+    finally {
+
+    }
 
   }
+  // Add to cart
+  // const handleAddToCart = async () => {
+  //   if (!selectedColor || !selectedSize || availableQuantity === 0) {
+  //     message.error('Please select color and size');
+  //     return;
+  //   }
 
-}
-// Add to cart
-// const handleAddToCart = async () => {
-//   if (!selectedColor || !selectedSize || availableQuantity === 0) {
-//     message.error('Please select color and size');
-//     return;
-//   }
+  //   setAddingToCart(true);
 
-//   setAddingToCart(true);
+  //   const payload = {
+  //     productId: product.productId,
+  //     size: selectedSize,
+  //     quantity: quantity,
+  //     currency: product?.priceList?.find(
+  //       (item) => item.country === selectedCountry && item.size === selectedSize
+  //     ).currency,
+  //     note: ""
+  //   };
 
-//   const payload = {
-//     productId: product.productId,
-//     size: selectedSize,
-//     quantity: quantity,
-//     currency: product?.priceList?.find(
-//       (item) => item.country === selectedCountry && item.size === selectedSize
-//     ).currency,
-//     note: ""
-//   };
-
-//   try {
-//     const response = await addToCart(payload);
-//     console.log("Added to cart:", response);
-//     console.log(response.data.success)
-//     if (response.data.success === 'true') {
-//       message.success("Product added to cart successfully!");
-//     }
-//     else {
-//       message.error(response.data.message)
-//     }
-//     setItemAddedToCart(true);
-//     fetchCart()
-//   } catch (err) {
-//     console.error("Error adding to cart:", err);
-//     message.error("Failed to add product to cart. Please try again.");
-//   } finally {
-//     setAddingToCart(false);
-//   }
-// };
-const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  //   try {
+  //     const response = await addToCart(payload);
+  //     console.log("Added to cart:", response);
+  //     console.log(response.data.success)
+  //     if (response.data.success === 'true') {
+  //       message.success("Product added to cart successfully!");
+  //     }
+  //     else {
+  //       message.error(response.data.message)
+  //     }
+  //     setItemAddedToCart(true);
+  //     fetchCart()
+  //   } catch (err) {
+  //     console.error("Error adding to cart:", err);
+  //     message.error("Failed to add product to cart. Please try again.");
+  //   } finally {
+  //     setAddingToCart(false);
+  //   }
+  // };
+  const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 
-  const safeProduct = JSON.parse(
-    JSON.stringify(product, (key, value) => {
-      if (typeof value === "function") return undefined;
-      if (key.startsWith("__react")) return undefined;
-      return value;
-    })
-  );
+    const safeProduct = JSON.parse(
+      JSON.stringify(product, (key, value) => {
+        if (typeof value === "function") return undefined;
+        if (key.startsWith("__react")) return undefined;
+        return value;
+      })
+    );
 
-  // 🛑 Restrict to one country
-  const existingCountry = cart.length > 0 ? cart[0].country : null;
-  if (existingCountry && existingCountry !== selectedCountry) {
-    message.error(`You can only add items from ${existingCountry}.`);
-    return;
-  }
-
-
-  const itemIndex = cart.findIndex(
-    (item) => item.id === safeProduct.id && item.size === selectedSize && item.color === selectedColor
-  );
-
-  if (itemIndex !== -1) {
-
-    cart[itemIndex] = {
-      ...cart[itemIndex],
-      quantity: quantity,
-      note: notes,
-      monogram: monogram,
-    };
-  } else {
-
-    cart.push({
-      ...safeProduct,
-      size: selectedSize,
-      country: selectedCountry,
-      quantity: quantity,
-      country: selectedCountry,
-      monogram: monogram,
-      color: selectedColor,
-      note: notes
-    });
-  }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-  setCartItems(cart);
-  dispatch(setCartCount(cart.length));
-  message.success(`${safeProduct.name || "Product"} added to cart!`);
-};
+    // 🛑 Restrict to one country
+    const existingCountry = cart.length > 0 ? cart[0].country : null;
+    if (existingCountry && existingCountry !== selectedCountry) {
+      message.error(`You can only add items from ${existingCountry}.`);
+      return;
+    }
 
 
+    const itemIndex = cart.findIndex(
+      (item) => item.id === safeProduct.id && item.size === selectedSize && item.color === selectedColor
+    );
 
-const handleGoToCart = () => {
-  navigate("/cart");
-};
+    if (itemIndex !== -1) {
 
-
-const handleBuyNow = () => {
-  const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
-
-  const selectedPrice =
-    product.priceList.find(
-      (p) =>
-        p.size === selectedSize && p.country === selectedCountry
-    ) || {};
-
-  const lineTotal = (selectedPrice.priceAmount || product.unitPrice) * quantity;
-  console.log(product.priceList, "pro")
-  const checkoutProd = {
-    items: [
-
-      {
-        ...product,
-        currency: selectedPrice.currency,
-        variantSize: selectedSize,
-        variantColor: selectedColor,
-        color: selectedColor,
-        country: selectedCountry,
-        size: selectedSize,
-        thumbnailUrl: product.images[0].url,
-        // countryPrice: {
-        //   priceAmount: selectedPrice.priceAmount || product.unitPrice,
-        //   currency: selectedPrice.currency || product.currency,
-        // },
+      cart[itemIndex] = {
+        ...cart[itemIndex],
         quantity: quantity,
-
-        lineTotal: lineTotal,
-        addedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
         note: notes,
-        success: true,
-        message: "OK",
-        suggestedCountryPrice: null,
-        monogram: monogram
-      },
+        monogram: monogram,
+      };
+    } else {
 
+      cart.push({
+        ...safeProduct,
+        size: selectedSize,
+        country: selectedCountry,
+        quantity: quantity,
+        country: selectedCountry,
+        monogram: monogram,
+        color: selectedColor,
+        note: notes
+      });
+    }
 
-    ],
-  };
-  if (!token) {
-    const currentPath = window.location.pathname + window.location.search;
-    localStorageService.setValue("redirectAfterLogin", currentPath);
-
-    message.info("Please log to Buy Now the product.");
-    navigate("/login");
-    return
-  }
-  navigate("/checkout/buynow", { state: { checkoutProd, selectedCountry, selectedSize, quantity } });
-};
-
-
-// Wishlist toggle
-const handleAddToWishlist = async (productId) => {
-  const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
-
-  const selectedVariant = product.variants.find(
-    (v) => v.color === selectedColor && v.size === selectedSize
-  );
-
-  const payload = {
-    productId: product.productId,
-    size: selectedVariant?.sku || '',
-    desiredQuantity: quantity,
-    desiredSize: selectedSize,
-    desiredColor: selectedColor,
-    notifyWhenBackInStock: true,
+    localStorage.setItem("cart", JSON.stringify(cart));
+    setCartItems(cart);
+    dispatch(setCartCount(cart.length));
+    message.success(`${safeProduct.name || "Product"} added to cart!`);
   };
 
-  // If not authenticated, save pending action and redirect to login
-  if (!token) {
-    const pendingWishlistAction = {
-      productId: productId,
-      payload: payload,
-      timestamp: Date.now()
+
+
+  const handleGoToCart = () => {
+    navigate("/cart");
+  };
+
+
+  const handleBuyNow = () => {
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+
+    const selectedPrice =
+      product.priceList.find(
+        (p) =>
+          p.size === selectedSize && p.country === selectedCountry
+      ) || {};
+
+    const lineTotal = (selectedPrice.priceAmount || product.unitPrice) * quantity;
+    console.log(product.priceList, "pro")
+    const checkoutProd = {
+      items: [
+
+        {
+          ...product,
+          currency: selectedPrice.currency,
+          variantSize: selectedSize,
+          variantColor: selectedColor,
+          color: selectedColor,
+          country: selectedCountry,
+          size: selectedSize,
+          thumbnailUrl: product.images[0].url,
+          // countryPrice: {
+          //   priceAmount: selectedPrice.priceAmount || product.unitPrice,
+          //   currency: selectedPrice.currency || product.currency,
+          // },
+          quantity: quantity,
+
+          lineTotal: lineTotal,
+          addedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          note: notes,
+          success: true,
+          message: "OK",
+          suggestedCountryPrice: null,
+          monogram: monogram
+        },
+
+
+      ],
+    };
+    if (!token) {
+      const currentPath = window.location.pathname + window.location.search;
+      localStorageService.setValue("redirectAfterLogin", currentPath);
+
+      message.info("Please log to Buy Now the product.");
+      navigate("/login");
+      return
+    }
+    navigate("/checkout/buynow", { state: { checkoutProd, selectedCountry, selectedSize, quantity } });
+  };
+
+
+  // Wishlist toggle
+  const handleAddToWishlist = async (productId) => {
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+
+    const selectedVariant = product.variants.find(
+      (v) => v.color === selectedColor && v.size === selectedSize
+    );
+
+    const payload = {
+      productId: product.productId,
+      size: selectedVariant?.sku || '',
+      desiredQuantity: quantity,
+      desiredSize: selectedSize,
+      desiredColor: selectedColor,
+      notifyWhenBackInStock: true,
     };
 
-    localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
-
-    // Save current path for redirect after login
-    const currentPath = window.location.pathname + window.location.search;
-    localStorageService.setValue("redirectAfterLogin", currentPath);
-
-    message.info("Please log in to add items to your wishlist.");
-    navigate("/login");
-    return;
-  }
-
-  setAddingToWishlist(true);
-
-  try {
-    const result = await addToWishlist(productId, payload);
-    console.log("Added to wishlist:", result);
-    // Invalidate cache so next check will fetch fresh data
-    invalidateWishlistCache();
-    setIsWishlisted(true);
-    dispatch(incrementWishlistCount());
-    message.success("Product added to wishlist!");
-  } catch (err) {
-    // If 401 error, save pending action and let interceptor handle redirect
-    if (err?.response?.status === 401) {
+    // If not authenticated, save pending action and redirect to login
+    if (!token) {
       const pendingWishlistAction = {
         productId: productId,
         payload: payload,
@@ -834,416 +822,510 @@ const handleAddToWishlist = async (productId) => {
       };
 
       localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
+
+      // Save current path for redirect after login
+      const currentPath = window.location.pathname + window.location.search;
+      localStorageService.setValue("redirectAfterLogin", currentPath);
+
+      message.info("Please log in to add items to your wishlist.");
+      navigate("/login");
+      return;
     }
-    console.error("Failed to add to wishlist:", err);
-    message.error("Failed to add to wishlist");
-  } finally {
-    setAddingToWishlist(false);
-  }
-};
 
-// Loading state
-if (isLoading) {
-  return (
-    <div
-      className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
-    >
-      <div className="text-center">
-        <div className="w-12 h-12 border-2 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-3"></div>
-        <p className="text-text-medium text-xs uppercase tracking-widest font-light">Loading...</p>
-      </div>
-    </div>
-  );
-}
+    setAddingToWishlist(true);
 
-// Error state
-if (error || !product) {
-  return (
-    <div
-      className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
-    >
-      <div className="text-center max-w-md px-6">
-        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">
-          Product Not Found
-        </h2>
-        <p className="text-gray-600 text-xs md:text-sm mb-8 font-light leading-relaxed font-futura-pt-light">
-          {error || 'The product you are looking for does not exist or is no longer available.'}
-        </p>
-        <a
-          href="/products"
-          className="inline-block bg-black text-white px-6 py-2.5 font-light hover:bg-text-dark transition-colors uppercase tracking-widest text-xs"
-        >
-          Browse Products
-        </a>
-      </div>
-    </div>
-  );
-}
-const displayedReviews = showAll ? product.reviews : product.reviews.slice(0, 5);
-const currentImage = product.images[selectedImageIndex] || product.images[0];
-const hasMultipleImages = product.images.length > 1;
-const handleCountryChange = (e) => {
-  setSelectedCountry(e.target.value);
-  // You can also trigger other logic here if needed
-  console.log('Selected Country:', e.target.value);
-};
-const matchedPrice = product?.priceList?.find(
-  (item) =>
-    item.country === selectedCountry &&
-    item.size === selectedSize
-);
-
-const shippingInfo = product.countryPrices.find(
-  (item) => item.country === selectedCountry
-);
-const handleShare = async () => {
-  const shareData = {
-    title: product?.productName,
-    text: `Check out this product: ${product?.productName}`,
-    url: window.location.href,
-  };
-  if (navigator.share) {
     try {
-      await navigator.share(shareData);
+      const result = await addToWishlist(productId, payload);
+      console.log("Added to wishlist:", result);
+      // Invalidate cache so next check will fetch fresh data
+      invalidateWishlistCache();
+      setIsWishlisted(true);
+      dispatch(incrementWishlistCount());
+      message.success("Product added to wishlist!");
     } catch (err) {
-      console.error("Share cancelled or failed:", err);
-    }
-  } else {
-    navigator.clipboard.writeText(window.location.href);
-    message.success("Link copied to clipboard!");
-  }
-};
+      // If 401 error, save pending action and let interceptor handle redirect
+      if (err?.response?.status === 401) {
+        const pendingWishlistAction = {
+          productId: productId,
+          payload: payload,
+          timestamp: Date.now()
+        };
 
-// Carousel navigation handlers
-const handleCarouselNext = () => {
-  const maxIndex = Math.max(0, newProducts.length - itemsPerView);
-  setCarouselIndex(prev => Math.min(prev + 1, maxIndex));
-};
-
-const handleCarouselPrev = () => {
-  setCarouselIndex(prev => Math.max(prev - 1, 0));
-};
-
-// Handle size guide measurement input
-const handleMeasurementChange = (field, value) => {
-  // Only allow numbers and decimal point
-  const numericValue = value.replace(/[^0-9.]/g, '');
-  setUserMeasurements(prev => ({
-    ...prev,
-    [field]: numericValue
-  }));
-};
-
-// Reset measurements when switching units
-const handleUnitToggle = (newUnit) => {
-  if (newUnit !== sizeGuideUnit) {
-    // Convert existing measurements
-    const converted = { ...userMeasurements };
-    Object.keys(converted).forEach(key => {
-      if (converted[key]) {
-        const value = parseFloat(converted[key]);
-        if (newUnit === 'cm') {
-          converted[key] = inchesToCm(value);
-        } else {
-          converted[key] = cmToInches(value);
-        }
+        localStorageService.setValue("pendingWishlistAction", JSON.stringify(pendingWishlistAction));
       }
-    });
-    setUserMeasurements(converted);
-    setSizeGuideUnit(newUnit);
-  }
-};
+      console.error("Failed to add to wishlist:", err);
+      message.error("Failed to add to wishlist");
+    } finally {
+      setAddingToWishlist(false);
+    }
+  };
 
-// Reset when size guide modal closes
-const handleCloseSizeGuide = () => {
-  setIsSizeGuideOpen(false);
-  setShowFindSize(false);
-  setUserMeasurements({ bust: '', waist: '', hip: '' });
-  setRecommendedSize(null);
-};
-
-return (
-  <div
-    className="min-h-screen bg-white font-futura-pt-light"
-  >
-    <div className="max-w-[1600px] mx-auto px-0">
-
-      {/* Main Content Grid - Louis Vuitton Style */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-0">
-
-        {/* Left Column - Full Product Image */}
-        <div className="relative bg-white flex items-center justify-center h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px] group">
-          {/* Main Product Image - Horizontal Scroll on Mobile, Vertical Scroll on Desktop */}
-          <div
-            ref={imageScrollRef}
-            className="relative w-full h-full overflow-x-scroll lg:overflow-x-hidden lg:overflow-y-scroll overflow-y-hidden scrollbar-hide"
-            style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}
-          >
-            <div className="relative w-full h-full">
-              {/* Mobile: Horizontal Layout */}
-              <div className="flex flex-row lg:hidden h-full">
-                {selectedImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex items-center justify-center flex-shrink-0 h-full"
-                    style={{ minWidth: '100%' }}
-                  >
-                    <img
-                      src={image.url}
-                      alt={image.alt || `Product image ${index + 1}`}
-                      className="w-full h-full object-contain cursor-pointer"
-                      onClick={() => {
-                        setIsImageFull(true);
-                        setCurrentImageFull(image.url);
-                      }}
-                      onError={(e) => {
-                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-              {/* Desktop: Vertical Layout */}
-              <div className="hidden lg:flex flex-col h-full">
-                {selectedImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex items-center justify-center flex-shrink-0 h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px]"
-                  >
-                    <img
-                      src={image.url}
-                      alt={image.alt || `Product image ${index + 1}`}
-                      className="w-full h-full object-contain cursor-pointer"
-                      onClick={() => {
-                        setIsImageFull(true);
-                        setCurrentImageFull(image.url);
-                      }}
-                      onError={(e) => {
-                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Share Button - Top Right */}
-            <button
-              onClick={handleShare}
-              className="absolute top-4 right-4 w-10 h-10 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all opacity-0 group-hover:opacity-100 duration-300 z-10"
-            >
-              <Share2 className="w-4 h-4 text-black" strokeWidth={1.5} />
-            </button>
-          </div>
-
-          {/* Image Navigation Indicators - Bottom Center on Mobile, Left Middle on Desktop */}
-          {hasMultipleImages && (
-            <>
-              {/* Mobile: Bottom Center */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-2 z-20 lg:hidden">
-                {selectedImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      const scrollContainer = imageScrollRef.current;
-                      if (scrollContainer) {
-                        const containerWidth = scrollContainer.clientWidth;
-                        const scrollPosition = index * containerWidth;
-                        scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-                      }
-                      setSelectedImageIndex(index);
-                    }}
-                    className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
-                      ? 'bg-black'
-                      : 'bg-gray-400 hover:bg-gray-600'
-                      }`}
-                    aria-label={`Go to image ${index + 1}`}
-                  />
-                ))}
-              </div>
-              {/* Desktop: Left Middle */}
-              <div className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
-                {selectedImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      const scrollContainer = imageScrollRef.current;
-                      if (scrollContainer) {
-                        const containerHeight = scrollContainer.clientHeight;
-                        const scrollPosition = index * containerHeight;
-                        scrollContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-                      }
-                      setSelectedImageIndex(index);
-                    }}
-                    className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
-                      ? 'bg-black'
-                      : 'bg-gray-400 hover:bg-gray-600'
-                      }`}
-                    aria-label={`Go to image ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
+  // Loading state
+  if (isLoading) {
+    return (
+      <div
+        className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
+      >
+        <div className="text-center">
+          <div className="w-12 h-12 border-2 border-premium-beige border-t-black rounded-full animate-spin mx-auto mb-3"></div>
+          <p className="text-text-medium text-xs uppercase tracking-widest font-light">Loading...</p>
         </div>
+      </div>
+    );
+  }
 
-        {/* Right Column - Product Info - Louis Vuitton Style */}
+  // Error state
+  if (error || !product) {
+    return (
+      <div
+        className="min-h-screen bg-premium-cream flex items-center justify-center font-sweet-sans"
+      >
+        <div className="text-center max-w-md px-6">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black mb-4 uppercase font-futura-pt-light">
+            Product Not Found
+          </h2>
+          <p className="text-gray-600 text-xs md:text-sm mb-8 font-light leading-relaxed font-futura-pt-light">
+            {error || 'The product you are looking for does not exist or is no longer available.'}
+          </p>
+          <a
+            href="/products"
+            className="inline-block bg-black text-white px-6 py-2.5 font-light hover:bg-text-dark transition-colors uppercase tracking-widest text-xs"
+          >
+            Browse Products
+          </a>
+        </div>
+      </div>
+    );
+  }
+  const displayedReviews = showAll ? product.reviews : product.reviews.slice(0, 5);
+  const currentImage = product.images[selectedImageIndex] || product.images[0];
+  const hasMultipleImages = product.images.length > 1;
+  const handleCountryChange = (e) => {
+    setSelectedCountry(e.target.value);
+    // You can also trigger other logic here if needed
+    console.log('Selected Country:', e.target.value);
+  };
+  const matchedPrice = product?.priceList?.find(
+    (item) =>
+      item.country === selectedCountry &&
+      item.size === selectedSize
+  );
 
-        <div className="bg-white px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:sticky lg:top-0 lg:self-start">
+  const shippingInfo = product.countryPrices.find(
+    (item) => item.country === selectedCountry
+  );
+  const handleShare = async () => {
+    const shareData = {
+      title: product?.productName,
+      text: `Check out this product: ${product?.productName}`,
+      url: window.location.href,
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Share cancelled or failed:", err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      message.success("Link copied to clipboard!");
+    }
+  };
 
-          {/* Product Header - Code and Name with Heart */}
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-            
-              <h3 className="text-xl sm:text-sm md:text-md lg:text-xl text-black  font-light font-futura-pt-book">
-                {product.name}
-              </h3>
-                <p className="text-xs text-gray-600 font-light font-futura-pt-light mb-1">
-                {product.keyFeatures[0] || ''}
-              </p>
-            </div>
+  // Carousel navigation handlers
+  const handleCarouselNext = () => {
+    const maxIndex = Math.max(0, newProducts.length - itemsPerView);
+    setCarouselIndex(prev => Math.min(prev + 1, maxIndex));
+  };
 
-            {/* Heart Icon - Wishlist */}
-            <button
-              onClick={() => handleAddToWishlist(product.id)}
-              disabled={addingToWishlist}
-              className="p-2 hover:opacity-70 transition-opacity disabled:opacity-50 flex-shrink-0"
-              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+  const handleCarouselPrev = () => {
+    setCarouselIndex(prev => Math.max(prev - 1, 0));
+  };
+
+  // Handle size guide measurement input
+  const handleMeasurementChange = (field, value) => {
+    // Only allow numbers and decimal point
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    setUserMeasurements(prev => ({
+      ...prev,
+      [field]: numericValue
+    }));
+  };
+
+  // Reset measurements when switching units
+  const handleUnitToggle = (newUnit) => {
+    if (newUnit !== sizeGuideUnit) {
+      // Convert existing measurements
+      const converted = { ...userMeasurements };
+      Object.keys(converted).forEach(key => {
+        if (converted[key]) {
+          const value = parseFloat(converted[key]);
+          if (newUnit === 'cm') {
+            converted[key] = inchesToCm(value);
+          } else {
+            converted[key] = cmToInches(value);
+          }
+        }
+      });
+      setUserMeasurements(converted);
+      setSizeGuideUnit(newUnit);
+    }
+  };
+
+  // Reset when size guide modal closes
+  const handleCloseSizeGuide = () => {
+    setIsSizeGuideOpen(false);
+    setShowFindSize(false);
+    setUserMeasurements({ bust: '', waist: '', hip: '' });
+    setRecommendedSize(null);
+  };
+
+  return (
+    <div
+      className="min-h-screen bg-white font-futura-pt-light"
+    >
+      <div className="max-w-[1600px] mx-auto px-0">
+
+        {/* Main Content Grid - Louis Vuitton Style */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-0">
+
+          {/* Left Column - Full Product Image */}
+          <div className="relative bg-white flex items-center justify-center h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px] group">
+            {/* Main Product Image - Horizontal Scroll on Mobile, Vertical Scroll on Desktop */}
+            <div
+              ref={imageScrollRef}
+              className="relative w-full h-full overflow-x-scroll lg:overflow-x-hidden lg:overflow-y-scroll overflow-y-hidden scrollbar-hide"
+              style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+              }}
             >
-              {addingToWishlist ? (
-                <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <Heart
-                  size={20}
-                  strokeWidth={1.5}
-                  className={isWishlisted ? "text-black fill-black" : "text-black"}
-                />
-              )}
-            </button>
-          </div>
-          <div className="">
-            {
-              product.fabricType.map((item, index) => (
-                <div
-                  key={index}
-                  className="text-xs text-gray-500 font-light font-futura-pt-light"
-                >
-                  {item}
+              <div className="relative w-full h-full">
+                {/* Mobile: Horizontal Layout */}
+                <div className="flex flex-row lg:hidden h-full">
+                  {selectedImages.map((image, index) => (
+                    <div
+                      key={index}
+                      className="w-full flex items-center justify-center flex-shrink-0 h-full"
+                      style={{ minWidth: '100%' }}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.alt || `Product image ${index + 1}`}
+                        className="w-full h-full object-contain cursor-pointer"
+                        onClick={() => {
+                          setIsImageFull(true);
+                          setCurrentImageFull(image.url);
+                        }}
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                        }}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))
-            }
-          </div>
+                {/* Desktop: Vertical Layout */}
+                <div className="hidden lg:flex flex-col h-full">
+                  {selectedImages.map((image, index) => (
+                    <div
+                      key={index}
+                      className="w-full flex items-center justify-center flex-shrink-0 h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px]"
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.alt || `Product image ${index + 1}`}
+                        className="w-full h-full object-contain cursor-pointer"
+                        onClick={() => {
+                          setIsImageFull(true);
+                          setCurrentImageFull(image.url);
+                        }}
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-          {/* Price - Louis Vuitton Style */}
-          <div className="pb-4 border-b border-gray-200">
-            <div className="flex flex-col">
-              {(() => {
-                const matchedPrice = product.priceList?.find(
-                  (item) =>
-                    item.country === selectedCountry &&
-                    item.size === selectedSize
-                );
-
-                if (!matchedPrice) {
-                  return <span className="text-sm text-gray-500 font-light font-futura-pt-light">Price not available</span>;
-                }
-
-                const priceFormatted = formatPrice(matchedPrice.priceAmount, matchedPrice.currency);
-                return (
-                  <>
-                    <span className="text-lg md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-                      <span className="font-sans">{priceFormatted.symbol}</span>
-                      {priceFormatted.number}
-                    </span>
-                    <p className="text-xs text-gray-500 font-light font-futura-pt-light mt-1">
-                      (M.R.P. incl. of all taxes)
-                    </p>
-                  </>
-                );
-              })()}
+              {/* Share Button - Top Right */}
+              <button
+                onClick={handleShare}
+                className="absolute top-4 right-4 w-10 h-10 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all opacity-0 group-hover:opacity-100 duration-300 z-10"
+              >
+                <Share2 className="w-4 h-4 text-black" strokeWidth={1.5} />
+              </button>
             </div>
+
+            {/* Image Navigation Indicators - Bottom Center on Mobile, Left Middle on Desktop */}
+            {hasMultipleImages && (
+              <>
+                {/* Mobile: Bottom Center */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-2 z-20 lg:hidden">
+                  {selectedImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const scrollContainer = imageScrollRef.current;
+                        if (scrollContainer) {
+                          const containerWidth = scrollContainer.clientWidth;
+                          const scrollPosition = index * containerWidth;
+                          scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+                        }
+                        setSelectedImageIndex(index);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
+                        ? 'bg-black'
+                        : 'bg-gray-400 hover:bg-gray-600'
+                        }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                {/* Desktop: Left Middle */}
+                <div className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
+                  {selectedImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const scrollContainer = imageScrollRef.current;
+                        if (scrollContainer) {
+                          const containerHeight = scrollContainer.clientHeight;
+                          const scrollPosition = index * containerHeight;
+                          scrollContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+                        }
+                        setSelectedImageIndex(index);
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
+                        ? 'bg-black'
+                        : 'bg-gray-400 hover:bg-gray-600'
+                        }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-          {/* Color Selection */}
-          {product?.availableColors?.length > 0 && (
-            <div className="bg-white border border-text-light/10 p-3 rounded-sm">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-md lg:text-md md:text-md sm:text-sm text-black font-light font-futura-pt-book">
-                  Color
+
+          {/* Right Column - Product Info - Louis Vuitton Style */}
+
+          <div className="bg-white px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:sticky lg:top-0 lg:self-start">
+
+            {/* Product Header - Code and Name with Heart */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+
+                <h3 className="text-xl sm:text-sm md:text-md lg:text-xl text-black  font-light font-futura-pt-book">
+                  {product.name}
                 </h3>
-                <span className="text-md lg:text-md md:text-md sm:text-sm font-light font-futura-pt-light">
-                  {selectedColor}
-                </span>
+                <p className="text-xs text-gray-600 font-light font-futura-pt-light mb-1">
+                  {product.keyFeatures[1] || ''}
+                </p>
               </div>
-              <div className="flex gap-1.5 overflow-x-auto pb-1 pt-1 scrollbar-hide px-1 -mx-1">
-                {product?.availableColors.map((color, index) => (
-                  <button
-                    key={color}
-                    onClick={() => {
-                      setSelectedColor(color);
-                      setItemAddedToCart(false);
-                      setColorIndex(index);
-                    }}
-                    className={`flex-shrink-0 px-3 py-1.5 border transition-all duration-300 text-md lg:text-md md:text-md sm:text-sm font-light rounded-full relative group min-h-[28px] flex items-center justify-center ${selectedColor === color
-                      ? 'border-black bg-black text-white'
-                      : 'border-text-light/20 text-black hover:border-black/40 hover:bg-black/5'
-                      }`}
+
+              {/* Heart Icon - Wishlist */}
+              <button
+                onClick={() => handleAddToWishlist(product.id)}
+                disabled={addingToWishlist}
+                className="p-2 hover:opacity-70 transition-opacity disabled:opacity-50 flex-shrink-0"
+                aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+              >
+                {addingToWishlist ? (
+                  <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Heart
+                    size={20}
+                    strokeWidth={1.5}
+                    className={isWishlisted ? "text-black fill-black" : "text-black"}
+                  />
+                )}
+              </button>
+            </div>
+            <div className="">
+              {
+                product.fabricType.map((item, index) => (
+                  <div
+                    key={index}
+                    className="text-xs text-gray-500 font-light font-futura-pt-light"
                   >
-                    {selectedColor === color && (
-                      <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full"></div>
-                    )}
-                    {color}
-                  </button>
-                ))}
+                    {item}
+                  </div>
+                ))
+              }
+            </div>
+
+            {/* Price - Louis Vuitton Style */}
+            <div className="pb-4 border-b border-gray-200">
+              <div className="flex flex-col">
+                {(() => {
+                  const matchedPrice = product.priceList?.find(
+                    (item) =>
+                      item.country === selectedCountry &&
+                      item.size === selectedSize
+                  );
+
+                  if (!matchedPrice) {
+                    return <span className="text-sm text-gray-500 font-light font-futura-pt-light">Price not available</span>;
+                  }
+
+                  const priceFormatted = formatPrice(matchedPrice.priceAmount, matchedPrice.currency);
+                  return (
+                    <>
+                      <span className="text-lg md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+                        <span className="font-sans">{priceFormatted.symbol}</span>
+                        {priceFormatted.number}
+                      </span>
+                      <p className="text-xs text-gray-500 font-light font-futura-pt-light mt-1">
+                        (M.R.P. incl. of all taxes)
+                      </p>
+                    </>
+                  );
+                })()}
               </div>
             </div>
-          )}
-
-          {/* Size Selection - Custom Dropdown (Desktop) / Modal (Mobile) */}
-          {product.sizeOfProduct.length > 0 && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
-                  Select your size
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setIsSizeGuideOpen(true)}
-                  className="text-md lg:text-md md:text-md sm:text-sm text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors"
-                >
-                  Size guide
-                </button>
-              </div>
-
-              {/* Desktop: Custom Dropdown */}
-              <div className="relative hidden lg:block" ref={sizeDropdownRef}>
-                <button
-                  type="button"
-                  onClick={handleDesktopSizeClick}
-                  className="w-full px-4 py-3 border border-gray-300 bg-white text-left text-black font-light font-futura-pt-light text-sm cursor-pointer hover:border-black transition-colors focus:outline-none focus:border-black flex items-center justify-between"
-                >
-                  <span className={selectedSize ? 'text-black' : 'text-gray-400'}>
-                    {selectedSize || 'Please select your size'}
+            {/* Color Selection */}
+            {product?.availableColors?.length > 0 && (
+              <div className="bg-white border border-text-light/10 p-3 rounded-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-md lg:text-md md:text-md sm:text-sm text-black font-light font-futura-pt-book">
+                    Color
+                  </h3>
+                  <span className="text-md lg:text-md md:text-md sm:text-sm font-light font-futura-pt-light">
+                    {selectedColor}
                   </span>
-                  <ChevronDown
-                    size={18}
-                    className={`text-black transition-transform duration-200 ${isSizeDropdownOpen ? 'rotate-180' : ''}`}
-                    strokeWidth={1.5}
-                  />
-                </button>
+                </div>
+                <div className="flex gap-1.5 overflow-x-auto pb-1 pt-1 scrollbar-hide px-1 -mx-1">
+                  {product?.availableColors.map((color, index) => (
+                    <button
+                      key={color}
+                      onClick={() => {
+                        setSelectedColor(color);
+                        setItemAddedToCart(false);
+                        setColorIndex(index);
+                      }}
+                      className={`flex-shrink-0 px-3 py-1.5 border transition-all duration-300 text-md lg:text-md md:text-md sm:text-sm font-light rounded-full relative group min-h-[28px] flex items-center justify-center ${selectedColor === color
+                        ? 'border-black bg-black text-white'
+                        : 'border-text-light/20 text-black hover:border-black/40 hover:bg-black/5'
+                        }`}
+                    >
+                      {selectedColor === color && (
+                        <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full"></div>
+                      )}
+                      {color}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                {/* Custom Dropdown Menu */}
-                {isSizeDropdownOpen && (
-                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto">
+            {/* Size Selection - Custom Dropdown (Desktop) / Modal (Mobile) */}
+            {product.sizeOfProduct.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
+                    Select your size
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="text-md lg:text-md md:text-md sm:text-sm text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors"
+                  >
+                    Size guide
+                  </button>
+                </div>
+
+                {/* Desktop: Custom Dropdown */}
+                <div className="relative hidden lg:block" ref={sizeDropdownRef}>
+                  <button
+                    type="button"
+                    onClick={handleDesktopSizeClick}
+                    className="w-full px-4 py-3 border border-gray-300 bg-white text-left text-black font-light font-futura-pt-light text-sm cursor-pointer hover:border-black transition-colors focus:outline-none focus:border-black flex items-center justify-between"
+                  >
+                    <span className={selectedSize ? 'text-black' : 'text-gray-400'}>
+                      {selectedSize || 'Please select your size'}
+                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`text-black transition-transform duration-200 ${isSizeDropdownOpen ? 'rotate-180' : ''}`}
+                      strokeWidth={1.5}
+                    />
+                  </button>
+
+                  {/* Custom Dropdown Menu */}
+                  {isSizeDropdownOpen && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto">
+                      {product.sizeOfProduct.map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => handleSizeSelect(size)}
+                          className={`w-full px-4 py-3 text-left text-sm font-light font-futura-pt-light transition-colors ${selectedSize === size
+                            ? 'bg-black text-white hover:bg-black'
+                            : 'text-black hover:bg-gray-50'
+                            }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Mobile: Button to Open Modal */}
+                <div className="lg:hidden">
+                  <button
+                    type="button"
+                    onClick={handleMobileSizeClick}
+                    className="w-full px-4 py-3 border border-gray-300 bg-white text-left text-black font-light font-futura-pt-light text-sm cursor-pointer hover:border-black transition-colors focus:outline-none focus:border-black flex items-center justify-between"
+                  >
+                    <span className={selectedSize ? 'text-black' : 'text-gray-400'}>
+                      {selectedSize || 'Please select your size'}
+                    </span>
+                    <ChevronDown size={18} className="text-black" strokeWidth={1.5} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile: Bottom Sheet Modal for Size Selection */}
+            {isSizeModalOpen && (
+              <>
+                {/* Backdrop */}
+                <div
+                  className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+                  onClick={() => setIsSizeModalOpen(false)}
+                />
+
+                {/* Modal Content */}
+                <div
+                  ref={sizeModalRef}
+                  onClick={handleModalContentClick}
+                  className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 lg:hidden slide-up-from-bottom"
+                >
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                    <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+                      Select your size
+                    </h3>
+                    <button
+                      onClick={() => setIsSizeModalOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      aria-label="Close"
+                    >
+                      <X size={20} className="text-black" strokeWidth={1.5} />
+                    </button>
+                  </div>
+
+                  {/* Size Options */}
+                  <div className="max-h-[60vh] overflow-y-auto">
                     {product.sizeOfProduct.map((size) => (
                       <button
                         key={size}
                         type="button"
                         onClick={() => handleSizeSelect(size)}
-                        className={`w-full px-4 py-3 text-left text-sm font-light font-futura-pt-light transition-colors ${selectedSize === size
-                          ? 'bg-black text-white hover:bg-black'
+                        className={`w-full px-6 py-4 text-left text-sm font-light font-futura-pt-light transition-colors border-b border-gray-100 ${selectedSize === size
+                          ? 'bg-black text-white'
                           : 'text-black hover:bg-gray-50'
                           }`}
                       >
@@ -1251,203 +1333,139 @@ return (
                       </button>
                     ))}
                   </div>
+
+                  {/* Size Guide Link */}
+                  <div className="px-6 py-4 border-t border-gray-200">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSizeModalOpen(false);
+                        setIsSizeGuideOpen(true);
+                      }}
+                      className="text-xs text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors w-full text-left"
+                    >
+                      Size guide
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Monogram Input */}
+            {isPersonalizationProduct && (
+              <div className="space-y-2">
+                <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
+                  Name Initials
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={monogram}
+                    onChange={(e) => {
+                      const value = e.target.value.toUpperCase();
+                      if (value.length <= MONOGRAM_CHAR_LIMIT) {
+                        setMonogram(value);
+                        setItemAddedToCart(false);
+                      }
+                    }}
+                    placeholder="Enter up to 12 characters"
+                    maxLength={MONOGRAM_CHAR_LIMIT}
+                    className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-md lg:text-md md:text-md sm:text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400"
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-light">
+                    {monogram.length}/{MONOGRAM_CHAR_LIMIT}
+                  </div>
+                </div>
+                {monogram && (
+                  <p className="text-md lg:text-md md:text-md sm:text-sm text-gray-500 font-light  font-futura-pt-light">
+                    Your monogram will be displayed on the product
+                  </p>
                 )}
               </div>
+            )}
 
-              {/* Mobile: Button to Open Modal */}
-              <div className="lg:hidden">
-                <button
-                  type="button"
-                  onClick={handleMobileSizeClick}
-                  className="w-full px-4 py-3 border border-gray-300 bg-white text-left text-black font-light font-futura-pt-light text-sm cursor-pointer hover:border-black transition-colors focus:outline-none focus:border-black flex items-center justify-between"
-                >
-                  <span className={selectedSize ? 'text-black' : 'text-gray-400'}>
-                    {selectedSize || 'Please select your size'}
-                  </span>
-                  <ChevronDown size={18} className="text-black" strokeWidth={1.5} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Mobile: Bottom Sheet Modal for Size Selection */}
-          {isSizeModalOpen && (
-            <>
-              {/* Backdrop */}
-              <div
-                className="fixed inset-0 bg-black/50 z-50 lg:hidden"
-                onClick={() => setIsSizeModalOpen(false)}
-              />
-
-              {/* Modal Content */}
-              <div
-                ref={sizeModalRef}
-                onClick={handleModalContentClick}
-                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 lg:hidden slide-up-from-bottom"
-              >
-                {/* Modal Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-                    Select your size
-                  </h3>
-                  <button
-                    onClick={() => setIsSizeModalOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    aria-label="Close"
-                  >
-                    <X size={20} className="text-black" strokeWidth={1.5} />
-                  </button>
-                </div>
-
-                {/* Size Options */}
-                <div className="max-h-[60vh] overflow-y-auto">
-                  {product.sizeOfProduct.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => handleSizeSelect(size)}
-                      className={`w-full px-6 py-4 text-left text-sm font-light font-futura-pt-light transition-colors border-b border-gray-100 ${selectedSize === size
-                        ? 'bg-black text-white'
-                        : 'text-black hover:bg-gray-50'
-                        }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Size Guide Link */}
-                <div className="px-6 py-4 border-t border-gray-200">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsSizeModalOpen(false);
-                      setIsSizeGuideOpen(true);
-                    }}
-                    className="text-xs text-gray-600 font-light font-futura-pt-light underline hover:text-black transition-colors w-full text-left"
-                  >
-                    Size guide
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Monogram Input */}
-          {isPersonalizationProduct && (
-            <div className="space-y-2">
-              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
-                Name Initials
-              </label>
-              <div className="relative">
-                <input
+            {/* Notes Input */}
+            {isPersonalizationProduct && (
+              <div className="space-y-2">
+                <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
+                  Notes
+                </label>
+                <textarea
                   type="text"
-                  value={monogram}
+                  value={notes}
                   onChange={(e) => {
-                    const value = e.target.value.toUpperCase();
-                    if (value.length <= MONOGRAM_CHAR_LIMIT) {
-                      setMonogram(value);
-                      setItemAddedToCart(false);
-                    }
+                    setNotes(e.target.value);
+                    setItemAddedToCart(false);
                   }}
-                  placeholder="Enter up to 12 characters"
-                  maxLength={MONOGRAM_CHAR_LIMIT}
-                  className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-md lg:text-md md:text-md sm:text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400"
+                  placeholder="Add any special instructions or notes..."
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400 resize-none"
                 />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-light">
-                  {monogram.length}/{MONOGRAM_CHAR_LIMIT}
+              </div>
+            )}
+
+            {/* Action Buttons - Add to Cart & Buy Now */}
+            <div className="flex flex-col gap-3">
+              {/* Add to Cart Button */}
+              <button
+                onClick={itemAddedToCart ? handleGoToCart : () => handleAddToCart(product, selectedSize, selectedCountry, quantity)}
+                disabled={
+                  !selectedColor ||
+                  !selectedSize ||
+                  !matchedPrice ||
+                  addingToCart
+                }
+                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light rounded-full"
+              >
+                {addingToCart ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Adding to Cart...
+                  </span>
+                ) : (
+                  itemAddedToCart ? 'Go to Cart' : 'Add to Cart'
+                )}
+              </button>
+
+              {/* Buy Now Button */}
+              <button
+                onClick={handleBuyNow}
+                disabled={
+                  !selectedColor ||
+                  !selectedSize ||
+                  !matchedPrice ||
+                  addingToCart
+                }
+                className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light rounded-full"
+              >
+                {addingToCart ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </span>
+                ) : (
+                  'Buy Now'
+                )}
+              </button>
+            </div>
+
+
+
+            {/* Shipping Info */}
+            {shippingInfo && (
+              <div className="flex items-start gap-2.5">
+                <Truck size={16} className="text-text-medium mt-0.5" strokeWidth={1.5} />
+                <div>
+                  <p className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">Shipping Charges</p>
+                  <p className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-lightfont-futura-pt-light">
+                    {shippingInfo.priceAmount === 0
+                      ? "Free Shipment"
+                      : `${shippingInfo.priceAmount.toLocaleString()} ${shippingInfo.currency}`}
+                  </p>
                 </div>
               </div>
-              {monogram && (
-                <p className="text-md lg:text-md md:text-md sm:text-sm text-gray-500 font-light  font-futura-pt-light">
-                  Your monogram will be displayed on the product
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Notes Input */}
-          {isPersonalizationProduct && (
-            <div className="space-y-2">
-              <label className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-book">
-                Notes
-              </label>
-              <textarea
-                type="text"
-                value={notes}
-                onChange={(e) => {
-                  setNotes(e.target.value);
-                  setItemAddedToCart(false);
-                }}
-                placeholder="Add any special instructions or notes..."
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 bg-white text-black font-light font-futura-pt-light text-sm focus:outline-none focus:border-black transition-colors placeholder:text-gray-400 resize-none"
-              />
-            </div>
-          )}
-
-          {/* Action Buttons - Add to Cart & Buy Now */}
-          <div className="flex flex-col gap-3">
-            {/* Add to Cart Button */}
-            <button
-              onClick={itemAddedToCart ? handleGoToCart : () => handleAddToCart(product, selectedSize, selectedCountry, quantity)}
-              disabled={
-                !selectedColor ||
-                !selectedSize ||
-                !matchedPrice ||
-                addingToCart
-              }
-              className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light rounded-full"
-            >
-              {addingToCart ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Adding to Cart...
-                </span>
-              ) : (
-                itemAddedToCart ? 'Go to Cart' : 'Add to Cart'
-              )}
-            </button>
-
-            {/* Buy Now Button */}
-            <button
-              onClick={handleBuyNow}
-              disabled={
-                !selectedColor ||
-                !selectedSize ||
-                !matchedPrice ||
-                addingToCart
-              }
-              className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light rounded-full"
-            >
-              {addingToCart ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processing...
-                </span>
-              ) : (
-                'Buy Now'
-              )}
-            </button>
-          </div>
-
-
-
-          {/* Shipping Info */}
-          {shippingInfo && (
-            <div className="flex items-start gap-2.5">
-              <Truck size={16} className="text-text-medium mt-0.5" strokeWidth={1.5} />
-              <div>
-                <p className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">Shipping Charges</p>
-                <p className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-lightfont-futura-pt-light">
-                  {shippingInfo.priceAmount === 0
-                    ? "Free Shipment"
-                    : `${shippingInfo.priceAmount.toLocaleString()} ${shippingInfo.currency}`}
-                </p>
-              </div>
-            </div>
-          )}
-          {/* <div className="space-y-3 pt-6 border-t border-text-light/20">
+            )}
+            {/* <div className="space-y-3 pt-6 border-t border-text-light/20">
               <div className="flex items-start gap-3">
                 <Truck size={20} className="text-text-medium mt-0.5" strokeWidth={1.5} />
                 <div>
@@ -1464,8 +1482,8 @@ return (
               </div>
             </div> */}
 
-          {/* Description - Louis Vuitton Style */}
-          {/* {product.description && (
+            {/* Description - Louis Vuitton Style */}
+            {/* {product.description && (
               <div className="pt-4 border-t border-gray-200">
                 <p className="text-black text-sm leading-relaxed font-light font-futura-pt-light">
                   {product.description}
@@ -1473,274 +1491,274 @@ return (
               </div>
             )} */}
 
-          {/* Product Details */}
-          {(product.keyFeatures.length > 0 || Object.keys(product.specifications).length > 0 || product.fabricType.length > 0) && (
-            // <div className="space-y-5 pt-5 border-t border-text-light/10">
+            {/* Product Details */}
+            {(product.keyFeatures.length > 0 || Object.keys(product.specifications).length > 0 || product.fabricType.length > 0) && (
+              // <div className="space-y-5 pt-5 border-t border-text-light/10">
 
-            //   {product.description && (
-            //     <div>
-            //       <button
-            //         onClick={() =>
-            //           setExpandedSections(prev => ({
-            //             ...prev,
-            //             description: !prev.description
-            //           }))
-            //         }
-            //         className="flex items-center justify-between w-full text-left mb-2.5"
-            //       >
-            //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-            //           Description
-            //         </h3>
+              //   {product.description && (
+              //     <div>
+              //       <button
+              //         onClick={() =>
+              //           setExpandedSections(prev => ({
+              //             ...prev,
+              //             description: !prev.description
+              //           }))
+              //         }
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Description
+              //         </h3>
 
-            //         {expandedSections.description ? (
-            //           <Minus size={14} className="text-black" strokeWidth={2} />
-            //         ) : (
-            //           <Plus size={14} className="text-black" strokeWidth={2} />
-            //         )}
-            //       </button>
+              //         {expandedSections.description ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
 
-            //       {expandedSections.description && (
-            //         <p className="text-xs text-black leading-relaxed font-light font-futura-pt-light">
-            //           {product.description}
-            //         </p>
-            //       )}
-            //     </div>
-            //   )}
+              //       {expandedSections.description && (
+              //         <p className="text-xs text-black leading-relaxed font-light font-futura-pt-light">
+              //           {product.description}
+              //         </p>
+              //       )}
+              //     </div>
+              //   )}
 
-            //   {/* Key Features */}
-            //   {product.keyFeatures.length > 0 && (
-            //     <div>
-            //       <button
-            //         onClick={() => setExpandedSections(prev => ({ ...prev, keyFeatures: !prev.keyFeatures }))}
-            //         className="flex items-center justify-between w-full text-left mb-2.5"
-            //       >
-            //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-            //           Key Features
-            //         </h3>
-            //         {expandedSections.keyFeatures ? (
-            //           <Minus size={14} className="text-black" strokeWidth={2} />
-            //         ) : (
-            //           <Plus size={14} className="text-black" strokeWidth={2} />
-            //         )}
-            //       </button>
-            //       {expandedSections.keyFeatures && (
-            //         <ul className="space-y-1.5 list-disc pl-4">
-            //           {product.keyFeatures.map((feature, index) => (
-            //             <li
-            //               key={index}
-            //               className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
-            //             >
-            //               {feature}
-            //             </li>
-            //           ))}
-            //         </ul>
-            //       )}
+              //   {/* Key Features */}
+              //   {product.keyFeatures.length > 0 && (
+              //     <div>
+              //       <button
+              //         onClick={() => setExpandedSections(prev => ({ ...prev, keyFeatures: !prev.keyFeatures }))}
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Key Features
+              //         </h3>
+              //         {expandedSections.keyFeatures ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
+              //       {expandedSections.keyFeatures && (
+              //         <ul className="space-y-1.5 list-disc pl-4">
+              //           {product.keyFeatures.map((feature, index) => (
+              //             <li
+              //               key={index}
+              //               className="text-xs text-black font-light leading-relaxed font-futura-pt-thin"
+              //             >
+              //               {feature}
+              //             </li>
+              //           ))}
+              //         </ul>
+              //       )}
 
-            //     </div>
-            //   )}
+              //     </div>
+              //   )}
 
-            //   {/* Fabric Type */}
-            //   {product.fabricType.length > 0 && (
-            //     <div>
-            //       <button
-            //         onClick={() => setExpandedSections(prev => ({ ...prev, fabric: !prev.fabric }))}
-            //         className="flex items-center justify-between w-full text-left mb-2.5"
-            //       >
-            //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-            //           Fabric
-            //         </h3>
-            //         {expandedSections.fabric ? (
-            //           <Minus size={14} className="text-black" strokeWidth={2} />
-            //         ) : (
-            //           <Plus size={14} className="text-black" strokeWidth={2} />
-            //         )}
-            //       </button>
-            //       {expandedSections.fabric && (
-            //         <ul className="list-disc pl-4">
-            //           <li className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
-            //             {product.fabricType.join(', ')}
-            //           </li>
-            //         </ul>
-            //       )}
+              //   {/* Fabric Type */}
+              //   {product.fabricType.length > 0 && (
+              //     <div>
+              //       <button
+              //         onClick={() => setExpandedSections(prev => ({ ...prev, fabric: !prev.fabric }))}
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Fabric
+              //         </h3>
+              //         {expandedSections.fabric ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
+              //       {expandedSections.fabric && (
+              //         <ul className="list-disc pl-4">
+              //           <li className="text-xs text-black font-light leading-relaxed font-futura-pt-thin">
+              //             {product.fabricType.join(', ')}
+              //           </li>
+              //         </ul>
+              //       )}
 
-            //     </div>
-            //   )}
-
-
-            //   {/* Care Instructions */}
-            //   {product.careInstructions.length > 0 && (
-            //     <div>
-            //       <button
-            //         onClick={() => setExpandedSections(prev => ({ ...prev, careInstructions: !prev.careInstructions }))}
-            //         className="flex items-center justify-between w-full text-left mb-2.5"
-            //       >
-            //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
-            //           Care Instructions
-            //         </h3>
-            //         {expandedSections.careInstructions ? (
-            //           <Minus size={14} className="text-black" strokeWidth={2} />
-            //         ) : (
-            //           <Plus size={14} className="text-black" strokeWidth={2} />
-            //         )}
-            //       </button>
-            //       {expandedSections.careInstructions && (
-            //         <ul className="space-y-1.5 list-disc pl-4">
-            //           {product.careInstructions.map((instruction, index) => (
-            //             <li
-            //               key={index}
-            //               className="text-xs text-text-medium font-light leading-relaxed font-futura-pt-thin"
-            //             >
-            //               {instruction}
-            //             </li>
-            //           ))}
-            //         </ul>
-            //       )}
-
-            //     </div>
-            //   )}
-            // </div>
-            <div className="pt-5 border-t border-text-light/10">
-              {Object.keys(sections).map((section, index, arr) => {
-                const content = sections[section];
-                if (!content || (Array.isArray(content) && content.length === 0)) return null;
-
-                const sectionName =
-                  section === "fabric"
-                    ? "Fabric"
-                    : section === "careInstructions"
-                      ? "Care Instructions"
-                      : section.charAt(0).toUpperCase() + section.slice(1);
-
-                const isLast = index === arr.length - 1;
-                console.log(sectionName,"sectionName")
-                return (
-                  <button
-                    key={section}
-                    onClick={() => {
-                      setActiveSection(section);
-                      setOpenSlider(true);
-                    }}
-                    className={`flex items-center justify-between w-full text-left py-3 ${!isLast ? "border-b border-text-light/20" : ""
-                      }`}
-                  >
-                    <h3 className="text-md font-light text-black font-futura-pt-light">
-                      {sectionName==="Description"? "PRODUCT DETAILS" : sectionName==="Care Instructions"? "MATERIAL AND CARE" : sectionName==="DeliveryAndReturn"?"DELIVERY & RETURNS":sectionName==="GiftPackaging"?"GIFT PACKAGING":sectionName}
-                    </h3>
-                    {isDesktop ? (
-                      <FiChevronRight className="text-black" size={16} />
-                    ) : (
-                      <FiChevronDown className="text-black" size={16} />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+              //     </div>
+              //   )}
 
 
-          )}
-        </div>
+              //   {/* Care Instructions */}
+              //   {product.careInstructions.length > 0 && (
+              //     <div>
+              //       <button
+              //         onClick={() => setExpandedSections(prev => ({ ...prev, careInstructions: !prev.careInstructions }))}
+              //         className="flex items-center justify-between w-full text-left mb-2.5"
+              //       >
+              //         <h3 className="text-md lg:text-md md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+              //           Care Instructions
+              //         </h3>
+              //         {expandedSections.careInstructions ? (
+              //           <Minus size={14} className="text-black" strokeWidth={2} />
+              //         ) : (
+              //           <Plus size={14} className="text-black" strokeWidth={2} />
+              //         )}
+              //       </button>
+              //       {expandedSections.careInstructions && (
+              //         <ul className="space-y-1.5 list-disc pl-4">
+              //           {product.careInstructions.map((instruction, index) => (
+              //             <li
+              //               key={index}
+              //               className="text-xs text-text-medium font-light leading-relaxed font-futura-pt-thin"
+              //             >
+              //               {instruction}
+              //             </li>
+              //           ))}
+              //         </ul>
+              //       )}
 
+              //     </div>
+              //   )}
+              // </div>
+              <div className="pt-5 border-t border-text-light/10">
+                {Object.keys(sections).map((section, index, arr) => {
+                  const content = sections[section];
+                  if (!content || (Array.isArray(content) && content.length === 0)) return null;
 
-      </div>
-      {/* Review Form Section */}
-      {false && <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
-        <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
-          Customer Reviews
-        </h2>
+                  const sectionName =
+                    section === "fabric"
+                      ? "Fabric"
+                      : section === "careInstructions"
+                        ? "Care Instructions"
+                        : section.charAt(0).toUpperCase() + section.slice(1);
 
-        {/* Add Review Button */}
-        {!showReviewForm && (
-          <div className="mb-5 md:mb-6">
-            <button
-              onClick={() => setShowReviewForm(true)}
-              className="w-full sm:w-auto bg-black hover:bg-text-dark text-white font-light py-2.5 px-6 transition-all duration-200 flex items-center justify-center gap-2 uppercase tracking-widest hover:opacity-90 text-xs"
-            >
-              <Star size={12} />
-              Write a Review
-            </button>
-          </div>
-        )}
-
-        {/* Review Form */}
-        {showReviewForm && (
-          <div className="mb-6 md:mb-8 p-5 bg-premium-beige border border-text-light/10">
-            <h3 className="text-sm md:text-base font-light text-black mb-4 uppercase tracking-widest">
-              Share Your Experience
-            </h3>
-
-            <form onSubmit={handleSubmitReview} className="space-y-4">
-              {/* Rating Selection */}
-              <div>
-                <label className="block text-xs font-light text-text-medium mb-2 uppercase tracking-widest">
-                  Rating
-                </label>
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((rating) => (
+                  const isLast = index === arr.length - 1;
+                  console.log(sectionName, "sectionName")
+                  return (
                     <button
-                      key={rating}
-                      type="button"
-                      onClick={() => setReviewRating(rating)}
-                      className="p-1 transition-all duration-200 hover:scale-110 active:scale-95"
+                      key={section}
+                      onClick={() => {
+                        setActiveSection(section);
+                        setOpenSlider(true);
+                      }}
+                      className={`flex items-center justify-between w-full text-left py-3 ${!isLast ? "border-b border-text-light/20" : ""
+                        }`}
                     >
-                      <Star
-                        size={16}
-                        className={`${rating <= reviewRating
-                          ? "fill-black text-black"
-                          : "fill-none text-text-light"
-                          }`}
-                        strokeWidth={1.5}
-                      />
+                      <h3 className="text-md font-light text-black font-futura-pt-light">
+                        {sectionName === "Description" ? "PRODUCT DETAILS" : sectionName === "Care Instructions" ? "MATERIAL AND CARE" : sectionName === "DeliveryAndReturn" ? "DELIVERY & RETURNS" : sectionName === "GiftPackaging" ? "GIFT PACKAGING" : sectionName}
+                      </h3>
+                      {isDesktop ? (
+                        <FiChevronRight className="text-black" size={16} />
+                      ) : (
+                        <FiChevronDown className="text-black" size={16} />
+                      )}
                     </button>
-                  ))}
-                  <span className="ml-2 text-xs text-text-medium font-light">
-                    {reviewRating} out of 5 stars
-                  </span>
-                </div>
+                  );
+                })}
               </div>
 
-              {/* Comment Input */}
-              <div>
-                <label className="block text-xs font-light text-text-medium mb-2 uppercase tracking-widest">
-                  Your Review
-                </label>
-                <textarea
-                  value={reviewComment}
-                  onChange={(e) => setReviewComment(e.target.value)}
-                  placeholder="Share your thoughts about this product..."
-                  rows={4}
-                  className="w-full px-3 py-2.5 border border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-light resize-none text-xs"
-                  required
-                />
-              </div>
 
-              {/* Form Actions */}
-              <div className="flex flex-col sm:flex-row gap-2.5">
-                <button
-                  type="submit"
-                  disabled={isSubmittingReview}
-                  className="w-full sm:w-auto bg-black hover:bg-text-dark text-white font-light py-2.5 px-6 transition-all duration-200 flex items-center justify-center gap-2 uppercase tracking-widest hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-xs"
-                >
-                  {isSubmittingReview ? "Submitting..." : "Submit Review"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowReviewForm(false);
-                    setReviewComment('');
-                    setReviewRating(5);
-                  }}
-                  className="w-full sm:w-auto bg-text-light/10 hover:bg-text-light/20 text-black font-light py-2.5 px-6 transition-all duration-200 uppercase tracking-widest text-xs"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+            )}
           </div>
-        )}
-      </div>}
 
-      {/* Existing Reviews Section - Commented out */}
-      {/* {product.reviews.length > 0 && (
+
+        </div>
+        {/* Review Form Section */}
+        {false && <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-text-light/10">
+          <h2 className="text-xl sm:text-xl md:text-2xl lg:text-2xl font-light text-black uppercase mb-4 font-futura-pt-light">
+            Customer Reviews
+          </h2>
+
+          {/* Add Review Button */}
+          {!showReviewForm && (
+            <div className="mb-5 md:mb-6">
+              <button
+                onClick={() => setShowReviewForm(true)}
+                className="w-full sm:w-auto bg-black hover:bg-text-dark text-white font-light py-2.5 px-6 transition-all duration-200 flex items-center justify-center gap-2 uppercase tracking-widest hover:opacity-90 text-xs"
+              >
+                <Star size={12} />
+                Write a Review
+              </button>
+            </div>
+          )}
+
+          {/* Review Form */}
+          {showReviewForm && (
+            <div className="mb-6 md:mb-8 p-5 bg-premium-beige border border-text-light/10">
+              <h3 className="text-sm md:text-base font-light text-black mb-4 uppercase tracking-widest">
+                Share Your Experience
+              </h3>
+
+              <form onSubmit={handleSubmitReview} className="space-y-4">
+                {/* Rating Selection */}
+                <div>
+                  <label className="block text-xs font-light text-text-medium mb-2 uppercase tracking-widest">
+                    Rating
+                  </label>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <button
+                        key={rating}
+                        type="button"
+                        onClick={() => setReviewRating(rating)}
+                        className="p-1 transition-all duration-200 hover:scale-110 active:scale-95"
+                      >
+                        <Star
+                          size={16}
+                          className={`${rating <= reviewRating
+                            ? "fill-black text-black"
+                            : "fill-none text-text-light"
+                            }`}
+                          strokeWidth={1.5}
+                        />
+                      </button>
+                    ))}
+                    <span className="ml-2 text-xs text-text-medium font-light">
+                      {reviewRating} out of 5 stars
+                    </span>
+                  </div>
+                </div>
+
+                {/* Comment Input */}
+                <div>
+                  <label className="block text-xs font-light text-text-medium mb-2 uppercase tracking-widest">
+                    Your Review
+                  </label>
+                  <textarea
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    placeholder="Share your thoughts about this product..."
+                    rows={4}
+                    className="w-full px-3 py-2.5 border border-text-light/20 focus:border-black focus:outline-none text-black bg-white placeholder:text-text-light transition-colors font-light resize-none text-xs"
+                    required
+                  />
+                </div>
+
+                {/* Form Actions */}
+                <div className="flex flex-col sm:flex-row gap-2.5">
+                  <button
+                    type="submit"
+                    disabled={isSubmittingReview}
+                    className="w-full sm:w-auto bg-black hover:bg-text-dark text-white font-light py-2.5 px-6 transition-all duration-200 flex items-center justify-center gap-2 uppercase tracking-widest hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-xs"
+                  >
+                    {isSubmittingReview ? "Submitting..." : "Submit Review"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowReviewForm(false);
+                      setReviewComment('');
+                      setReviewRating(5);
+                    }}
+                    className="w-full sm:w-auto bg-text-light/10 hover:bg-text-light/20 text-black font-light py-2.5 px-6 transition-all duration-200 uppercase tracking-widest text-xs"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>}
+
+        {/* Existing Reviews Section - Commented out */}
+        {/* {product.reviews.length > 0 && (
           <div className="mt-6 md:mt-8">
             <h3 className="text-sm md:text-base font-light text-black uppercase tracking-widest mb-5 md:mb-6">
               Customer Reviews ({product.reviews.length})
@@ -1790,246 +1808,246 @@ return (
             </div>
           </div>
         )} */}
-      {newProducts?.length > 0 && (
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 border-t border-gray-200">
-          {/* Section Header */}
-          <div className="mb-8 md:mb-10">
-            <h2 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black  mb-4 font-futura-pt-book">
-              Hot Picks for You
-            </h2>
-            <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
-            <p className="text-gray-900 text-md sm:text:sm md:text-md lg:text-md font-light leading-relaxed font-futura-pt-light">
-              Discover more from our curated collection
-            </p>
-          </div>
+        {newProducts?.length > 0 && (
+          <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 border-t border-gray-200">
+            {/* Section Header */}
+            <div className="mb-8 md:mb-10">
+              <h2 className="text-xl sm:text-md md:text-lg lg:text-xl font-light text-black  mb-4 font-futura-pt-book">
+                Hot Picks for You
+              </h2>
+              <div className="w-12 md:w-16 h-px bg-gray-300 mb-4 md:mb-5" />
+              <p className="text-gray-900 text-md sm:text:sm md:text-md lg:text-md font-light leading-relaxed font-futura-pt-light">
+                Discover more from our curated collection
+              </p>
+            </div>
 
-          {/* Carousel Container */}
-          <div className="relative">
-            <div className="overflow-hidden">
-              <div
-                className="flex items-stretch transition-transform duration-300 ease-in-out gap-3 sm:gap-4 md:gap-5 lg:gap-6"
-                style={{
-                  transform: `translateX(-${carouselIndex * (100 / itemsPerView)}%)`
-                }}
-              >
-                {newProducts.map((product) => {
-                  // Extract price using the same logic as ProductCard
-                  const savedCountry = localStorage.getItem('selectedCountry');
-                  const parsedCountry = savedCountry ? JSON.parse(savedCountry) : null;
-                  const selectedCountry = parsedCountry?.code || "IN";
+            {/* Carousel Container */}
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div
+                  className="flex items-stretch transition-transform duration-300 ease-in-out gap-3 sm:gap-4 md:gap-5 lg:gap-6"
+                  style={{
+                    transform: `translateX(-${carouselIndex * (100 / itemsPerView)}%)`
+                  }}
+                >
+                  {newProducts.map((product) => {
+                    // Extract price using the same logic as ProductCard
+                    const savedCountry = localStorage.getItem('selectedCountry');
+                    const parsedCountry = savedCountry ? JSON.parse(savedCountry) : null;
+                    const selectedCountry = parsedCountry?.code || "IN";
 
-                  let productPrice = 0;
-                  let currency = "INR";
+                    let productPrice = 0;
+                    let currency = "INR";
 
-                  if (product?.priceList && Array.isArray(product.priceList) && product.priceList.length > 0) {
-                    const firstSize = product?.availableSizes?.[0];
-                    let matchedPrice = product.priceList.find(
-                      (e) => e.country === selectedCountry && e.size === firstSize
-                    );
-
-                    if (!matchedPrice) {
-                      matchedPrice = product.priceList.find(
-                        (e) => e.country === selectedCountry
+                    if (product?.priceList && Array.isArray(product.priceList) && product.priceList.length > 0) {
+                      const firstSize = product?.availableSizes?.[0];
+                      let matchedPrice = product.priceList.find(
+                        (e) => e.country === selectedCountry && e.size === firstSize
                       );
+
+                      if (!matchedPrice) {
+                        matchedPrice = product.priceList.find(
+                          (e) => e.country === selectedCountry
+                        );
+                      }
+
+                      if (!matchedPrice) {
+                        matchedPrice = product.priceList[0];
+                      }
+
+                      productPrice = matchedPrice?.priceAmount || 0;
+                      currency = matchedPrice?.currency || "INR";
                     }
 
-                    if (!matchedPrice) {
-                      matchedPrice = product.priceList[0];
+                    if (productPrice === 0 && product?.price && product.price > 0) {
+                      productPrice = product.price;
+                      currency = product?.priceList?.[0]?.currency || "INR";
                     }
 
-                    productPrice = matchedPrice?.priceAmount || 0;
-                    currency = matchedPrice?.currency || "INR";
-                  }
+                    const productImages = Array.isArray(product?.images) && product.images.length > 0
+                      ? product.images
+                      : [];
 
-                  if (productPrice === 0 && product?.price && product.price > 0) {
-                    productPrice = product.price;
-                    currency = product?.priceList?.[0]?.currency || "INR";
-                  }
+                    const formatPrice = (price, curr = 'INR') => {
+                      if (typeof price !== 'number' || price === 0) return '';
+                      const symbol = curr === 'INR' ? '₹' : curr === 'USD' ? '$' : curr;
+                      return `${symbol}${price.toLocaleString('en-IN', {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                      })}`;
+                    };
 
-                  const productImages = Array.isArray(product?.images) && product.images.length > 0
-                    ? product.images
-                    : [];
-
-                  const formatPrice = (price, curr = 'INR') => {
-                    if (typeof price !== 'number' || price === 0) return '';
-                    const symbol = curr === 'INR' ? '₹' : curr === 'USD' ? '$' : curr;
-                    return `${symbol}${price.toLocaleString('en-IN', {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0
-                    })}`;
-                  };
-
-                  return (
-                    <div
-                      key={product.id}
-                      className="flex-shrink-0 w-[calc(50%-0.375rem)] sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-1.33rem)] group border border-gray-200 overflow-hidden bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer flex flex-col h-full"
-                      onClick={() => {
-                        try {
-                          const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
-                          const filtered = existing.filter((p) => p.id !== product.id);
-                          const updated = [product, ...filtered];
-                          const limited = updated.slice(0, 8);
-                          localStorage.setItem("recentVisited", JSON.stringify(limited));
-                        } catch (err) {
-                          console.error("Error saving recent visited products:", err);
-                        }
-                        navigate(`/productDetail/${product?.id}`);
-                      }}
-                    >
-                      {/* Image Section */}
-                      <div className="aspect-square overflow-hidden bg-gray-50 flex-shrink-0 relative">
-                        <img
-                          src={productImages[0] || product.image || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4="}
-                          alt={product.name || product.title || 'Product'}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          onError={(e) => {
-                            e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=";
-                          }}
-                        />
-                      </div>
-
-                      {/* Info Section */}
-                      <div className="p-3 sm:p-4 text-left space-y-1.5 flex flex-col justify-between min-h-[100px] flex-grow bg-white">
-                        <div>
-                          <h3 className="text-xs sm:text-sm font-light text-black line-clamp-2 mb-1.5 font-futura-pt-light">
-                            {product.name || product.title || 'Untitled Product'}
-                          </h3>
-                          {product.category && (
-                            <p className="text-gray-600 text-xs line-clamp-1 font-light font-futura-pt-light">
-                              {product.category}
-                            </p>
-                          )}
+                    return (
+                      <div
+                        key={product.id}
+                        className="flex-shrink-0 w-[calc(50%-0.375rem)] sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-1.33rem)] group border border-gray-200 overflow-hidden bg-white hover:border-gray-300 transition-all duration-300 cursor-pointer flex flex-col h-full"
+                        onClick={() => {
+                          try {
+                            const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
+                            const filtered = existing.filter((p) => p.id !== product.id);
+                            const updated = [product, ...filtered];
+                            const limited = updated.slice(0, 8);
+                            localStorage.setItem("recentVisited", JSON.stringify(limited));
+                          } catch (err) {
+                            console.error("Error saving recent visited products:", err);
+                          }
+                          navigate(`/productDetail/${product?.id}`);
+                        }}
+                      >
+                        {/* Image Section */}
+                        <div className="aspect-square overflow-hidden bg-gray-50 flex-shrink-0 relative">
+                          <img
+                            src={productImages[0] || product.image || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4="}
+                            alt={product.name || product.title || 'Product'}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onError={(e) => {
+                              e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=";
+                            }}
+                          />
                         </div>
-                        {/* {productPrice > 0 && (
+
+                        {/* Info Section */}
+                        <div className="p-3 sm:p-4 text-left space-y-1.5 flex flex-col justify-between min-h-[100px] flex-grow bg-white">
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-light text-black line-clamp-2 mb-1.5 font-futura-pt-light">
+                              {product.name || product.title || 'Untitled Product'}
+                            </h3>
+                            {product.category && (
+                              <p className="text-gray-600 text-xs line-clamp-1 font-light font-futura-pt-light">
+                                {product.category}
+                              </p>
+                            )}
+                          </div>
+                          {/* {productPrice > 0 && (
                             <p className="text-sm sm:text-base font-light text-black font-futura-pt-light mt-auto pt-1">
                               {formatPrice(productPrice, currency)}
                             </p>
                           )} */}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* Navigation Arrows */}
+              {newProducts.length > itemsPerView && (
+                <>
+                  <button
+                    onClick={handleCarouselPrev}
+                    disabled={carouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 hover:border-black p-2.5 shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 z-10"
+                    aria-label="Previous products"
+                  >
+                    <ChevronLeft size={20} className="text-black" strokeWidth={1.5} />
+                  </button>
+                  <button
+                    onClick={handleCarouselNext}
+                    disabled={carouselIndex >= Math.max(0, newProducts.length - itemsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 hover:border-black p-2.5 shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 z-10"
+                    aria-label="Next products"
+                  >
+                    <ChevronRight size={20} className="text-black" strokeWidth={1.5} />
+                  </button>
+                </>
+              )}
             </div>
-
-            {/* Navigation Arrows */}
-            {newProducts.length > itemsPerView && (
-              <>
-                <button
-                  onClick={handleCarouselPrev}
-                  disabled={carouselIndex === 0}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 hover:border-black p-2.5 shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 z-10"
-                  aria-label="Previous products"
-                >
-                  <ChevronLeft size={20} className="text-black" strokeWidth={1.5} />
-                </button>
-                <button
-                  onClick={handleCarouselNext}
-                  disabled={carouselIndex >= Math.max(0, newProducts.length - itemsPerView)}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 bg-white border border-gray-200 hover:border-black p-2.5 shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-gray-200 z-10"
-                  aria-label="Next products"
-                >
-                  <ChevronRight size={20} className="text-black" strokeWidth={1.5} />
-                </button>
-              </>
-            )}
           </div>
-        </div>
-      )}
-    </div>
-    {/* Product Variants */}
-    {isImageFull && (
-      <div
-        className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-[9999]"
-        onClick={() => setIsImageFull(false)}
-      >
-        <img
-          src={currentImageFull}
-          alt={product?.productName}
-          className="max-w-full max-h-full object-contain p-4"
-        />
-        <button
-          className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors text-2xl font-light w-8 h-8 flex items-center justify-center z-[10000]"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsImageFull(false);
-          }}
-        >
-          ✕
-        </button>
+        )}
       </div>
-    )}
-
-    {isSizeGuideOpen && (
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 py-4 sm:py-6 z-[1300] overflow-y-auto">
-        <div className="relative w-full max-w-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl my-auto max-h-[90vh] overflow-y-auto">
+      {/* Product Variants */}
+      {isImageFull && (
+        <div
+          className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-[9999]"
+          onClick={() => setIsImageFull(false)}
+        >
+          <img
+            src={currentImageFull}
+            alt={product?.productName}
+            className="max-w-full max-h-full object-contain p-4"
+          />
           <button
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-black/60 hover:text-black transition-colors text-xl sm:text-2xl leading-none z-10"
-            onClick={handleCloseSizeGuide}
-            aria-label="Close size guide"
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors text-2xl font-light w-8 h-8 flex items-center justify-center z-[10000]"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsImageFull(false);
+            }}
           >
             ✕
           </button>
+        </div>
+      )}
 
-          <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl text-black mb-4 sm:mb-6 font-light font-futura-pt-book pr-8">
-            Size Guide
-          </h3>
+      {isSizeGuideOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 py-4 sm:py-6 z-[1300] overflow-y-auto">
+          <div className="relative w-full max-w-3xl bg-white p-4 sm:p-6 md:p-8 shadow-xl my-auto max-h-[90vh] overflow-y-auto">
+            <button
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 text-black/60 hover:text-black transition-colors text-xl sm:text-2xl leading-none z-10"
+              onClick={handleCloseSizeGuide}
+              aria-label="Close size guide"
+            >
+              ✕
+            </button>
 
-          {/* Unit Toggle */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-6 pb-4 border-b border-text-light/20">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <span className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light whitespace-nowrap">Unit:</span>
-              <div className="flex items-center bg-premium-beige/30 rounded-full p-1">
+            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl text-black mb-4 sm:mb-6 font-light font-futura-pt-book pr-8">
+              Size Guide
+            </h3>
+
+            {/* Unit Toggle */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-6 pb-4 border-b border-text-light/20">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <span className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light whitespace-nowrap">Unit:</span>
+                <div className="flex items-center bg-premium-beige/30 rounded-full p-1">
+                  <button
+                    onClick={() => handleUnitToggle('inches')}
+                    className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'inches'
+                      ? 'bg-black text-white'
+                      : 'text-black/70 hover:text-black'
+                      }`}
+                  >
+                    Inches
+                  </button>
+                  <button
+                    onClick={() => handleUnitToggle('cm')}
+                    className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'cm'
+                      ? 'bg-black text-white'
+                      : 'text-black/70 hover:text-black'
+                      }`}
+                  >
+                    CM
+                  </button>
+                </div>
+              </div>
+
+              {/* Tab Toggle */}
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handleUnitToggle('inches')}
-                  className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'inches'
-                    ? 'bg-black text-white'
-                    : 'text-black/70 hover:text-black'
+                  onClick={() => setShowFindSize(false)}
+                  className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${!showFindSize
+                    ? 'border-black bg-black text-white'
+                    : 'border-text-light/20 text-black/70 hover:border-black/40'
                     }`}
                 >
-                  Inches
+                  Size Chart
                 </button>
                 <button
-                  onClick={() => handleUnitToggle('cm')}
-                  className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'cm'
-                    ? 'bg-black text-white'
-                    : 'text-black/70 hover:text-black'
+                  onClick={() => setShowFindSize(true)}
+                  className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${showFindSize
+                    ? 'border-black bg-black text-white'
+                    : 'border-text-light/20 text-black/70 hover:border-black/40'
                     }`}
                 >
-                  CM
+                  Find Your Size
                 </button>
               </div>
             </div>
 
-            {/* Tab Toggle */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setShowFindSize(false)}
-                className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${!showFindSize
-                  ? 'border-black bg-black text-white'
-                  : 'border-text-light/20 text-black/70 hover:border-black/40'
-                  }`}
-              >
-                Size Chart
-              </button>
-              <button
-                onClick={() => setShowFindSize(true)}
-                className={`px-2.5 sm:px-3 md:px-4 lg:px-5 py-1.5 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light transition-all border ${showFindSize
-                  ? 'border-black bg-black text-white'
-                  : 'border-text-light/20 text-black/70 hover:border-black/40'
-                  }`}
-              >
-                Find Your Size
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-4 sm:space-y-6 text-sm sm:text-base md:text-base lg:text-base text-text-medium leading-relaxed font-futura-pt-light">
-            {!showFindSize ? (
-              <>
-                {/* Fit Group Tabs */}
-                <div className="flex flex-wrap gap-2 mb-6 border-b border-text-light/20 pb-4">
-                  {fitGroups.map((group) => (
+            <div className="space-y-4 sm:space-y-6 text-sm sm:text-base md:text-base lg:text-base text-text-medium leading-relaxed font-futura-pt-light">
+              {!showFindSize ? (
+                <>
+                  {/* Fit Group Tabs */}
+                  <div className="flex flex-wrap gap-2 mb-6 border-b border-text-light/20 pb-4">
+                    {/* {fitGroups.map((group) => (
                     <button
                       key={group.id}
                       onClick={() => setActiveSizeTab(group.id)}
@@ -2040,157 +2058,215 @@ return (
                     >
                       {group.label}
                     </button>
-                  ))}
-                </div>
+                  ))} */}
+                    {/* Fit Group Tabs - only show product key feature */}
 
-                {/* Size Chart View */}
-                <p className="text-sm sm:text-base md:text-base lg:text-base font-futura-pt-light">
-                  <strong>{fitGroups.find(g => g.id === activeSizeTab)?.title}</strong> - Discover your perfect fit. Refer to the measurement chart curated for our signature silhouettes. If you are in-between sizes, we recommend choosing the larger size for a more relaxed drape.
-                </p>
+                    {fitGroups
+                      .filter(group => group.id === product.keyFeatures[0])
+                      .map((group) => (
+                        <button
+                          key={group.id}
+                          onClick={() => setActiveSizeTab(group.id)}
+                          className={`px-3 sm:px-4 md:px-5 py-2 text-xs sm:text-sm md:text-base font-light font-futura-pt-light transition-all rounded-full border ${activeSizeTab === group.id
+                            ? 'border-black bg-black text-white'
+                            : 'border-text-light/20 text-black/70 hover:border-black/40 hover:bg-black/5'
+                            }`}
+                        >
+                          {group.label}
+                        </button>
+                      ))}
 
-                <div className="overflow-x-auto -mx-4 sm:mx-0">
-                  <div className="inline-block min-w-full align-middle px-4 sm:px-0">
-                    <table className="min-w-full border border-premium-beige">
-                      <thead>
-                        <tr className="bg-premium-beige/60 text-black text-xs sm:text-sm md:text-base lg:text-base">
-                          <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">Size</th>
-                          <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
-                            Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
-                          </th>
-                          <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
-                            Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
-                          </th>
-                          <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
-                            Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-black/80">
-                        {fitGroups.find(g => g.id === activeSizeTab)?.data.map((row, idx) => (
-                          <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-premium-beige/20'}>
-                            <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light">
-                              {row.size}
-                            </td>
-                            <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
-                              {convertRange(row.bust, 'inches', sizeGuideUnit)}
-                            </td>
-                            <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
-                              {convertRange(row.waist, 'inches', sizeGuideUnit)}
-                            </td>
-                            <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
-                              {convertRange(row.hip, 'inches', sizeGuideUnit)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
                   </div>
-                </div>
-                <p className="text-xs sm:text-sm md:text-base lg:text-base text-text-medium font-futura-pt-light">
-                  Need assistance? Our client care team is happy to guide you to your ideal size.
-                </p>
-              </>
-            ) : (
-              <>
-                {/* Find Your Size View */}
-                <div className="space-y-4 sm:space-y-6">
+
+                  {/* Size Chart View */}
                   <p className="text-sm sm:text-base md:text-base lg:text-base font-futura-pt-light">
-                    Enter your measurements below to find your perfect size. We'll recommend the best size based on your bust, waist, and hip measurements.
+                    <strong>{fitGroups.find(g => g.id === product.keyFeatures[0])?.title}</strong> - Discover your perfect fit. Refer to the measurement chart curated for our signature silhouettes. If you are in-between sizes, we recommend choosing the larger size for a more relaxed drape.
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                    <div>
-                      <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
-                        Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
-                      </label>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        value={userMeasurements.bust}
-                        onChange={(e) => handleMeasurementChange('bust', e.target.value)}
-                        placeholder="0.0"
-                        className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
-                      />
+                  {/* <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <div className="inline-block min-w-full align-middle px-4 sm:px-0">
+                      <table className="min-w-full border border-premium-beige">
+                        <thead>
+                          <tr className="bg-premium-beige/60 text-black text-xs sm:text-sm md:text-base lg:text-base">
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">Size</th>
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
+                              Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                            </th>
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
+                              Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                            </th>
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
+                              Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="text-black/80">
+                          {fitGroups.find(g => g.id === activeSizeTab)?.data.map((row, idx) => (
+                            <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-premium-beige/20'}>
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light">
+                                {row.size}
+                              </td>
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
+                                {convertRange(row.bust, 'inches', sizeGuideUnit)}
+                              </td>
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
+                                {convertRange(row.waist, 'inches', sizeGuideUnit)}
+                              </td>
+                              <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
+                                {convertRange(row.hip, 'inches', sizeGuideUnit)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-
-                    <div>
-                      <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
-                        Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
-                      </label>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        value={userMeasurements.waist}
-                        onChange={(e) => handleMeasurementChange('waist', e.target.value)}
-                        placeholder="0.0"
-                        className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
-                        Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
-                      </label>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        value={userMeasurements.hip}
-                        onChange={(e) => handleMeasurementChange('hip', e.target.value)}
-                        placeholder="0.0"
-                        className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
-                      />
+                  </div> */}
+                  <div className="overflow-x-auto -mx-4 sm:mx-0">
+                    <div className="inline-block min-w-full align-middle px-4 sm:px-0">
+                      <table className="min-w-full border border-premium-beige">
+                        <thead>
+                          <tr className="bg-premium-beige/60 text-black text-xs sm:text-sm md:text-base lg:text-base">
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">Size</th>
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
+                              Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                            </th>
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
+                              Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                            </th>
+                            <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
+                              Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="text-black/80">
+                          {fitGroups
+                            .filter(g => g.id === product.keyFeatures[0])
+                            .flatMap(g => g.data)
+                            .map((row, idx) => (
+                              <tr key={row.size} className={idx % 2 === 0 ? 'bg-white' : 'bg-premium-beige/20'}>
+                                <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-light font-futura-pt-light">
+                                  {row.size}
+                                </td>
+                                <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
+                                  {convertRange(row.bust, 'inches', sizeGuideUnit)}
+                                </td>
+                                <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
+                                  {convertRange(row.waist, 'inches', sizeGuideUnit)}
+                                </td>
+                                <td className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base lg:text-base font-futura-pt-light">
+                                  {convertRange(row.hip, 'inches', sizeGuideUnit)}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-
-                  {/* Recommended Size Display */}
-                  {recommendedSize && (
-                    <div className="bg-premium-beige/40 border-2 border-black p-4 sm:p-6 text-center">
-                      <p className="text-sm sm:text-base md:text-base lg:text-lg text-text-medium mb-2 font-light font-futura-pt-light">
-                        Recommended Size
-                      </p>
-                      <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black mb-4 font-futura-pt-light">
-                        {recommendedSize}
-                      </p>
-                      <p className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light">
-                        We recommend this size for you
-                      </p>
-                    </div>
-                  )}
-
-                  {!recommendedSize && userMeasurements.bust && userMeasurements.waist && userMeasurements.hip && (
-                    <div className="bg-premium-beige/20 border border-text-light/20 p-4 text-center">
-                      <p className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light">
-                        Calculating your recommended size...
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="bg-premium-beige/20 p-3 sm:p-4 rounded-sm">
-                    <p className="text-xs sm:text-sm md:text-base lg:text-base text-text-medium font-light leading-relaxed font-futura-pt-light">
-                      <strong className="font-light font-futura-pt-light">How to measure:</strong> Use a soft measuring tape. For bust, measure around the fullest part. For waist, measure around the narrowest part. For hip, measure around the fullest part of your hips.
+                  <p className="text-xs sm:text-sm md:text-base lg:text-base text-text-medium font-futura-pt-light">
+                    Need assistance? Our client care team is happy to guide you to your ideal size.
+                  </p>
+                </>
+              ) : (
+                <>
+                  {/* Find Your Size View */}
+                  <div className="space-y-4 sm:space-y-6">
+                    <p className="text-sm sm:text-base md:text-base lg:text-base font-futura-pt-light">
+                      Enter your measurements below to find your perfect size. We'll recommend the best size based on your bust, waist, and hip measurements.
                     </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                      <div>
+                        <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
+                          Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                        </label>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={userMeasurements.bust}
+                          onChange={(e) => handleMeasurementChange('bust', e.target.value)}
+                          placeholder="0.0"
+                          className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
+                          Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                        </label>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={userMeasurements.waist}
+                          onChange={(e) => handleMeasurementChange('waist', e.target.value)}
+                          placeholder="0.0"
+                          className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
+                          Hip ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                        </label>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={userMeasurements.hip}
+                          onChange={(e) => handleMeasurementChange('hip', e.target.value)}
+                          placeholder="0.0"
+                          className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-2.5 sm:py-3 md:py-4 lg:py-4 text-sm sm:text-base md:text-base lg:text-lg bg-white border border-text-light/20 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-black placeholder:text-text-light/50 font-futura-pt-light"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Recommended Size Display */}
+                    {recommendedSize && (
+                      <div className="bg-premium-beige/40 border-2 border-black p-4 sm:p-6 text-center">
+                        <p className="text-sm sm:text-base md:text-base lg:text-lg text-text-medium mb-2 font-light font-futura-pt-light">
+                          Recommended Size
+                        </p>
+                        <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black mb-4 font-futura-pt-light">
+                          {recommendedSize}
+                        </p>
+                        <p className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light">
+                          We recommend this size for you
+                        </p>
+                      </div>
+                    )}
+
+                    {!recommendedSize && userMeasurements.bust && userMeasurements.waist && userMeasurements.hip && (
+                      <div className="bg-premium-beige/20 border border-text-light/20 p-4 text-center">
+                        <p className="text-sm sm:text-base md:text-base lg:text-base text-text-medium font-light font-futura-pt-light">
+                          Calculating your recommended size...
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="bg-premium-beige/20 p-3 sm:p-4 rounded-sm">
+                      <p className="text-xs sm:text-sm md:text-base lg:text-base text-text-medium font-light leading-relaxed font-futura-pt-light">
+                        <strong className="font-light font-futura-pt-light">How to measure:</strong> Use a soft measuring tape. For bust, measure around the fullest part. For waist, measure around the narrowest part. For hip, measure around the fullest part of your hips.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
 
-    <SlidePanel
-      open={openSlider}
-      onClose={() => setOpenSlider(false)}
-      sectionName={activeSection ? activeSection.replace(/([A-Z])/g, ' $1') : ""}
-      sectionContent={activeSection ? sections[activeSection] : null}
-      keyFeatures = {product?.keyFeatures}
-      selectedColor={selectedColor}
-      productCode={product.productId}
-    />
+      <SlidePanel
+        open={openSlider}
+        onClose={() => setOpenSlider(false)}
+        sectionName={activeSection ? activeSection.replace(/([A-Z])/g, ' $1') : ""}
+        sectionContent={activeSection ? sections[activeSection] : null}
+        keyFeatures={product?.keyFeatures}
+        selectedColor={selectedColor}
+        productCode={product.productId}
+      />
 
 
-  </div>
-);
+    </div>
+  );
 };
 
 export default ProductDetailPage;

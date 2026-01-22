@@ -29,7 +29,7 @@ import { LocalStorageKeys } from "../../../constants/localStorageKeys";
  *   availableSizes: string[]
  * }
  */
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product ,filter}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const savedCountry = localStorage.getItem('selectedCountry');
@@ -43,7 +43,28 @@ const ProductCard = ({ product }) => {
   const cardRef = useRef(null);
   const autoCarouselRef = useRef(null);
   const touchTimeoutRef = useRef(null);
+  const IMAGES_PER_COLOR = 4;
+const [selectedColor, setSelectedColor] = useState(
+  filter?.colors?.[0] || product.availableColors?.[0]
+);
+const colorIndex = useMemo(() => {
+  if (!selectedColor || !product.availableColors) return 0;
 
+  const index = product.availableColors.findIndex(
+    c => c.toLowerCase() === selectedColor.toLowerCase()
+  );
+
+  return index >= 0 ? index : 0;
+}, [selectedColor, product.availableColors]);
+
+const selectedImages = useMemo(() => {
+  if (!product.images?.length) return [];
+
+  const start = colorIndex * IMAGES_PER_COLOR;
+  const end = start + IMAGES_PER_COLOR;
+
+  return product.images.slice(start, end);
+}, [colorIndex, product.images]);
 
   // Safe data extraction with null checks
   const productId = product?.id || '';
@@ -114,6 +135,14 @@ const ProductCard = ({ product }) => {
     return `${symbol} ${formattedNumber}`;
   };
 
+// useEffect(() => {
+//   if (filter.colors.length > 0) {
+//     setSelectedColor(filter.availableColors[0]);
+//   }
+// }, [filter.availableColors]);
+// useEffect(() => {
+//   setCurrentImageIndex(0);
+// }, [selectedColor]);
 
   const handleCardClick = () => {
     if (productId) {
@@ -126,7 +155,9 @@ const ProductCard = ({ product }) => {
       } catch (err) {
         console.error("Error saving recent visited products:", err);
       }
-      navigate(`/productDetail/${productId}`);
+      navigate(`/productDetail/${productId}`, {
+    state: { filterColour: filter?.colors?.[0] },
+  });
     }
   };
 
@@ -383,7 +414,7 @@ const ProductCard = ({ product }) => {
       >
         {/* Carousel Images with Zoom Effect */}
         <div className="relative w-full h-full overflow-hidden">
-          {productImages.map((img, index) => (
+          {selectedImages.map((img, index) => (
             <img
               key={index}
               src={img}

@@ -13,6 +13,9 @@ export const countryOptions = [
   { code: "LB", label: "Lebanon" },
   { code: "EG", label: "Egypt" },
   { code: "IQ", label: "Iraq" },
+  { code: "RU", label: "Russia" },
+  { code: "GB", label: "United Kingdom (UK)" },
+  { code: "US", label: "United States (USA)" },
 ];
 
 // CountrySelector Component

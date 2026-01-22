@@ -444,19 +444,22 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
     }
     const currencyCode = String(currency || "INR").toUpperCase();
     const currencySymbols = {
-      INR: "₹",
-      USD: "$",
-      AED: "AED",
-      SAR: "SAR",
-      QAR: "QAR",
-      KWD: "KWD",
-      OMR: "OMR",
-      BHD: "BHD",
-      JOD: "JOD",
-      LBP: "LBP",
-      EGP: "EGP",
-      IQD: "IQD",
-    };
+  INR: "₹",
+  USD: "$",
+  AED: "AED",
+  SAR: "SAR",
+  QAR: "QAR",
+  KWD: "KWD",
+  OMR: "OMR",
+  BHD: "BHD",
+  JOD: "JOD",
+  LBP: "LBP",
+  EGP: "EGP",
+  IQD: "IQD",
+  RUB: "₽",
+  GBP: "£",
+};
+
     const symbol = currencySymbols[currencyCode] || currencyCode;
     const formattedNumber = numericAmount.toLocaleString("en-IN", {
       minimumFractionDigits: 0,

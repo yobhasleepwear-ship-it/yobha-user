@@ -28,8 +28,11 @@ const formatPrice = (price, currency) => {
     'JOD': 'JOD',
     'LBP': 'LBP',
     'EGP': 'EGP',
-    'IQD': 'IQD'
+    'IQD': 'IQD',
+    'GBP': '£',
+    'RUB': '₽'
   };
+
 
   const symbol = currencySymbols[currencyCode] || currencyCode;
 
@@ -221,38 +224,38 @@ const CartPage = () => {
   };
 
   const getCurrency = () => {
-  const selectedCartItems = getSelectedCartItems();
+    const selectedCartItems = getSelectedCartItems();
 
-  // Default currency if no items selected
-  if (!selectedCartItems || selectedCartItems.length === 0) return 'INR';
+    // Default currency if no items selected
+    if (!selectedCartItems || selectedCartItems.length === 0) return 'INR';
 
-  // Mapping of country code to currency code
-  const countryCurrencyMap = [
-    { code: "IN", currency: "INR" },
-    { code: "AE", currency: "AED" },
-    { code: "SA", currency: "SAR" },
-    { code: "QA", currency: "QAR" },
-    { code: "KW", currency: "KWD" },
-    { code: "OM", currency: "OMR" },
-    { code: "BH", currency: "BHD" },
-    { code: "JO", currency: "JOD" },
-    { code: "LB", currency: "LBP" },
-    { code: "EG", currency: "EGP" },
-    { code: "IQ", currency: "IQD" },
-    { code: "US", currency: "USD" },
-    { code: "UK", currency: "GBP" },
-    { code: "CA", currency: "CAD" },
-    { code: "AU", currency: "AUD" }
-  ];
+    // Mapping of country code to currency code
+    const countryCurrencyMap = [
+      { code: "IN", currency: "INR" },
+      { code: "AE", currency: "AED" },
+      { code: "SA", currency: "SAR" },
+      { code: "QA", currency: "QAR" },
+      { code: "KW", currency: "KWD" },
+      { code: "OM", currency: "OMR" },
+      { code: "BH", currency: "BHD" },
+      { code: "JO", currency: "JOD" },
+      { code: "LB", currency: "LBP" },
+      { code: "EG", currency: "EGP" },
+      { code: "IQ", currency: "IQD" },
+      { code: "US", currency: "USD" },
+      { code: "UK", currency: "GBP" },
+      { code: "CA", currency: "CAD" },
+      { code: "AU", currency: "AUD" }
+    ];
 
-  const countryCode = selectedCartItems[0]?.country;
+    const countryCode = selectedCartItems[0]?.country;
 
-  // Find matching currency for the country
-  const matched = countryCurrencyMap.find(item => item.code === countryCode);
+    // Find matching currency for the country
+    const matched = countryCurrencyMap.find(item => item.code === countryCode);
 
-  // Return matched currency, or default to INR
-  return matched ? matched.currency : 'INR';
-};
+    // Return matched currency, or default to INR
+    return matched ? matched.currency : 'INR';
+  };
 
 
 
@@ -367,7 +370,7 @@ const CartPage = () => {
                         className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0 bg-premium-beige overflow-hidden rounded cursor-pointer"
                         onClick={() => navigate(`/productDetail/${product.id}`)}
                       >
-                        <img
+                        {/* <img
                           src={
                             (product.images && Array.isArray(product.images) && product.images.length > 0)
                               ? (product.images[0]?.thumbnailUrl || product.images[0]?.url || product.images[0] || product.thumbnailUrl || product.image || '')
@@ -376,7 +379,25 @@ const CartPage = () => {
                           alt={product.name || 'Product'}
                           className="w-full h-full object-cover"
                           onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'}
+                        /> */}
+                        <img
+                          src={
+                            (() => {
+                              if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                                const colors = product.availableColors || [];
+                                const colorIndex = colors.indexOf(item.color); // index of the item's color
+                                const imagesPerColor = 4; // number of images per color
+                                const startIndex = colorIndex >= 0 ? colorIndex * imagesPerColor : 0;
+                                const imgObj = product.images[startIndex]; // pick first image of that color
+                                return imgObj?.thumbnailUrl || imgObj?.url || imgObj || product.thumbnailUrl || product.image || '';
+                              }
+                              return product.thumbnailUrl || product.image || '';
+                            })()
+                          }
+                          alt={product.name || 'Product'}
+                          className="w-full h-full object-cover"
                         />
+
                       </div>
 
                       {/* Product Details - Myntra style horizontal layout */}

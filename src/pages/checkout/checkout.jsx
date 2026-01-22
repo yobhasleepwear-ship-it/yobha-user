@@ -1468,7 +1468,19 @@ const CheckoutPage = () => {
 
                   return (
                     <div key={`${item.id}_${item.size || "nosize"}`} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
-                      <img src={imageSrc} alt={product.name} className="w-16 h-16 object-cover rounded" />
+                      <img  src={
+                            (() => {
+                              if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                                const colors = product.availableColors || [];
+                                const colorIndex = colors.indexOf(item.color); // index of the item's color
+                                const imagesPerColor = 4; // number of images per color
+                                const startIndex = colorIndex >= 0 ? colorIndex * imagesPerColor : 0;
+                                const imgObj = product.images[startIndex]; // pick first image of that color
+                                return imgObj?.thumbnailUrl || imgObj?.url || imgObj || product.thumbnailUrl || product.image || '';
+                              }
+                              return product.thumbnailUrl || product.image || '';
+                            })()
+                          } alt={product.name} className="w-16 h-16 object-cover rounded" />
                       <div className="flex-1 min-w-0 space-y-1">
                         <p className="text-sm md:text-base font-light text-black truncate font-futura-pt-book">{product.name}</p>
                         {item.size && (

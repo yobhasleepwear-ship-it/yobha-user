@@ -24,7 +24,11 @@ export const countryOptions = [
   { code: "LB", label: "Lebanon", currency: "LBP" },
   { code: "EG", label: "Egypt", currency: "EGP" },
   { code: "IQ", label: "Iraq", currency: "IQD" },
+  { code: "RU", label: "Russia", currency: "RUB" },
+  { code: "GB", label: "United Kingdom (UK)", currency: "GBP" },
+  { code: "US", label: "United States (USA)", currency: "USD" },
 ];
+
 const getCountryByCurrency = (currency) => {
   return countryOptions.find(
     (country) => country.currency.toUpperCase() === currency.toUpperCase()

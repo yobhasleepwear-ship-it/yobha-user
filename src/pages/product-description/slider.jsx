@@ -20,7 +20,7 @@ function DescriptionUI({
                 {/* Key Features (from index 1 onward) */}
                 {Array.isArray(keyFeatures) &&
                     keyFeatures.length > 1 &&
-                    keyFeatures.slice(1).map((feature, index) => (
+                    keyFeatures.slice(2).map((feature, index) => (
                         <p
                             key={index}
                             className="text-xs text-black font-light leading-relaxed font-futura-pt-light"

@@ -1,5 +1,5 @@
 import React from "react";
-
+import logo from "../../assets/yobhaLogo.png";
 const About = () => {
   return (
     <div className="min-h-screen bg-white font-futura-pt-light">
@@ -47,7 +47,9 @@ const About = () => {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4 border-2 border-luxury-gold rounded-full flex items-center justify-center">
-                    <span className="text-3xl font-bold text-luxury-gold">Y</span>
+                    <span className="text-3xl font-bold text-luxury-gold">
+                      <img src={logo} alt="YOBHA Logo" className="w-16 h-16 object-contain" />
+                    </span>
                   </div>
                   <p className="text-black text-sm font-light font-futura-pt-light">
                     Luxury Redefined
