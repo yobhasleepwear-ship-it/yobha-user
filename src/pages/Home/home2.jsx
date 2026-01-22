@@ -145,9 +145,9 @@ const HomePage2 = () => {
 
   const genderCategories = [
     { id: "Women", title: "Women", image: WOMEN_IMAGE },
-    { id: "men", title: "Men", image: MEN_IMAGE },
-    { id: "kids", title: "Kids", image: KID_IMAGE },
-    { id: "pets", title: "Pets", image: PET_IMAGE },
+    { id: "Men", title: "Men", image: MEN_IMAGE },
+    { id: "Kids", title: "Kids", image: KID_IMAGE },
+    { id: "Pets", title: "Pets", image: PET_IMAGE },
     // { id: "couple", title: "Couple", image: COUPLE_IMAGE },
     // { id: "family", title: "Family", image: FAMILY_IMAGE },
     // { id: "accessories", title: "Accessories", image: SCRUNCHIES },
