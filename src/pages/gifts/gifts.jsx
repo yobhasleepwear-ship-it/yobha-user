@@ -149,6 +149,11 @@ const Gifts = () => {
   const searchParams = new URLSearchParams(location.search);
   const categoryParam = searchParams.get('category');
   
+  // Get selected country from localStorage
+  const savedCountry = localStorage.getItem('selectedCountry');
+  const parsedCountry = savedCountry ? JSON.parse(savedCountry) : null;
+  const selectedCountry = parsedCountry?.code || "IN";
+  
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -516,16 +521,14 @@ const Gifts = () => {
         const payload = {
           q: '',
           category: categorySegment,
-          subCategory: filters.segment || undefined,
-          minPrice: filters.minPrice || undefined,
-          maxPrice: filters.maxPrice || undefined,
-          pageNumber: null,
+          subCategory: filters.segment || "",
+          pageNumber: 1,
           pageSize: 100,
-          sort: filters.sortBy || undefined,
-          country: null,
-          colors: filters.colors.length > 0 ? filters.colors : undefined,
-          sizes: filters.sizes.length > 0 ? filters.sizes : undefined,
-          fabric: filters.fabric.length > 0 ? filters.fabric : undefined,
+          sort: filters.sortBy || "latest",
+          country: selectedCountry,
+          colors: filters.colors || [],
+          sizes: filters.sizes || [],
+          fabric: filters.fabric || [],
         };
 
         // Remove undefined values
