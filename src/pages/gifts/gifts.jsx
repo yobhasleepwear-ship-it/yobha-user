@@ -487,7 +487,7 @@ const Gifts = () => {
     const fabricStr = JSON.stringify([...filters.fabric].sort());
     
     // Create a key to compare if anything actually changed
-    const currentFilterKey = `${categorySegment}-${filters.minPrice}-${filters.maxPrice}-${filters.sortBy}-${colorsStr}-${sizesStr}-${fabricStr}`;
+    const currentFilterKey = `${categorySegment}-${filters.segment}-${filters.minPrice}-${filters.maxPrice}-${filters.sortBy}-${colorsStr}-${sizesStr}-${fabricStr}`;
     const prevFilterKey = prevFiltersRef.current.key;
     
     // Only fetch if filters actually changed
@@ -516,6 +516,7 @@ const Gifts = () => {
         const payload = {
           q: '',
           category: categorySegment,
+          subCategory: filters.segment || undefined,
           minPrice: filters.minPrice || undefined,
           maxPrice: filters.maxPrice || undefined,
           pageNumber: null,
@@ -550,6 +551,7 @@ const Gifts = () => {
     fetchProducts();
   }, [
     categorySegment, 
+    filters.segment,
     filters.minPrice, 
     filters.maxPrice, 
     filters.sortBy, 
@@ -1067,7 +1069,7 @@ const Gifts = () => {
       </FilterAccordion>
 
       {/* Gender & Type */}
-      <FilterAccordion
+      {/* <FilterAccordion
         title="Categories"
         isOpen={openAccordion === "gender"}
         onToggle={toggleGender}
@@ -1094,7 +1096,7 @@ const Gifts = () => {
             </label>
           ))}
         </div>
-      </FilterAccordion>
+      </FilterAccordion> */}
 
       {/* Accessories Filter */}
       <FilterAccordion
