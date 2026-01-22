@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/yobhaLogo.png";
+import logo from "../../assets/yobhaLogo1.png";
 const About = () => {
   return (
     <div className="min-h-screen bg-white font-futura-pt-light">
