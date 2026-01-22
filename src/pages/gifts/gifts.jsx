@@ -27,6 +27,8 @@ import socks from "../../assets/SOCKS.jpg";
 import towel from "../../assets/towel.jpg";
 import herVideo from "../../assets/her.MP4";
 import himVideo from "../../assets/him.MP4";
+import kidPic from "../../assets/giftForKid.png";
+import petPic from "../../assets/giftForPet.png";
 
 /**
  * Helper function for debouncing
@@ -994,6 +996,9 @@ const Gifts = () => {
     const mediaMap = {
       'Gift_For_Her': { type: 'video', src: herVideo },
       'Gift_For_Him': { type: 'video', src: himVideo },
+      'Gift_For_Kids': { type: 'image', src: kidPic },
+      'Gift_For_Pets': { type: 'image', src: petPic },
+      
     };
     return mediaMap[categoryParam] || { type: 'image', src: getBannerImage() };
   };
