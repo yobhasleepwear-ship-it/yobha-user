@@ -7,9 +7,7 @@ const LanguageSwitcher = () => {
   const containerRef = useRef(null);
 
   const languages = [
-    { code: "en", label: t("navbar.languageSwitcher.english.en") },
-    { code: "hi", label: t("navbar.languageSwitcher.hindi.en") },
-    { code: "ar", label: t("navbar.languageSwitcher.arabic.en") }
+    { code: "en", label: t("navbar.languageSwitcher.english.en") }
   ];
 
   useEffect(() => {
@@ -36,13 +34,13 @@ const LanguageSwitcher = () => {
   return (
     <div ref={containerRef} className="relative inline-block text-left w-full font-futura-pt-book">
       <button
-        onClick={() => setOpen(!open)}
+        disabled
         type="button"
-        className="inline-flex w-full items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-sm md:text-base font-light text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400 hover:bg-white font-futura-pt-book"
+        className="inline-flex w-full items-center justify-between gap-3 border border-gray-200 bg-white/90 px-5 py-3 text-sm md:text-base font-light text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400 cursor-not-allowed opacity-75 font-futura-pt-book"
       >
         <span className="flex-1 truncate text-left font-light font-futura-pt-book">{currentLabel}</span>
         <svg
-          className={`h-4 w-4 transform transition-transform duration-200 ${open ? "rotate-180" : "rotate-0"}`}
+          className="h-4 w-4 transform transition-transform duration-200 rotate-0"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -52,25 +50,6 @@ const LanguageSwitcher = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-
-      {open && (
-        <div className="absolute left-0 mt-2 w-full sm:w-36 border border-gray-200 bg-white shadow-xl z-50 font-futura-pt-book">
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              type="button"
-              onClick={() => handleLanguageChange(lang.code)}
-              className={`block w-full text-left px-5 py-3 text-sm md:text-base transition-colors duration-200 font-light font-futura-pt-book ${
-                i18n.language === lang.code
-                  ? "bg-premium-cream/60 text-black"
-                  : "text-black hover:bg-premium-cream/40"
-              }`}
-            >
-              {lang.label}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
