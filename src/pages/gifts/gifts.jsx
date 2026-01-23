@@ -13,7 +13,7 @@ import { LocalStorageKeys } from "../../constants/localStorageKeys";
 // Import dummy images from assets
 import heroImage from "../../assets/heroImage.jpg";
 import coupleHero from "../../assets/couple-hero1.jpg";
-import familyHero from "../../assets/family.jpg";
+import familyHero from "../../assets/family.jpeg";
 import kidsHero from "../../assets/kids-hero.png";
 import petHero from "../../assets/pet-hero.png";
 import womenImage from "../../assets/Women.png";
@@ -1544,14 +1544,14 @@ const Gifts = () => {
             <p className="text-sm md:text-base text-gray-600 font-light mb-8 font-futura-pt-light">
               Stay tuned for our exclusive new arrivals. We're carefully curating the perfect selection for you.
             </p>
-            {hasActiveFilters && (
+            {/* {hasActiveFilters && (
               <button
                 onClick={clearAllFilters}
                 className="bg-black text-white px-8 py-2.5 font-light hover:bg-text-dark transition-all duration-300 text-sm font-futura-pt-light uppercase tracking-wide"
               >
                 Clear All Filters
               </button>
-            )}
+            )} */}
           </div>
         </div>
       )}
