@@ -13,7 +13,7 @@ import { LocalStorageKeys } from "../../constants/localStorageKeys";
 // Import dummy images from assets
 import heroImage from "../../assets/heroImage.jpg";
 import coupleHero from "../../assets/couple-hero1.jpg";
-import familyHero from "../../assets/family-hero.jpg";
+import familyHero from "../../assets/family.jpg";
 import kidsHero from "../../assets/kids-hero.png";
 import petHero from "../../assets/pet-hero.png";
 import womenImage from "../../assets/Women.png";
@@ -998,7 +998,7 @@ const Gifts = () => {
       'Gift_For_Him': { type: 'video', src: himVideo },
       'Gift_For_Kids': { type: 'image', src: kidPic },
       'Gift_For_Pets': { type: 'image', src: petPic },
-      
+      'Gift_For_Family': { type: 'image', src: familyHero },
     };
     return mediaMap[categoryParam] || { type: 'image', src: getBannerImage() };
   };
