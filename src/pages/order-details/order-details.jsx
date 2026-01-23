@@ -5,8 +5,9 @@ import {
   Clock, MapPin, Phone, Mail, Gift, RotateCcw, X,
   Ban
 } from "lucide-react";
-import { getOrderDetails } from "../../service/order";
+import { getOrderDetails, cancelOrder } from "../../service/order";
 import { createReturn } from "../../service/returns";
+import { getPaymentStatusUpdated } from "../../service/buyback";
 import { message } from "../../comman/toster-message/ToastContainer";
 import ImageUploader from "../../comman/Image-Uploader/ImageUploader";
 import { TrackOrder } from "../../service/delivery";
@@ -71,6 +72,7 @@ const formatOrderDetailData = (orderData) => {
     trackingNumber: data?.trackingNumber || null,
     estimatedDelivery: data?.estimatedDelivery || null,
     deliveredAt: data?.deliveredAt || null,
+    deliveryDetails: data?.deliveryDetails || null,
   };
 };
 
@@ -309,6 +311,10 @@ const OrderDetailPage = () => {
   const [isSubmittingReturn, setIsSubmittingReturn] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
   const [trackingData, setTrackingData] = useState(null);
+  
+  // Cancel Order State
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [isCancelingOrder, setIsCancelingOrder] = useState(false);
   // Fetch order details
   useEffect(() => {
     const fetchOrderDetail = async () => {
@@ -377,6 +383,37 @@ const OrderDetailPage = () => {
       setIsTrackingOpen(true);
     } catch (error) {
       console.error("Tracking failed", error);
+    }
+  };
+
+  // Handle cancel order submission
+  const handleCancelOrder = async () => {
+    setIsCancelingOrder(true);
+    try {
+      const payload = {
+        "id": order.id || order.orderNo,
+        "type": "Order",
+        "orderStatus": "Cancelled",
+        "paymentStatus": ""
+      };
+
+      console.log('Cancel Order Payload:', payload);
+      
+      const response = await getPaymentStatusUpdated(payload);
+      
+      if (response) {
+        message.success("Order cancelled successfully");
+        setShowCancelModal(false);
+        // Refresh the order details
+        setTimeout(() => {
+          navigate("/orders");
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Cancel order error:", error);
+      message.error(error.response?.data?.message || "Failed to cancel order. Please try again.");
+    } finally {
+      setIsCancelingOrder(false);
     }
   };
 
@@ -859,6 +896,23 @@ const OrderDetailPage = () => {
                     ) : null;
                   })()}
 
+                  {/* Cancel Order Button - Show for pending, confirmed, processing orders without AWB (before shipment) */}
+                  {(() => {
+                    const status = (order.status || order.paymentStatus || '').toLowerCase();
+                    const canCancel = ['pending', 'confirmed', 'processing'].includes(status);
+                    const hasNoAWB = !order?.deliveryDetails?.awb; // Only show if AWB is empty, null, or undefined
+                    
+                    return canCancel && hasNoAWB ? (
+                      <button
+                        onClick={() => setShowCancelModal(true)}
+                        className="w-full border border-gray-300 text-black py-3 font-light hover:border-red-500 hover:text-red-600 hover:bg-red-50 transition-colors text-xs sm:text-sm font-futura-pt-light flex items-center justify-center gap-2"
+                      >
+                        <X size={16} strokeWidth={1.5} />
+                        Cancel Order
+                      </button>
+                    ) : null;
+                  })()}
+
                   {order.status?.toLowerCase() === 'delivered' && !isGiftCard && (
                     <button
                       onClick={() => {
@@ -1063,6 +1117,79 @@ const OrderDetailPage = () => {
           </div>
         </div>
       )}
+      
+      {/* Cancel Order Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white w-full max-w-md rounded-lg shadow-lg">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-lg font-medium text-black font-futura-pt-book">
+                Cancel Order
+              </h2>
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="text-gray-500 hover:text-black transition-colors"
+                disabled={isCancelingOrder}
+              >
+                <X size={20} strokeWidth={1.5} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 py-6">
+              <p className="text-sm text-black mb-4 font-light font-futura-pt-light">
+                Are you sure you want to cancel this order? This action cannot be undone.
+              </p>
+              <div className="bg-gray-50 p-4 rounded mb-4">
+                <p className="text-xs text-gray-600 font-light font-futura-pt-light mb-2">
+                  Order ID
+                </p>
+                <p className="text-sm text-black font-light font-futura-pt-book">
+                  {order.orderNumber || order.id}
+                </p>
+              </div>
+              {order.items && order.items.length > 0 && (
+                <div className="bg-gray-50 p-4 rounded">
+                  <p className="text-xs text-gray-600 font-light font-futura-pt-light mb-2">
+                    Items to be cancelled
+                  </p>
+                  <ul className="space-y-1">
+                    {order.items.map((item, index) => (
+                      <li key={index} className="text-sm text-black font-light font-futura-pt-light">
+                        {item.productName} × {item.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-200 flex gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 border border-gray-200 text-black py-2.5 font-light hover:border-black hover:bg-gray-50 transition-colors text-xs sm:text-sm font-futura-pt-light"
+                disabled={isCancelingOrder}
+              >
+                Keep Order
+              </button>
+              <button
+                onClick={handleCancelOrder}
+                disabled={isCancelingOrder}
+                className={`flex-1 py-2.5 font-light text-xs sm:text-sm font-futura-pt-light transition-colors ${
+                  isCancelingOrder
+                    ? "border border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+                    : "border border-red-500 bg-red-500 text-white hover:bg-red-600 hover:border-red-600"
+                }`}
+              >
+                {isCancelingOrder ? "Cancelling..." : "Yes, Cancel Order"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <TrackingModal
         isOpen={isTrackingOpen}
         onClose={() => setIsTrackingOpen(false)}
