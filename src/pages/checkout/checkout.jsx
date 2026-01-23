@@ -123,7 +123,6 @@ const CheckoutPage = () => {
       }
     } catch (err) {
       console.log("Failed to fetch coupons:", err);
-      message.error("Failed to load available coupons");
     } finally {
       setIsLoadingCoupons(false);
     }
@@ -724,7 +723,7 @@ const CheckoutPage = () => {
     setSelectedCoupon({});
     message.info("Coupon removed");
   }
-
+  
   const calculateCouponDiscount = (coupon) => {
     if (!coupon) return 0;
 
