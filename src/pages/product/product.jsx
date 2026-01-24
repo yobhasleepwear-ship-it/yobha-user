@@ -610,12 +610,18 @@ const ProductsPage = () => {
                   <input
                     type="checkbox"
                     checked={filters.colors.includes(color)}
-                    onChange={() => toggleColor(color)}
+                    onChange={() =>
+                      setFilters({
+                        ...filters,
+                        colors: filters.colors.includes(color) ? [] : [color],
+                      })
+                    }
                     className="w-4 h-4 border border-text-light text-black focus:ring-1 focus:ring-black cursor-pointer"
                   />
+
                   <div className="ml-3 flex items-center gap-3 flex-1">
                     <div
-                     
+
                       style={{ backgroundColor: displayHex }}
                       title={color}
                     />

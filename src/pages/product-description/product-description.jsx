@@ -367,7 +367,7 @@ const ProductDetailPage = () => {
     // fabric: product?.fabricType,
     careInstructions: product?.careInstructions,
     deliveryAndReturn: "We offer shipping across India and internationally. Orders within India are typically delivered within 3–7 working days from dispatch.International deliveries usually take 7–14 working days, depending on the destination and customs clearance.While most orders arrive within the estimated timeframe occasional delays may occur due to courier operations, customs processes, or unforeseen circumstances. Returns and exchanges are accepted within 7 days of delivery, provided items are unused,unwashed, and returned in their original condition with all tags intact.Customized or personalized items are not eligible for return or exchange.Once a returned item is received and approved after quality inspection, refunds(if applicable) will be processed to the original mode of payment within 5–7 working days.",
-    giftPackaging: "The item will be delivered in a signature YOBHA box , ideal for gifting ",
+    giftPackaging: "The item will be delivered in a signature YOBHA box,ideal for gifting.",
   };
 
   // Check if product subCategory is personalization
@@ -2128,8 +2128,9 @@ const ProductDetailPage = () => {
                           <tr className="bg-premium-beige/60 text-black text-xs sm:text-sm md:text-base lg:text-base">
                             <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">Size</th>
                             <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
-                              Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                              {product.keyFeatures[0] === 'fitGroupC' ? 'Chest' : 'Bust'} ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                             </th>
+
                             <th className="px-3 sm:px-4 md:px-5 lg:px-6 py-2 md:py-3 text-left font-light font-futura-pt-book">
                               Waist ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                             </th>
@@ -2176,9 +2177,10 @@ const ProductDetailPage = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                       <div>
-                        <label className="block text-sm sm:text-base md:text-base lg:text-base font-light text-black font-futura-pt-light mb-2">
-                          Bust ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
+                        <label className="block text-sm ...">
+                          {product.keyFeatures[0] === 'fitGroupC' ? 'Chest' : 'Bust'} ({sizeGuideUnit === 'inches' ? 'in' : 'cm'})
                         </label>
+
                         <input
                           type="text"
                           inputMode="decimal"
