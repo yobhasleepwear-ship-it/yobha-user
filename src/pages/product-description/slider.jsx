@@ -32,61 +32,48 @@ function CareGuideModal({ open, onClose }) {
                     <p className="text-sm">YOBHA</p>
 
                     <p>
-                        YOBHA pieces are crafted with intention, using refined,
-                        plant-based and engineered fabrics designed to offer a
-                        silk-like fluidity without the use of animal-derived silk.
-                        This guide is designed to help preserve the beauty,
-                        comfort, and longevity of your garment.
+                        YOBHA pieces are crafted with intention using refined plant based and engineered fabrics designed to offer a
+silk like fluidity without the use of animal derived silk. This guide has been created to help preserve the beauty
+comfort and longevity of your garment.
                     </p>
 
                     <p>
-                        Please always refer to the specific care instructions
-                        listed on the product page, as these are tailored to the
-                        fabric and construction of each individual piece.
+                        Please always refer to the care instructions provided on the product page as these are tailored to the specific
+fabric and construction of each piece.
                     </p>
 
                     <p>HAND WASHING</p>
                     <p>
-                        Our fabrics benefit from gentle handling and thoughtful
-                        care. Where possible, spot clean and allow garments to
-                        rest between wears. When washing is required, hand wash
-                        in cool water using a specialist mild detergent. Do not
-                        soak. Rinse gently and avoid wringing to maintain the
-                        fabric’s structure and drape.
+                        Our fabrics benefit from gentle handling and thoughtful care. Where possible spot clean and allow garments
+to rest between wears. When washing is required hand wash in cool water using a specialist mild detergent.
+Do not soak. Rinse gently and avoid wringing to maintain the fabric’s structure and drape.
                     </p>
 
                     <p>AIR DRYING & IRONING</p>
                     <p>
-                        Air dry naturally and never tumble dry. Dry flat or hang
-                        with care, away from direct heat or sunlight. Iron or
-                        steam on the lowest heat setting to restore a smooth
-                        finish and subtle sheen. For best results, iron on the
-                        reverse side or use a cotton cloth as a barrier.
+                        Dry flat or hang with care away from direct heat or sunlight. Iron or steam on the lowest heat setting to restore
+a smooth finish and subtle sheen. For best results iron on the reverse side or place a cotton cloth between the
+iron and the fabric.
                     </p>
 
                     <p>DELICATE & KNIT FABRICS</p>
                     <p>
-                        Store delicate and knit pieces folded and laid flat to
-                        preserve their shape. Avoid excessive friction. If
-                        pilling occurs, refresh gently using an electric fabric
-                        shaver. Do not use abrasive tools.
+                        Avoid excessive friction. If pilling occurs refresh gently using an electric fabric shaver. Do not use abrasive
+tools or traditional fabric combs.
                     </p>
 
                     <p>EMBELLISHED & SPECIAL PIECES</p>
                     <p>
-                        Garments featuring embroidery, embellishment, or surface
-                        detailing require professional dry cleaning only. We do
-                        not recommend ironing these pieces. If necessary, steam
-                        lightly from a distance to protect the detailing.
+                        Garments featuring embroidery embellishment velvet or surface detailing require professional dry cleaning
+only. We do not recommend ironing these pieces. If necessary steam lightly from a distance to protect the
+detailing.
                     </p>
 
                     <p>CONSIDERED CARE</p>
                     <p>
-                        Thoughtful garment care extends the life of your YOBHA
-                        pieces and supports a more mindful approach to dressing.
-                        Reduced washing, air drying, and gentle handling help
-                        preserve fabric quality while minimising environmental
-                        impact.
+                      Reduced washing air drying and gentle handling help extend the life of your garment while supporting a more
+considered approach to care. When dry cleaning is required we recommend choosing an environmentally
+responsible cleaner.
                     </p>
                 </div>
             </div>
