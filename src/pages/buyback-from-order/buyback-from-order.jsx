@@ -276,7 +276,13 @@ const BuybackFromOrder = () => {
         }
         
         setRefundPercentage(percentage);
-        setShowCompletion(true);
+        
+         if (response.data.requestType === "TradeIn") {
+            setShowCompletion(true);
+        } else {
+        
+          navigate("/buyback/all")
+        }
       }
     } catch (error) {
       console.error("Error submitting buyback request:", error);

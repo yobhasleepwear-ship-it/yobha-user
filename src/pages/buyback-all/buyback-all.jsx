@@ -71,7 +71,7 @@ const BuybackAll = () => {
 
 	const formatCurrency = (amount, currency = "INR") => {
 		if (amount === null || amount === undefined || amount === "") return "0";
-
+		console.log(currency, "currency")
 		// If backend already sends a formatted string with a symbol, just return it
 		if (typeof amount === "string" && /[^\d.,\s]/.test(amount)) {
 			return amount;
@@ -146,12 +146,13 @@ const BuybackAll = () => {
 
 					message.success("Buyback payment successful ✅");
 					const payload = {
-						"id": requests.id,
+						"id": buybackId,
 						"type": "Buyback",
 						"orderStatus": "",
 						"paymentStatus": "Paid"
 					}
 					getPaymentStatusUpdated(payload);
+					
 
 					// 👉 No API call after success (as requested)
 					// 👉 You can just update UI state here if needed
@@ -309,9 +310,9 @@ const BuybackAll = () => {
 													<button
 														type="button"
 														onClick={() => handlePayBuyback(req.id)}
-														className="font-sans cursor-pointer underline"
+														  className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 active:scale-95 transition"
 													>
-														{formatCurrency(req.amount, req.currency)}
+														{req.amount}
 													</button>
 
 												</p>

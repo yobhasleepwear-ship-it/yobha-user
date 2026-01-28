@@ -205,7 +205,7 @@ const Buyback3 = () => {
     const savedOption = localStorageService.getValue("selectedBuybackOption");
     const token = window.localStorage.getItem(LocalStorageKeys.AuthToken);
     const isAuth = Boolean(token && token !== "undefined" && token !== "null");
-    
+
     // If user is authenticated, on step 1, and has a saved option from login redirect
     if (isAuth && activeStep === 1 && location.pathname === "/buyback" && savedOption && !selectedOptionId) {
       setSelectedOptionId(savedOption);
@@ -225,21 +225,21 @@ const Buyback3 = () => {
     if (activeStep !== 3) {
       hasFetchedOrdersRef.current = false;
     }
-    
+
     // Fetch when transitioning to step 3 with findOrder method or when user logs in while on step 3
     const transitioningToStep3 = activeStep === 3 && prevStepRef.current !== 3;
     const loggedInOnStep3 = activeStep === 3 && isAuthenticated && prevAuthRef.current !== isAuthenticated;
-    const shouldFetch = (transitioningToStep3 || loggedInOnStep3) && 
-                        isAuthenticated && 
-                        orderMethod === "findOrder" && 
-                        !hasFetchedOrdersRef.current && 
-                        !isLoadingOrders;
-    
+    const shouldFetch = (transitioningToStep3 || loggedInOnStep3) &&
+      isAuthenticated &&
+      orderMethod === "findOrder" &&
+      !hasFetchedOrdersRef.current &&
+      !isLoadingOrders;
+
     if (shouldFetch) {
       hasFetchedOrdersRef.current = true;
       fetchOrders();
     }
-    
+
     prevStepRef.current = activeStep;
     prevAuthRef.current = isAuthenticated;
   }, [activeStep, isAuthenticated, isLoadingOrders, orderMethod]);
@@ -263,7 +263,7 @@ const Buyback3 = () => {
     const date = new Date(dateStr);
     const now = new Date();
     const monthsDiff = (now - date) / (1000 * 60 * 60 * 24 * 30);
-    
+
     if (monthsDiff <= 6) return "Last 6 Months";
     if (monthsDiff <= 12) return "Last 12 Months";
     if (date.getFullYear() === 2023) return "2023 Purchases";
@@ -285,14 +285,14 @@ const Buyback3 = () => {
   // Transform orders to match the expected format
   const transformedOrders = useMemo(() => {
     if (!orders || orders.length === 0) return [];
-    
+
     return orders.map((order) => {
       const items = order.items || [];
       const firstItem = items[0] || {};
-      
+
       return {
         id: order.orderNo || order.id,
-        orderNumber:order.orderNumber,
+        orderNumber: order.orderNumber,
         placedOn: order.createdAt,
         category: firstItem.category || "General",
         collection: firstItem.collection || "Standard",
@@ -348,16 +348,16 @@ const Buyback3 = () => {
 
     const purchaseDateObj = new Date(dateStr);
     const today = new Date();
-    
+
     // Set time to start of day for accurate comparison
     purchaseDateObj.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
-    
+
     // Calculate 6 months ago from today
     const sixMonthsAgo = new Date(today);
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
     sixMonthsAgo.setHours(0, 0, 0, 0);
-    
+
     // Check if purchase date is more than 6 months old (or exactly 6 months)
     // If purchase date is before or equal to sixMonthsAgo, not eligible
     if (purchaseDateObj <= sixMonthsAgo) {
@@ -365,7 +365,7 @@ const Buyback3 = () => {
       setPurchaseDateChecked(true);
       return false;
     }
-    
+
     setIsEligible(true);
     setPurchaseDateChecked(true);
     return true;
@@ -385,14 +385,14 @@ const Buyback3 = () => {
   const handleOptionSelect = (optionId) => {
     // Check if this is a new selection (option is changing)
     const isNewSelection = selectedOptionId !== optionId;
-    
+
     // Always update the option selection
     setSelectedOptionId(optionId);
-    
+
     // Check if user is authenticated
     const token = window.localStorage.getItem(LocalStorageKeys.AuthToken);
     const isAuth = Boolean(token && token !== "undefined" && token !== "null");
-    
+
     if (!isAuth) {
       // Save state for redirect after login
       localStorageService.setValue("redirectAfterLogin", location.pathname);
@@ -400,9 +400,9 @@ const Buyback3 = () => {
       // Don't navigate immediately - let the UI show the login message
       return;
     }
-    
+
     setIsAuthenticated(true);
-    
+
     // Only auto-advance if this is a new selection
     // If the option is already selected (user navigating back), preserve state
     // and let them use the Continue button instead
@@ -433,10 +433,10 @@ const Buyback3 = () => {
   const handleOrderMethodSelect = (method) => {
     // Check if this is a new selection (method is changing)
     const isNewSelection = orderMethod !== method;
-    
+
     // Always update the method selection
     setOrderMethod(method);
-    
+
     // Only auto-advance if this is a new selection
     // If the method is already selected (user navigating back), preserve state
     // and let them use the Continue button instead
@@ -534,7 +534,7 @@ const Buyback3 = () => {
 
   const handleContinue = () => {
     if (!isContinueEnabled) return;
-    
+
     setStepAnimation("slideOut");
     setTimeout(() => {
       const nextStep = activeStep + 1;
@@ -548,7 +548,7 @@ const Buyback3 = () => {
     // Allow navigation to any step that has been reached before (up to highestStep)
     // This allows users to go back and then jump forward to any previously visited step
     if (targetStep > highestStep) return;
-    
+
     // Preserve all selections when navigating - don't clear any state
     setStepAnimation("slideOut");
     setTimeout(() => {
@@ -585,7 +585,7 @@ const Buyback3 = () => {
 
   const handleConfirm = async () => {
     if (!canConfirm) return;
-    
+
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -640,13 +640,20 @@ const Buyback3 = () => {
 
       // Call API
       const response = await createBuyback(payload);
-      
+      console.log(response, "qwqw")
       if (response) {
+        console.log(response, "Buyback request created successfully");
         // Store refund percentage before showing completion
         setRefundPercentage(getConditionDetails.percentage);
         message.success("Buyback request submitted successfully!");
         setHighestStep((prev) => Math.max(prev, 5));
-        setShowCompletion(true);
+      if (response.data.requestType === "TradeIn") {
+            setShowCompletion(true);
+        } else {
+        
+          navigate("/buyback/all")
+        }
+
       }
     } catch (error) {
       console.error("Error submitting buyback request:", error);
@@ -657,7 +664,7 @@ const Buyback3 = () => {
       setIsSubmitting(false);
     }
   };
-
+  console.log("asas")
   const handleReset = () => {
     setActiveStep(1);
     setHighestStep(1);
@@ -718,8 +725,8 @@ const Buyback3 = () => {
       stepAnimation === "slideIn"
         ? "animate-slideIn"
         : stepAnimation === "slideOut"
-        ? "animate-slideOut"
-        : "animate-fadeIn";
+          ? "animate-slideOut"
+          : "animate-fadeIn";
 
     switch (activeStep) {
       case 1:
@@ -789,38 +796,34 @@ const Buyback3 = () => {
                         key={option.id}
                         type="button"
                         onClick={() => handleOptionSelect(option.id)}
-                        className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${
-                          isSelected
-                            ? "bg-black text-white"
-                            : "bg-white border-2 border-gray-300 hover:border-black text-black"
-                        }`}
+                        className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${isSelected
+                          ? "bg-black text-white"
+                          : "bg-white border-2 border-gray-300 hover:border-black text-black"
+                          }`}
                         style={{ height: '240px' }}
                       >
                         {/* Icon - Always Top, Same Size */}
-                        <div className={`mb-4 transition-colors flex-shrink-0 ${
-                          isSelected ? "text-white" : "text-black"
-                        }`}>
+                        <div className={`mb-4 transition-colors flex-shrink-0 ${isSelected ? "text-white" : "text-black"
+                          }`}>
                           <IconComponent className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
                         </div>
-                        
+
                         {/* Title - Always Below Icon, Same Size */}
                         <h3
-                          className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
-                            isSelected ? "text-white" : "text-black"
-                          }`}
+                          className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${isSelected ? "text-white" : "text-black"
+                            }`}
                         >
                           {option.title}
                         </h3>
-                        
+
                         {/* Description - Always Bottom, Same Size */}
                         <p
-                          className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
-                            isSelected ? "text-white/90" : "text-black"
-                          }`}
+                          className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${isSelected ? "text-white/90" : "text-black"
+                            }`}
                         >
                           {option.description}
                         </p>
-                        
+
                         {/* Selected Indicator - Top Right */}
                         {isSelected && (
                           <div className="absolute top-3 right-3 w-5 h-5 border-2 border-white rounded-full flex items-center justify-center bg-white/20">
@@ -831,7 +834,7 @@ const Buyback3 = () => {
                     );
                   })}
                 </div>
-                
+
                 {/* Show login message if option selected but not authenticated */}
                 {selectedOptionId && !isAuthenticated && (
                   <div className="mt-6 md:mt-8 px-6 py-6 md:px-8 md:py-8 text-center">
@@ -896,29 +899,25 @@ const Buyback3 = () => {
                 <button
                   type="button"
                   onClick={() => handleOrderMethodSelect("findOrder")}
-                  className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${
-                    orderMethod === "findOrder"
-                      ? "bg-black text-white border-2 border-black"
-                      : "bg-white border-2 border-gray-300 hover:border-black text-black"
-                  }`}
+                  className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${orderMethod === "findOrder"
+                    ? "bg-black text-white border-2 border-black"
+                    : "bg-white border-2 border-gray-300 hover:border-black text-black"
+                    }`}
                   style={{ height: '240px' }}
                 >
-                  <div className={`mb-4 transition-colors flex-shrink-0 ${
-                    orderMethod === "findOrder" ? "text-white" : "text-black"
-                  }`}>
+                  <div className={`mb-4 transition-colors flex-shrink-0 ${orderMethod === "findOrder" ? "text-white" : "text-black"
+                    }`}>
                     <Package className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
                   </div>
                   <h3
-                    className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
-                      orderMethod === "findOrder" ? "text-white" : "text-black"
-                    }`}
+                    className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${orderMethod === "findOrder" ? "text-white" : "text-black"
+                      }`}
                   >
                     Find Your Order
                   </h3>
                   <p
-                    className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
-                      orderMethod === "findOrder" ? "text-white/90" : "text-black"
-                    }`}
+                    className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${orderMethod === "findOrder" ? "text-white/90" : "text-black"
+                      }`}
                   >
                     Select from your order history
                   </p>
@@ -932,29 +931,25 @@ const Buyback3 = () => {
                 <button
                   type="button"
                   onClick={() => handleOrderMethodSelect("noOrderId")}
-                  className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${
-                    orderMethod === "noOrderId"
-                      ? "bg-black text-white border-2 border-black"
-                      : "bg-white border-2 border-gray-300 hover:border-black text-black"
-                  }`}
+                  className={`group relative flex flex-col items-center justify-between text-center px-4 py-6 md:px-5 md:py-7 transition-all duration-300 h-full ${orderMethod === "noOrderId"
+                    ? "bg-black text-white border-2 border-black"
+                    : "bg-white border-2 border-gray-300 hover:border-black text-black"
+                    }`}
                   style={{ height: '240px' }}
                 >
-                  <div className={`mb-4 transition-colors flex-shrink-0 ${
-                    orderMethod === "noOrderId" ? "text-white" : "text-black"
-                  }`}>
+                  <div className={`mb-4 transition-colors flex-shrink-0 ${orderMethod === "noOrderId" ? "text-white" : "text-black"
+                    }`}>
                     <FileText className="w-12 h-12 md:w-14 md:h-14 stroke-[1.2]" />
                   </div>
                   <h3
-                    className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${
-                      orderMethod === "noOrderId" ? "text-white" : "text-black"
-                    }`}
+                    className={`text-base md:text-lg lg:text-xl mb-3 transition-colors leading-tight flex-shrink-0 font-futura-pt-book font-light ${orderMethod === "noOrderId" ? "text-white" : "text-black"
+                      }`}
                   >
                     Don't Have Order ID
                   </h3>
                   <p
-                    className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${
-                      orderMethod === "noOrderId" ? "text-white/90" : "text-black"
-                    }`}
+                    className={`text-xs md:text-sm leading-relaxed transition-colors mt-auto text-center flex-shrink-0 font-light font-futura-pt-light ${orderMethod === "noOrderId" ? "text-white/90" : "text-black"
+                      }`}
                   >
                     Upload invoice or bill instead
                   </p>
@@ -1003,11 +998,10 @@ const Buyback3 = () => {
                         <button
                           type="button"
                           onClick={() => setDropdownOpen(!dropdownOpen)}
-                          className={`w-full border-2 bg-white px-4 py-3 md:py-3.5 text-left text-sm text-black focus:outline-none font-light transition-all duration-300 flex items-center justify-between ${
-                            dropdownOpen 
-                              ? "border-black" 
-                              : "border-gray-400 hover:border-black"
-                          }`}
+                          className={`w-full border-2 bg-white px-4 py-3 md:py-3.5 text-left text-sm text-black focus:outline-none font-light transition-all duration-300 flex items-center justify-between ${dropdownOpen
+                            ? "border-black"
+                            : "border-gray-400 hover:border-black"
+                            }`}
                         >
                           <span className="truncate flex items-center gap-3">
                             {selectedOrder ? (
@@ -1038,27 +1032,26 @@ const Buyback3 = () => {
                         </button>
                         {dropdownOpen && (
                           <div className="relative w-full mt-2 bg-white border-2 border-gray-300 shadow-2xl h-80 overflow-y-auto scrollbar-hide z-50">
-                              {filteredOrders.length === 0 ? (
-                                <div className="px-6 py-8 text-center">
-                                  <p className="text-sm text-gray-500 font-light">No orders found</p>
-                                </div>
-                              ) : (
-                                filteredOrders.map((order) => {
-                                  const firstItem = order.items[0] || {};
-                                  const isSelected = selectedOrder?.id === order.id;
-                                  const orderImage = order.thumbnailUrl || firstItem.image;
-                                  return (
-                                    <button
-                                      key={order.id}
-                                      type="button"
-                                      onClick={() => {
-                                        handleOrderSelect(order.id);
-                                        setDropdownOpen(false);
-                                      }}
-                                      className={`w-full px-5 py-5 text-left transition-all duration-200 flex items-center gap-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 ${
-                                        isSelected ? "bg-gray-50 border-l-2 border-l-black" : ""
+                            {filteredOrders.length === 0 ? (
+                              <div className="px-6 py-8 text-center">
+                                <p className="text-sm text-gray-500 font-light">No orders found</p>
+                              </div>
+                            ) : (
+                              filteredOrders.map((order) => {
+                                const firstItem = order.items[0] || {};
+                                const isSelected = selectedOrder?.id === order.id;
+                                const orderImage = order.thumbnailUrl || firstItem.image;
+                                return (
+                                  <button
+                                    key={order.id}
+                                    type="button"
+                                    onClick={() => {
+                                      handleOrderSelect(order.id);
+                                      setDropdownOpen(false);
+                                    }}
+                                    className={`w-full px-5 py-5 text-left transition-all duration-200 flex items-center gap-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 ${isSelected ? "bg-gray-50 border-l-2 border-l-black" : ""
                                       }`}
-                                    >
+                                  >
                                     <div className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-gradient-to-br ${firstItem.hue || "from-gray-100 to-gray-200"} overflow-hidden rounded-sm border border-gray-100`}>
                                       {orderImage ? (
                                         <img
@@ -1080,8 +1073,8 @@ const Buyback3 = () => {
                                         {firstItem.name || "Order"}
                                       </p>
                                       <p className="text-xs text-black font-light mt-1 font-futura-pt-light">
-                            {order.items.length} item{order.items.length !== 1 ? "s" : ""}
-                          </p>
+                                        {order.items.length} item{order.items.length !== 1 ? "s" : ""}
+                                      </p>
                                     </div>
                                     {isSelected && (
                                       <div className="w-6 h-6 border-2 border-black rounded-full flex items-center justify-center flex-shrink-0 bg-black">
@@ -1140,9 +1133,8 @@ const Buyback3 = () => {
                                 key={item.id}
                                 type="button"
                                 onClick={() => handleItemSelect(item)}
-                                className={`w-full flex items-center gap-3 md:gap-4 py-3 px-2 transition-all duration-200 text-left ${
-                                  isSelected ? "bg-black text-white" : "hover:bg-gray-50"
-                                }`}
+                                className={`w-full flex items-center gap-3 md:gap-4 py-3 px-2 transition-all duration-200 text-left ${isSelected ? "bg-black text-white" : "hover:bg-gray-50"
+                                  }`}
                               >
                                 <div className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-gradient-to-br ${item.hue} overflow-hidden rounded-sm`}>
                                   {item.image ? (
@@ -1152,18 +1144,16 @@ const Buyback3 = () => {
                                       className="w-full h-full object-cover"
                                     />
                                   ) : (
-                                    <div className={`w-full h-full flex items-center justify-center text-xs font-light ${
-                                      isSelected ? "text-white/70" : "text-gray-300"
-                                    }`}>
+                                    <div className={`w-full h-full flex items-center justify-center text-xs font-light ${isSelected ? "text-white/70" : "text-gray-300"
+                                      }`}>
                                       No Image
                                     </div>
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p
-                                    className={`text-sm md:text-base font-light leading-tight mb-1 truncate font-futura-pt-book ${
-                                      isSelected ? "text-white" : "text-black"
-                                    }`}
+                                    className={`text-sm md:text-base font-light leading-tight mb-1 truncate font-futura-pt-book ${isSelected ? "text-white" : "text-black"
+                                      }`}
                                   >
                                     {item.name}
                                   </p>
@@ -1264,11 +1254,10 @@ const Buyback3 = () => {
                             key={option.value}
                             type="button"
                             onClick={() => handleConditionChange(question.id, option.value)}
-                            className={`w-full text-left border-2 px-4 py-3 text-xs md:text-sm transition-colors font-light font-futura-pt-light ${
-                              isSelected
-                                ? "border-black bg-black text-white"
-                                : "border-gray-300 bg-white text-black hover:border-black"
-                            }`}
+                            className={`w-full text-left border-2 px-4 py-3 text-xs md:text-sm transition-colors font-light font-futura-pt-light ${isSelected
+                              ? "border-black bg-black text-white"
+                              : "border-gray-300 bg-white text-black hover:border-black"
+                              }`}
                           >
                             <span className="font-futura-pt-book font-light mr-2">{option.value}.</span>
                             {option.label}
@@ -1452,18 +1441,16 @@ const Buyback3 = () => {
                           }
                         }}
                         aria-disabled={!canNavigate}
-                        className={`flex min-w-[90px] md:min-w-[110px] flex-col items-center gap-3 md:gap-4 text-center ${
-                          canNavigate ? "cursor-pointer" : "cursor-default"
-                        }`}
+                        className={`flex min-w-[90px] md:min-w-[110px] flex-col items-center gap-3 md:gap-4 text-center ${canNavigate ? "cursor-pointer" : "cursor-default"
+                          }`}
                       >
                         <div
-                          className={`relative flex h-12 w-12 md:h-14 md:w-14 items-center justify-center border text-sm md:text-base font-light transition-all duration-500 rounded-full ${
-                            isActive
-                              ? "border-black bg-black text-white scale-105"
-                              : isComplete
+                          className={`relative flex h-12 w-12 md:h-14 md:w-14 items-center justify-center border text-sm md:text-base font-light transition-all duration-500 rounded-full ${isActive
+                            ? "border-black bg-black text-white scale-105"
+                            : isComplete
                               ? "border-black bg-white text-black border-2"
                               : "border-gray-300 bg-white text-gray-400"
-                          }`}
+                            }`}
                         >
                           {isComplete && !isActive && (
                             <CheckCircle2 className="absolute -top-1 -right-1 w-5 h-5 text-black bg-white rounded-full" strokeWidth={2.5} />
@@ -1471,22 +1458,20 @@ const Buyback3 = () => {
                           {step.id}
                         </div>
                         <span
-                          className={`text-md md:text-sm sm:text-xs transition-colors font-light leading-tight font-futura-pt-light ${
-                            isActive
-                              ? "text-black "
-                              : isComplete
+                          className={`text-md md:text-sm sm:text-xs transition-colors font-light leading-tight font-futura-pt-light ${isActive
+                            ? "text-black "
+                            : isComplete
                               ? "text-gray-900"
                               : "text-gray-700"
-                          }`}
+                            }`}
                         >
                           {step.title}
                         </span>
                       </div>
                       {index < STEPS.length - 1 && (
                         <div
-                          className={`h-px flex-1 transition-all duration-700 ${
-                            isComplete ? "bg-black" : "bg-gray-200"
-                          }`}
+                          className={`h-px flex-1 transition-all duration-700 ${isComplete ? "bg-black" : "bg-gray-200"
+                            }`}
                         />
                       )}
                     </React.Fragment>
@@ -1506,7 +1491,7 @@ const Buyback3 = () => {
                     {submitError}
                   </div>
                 )}
-                
+
                 {/* Buttons container */}
                 <div className="flex flex-col md:flex-row md:flex-wrap md:items-center gap-3">
                   <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 flex-1">
@@ -1525,11 +1510,10 @@ const Buyback3 = () => {
                         type="button"
                         onClick={handleContinue}
                         disabled={!isContinueEnabled}
-                        className={`w-full sm:w-auto px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center justify-center gap-2 group font-futura-pt-light ${
-                          isContinueEnabled
-                            ? "border-2 border-black bg-black text-white hover:bg-gray-900"
-                            : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
-                        }`}
+                        className={`w-full sm:w-auto px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center justify-center gap-2 group font-futura-pt-light ${isContinueEnabled
+                          ? "border-2 border-black bg-black text-white hover:bg-gray-900"
+                          : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
+                          }`}
                       >
                         Continue
                         <ChevronRight className={`w-4 h-4 transition-transform ${isContinueEnabled ? "group-hover:translate-x-1" : ""}`} strokeWidth={2} />
@@ -1540,11 +1524,10 @@ const Buyback3 = () => {
                         type="button"
                         onClick={handleConfirm}
                         disabled={!canConfirm || isSubmitting}
-                        className={`w-full sm:w-auto px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center justify-center gap-2 font-futura-pt-light ${
-                          canConfirm && !isSubmitting
-                            ? "border-2 border-black bg-black text-white hover:bg-gray-900"
-                            : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
-                        }`}
+                        className={`w-full sm:w-auto px-8 py-3 md:px-10 md:py-3.5 text-xs md:text-sm transition-all duration-300 font-light flex items-center justify-center gap-2 font-futura-pt-light ${canConfirm && !isSubmitting
+                          ? "border-2 border-black bg-black text-white hover:bg-gray-900"
+                          : "border-2 border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
+                          }`}
                       >
                         {isSubmitting ? (
                           <>

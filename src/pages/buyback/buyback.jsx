@@ -33,7 +33,7 @@ const Buyback = () => {
     const allImages = [...productUrls, ...results];
     if (allImages.length > 4) {
       setProductUrls(allImages.slice(0, 4));
-      alert("You can upload only 4 product images.");
+      message.error("You can upload only 4 product images.");
     } else {
       setProductUrls(allImages);
     }

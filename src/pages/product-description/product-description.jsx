@@ -1125,7 +1125,7 @@ const ProductDetailPage = () => {
               </div>
 
               {/* Heart Icon - Wishlist */}
-              <button
+            { product.isActive && <button
                 onClick={() => handleAddToWishlist(product.id)}
                 disabled={addingToWishlist}
                 className="p-2 hover:opacity-70 transition-opacity disabled:opacity-50 flex-shrink-0"
@@ -1140,7 +1140,7 @@ const ProductDetailPage = () => {
                     className={isWishlisted ? "text-black fill-black" : "text-black"}
                   />
                 )}
-              </button>
+              </button>}
             </div>
             <div className="">
               {
@@ -1405,7 +1405,7 @@ const ProductDetailPage = () => {
             )}
 
             {/* Action Buttons - Add to Cart & Buy Now */}
-            <div className="flex flex-col gap-3">
+           { product.isActive ? <div className="flex flex-col gap-3">
               {/* Add to Cart Button */}
               <button
                 onClick={itemAddedToCart ? handleGoToCart : () => handleAddToCart(product, selectedSize, selectedCountry, quantity)}
@@ -1447,7 +1447,7 @@ const ProductDetailPage = () => {
                   'Buy Now'
                 )}
               </button>
-            </div>
+            </div> : <div><button  className="w-full bg-black text-white py-4 px-6 font-light hover:bg-gray-900 transition-colors text-sm disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed font-futura-pt-light rounded-full">Out Of Stock</button></div>}
 
 
 

@@ -439,7 +439,7 @@ const selectedImages = useMemo(() => {
         </div>
 
         {/* Heart Icon - Top Right */}
-        <button
+      { product.isActive && <button
           onClick={handleWishlistClick}
           disabled={wishlistLoading}
           className="absolute top-2 right-2 z-20 p-1.5 hover:opacity-70 transition-opacity duration-200 disabled:opacity-50 touch-manipulation"
@@ -456,7 +456,7 @@ const selectedImages = useMemo(() => {
             strokeWidth={1.5}
             className={`transition-colors ${isWishlisted ? "text-black fill-black" : "text-black"}`}
           />
-        </button>
+        </button>}
       </div>
 
       {/* Content - Minimal Clean Design with Hover Animation */}

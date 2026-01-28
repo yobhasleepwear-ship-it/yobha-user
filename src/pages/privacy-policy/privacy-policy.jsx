@@ -630,7 +630,7 @@ const PrivacyPolicy = () => {
               
               <div className="bg-luxury-gold/5 border border-luxury-gold/20 p-4 md:p-6 rounded">
                 <p className="text-black text-sm md:text-base leading-relaxed font-futura-pt-light font-light">
-                  <strong>Phone:</strong> +917827051829<br />
+                  <strong>Phone:</strong> +916239713989<br />
                   <strong>Email:</strong> privacy@yobha.com<br />
                   <strong>Postal Address:</strong> YOBHA Data Protection Office, [Address to be provided]
                 </p>

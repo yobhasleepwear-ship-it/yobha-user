@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
+import { message } from "../toster-message/ToastContainer";
 
 const ImageUploader = ({ productId, onUploadComplete, hideUploadedDisplay = false }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -14,7 +15,7 @@ const ImageUploader = ({ productId, onUploadComplete, hideUploadedDisplay = fals
 
   const handleUpload = async () => {
     if (!productId) {
-      alert("Product ID missing!");
+      message.error("Product ID missing!");
       return;
     }
 
@@ -51,10 +52,10 @@ const ImageUploader = ({ productId, onUploadComplete, hideUploadedDisplay = fals
       setSelectedFiles([]);
 
       if (onUploadComplete) onUploadComplete(results);
-      alert("Images uploaded successfully!");
+      message.success("Images uploaded successfully!");
     } catch (err) {
       console.error("Upload failed:", err);
-      alert("Image upload failed!");
+      message.error("Image upload failed!");
     } finally {
       setUploading(false);
     }
