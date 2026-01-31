@@ -7,6 +7,7 @@ import { updateUserName } from "../../service/user";
 import { getOrders } from "../../service/order";
 import { getLoyaltyAudit } from "../../service/wallet";
 import CountryDropdown from "../../countryDropdown";
+import { countryCodeOptions } from "../../constants/commanConstant";
 
 // Toggle for dummy data - set to false to use real API
 const USE_DUMMY_DATA = false;
@@ -22,6 +23,7 @@ const AccountPage2 = () => {
   const [walletBalance, setWalletBalance] = useState(0);
   const [editingField, setEditingField] = useState(null);
   const [tempData, setTempData] = useState({});
+  console.log(tempData)
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [formData, setFormData] = useState({
     friendEmail: "",
@@ -30,115 +32,44 @@ const AccountPage2 = () => {
   const [loading, setLoading] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
   const [savingName, setSavingName] = useState(false);
-useEffect(() => {
-  const fetchCityState = async () => {
-    if (tempData.zip?.length === 6) { // only when 6-digit ZIP
-      try {
-        const res = await fetch(`https://api.postalpincode.in/pincode/${tempData.zip}`);
-        const data = await res.json();
+  useEffect(() => {
+    const fetchCityState = async () => {
+      if (tempData.zip?.length === 6) { // only when 6-digit ZIP
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${tempData.zip}`);
+          const data = await res.json();
 
-        if (data[0].Status === "Success" && data[0].PostOffice?.length) {
-          const firstPostOffice = data[0].PostOffice[0];
-               const { District, State, Country } = firstPostOffice;
+          if (data[0].Status === "Success" && data[0].PostOffice?.length) {
+            const firstPostOffice = data[0].PostOffice[0];
+            const { District, State, Country } = firstPostOffice;
 
-          // Only auto-fill if fields are empty
-          setTempData((prev) => ({
-            ...prev,
-            city: prev.city || District,
-            state: prev.state || State,
-             country: prev.country || Country,
-          }));
+            // Only auto-fill if fields are empty
+            setTempData((prev) => ({
+              ...prev,
+              city: prev.city || District,
+              state: prev.state || State,
+              country: prev.country || Country,
+            }));
+          }
+        } catch (err) {
+          console.error("Error fetching city/state:", err);
         }
-      } catch (err) {
-        console.error("Error fetching city/state:", err);
       }
-    }
-  };
+    };
 
-  fetchCityState();
-}, [tempData.zip]);
+    fetchCityState();
+  }, [tempData.zip]);
 
   // Create dummy wallet data for testing
-  const createDummyWalletData = () => {
-    return {
-      totalCount: 8,
-      page: 1,
-      pageSize: 20,
-      items: [
-        {
-          id: "1",
-          userId: "USR123456",
-          email: "user@example.com",
-          phoneNumber: "+919876543210",
-          reason: "BuybackApproved",
-          relatedEntityId: "BUYBACK001",
-          operation: "Credit",
-          points: 50,
-          balanceAfter: 240,
-          metadata: { adminId: "ADMIN001", note: "Approved buyback" },
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          userId: "USR123456",
-          email: "user@example.com",
-          phoneNumber: "+919876543210",
-          reason: "BuybackApproved",
-          relatedEntityId: "BUYBACK002",
-          operation: "Credit",
-          points: 30,
-          balanceAfter: 190,
-          metadata: null,
-          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: "3",
-          userId: "USR123456",
-          email: "user@example.com",
-          phoneNumber: "+919876543210",
-          reason: "RecycledGarment",
-          relatedEntityId: "RECYCLE001",
-          operation: "Credit",
-          points: 15,
-          balanceAfter: 160,
-          metadata: null,
-          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: "4",
-          userId: "USR123456",
-          email: "user@example.com",
-          phoneNumber: "+919876543210",
-          reason: "OrderPayment",
-          relatedEntityId: "ORD001",
-          operation: "Debit",
-          points: 50,
-          balanceAfter: 145,
-          metadata: null,
-          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: "5",
-          userId: "USR123456",
-          email: "user@example.com",
-          phoneNumber: "+919876543210",
-          reason: "BuybackApproved",
-          relatedEntityId: "BUYBACK003",
-          operation: "Credit",
-          points: 40,
-          balanceAfter: 195,
-          metadata: null,
-          createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        },
-      ],
-    };
-  };
+ 
+const createDummyWalletData={
 
+}
   const fetchWalletHistory = useCallback(async () => {
     try {
       setIsLoadingWallet(true);
       let response;
-      
+
       if (USE_DUMMY_DATA) {
         // Use dummy data for testing
         await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
@@ -285,6 +216,7 @@ useEffect(() => {
             city: addressToEdit.city || "",
             state: addressToEdit.state || "",
             zip: addressToEdit.zip || "",
+            countryCode: addressToEdit.countryCode || "",
             country: addressToEdit.country || "",
             MobileNumnber: addressToEdit.mobileNumner || "",
             isDefault: addressToEdit.isDefault || false
@@ -299,6 +231,7 @@ useEffect(() => {
           city: "",
           state: "",
           zip: "",
+          countryCode: "",
           country: "",
           MobileNumnber: '',
           isDefault: false
@@ -434,257 +367,274 @@ useEffect(() => {
         <div className="space-y-6 md:space-y-8">
           {/* Profile Details */}
           <div className="bg-white border border-gray-200">
-              <div className="px-6 md:px-8 py-6 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <User size={20} className="text-gray-600" />
-                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
-                    Profile Information
-                  </h2>
-                </div>
-              </div>
-              <div className="p-6 md:p-8 space-y-6">
-                {/* Name */}
-                <div>
-                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book">
-                    Full Name
-                  </label>
-                  {editingField === "name" ? (
-                    <div className="flex gap-3">
-                      <input
-                        type="text"
-                        value={tempData.name || ""}
-                        onChange={(e) => setTempData({ ...tempData, name: e.target.value })}
-                        placeholder={LocalUserData.fullName || "Enter your full name"}
-                        className="flex-1 px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base font-futura-pt-light"
-                      />
-                      <button
-                        onClick={saveEdit}
-                        disabled={savingName}
-                        className="px-4 py-3 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
-                      >
-                        {savingName ? (
-                          <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                        ) : (
-                          <CheckCircle size={16} />
-                        )}
-                      </button>
-                      <button
-                        onClick={cancelEdit}
-                        className="px-4 py-3 border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="group/item flex items-center justify-between p-4 bg-gray-50 border border-gray-200">
-                      <span className="text-base font-light text-black font-futura-pt-light">
-                        {LocalUserData.fullName || ""}
-                      </span>
-                      <button
-                        onClick={() => startEdit("name")}
-                        className="opacity-0 group-hover/item:opacity-100 text-gray-600 hover:text-black transition-opacity p-2 hover:bg-gray-100"
-                      >
-                        <Edit3 size={16} />
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Email - Read Only */}
-                <div>
-                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book flex items-center gap-2">
-                    <Mail size={14} />
-                    Email Address
-                  </label>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 min-h-[56px]">
-                    <span className="text-base font-light text-black font-futura-pt-light">
-                      {LocalUserData.email || ""}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Phone - Read Only */}
-                <div>
-                  <label className="text-sm text-black font-light mb-2 font-futura-pt-book flex items-center gap-2">
-                    <Phone size={14} />
-                    Phone Number
-                  </label>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200">
-                    <span className="text-base font-light text-black font-futura-pt-light">
-                      {LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber || ""}
-                    </span>
-                    {(LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber) && (
-                      <span className="text-xs px-2 py-1 bg-gray-100 text-black font-light border border-gray-200 font-futura-pt-light">
-                        Verified
-                      </span>
-                    )}
-                  </div>
-                </div>
+            <div className="px-6 md:px-8 py-6 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <User size={20} className="text-gray-600" />
+                <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
+                  Profile Information
+                </h2>
               </div>
             </div>
-
-          {/* Address Section */}
-          <div className="bg-white border border-gray-200">
-              <div className="px-6 md:px-8 py-6 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <MapPin size={20} className="text-gray-600" />
-                  <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
-                    Addresses
-                  </h2>
-                </div>
-              </div>
-
-              <div className="p-6 md:p-8">
-                {editingField === "address" ? (
-                  <div className="space-y-4">
+            <div className="p-6 md:p-8 space-y-6">
+              {/* Name */}
+              <div>
+                <label className="text-sm text-black font-light mb-2 font-futura-pt-book">
+                  Full Name
+                </label>
+                {editingField === "name" ? (
+                  <div className="flex gap-3">
                     <input
                       type="text"
-                      placeholder={LocalUserData.fullName || LocalUserData.name || "Full Name"}
-                      value={tempData.fullName || ""}
-                      onChange={(e) => setTempData({ ...tempData, fullName: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
+                      value={tempData.name || ""}
+                      onChange={(e) => setTempData({ ...tempData, name: e.target.value })}
+                      placeholder={LocalUserData.fullName || "Enter your full name"}
+                      className="flex-1 px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white font-light placeholder:text-gray-400 text-sm md:text-base font-futura-pt-light"
                     />
-                    <input
-                      type="text"
-                      placeholder="Address Line 1"
-                      value={tempData.line1 || ""}
-                      onChange={(e) => setTempData({ ...tempData, line1: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Address Line 2"
-                      value={tempData.line2 || ""}
-                      onChange={(e) => setTempData({ ...tempData, line2: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Mobile Number"
-                      value={tempData.MobileNumnber || ""}
-                      onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
-                    />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        placeholder="City"
-                        value={tempData.city || ""}
-                        onChange={(e) => setTempData({ ...tempData, city: e.target.value })}
-                        className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
-                      />
-                      <input
-                        type="text"
-                        placeholder="State"
-                        value={tempData.state || ""}
-                        onChange={(e) => setTempData({ ...tempData, state: e.target.value })}
-                        className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        placeholder="ZIP"
-                        value={tempData.zip || ""}
-                        onChange={(e) => setTempData({ ...tempData, zip: e.target.value })}
-                        className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Country"
-                        value={tempData.country || ""}
-                        onChange={(e) => setTempData({ ...tempData, country: e.target.value })}
-                        className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                      <button
-                        onClick={saveEdit}
-                        disabled={savingAddress}
-                        className="flex-1 px-6 py-3 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
-                      >
-                        {savingAddress ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                            <span>Processing...</span>
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle size={16} />
-                            {editingAddressId ? "Update Address" : "Save Address"}
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={cancelEdit}
-                        disabled={savingAddress}
-                        className="px-6 py-3 border border-gray-300 text-black hover:bg-gray-100 transition-colors text-sm font-light disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                    <button
+                      onClick={saveEdit}
+                      disabled={savingName}
+                      className="px-4 py-3 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
+                    >
+                      {savingName ? (
+                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <CheckCircle size={16} />
+                      )}
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="px-4 py-3 border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
                   </div>
                 ) : (
-                  <div>
-                    <div className="space-y-4 mb-6">
-                      {userData && userData.length > 0 ? (
-                        userData.map((addr) => (
-                          <div
-                            key={addr.id}
-                            className="group/item p-5 bg-gray-50 border border-gray-200 relative"
-                          >
-                            <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover/item:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => startEdit("address", addr.id)}
-                                className="text-gray-600 hover:text-black transition-colors p-2 hover:bg-gray-100"
-                                title="Edit Address"
-                              >
-                                <Edit3 size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteAddress(addr.id)}
-                                className="text-gray-600 hover:text-black transition-colors p-2 hover:bg-gray-100"
-                                title="Delete Address"
-                              >
-                                <X size={16} />
-                              </button>
-                            </div>
-                            <div className="pr-16 sm:pr-20">
-                              <p className="text-base font-light text-black mb-2 font-futura-pt-book">{addr.fullName}</p>
-                              <p className="text-sm font-light text-black mb-1 font-futura-pt-light">
-                                {addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}
-                              </p>
-                              <p className="text-sm font-light text-black mb-1 font-futura-pt-light">
-                                {addr.city}, {addr.state} - {addr.zip}
-                              </p>
-                              <p className="text-sm font-light text-black mt-1 font-futura-pt-light">
-                                {addr.mobileNumner || "No mobile number"}
-                              </p>
-                              <p className="text-sm font-light text-black font-futura-pt-light">{addr.country}</p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-12">
-                          <MapPin size={48} className="mx-auto text-gray-300 mb-4" />
-                          <p className="text-base font-light text-black font-futura-pt-light">No addresses found</p>
-                            <p className="text-sm font-light text-black mt-1 font-futura-pt-light">Add your first address to get started</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => startEdit("address")}
-                        className="w-1/2 px-6 py-3.5 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 font-futura-pt-light"
-                      >
-                        <Edit3 size={16} />
-                        Add Address
-                      </button>
-                    </div>
+                  <div className="group/item flex items-center justify-between p-4 bg-gray-50 border border-gray-200">
+                    <span className="text-base font-light text-black font-futura-pt-light">
+                      {LocalUserData.fullName || ""}
+                    </span>
+                    <button
+                      onClick={() => startEdit("name")}
+                      className="opacity-0 group-hover/item:opacity-100 text-gray-600 hover:text-black transition-opacity p-2 hover:bg-gray-100"
+                    >
+                      <Edit3 size={16} />
+                    </button>
                   </div>
                 )}
               </div>
+
+              {/* Email - Read Only */}
+              <div>
+                <label className="text-sm text-black font-light mb-2 font-futura-pt-book flex items-center gap-2">
+                  <Mail size={14} />
+                  Email Address
+                </label>
+                <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 min-h-[56px]">
+                  <span className="text-base font-light text-black font-futura-pt-light">
+                    {LocalUserData.email || ""}
+                  </span>
+                </div>
+              </div>
+
+              {/* Phone - Read Only */}
+              <div>
+                <label className="text-sm text-black font-light mb-2 font-futura-pt-book flex items-center gap-2">
+                  <Phone size={14} />
+                  Phone Number
+                </label>
+                <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200">
+                  <span className="text-base font-light text-black font-futura-pt-light">
+                    {LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber || ""}
+                  </span>
+                  {(LocalUserData.phone || LocalUserData.Phone || LocalUserData.phoneNumber) && (
+                    <span className="text-xs px-2 py-1 bg-gray-100 text-black font-light border border-gray-200 font-futura-pt-light">
+                      Verified
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
+          </div>
+
+          {/* Address Section */}
+          <div className="bg-white border border-gray-200">
+            <div className="px-6 md:px-8 py-6 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <MapPin size={20} className="text-gray-600" />
+                <h2 className="text-base md:text-lg font-light text-black font-futura-pt-book">
+                  Addresses
+                </h2>
+              </div>
+            </div>
+
+            <div className="p-6 md:p-8">
+              {editingField === "address" ? (
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder={LocalUserData.fullName || LocalUserData.name || "Full Name"}
+                    value={tempData.fullName || ""}
+                    onChange={(e) => setTempData({ ...tempData, fullName: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Address Line 1"
+                    value={tempData.line1 || ""}
+                    onChange={(e) => setTempData({ ...tempData, line1: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Address Line 2"
+                    value={tempData.line2 || ""}
+                    onChange={(e) => setTempData({ ...tempData, line2: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
+                  />
+                  <select
+                    required
+                    value={
+                      tempData.countryCode
+                      
+                    }
+                    onChange={(e) =>
+                      setTempData({ ...tempData, countryCode: e.target.value })
+                    }
+                    className="w-28 px-3 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light text-sm md:text-base"
+                  >
+                    {countryCodeOptions.map((item) => (
+                      <option key={item.code} value={item.code}>
+                        {item.code} ({item.short})
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Mobile Number"
+                    value={tempData.MobileNumnber || ""}
+                    onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
+                  />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={tempData.city || ""}
+                      onChange={(e) => setTempData({ ...tempData, city: e.target.value })}
+                      className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                    />
+                    <input
+                      type="text"
+                      placeholder="State"
+                      value={tempData.state || ""}
+                      onChange={(e) => setTempData({ ...tempData, state: e.target.value })}
+                      className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="ZIP"
+                      value={tempData.zip || ""}
+                      onChange={(e) => setTempData({ ...tempData, zip: e.target.value })}
+                      className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Country"
+                      value={tempData.country || ""}
+                      onChange={(e) => setTempData({ ...tempData, country: e.target.value })}
+                      className="px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base"
+                    />
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button
+                      onClick={saveEdit}
+                      disabled={savingAddress}
+                      className="flex-1 px-6 py-3 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
+                    >
+                      {savingAddress ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle size={16} />
+                          {editingAddressId ? "Update Address" : "Save Address"}
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      disabled={savingAddress}
+                      className="px-6 py-3 border border-gray-300 text-black hover:bg-gray-100 transition-colors text-sm font-light disabled:opacity-50 disabled:cursor-not-allowed font-futura-pt-light"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="space-y-4 mb-6">
+                    {userData && userData.length > 0 ? (
+                      userData.map((addr) => (
+                        <div
+                          key={addr.id}
+                          className="group/item p-5 bg-gray-50 border border-gray-200 relative"
+                        >
+                          <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => startEdit("address", addr.id)}
+                              className="text-gray-600 hover:text-black transition-colors p-2 hover:bg-gray-100"
+                              title="Edit Address"
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteAddress(addr.id)}
+                              className="text-gray-600 hover:text-black transition-colors p-2 hover:bg-gray-100"
+                              title="Delete Address"
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                          <div className="pr-16 sm:pr-20">
+                            <p className="text-base font-light text-black mb-2 font-futura-pt-book">{addr.fullName}</p>
+                            <p className="text-sm font-light text-black mb-1 font-futura-pt-light">
+                              {addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}
+                            </p>
+                            <p className="text-sm font-light text-black mb-1 font-futura-pt-light">
+                              {addr.city}, {addr.state} - {addr.zip}
+                            </p>
+                            <p className="text-sm font-light text-black mt-1 font-futura-pt-light">
+                             {addr.countryCode} {addr.mobileNumner || "No mobile number"}
+                            </p>
+                            <p className="text-sm font-light text-black font-futura-pt-light">{addr.country}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-12">
+                        <MapPin size={48} className="mx-auto text-gray-300 mb-4" />
+                        <p className="text-base font-light text-black font-futura-pt-light">No addresses found</p>
+                        <p className="text-sm font-light text-black mt-1 font-futura-pt-light">Add your first address to get started</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => startEdit("address")}
+                      className="w-1/2 px-6 py-3.5 border border-black text-black text-sm font-light hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2 font-futura-pt-light"
+                    >
+                      <Edit3 size={16} />
+                      Add Address
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Wallet History Section */}
           <div className="bg-white border border-gray-200">

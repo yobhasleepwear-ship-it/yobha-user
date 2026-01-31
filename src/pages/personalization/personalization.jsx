@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
 import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
+import { countryCodeOptions } from "../../constants/commanConstant";
 
 const Personalization = () => {
   const navigate = useNavigate();
@@ -125,6 +126,7 @@ const Personalization = () => {
     city: '',
     state: '',
     pincode: '',
+    countryCode:'91',
     country: 'India',
     landmark: '',
   });
@@ -144,7 +146,7 @@ const Personalization = () => {
   // Loading states
   const [addingToCart, setAddingToCart] = useState(false);
   const [savingPersonalization, setSavingPersonalization] = useState(false);
-  
+
   // Saved personalizations
   const [savedPersonalizations, setSavedPersonalizations] = useState([]);
   const [showSavedPersonalizations, setShowSavedPersonalizations] = useState(false);
@@ -209,63 +211,63 @@ const Personalization = () => {
 
     fetchCityState();
   }, [recipientAddress.pincode]);
-  
-// Size Guide Data
-const sizeGuideDataFitGroupA = [
-  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
-  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
-  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
-];
 
-const sizeGuideDataFitGroupB = [
-  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
-  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
-  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
-  { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
-  { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
-];
+  // Size Guide Data
+  const sizeGuideDataFitGroupA = [
+    { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+    { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+    { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+  ];
 
-const sizeGuideDataFitGroupC = [
-  { size: "S", bust: "36-37", waist: "28-29", hip: "38-39" },
-  { size: "M", bust: "38-40", waist: "30-32", hip: "40-42" },
-  { size: "L", bust: "41-43", waist: "33-35", hip: "43-45" },
-  { size: "XL", bust: "44-46", waist: "36-38", hip: "46-48" },
-];
+  const sizeGuideDataFitGroupB = [
+    { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+    { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+    { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+    { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
+    { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
+  ];
 
-const sizeGuideDataFitGroupD = [
-  { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
-  { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
-  { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
-  { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
-  { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
-];
+  const sizeGuideDataFitGroupC = [
+    { size: "S", bust: "36-37", waist: "28-29", hip: "38-39" },
+    { size: "M", bust: "38-40", waist: "30-32", hip: "40-42" },
+    { size: "L", bust: "41-43", waist: "33-35", hip: "43-45" },
+    { size: "XL", bust: "44-46", waist: "36-38", hip: "46-48" },
+  ];
 
-const fitGroups = [
-  { id: 'fitGroupA', label: 'Robes', title: 'Robes', data: sizeGuideDataFitGroupA },
-  { id: 'fitGroupB', label: 'Women Sets', title: 'Women Sets', data: sizeGuideDataFitGroupB },
-  { id: 'fitGroupC', label: 'Men Sets', title: 'Men Sets', data: sizeGuideDataFitGroupC },
-  { id: 'fitGroupD', label: 'Tracksuits', title: 'Tracksuits', data: sizeGuideDataFitGroupD },
-];
+  const sizeGuideDataFitGroupD = [
+    { size: "XS", bust: "32-33", waist: "24-25", hip: "34-35" },
+    { size: "S", bust: "34-35", waist: "26-27", hip: "36-37" },
+    { size: "M", bust: "36-37", waist: "28-29", hip: "38-39" },
+    { size: "L", bust: "38-40", waist: "30-32", hip: "40-42" },
+    { size: "XL", bust: "41-43", waist: "33-35", hip: "43-45" },
+  ];
 
-const sizeGuideData = sizeGuideDataFitGroupB;
+  const fitGroups = [
+    { id: 'fitGroupA', label: 'Robes', title: 'Robes', data: sizeGuideDataFitGroupA },
+    { id: 'fitGroupB', label: 'Women Sets', title: 'Women Sets', data: sizeGuideDataFitGroupB },
+    { id: 'fitGroupC', label: 'Men Sets', title: 'Men Sets', data: sizeGuideDataFitGroupC },
+    { id: 'fitGroupD', label: 'Tracksuits', title: 'Tracksuits', data: sizeGuideDataFitGroupD },
+  ];
 
-// Helper functions for unit conversion
-const inchesToCm = (inches) => (inches * 2.54).toFixed(1);
-const cmToInches = (cm) => (cm / 2.54).toFixed(1);
-const parseRange = (rangeStr) => {
-  const parts = rangeStr.split('-').map(part => parseFloat(part.trim()));
-  return parts.length === 2 ? parts : [parts[0], parts[0]];
-};
-const convertRange = (rangeStr, fromUnit, toUnit) => {
-  const [min, max] = parseRange(rangeStr);
-  if (fromUnit === toUnit) return rangeStr;
-  if (fromUnit === 'inches' && toUnit === 'cm') {
-    return `${inchesToCm(min)}-${inchesToCm(max)}`;
-  } else if (fromUnit === 'cm' && toUnit === 'inches') {
-    return `${cmToInches(min)}-${cmToInches(max)}`;
-  }
-  return rangeStr;
-};
+  const sizeGuideData = sizeGuideDataFitGroupB;
+
+  // Helper functions for unit conversion
+  const inchesToCm = (inches) => (inches * 2.54).toFixed(1);
+  const cmToInches = (cm) => (cm / 2.54).toFixed(1);
+  const parseRange = (rangeStr) => {
+    const parts = rangeStr.split('-').map(part => parseFloat(part.trim()));
+    return parts.length === 2 ? parts : [parts[0], parts[0]];
+  };
+  const convertRange = (rangeStr, fromUnit, toUnit) => {
+    const [min, max] = parseRange(rangeStr);
+    if (fromUnit === toUnit) return rangeStr;
+    if (fromUnit === 'inches' && toUnit === 'cm') {
+      return `${inchesToCm(min)}-${inchesToCm(max)}`;
+    } else if (fromUnit === 'cm' && toUnit === 'inches') {
+      return `${cmToInches(min)}-${cmToInches(max)}`;
+    }
+    return rangeStr;
+  };
 
   // Fetch products
   const fetchProducts = useCallback(async () => {
@@ -444,21 +446,21 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
     }
     const currencyCode = String(currency || "INR").toUpperCase();
     const currencySymbols = {
-  INR: "₹",
-  USD: "$",
-  AED: "AED",
-  SAR: "SAR",
-  QAR: "QAR",
-  KWD: "KWD",
-  OMR: "OMR",
-  BHD: "BHD",
-  JOD: "JOD",
-  LBP: "LBP",
-  EGP: "EGP",
-  IQD: "IQD",
-  RUB: "₽",
-  GBP: "£",
-};
+      INR: "₹",
+      USD: "$",
+      AED: "AED",
+      SAR: "SAR",
+      QAR: "QAR",
+      KWD: "KWD",
+      OMR: "OMR",
+      BHD: "BHD",
+      JOD: "JOD",
+      LBP: "LBP",
+      EGP: "EGP",
+      IQD: "IQD",
+      RUB: "₽",
+      GBP: "£",
+    };
 
     const symbol = currencySymbols[currencyCode] || currencyCode;
     const formattedNumber = numericAmount.toLocaleString("en-IN", {
@@ -497,7 +499,7 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
     setAddingToCart(true);
     try {
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      
+
       const safeProduct = JSON.parse(
         JSON.stringify(productDetails, (key, value) => {
           if (typeof value === "function") return undefined;
@@ -520,11 +522,11 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
 
       // Ensure price is properly set - fix NaN issue
       const matchedPrice = getMatchedPrice();
-      const itemPrice = matchedPrice?.priceAmount 
-        ? Number(matchedPrice.priceAmount) 
+      const itemPrice = matchedPrice?.priceAmount
+        ? Number(matchedPrice.priceAmount)
         : (productDetails?.unitPrice ? Number(productDetails.unitPrice) : 0);
       const itemCurrency = matchedPrice?.currency || productDetails?.currency || "INR";
-      
+
       // Calculate lineTotal to prevent NaN in checkout
       const lineTotal = itemPrice * quantity;
 
@@ -602,7 +604,7 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
         address: deliveryOption === "me" ? selectedAddress : (deliveryOption === "recipient" ? recipientAddress : null),
         savedAt: new Date().toISOString(),
       };
-      
+
       const existing = savedPersonalizations || [];
       const updated = [...existing, personalizationData];
       localStorage.setItem("savedPersonalizations", JSON.stringify(updated));
@@ -705,8 +707,8 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                       // Handle image format
                       let savedImage = '';
                       if (saved.productImage) {
-                        savedImage = typeof saved.productImage === 'string' 
-                          ? saved.productImage 
+                        savedImage = typeof saved.productImage === 'string'
+                          ? saved.productImage
                           : saved.productImage?.url || saved.productImage?.imageUrl || '';
                       }
                       return (
@@ -778,8 +780,8 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
               // Try multiple image paths - handle both object and string formats
               let productImage = '';
               if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-                productImage = typeof product.images[0] === 'string' 
-                  ? product.images[0] 
+                productImage = typeof product.images[0] === 'string'
+                  ? product.images[0]
                   : product.images[0]?.url || product.images[0]?.imageUrl || '';
               }
               if (!productImage) {
@@ -832,8 +834,8 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
     // Handle both object and string image formats
     let productImage = '';
     if (productDetails.images && Array.isArray(productDetails.images) && productDetails.images.length > 0) {
-      productImage = typeof productDetails.images[0] === 'string' 
-        ? productDetails.images[0] 
+      productImage = typeof productDetails.images[0] === 'string'
+        ? productDetails.images[0]
         : productDetails.images[0]?.url || productDetails.images[0]?.imageUrl || '';
     }
     if (!productImage) {
@@ -849,7 +851,7 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
           <ArrowLeft size={18} />
           Back
         </button>
-        
+
         <div className="flex items-center gap-4">
           {productImage ? (
             <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200">
@@ -900,11 +902,10 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`py-3 px-4 border transition-all duration-300 font-light font-futura-pt-light rounded-lg ${
-                    selectedSize === size
+                  className={`py-3 px-4 border transition-all duration-300 font-light font-futura-pt-light rounded-lg ${selectedSize === size
                       ? 'border-black bg-black text-white'
                       : 'border-gray-200 text-black hover:border-gray-400'
-                  }`}
+                    }`}
                 >
                   {size}
                 </button>
@@ -926,20 +927,18 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                     onClick={() => setSelectedColor(color)}
                     className="flex flex-col items-center gap-2"
                   >
-                    <div className={`w-12 h-12 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
-                      selectedColor === color
+                    <div className={`w-12 h-12 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${selectedColor === color
                         ? 'border-black scale-110'
                         : isLightColor(displayHex) ? 'border-gray-400' : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                    style={{ backgroundColor: displayHex }}
+                      }`}
+                      style={{ backgroundColor: displayHex }}
                     >
                       {selectedColor === color && (
                         <Check size={16} className={isLightColor(displayHex) ? "text-black" : "text-white"} />
                       )}
                     </div>
-                    <span className={`text-xs font-light font-futura-pt-light ${
-                      selectedColor === color ? 'text-black' : 'text-gray-600'
-                    }`}>
+                    <span className={`text-xs font-light font-futura-pt-light ${selectedColor === color ? 'text-black' : 'text-gray-600'
+                      }`}>
                       {color}
                     </span>
                   </button>
@@ -982,21 +981,19 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                   <div className="flex items-center bg-gray-100 rounded-full p-1">
                     <button
                       onClick={() => setSizeGuideUnit('inches')}
-                      className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full ${
-                        sizeGuideUnit === 'inches'
+                      className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'inches'
                           ? 'bg-black text-white'
                           : 'text-black/70 hover:text-black'
-                      }`}
+                        }`}
                     >
                       Inches
                     </button>
                     <button
                       onClick={() => setSizeGuideUnit('cm')}
-                      className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full ${
-                        sizeGuideUnit === 'cm'
+                      className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full ${sizeGuideUnit === 'cm'
                           ? 'bg-black text-white'
                           : 'text-black/70 hover:text-black'
-                      }`}
+                        }`}
                     >
                       CM
                     </button>
@@ -1010,11 +1007,10 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                   <button
                     key={group.id}
                     onClick={() => setActiveSizeTab(group.id)}
-                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full border ${
-                      activeSizeTab === group.id
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-light font-futura-pt-light transition-all rounded-full border ${activeSizeTab === group.id
                         ? 'border-black bg-black text-white'
                         : 'border-gray-300 text-black/70 hover:border-black/40 hover:bg-black/5'
-                    }`}
+                      }`}
                   >
                     {group.label}
                   </button>
@@ -1083,8 +1079,8 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
     // Handle both object and string image formats
     let productImage = '';
     if (productDetails.images && Array.isArray(productDetails.images) && productDetails.images.length > 0) {
-      productImage = typeof productDetails.images[0] === 'string' 
-        ? productDetails.images[0] 
+      productImage = typeof productDetails.images[0] === 'string'
+        ? productDetails.images[0]
         : productDetails.images[0]?.url || productDetails.images[0]?.imageUrl || '';
     }
     if (!productImage) {
@@ -1202,6 +1198,20 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                     onChange={(e) => setRecipientAddress({ ...recipientAddress, fullName: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg"
                   />
+                    <select
+                        required
+                        value={recipientAddress.countryCode }
+                        onChange={(e) =>
+                          setRecipientAddress({ ...recipientAddress, countryCode: e.target.value })
+                        }
+                        className="w-28 px-3 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg bg-white"
+                      >
+                        {countryCodeOptions.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.code} ({item.short})
+                          </option>
+                        ))}
+                      </select>
                   <input
                     type="tel"
                     placeholder="Phone Number"
@@ -1264,21 +1274,19 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                   <div className="flex gap-3 mb-4">
                     <button
                       onClick={() => setUseSavedAddress(true)}
-                      className={`flex-1 py-2 px-4 border rounded-lg font-light font-futura-pt-light transition-colors ${
-                        useSavedAddress
+                      className={`flex-1 py-2 px-4 border rounded-lg font-light font-futura-pt-light transition-colors ${useSavedAddress
                           ? 'border-black bg-black text-white'
                           : 'border-gray-200 text-black hover:border-gray-400'
-                      }`}
+                        }`}
                     >
                       Choose from Saved
                     </button>
                     <button
                       onClick={() => setUseSavedAddress(false)}
-                      className={`flex-1 py-2 px-4 border rounded-lg font-light font-futura-pt-light transition-colors ${
-                        !useSavedAddress
+                      className={`flex-1 py-2 px-4 border rounded-lg font-light font-futura-pt-light transition-colors ${!useSavedAddress
                           ? 'border-black bg-black text-white'
                           : 'border-gray-200 text-black hover:border-gray-400'
-                      }`}
+                        }`}
                     >
                       Enter Manually
                     </button>
@@ -1291,18 +1299,16 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                           <button
                             key={address.id}
                             onClick={() => setSelectedAddress(address)}
-                            className={`w-full p-4 border text-left transition-all duration-300 rounded-lg ${
-                              selectedAddress?.id === address.id
+                            className={`w-full p-4 border text-left transition-all duration-300 rounded-lg ${selectedAddress?.id === address.id
                                 ? 'border-black bg-gray-50'
                                 : 'border-gray-200 hover:border-gray-400'
-                            }`}
+                              }`}
                           >
                             <div className="flex items-start gap-3">
-                              <div className={`w-5 h-5 border-2 flex items-center justify-center flex-shrink-0 mt-0.5 rounded-full ${
-                                selectedAddress?.id === address.id
+                              <div className={`w-5 h-5 border-2 flex items-center justify-center flex-shrink-0 mt-0.5 rounded-full ${selectedAddress?.id === address.id
                                   ? 'border-black bg-black'
                                   : 'border-gray-300'
-                              }`}>
+                                }`}>
                                 {selectedAddress?.id === address.id && (
                                   <Check size={12} className="text-white" />
                                 )}
@@ -1314,6 +1320,10 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                                 <p className="text-xs font-light text-black font-futura-pt-light mt-1">
                                   {address.line1}, {address.line2}, {address.city}, {address.state} - {address.zip}
                                 </p>
+                                <p className="text-xs font-light text-black font-futura-pt-light mt-1">
+                                  {address.countryCode} - {address.mobileNumner}
+                                </p>
+
                                 <p className="text-xs font-light text-black font-futura-pt-light">
                                   {address.country}
                                 </p>
@@ -1336,6 +1346,20 @@ const convertRange = (rangeStr, fromUnit, toUnit) => {
                         onChange={(e) => setNewAddress({ ...newAddress, fullName: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg"
                       />
+                      <select
+                        required
+                        value={newAddress.countryCode }
+                        onChange={(e) =>
+                          setNewAddress({ ...newAddress, countryCode: e.target.value })
+                        }
+                        className="w-28 px-3 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg bg-white"
+                      >
+                        {countryCodeOptions.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.code} ({item.short})
+                          </option>
+                        ))}
+                      </select>
                       <input
                         type="tel"
                         placeholder="Phone Number"

@@ -11,6 +11,7 @@ import { removeKey, setValue, getValue } from "../../service/localStorageService
 import { useSelector, useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
 import { getPinCodeDetails } from "../../service/delivery";
+import { countryCodeOptions } from "../../constants/commanConstant";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -41,6 +42,7 @@ const CheckoutPage = () => {
   // Address State
   const [address, setAddress] = useState({
     fullName: '',
+    countryCode: '',
     phone: '',
     addressLine1: '',
     addressLine2: '',
@@ -258,6 +260,7 @@ const CheckoutPage = () => {
     return {
       id: addr.id || null,
       fullName: addr.fullName || '',
+      countryCode: addr.countryCode || '',
       phone: addr.phone || addr.mobileNumner || addr.MobileNumnber || '',
       addressLine1: addr.addressLine1 || addr.line1 || '',
       addressLine2: addr.addressLine2 || addr.line2 || '',
@@ -318,6 +321,14 @@ const CheckoutPage = () => {
   };
 
   const handleOrder = async () => {
+    if(address.pincode =='' || address.countryCode==''){
+      message.error("Please fill all required address fields");
+    }
+     if (!selectedPayment) {
+      message.error("Please select a payment method");
+      return;
+    }
+    
     console.log(selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "", "kkk")
     try {
       const PurchasedProduct = cartItems.map((item, index) => {
@@ -349,12 +360,16 @@ const CheckoutPage = () => {
         shippingAddress: {
           FullName: address.fullName || '',
           Line1: address.line1 || address.addressLine1 || '',
-          AddressLine2: address.line2 || address.addressLine2 || '',
+          Line2: address.line2 || address.addressLine2 || '',
           City: address.city || '',
           State: address.state || '',
           Zip: address.zip || address.pincode || '',
           Country: address.country || 'India',
-          MobileNumner: address.mobileNumner || address.MobileNumnber || address.phone || ''
+          countryCode: address.countryCode || '',
+          // mobileNumner: (address.countryCode || '') + (address.mobileNumner || address.MobileNumnber || address.phone || ''),
+          MobileNumner: (address.countryCode || '') + 
+              (address.mobileNumner || address.MobileNumnber || address.phone || ''),
+
         },
         ShippingRemarks: ShippingRemarks,
         paymentMethod: selectedPayment ? selectedPayment.id : "",
@@ -412,7 +427,7 @@ const CheckoutPage = () => {
           // Remove only ordered items from cart, keep unselected items
           removeOrderedItemsFromCart(cartItems);
           setCartItems([])
-          navigate("/orders"); 
+          navigate("/orders");
         },
       };
 
@@ -538,6 +553,7 @@ const CheckoutPage = () => {
         city: address.city,
         state: address.state,
         zip: address.pincode,
+        countryCode: address.countryCode,
         country: address.country,
         isDefault: false
       };
@@ -579,6 +595,7 @@ const CheckoutPage = () => {
       city: addressToEdit.city,
       state: addressToEdit.state,
       pincode: addressToEdit.zip,
+      countryCode: addressToEdit.countryCode || '',
       country: addressToEdit.country,
       landmark: addressToEdit.landmark || ''
     });
@@ -587,7 +604,7 @@ const CheckoutPage = () => {
 
   const handleUpdateAddress = async () => {
     // Validate required fields
-    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode'];
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode','countryCode'];
     const errors = {};
 
     requiredFields.forEach(field => {
@@ -608,6 +625,7 @@ const CheckoutPage = () => {
       const addressPayload = {
         fullName: address.fullName,
         // Backend expects this exact key (matches addAddress)
+        countryCode: address.countryCode,
         MobileNumnber: address.phone,
         line1: address.addressLine1,
         line2: address.addressLine2 || '',
@@ -644,6 +662,7 @@ const CheckoutPage = () => {
     setEditingAddressId(null);
     setAddress({
       fullName: '',
+      countryCode: '',
       phone: '',
       addressLine1: '',
       addressLine2: '',
@@ -723,7 +742,7 @@ const CheckoutPage = () => {
     setSelectedCoupon({});
     message.info("Coupon removed");
   }
-  
+
   const calculateCouponDiscount = (coupon) => {
     if (!coupon) return 0;
 
@@ -993,6 +1012,25 @@ const CheckoutPage = () => {
 
                         <div className="md:col-span-2">
                           <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">Phone Number *</label>
+                          <select
+                            required
+                            value={address.countryCode}
+                            onChange={(e) =>
+                              handleInputChange({
+                                target: { name: "countryCode", value: e.target.value },
+                              })
+                            }
+                            className={`w-28 px-3 py-3 border-2 focus:outline-none text-sm font-light transition-colors rounded-lg ${addressErrors.phone
+                                ? "border-red-500 bg-red-50"
+                                : "border-gray-300 focus:border-black hover:border-gray-400"
+                              }`}
+                          >
+                            {countryCodeOptions.map((item) => (
+                              <option key={item.code} value={item.code}>
+                                {item.code} ({item.short})
+                              </option>
+                            ))}
+                          </select>
                           <input
                             type="tel"
                             name="phone"
@@ -1467,19 +1505,19 @@ const CheckoutPage = () => {
 
                   return (
                     <div key={`${item.id}_${item.size || "nosize"}`} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
-                      <img  src={
-                            (() => {
-                              if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-                                const colors = product.availableColors || [];
-                                const colorIndex = colors.indexOf(item.color); // index of the item's color
-                                const imagesPerColor = 4; // number of images per color
-                                const startIndex = colorIndex >= 0 ? colorIndex * imagesPerColor : 0;
-                                const imgObj = product.images[startIndex]; // pick first image of that color
-                                return imgObj?.thumbnailUrl || imgObj?.url || imgObj || product.thumbnailUrl || product.image || '';
-                              }
-                              return product.thumbnailUrl || product.image || '';
-                            })()
-                          } alt={product.name} className="w-16 h-16 object-cover rounded" />
+                      <img src={
+                        (() => {
+                          if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                            const colors = product.availableColors || [];
+                            const colorIndex = colors.indexOf(item.color); // index of the item's color
+                            const imagesPerColor = 4; // number of images per color
+                            const startIndex = colorIndex >= 0 ? colorIndex * imagesPerColor : 0;
+                            const imgObj = product.images[startIndex]; // pick first image of that color
+                            return imgObj?.thumbnailUrl || imgObj?.url || imgObj || product.thumbnailUrl || product.image || '';
+                          }
+                          return product.thumbnailUrl || product.image || '';
+                        })()
+                      } alt={product.name} className="w-16 h-16 object-cover rounded" />
                       <div className="flex-1 min-w-0 space-y-1">
                         <p className="text-sm md:text-base font-light text-black truncate font-futura-pt-book">{product.name}</p>
                         {item.size && (

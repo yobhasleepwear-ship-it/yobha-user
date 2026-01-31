@@ -4,6 +4,7 @@ import { addAddress, updateAddress, deleteAddress, getAddresses, createReferral 
 import { message } from "../../comman/toster-message/ToastContainer";
 import { updateUserName } from "../../service/user";
 import CountryDropdown from "../../countryDropdown";
+import { countryCodeOptions } from "../../constants/commanConstant";
 
 
 const AccountPage = () => {
@@ -404,6 +405,26 @@ const AccountPage = () => {
                         onChange={(e) => setTempData({ ...tempData, line2: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
                       />
+                      <select
+                        required
+                        value={
+                          tempData.CountryCode ||
+                          countryCodeOptions.find((c) =>
+                            tempData.mobileNumner?.startsWith(c.code)
+                          )?.code ||
+                          "+91"
+                        }
+                        onChange={(e) =>
+                          setTempData({ ...tempData, CountryCode: e.target.value })
+                        }
+                        className="w-28 px-3 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light text-sm md:text-base"
+                      >
+                        {countryCodeOptions.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.code} ({item.short})
+                          </option>
+                        ))}
+                      </select>
                       <input
                         type="text"
                         placeholder="Mobile Number"
