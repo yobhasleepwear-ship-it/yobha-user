@@ -264,6 +264,7 @@ const Buyback3 = () => {
     const now = new Date();
     const monthsDiff = (now - date) / (1000 * 60 * 60 * 24 * 30);
 
+    if (monthsDiff > 6) return "More than 6 Months";
     if (monthsDiff <= 6) return "Last 6 Months";
     if (monthsDiff <= 12) return "Last 12 Months";
     if (date.getFullYear() === 2023) return "2023 Purchases";
@@ -310,7 +311,14 @@ const Buyback3 = () => {
   }, [orders]);
 
   const filteredOrders = useMemo(() => {
-    return transformedOrders;
+    return transformedOrders.filter((order) => {
+      if (!order.placedOn) return false;
+      const orderDate = new Date(order.placedOn);
+      const today = new Date();
+      const sixMonthsAgo = new Date(today);
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      return orderDate <= sixMonthsAgo; // Only show orders older than 6 months
+    });
   }, [transformedOrders]);
 
   const allConditionsAnswered = useMemo(
@@ -359,16 +367,16 @@ const Buyback3 = () => {
     sixMonthsAgo.setHours(0, 0, 0, 0);
 
     // Check if purchase date is more than 6 months old (or exactly 6 months)
-    // If purchase date is before or equal to sixMonthsAgo, not eligible
+    // If purchase date is before or equal to sixMonthsAgo, eligible
     if (purchaseDateObj <= sixMonthsAgo) {
-      setIsEligible(false);
+      setIsEligible(true);
       setPurchaseDateChecked(true);
-      return false;
+      return true;
     }
 
-    setIsEligible(true);
+    setIsEligible(false);
     setPurchaseDateChecked(true);
-    return true;
+    return false;
   };
 
   const handlePurchaseDateChange = (e) => {
@@ -751,10 +759,17 @@ const Buyback3 = () => {
                   type="date"
                   value={purchaseDate}
                   onChange={handlePurchaseDateChange}
-                  max={new Date().toISOString().split('T')[0]}
+                  max={(() => {
+                    const sixMonthsAgo = new Date();
+                    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                    return sixMonthsAgo.toISOString().split('T')[0];
+                  })()}
                   className="w-full px-4 py-3 border-2 border-gray-300 focus:outline-none focus:border-black transition-colors text-sm md:text-base font-light font-futura-pt-light text-black"
                   placeholder="Select purchase date"
                 />
+                <p className="text-xs md:text-sm text-gray-600 font-light font-futura-pt-light mt-2">
+                  Buyback is eligible for purchases more than 6 months old
+                </p>
                 {purchaseDateChecked && isEligible === false && (
                   <div className="mt-4 p-4 bg-red-50 border-2 border-red-200 rounded">
                     <div className="flex items-start gap-3">
@@ -764,7 +779,7 @@ const Buyback3 = () => {
                           Not Eligible for Trade-In
                         </p>
                         <p className="text-xs md:text-sm text-red-700 font-light font-futura-pt-light">
-                          Your purchase date is more than 6 months ago. Unfortunately, you are not eligible to trade in this item. Items must be purchased within the last 6 months to be eligible for our buyback program.
+                          Your purchase date is within the last 6 months. Unfortunately, you are not eligible to trade in this item. Items must be purchased more than 6 months ago to be eligible for our buyback program.
                         </p>
                       </div>
                     </div>

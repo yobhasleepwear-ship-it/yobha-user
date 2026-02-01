@@ -119,8 +119,8 @@ const CheckoutPage = () => {
         setAvailableCoupons(response.data.coupons || []);
         setLoyaltyPoints(response.data.loyaltyPoints || 0);
 
-        // Calculate loyalty discount amount (loyalty points / 10)
-        const loyaltyDiscount = Math.floor((response.data.loyaltyPoints || 0) / 10);
+        // Calculate loyalty discount amount (1 loyalty point = 1 currency unit)
+        const loyaltyDiscount = response.data.loyaltyPoints || 0;
         setLoyaltyDiscountAmount(loyaltyDiscount);
       }
     } catch (err) {
@@ -321,10 +321,16 @@ const CheckoutPage = () => {
   };
 
   const handleOrder = async () => {
-    if(address.pincode =='' || address.countryCode==''){
-      message.error("Please fill all required address fields");
+    // Validate address fields
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
+    const missingFields = requiredFields.filter(field => !address[field]);
+    
+    if (missingFields.length > 0) {
+      message.error(`Please fill all required address fields: ${missingFields.join(', ')}`);
+      return;
     }
-     if (!selectedPayment) {
+
+    if (!selectedPayment) {
       message.error("Please select a payment method");
       return;
     }
@@ -527,7 +533,7 @@ const CheckoutPage = () => {
 
   const handleAddAddress = async () => {
     // Validate required fields
-    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode'];
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
     const errors = {};
 
     requiredFields.forEach(field => {
@@ -602,9 +608,30 @@ const CheckoutPage = () => {
     setUseSavedAddress(false);
   };
 
+  const handleValidateAddress = async () => {
+    // Validate required fields
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
+    const errors = {};
+
+    requiredFields.forEach(field => {
+      if (!address[field]) {
+        errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+      }
+    });
+
+    if (Object.keys(errors).length > 0) {
+      setAddressErrors(errors);
+      return;
+    }
+
+    // Clear any errors
+    setAddressErrors({});
+    message.success("Address validated successfully! You can now proceed to place your order.");
+  };
+
   const handleUpdateAddress = async () => {
     // Validate required fields
-    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode','countryCode'];
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
     const errors = {};
 
     requiredFields.forEach(field => {
@@ -1122,17 +1149,21 @@ const CheckoutPage = () => {
                           {addressErrors.pincode && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.pincode}</p>}
                         </div>
 
-                        {/* <div>
-                          <label className="block text-sm font-light text-gray-700 mb-1">Landmark</label>
+                        <div>
+                          <label className="block text-sm md:text-base font-light text-gray-700 mb-1 font-futura-pt-light">Country *</label>
                           <input
                             type="text"
-                            name="landmark"
-                            value={address.landmark}
+                            name="country"
+                            value={address.country}
                             onChange={handleInputChange}
-                            placeholder="Nearby landmark (Optional)"
-                            className="w-full px-4 py-3 border-2 border-gray-300 focus:border-black hover:border-gray-400 focus:outline-none text-sm  transition-colors"
+                            placeholder="Enter country"
+                            className={`w-full px-4 py-3 border-2 focus:outline-none text-sm  transition-colors ${addressErrors.country
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 focus:border-black hover:border-gray-400'
+                              }`}
                           />
-                        </div> */}
+                          {addressErrors.country && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.country}</p>}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1142,19 +1173,19 @@ const CheckoutPage = () => {
                     <div className="mt-6 pt-4 border-t border-gray-200">
                       <div className="flex flex-col sm:flex-row gap-3">
                         <button
-                          onClick={isEditingAddress ? handleUpdateAddress : handleAddAddress}
+                          onClick={isEditingAddress ? handleUpdateAddress : (!useSavedAddress ? handleValidateAddress : handleAddAddress)}
                           disabled={isAddingAddress}
                           className="flex-1 bg-black text-white py-3 px-6 font-light hover:bg-gray-800 transition-colors text-sm md:text-base flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed font-futura-pt-light"
                         >
                           {isAddingAddress ? (
                             <>
                               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                              <span>{isEditingAddress ? 'Updating...' : 'Adding...'}</span>
+                              <span>{isEditingAddress ? 'Updating...' : (!useSavedAddress ? 'Validate Address' : 'Adding...')}</span>
                             </>
                           ) : (
                             <>
                               <MapPin size={16} strokeWidth={1.5} />
-                              {isEditingAddress ? 'Update Address' : 'Add Address'}
+                              {isEditingAddress ? 'Update Address' : (!useSavedAddress ? 'Validate Address' : 'Add Address')}
                             </>
                           )}
                         </button>
@@ -1225,7 +1256,7 @@ const CheckoutPage = () => {
                                 </p>
                               );
                             })()}
-                            <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">({loyaltyDiscountAmount * 10} points used)</p>
+                            <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">({loyaltyDiscountAmount} points used)</p>
                           </div>
                         </div>
                       </div>
@@ -1352,7 +1383,7 @@ const CheckoutPage = () => {
                         )}
                         {loyaltyDiscountAmount > 0 && (
                           <div className="flex justify-between text-sm md:text-base">
-                            <span className="text-text-medium font-futura-pt-light">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
+                            <span className="text-text-medium font-futura-pt-light">Loyalty Points ({loyaltyDiscountAmount} pts used)</span>
                             {(() => {
                               const priceFormatted = formatPrice(loyaltyDiscountAmount, getCurrency());
                               return (
@@ -1581,7 +1612,7 @@ const CheckoutPage = () => {
                   {/* Loyalty Points Discount */}
                   {loyaltyDiscountAmount > 0 && (
                     <div className="flex justify-between text-sm md:text-base">
-                      <span className="text-text-medium font-futura-pt-light">Loyalty Points ({loyaltyDiscountAmount * 10} pts used)</span>
+                      <span className="text-text-medium font-futura-pt-light">Loyalty Points ({loyaltyDiscountAmount} pts used)</span>
                       {(() => {
                         const priceFormatted = formatPrice(loyaltyDiscountAmount, getCurrency());
                         return (

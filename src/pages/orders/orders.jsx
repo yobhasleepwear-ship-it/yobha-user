@@ -343,7 +343,14 @@ const getStatusColor = (status) => {
 
                 {/* Footer */}
                 <div className="border-t border-gray-200 px-4 sm:px-5 md:px-6 py-3 flex flex-wrap justify-end gap-3">
-                  {!isGiftCard && order?.items && order.items.length > 0 && (
+                  {!isGiftCard && order?.items && order.items.length > 0 && (() => {
+                    // Check if order is more than 6 months old
+                    const orderDate = new Date(order.createdAt);
+                    const now = new Date();
+                    const monthsDiff = (now - orderDate) / (1000 * 60 * 60 * 24 * 30);
+                    const isEligibleForBuyback = monthsDiff > 6;
+                    return isEligibleForBuyback;
+                  })() && (
                     <button
                       onClick={() => {
                         setSelectedOrder(order);
