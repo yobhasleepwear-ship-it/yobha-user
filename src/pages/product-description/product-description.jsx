@@ -245,9 +245,11 @@ const ProductDetailPage = () => {
   const [colorIndex, setColorIndex] = useState(0);
   const [productImage, setProductImage] = useState([])
   const selectedImages = useMemo(() => {
-    const start = colorIndex * IMAGES_PER_COLOR;
+    const safeColorIndex = colorIndex < 0 ? 0 : colorIndex;
+    const start = safeColorIndex * IMAGES_PER_COLOR;
     const end = start + IMAGES_PER_COLOR;
-    return productImage.slice(start, end);
+    const imagesForColor = productImage.slice(start, end);
+    return imagesForColor.length > 0 ? imagesForColor : productImage.slice(0, IMAGES_PER_COLOR);
   }, [colorIndex, productImage]);
   console.log(productImage, "productImage")
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code);
@@ -279,7 +281,6 @@ const ProductDetailPage = () => {
   const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
   const sizeDropdownRef = React.useRef(null);
   const sizeModalRef = React.useRef(null);
-  const imageScrollRef = React.useRef(null);
   const [recommendedSize, setRecommendedSize] = useState(null);
   const [activeSection, setActiveSection] = useState(
     //     {
@@ -387,7 +388,8 @@ const ProductDetailPage = () => {
       setProduct(response.data);
       setProductImage(response.data.images)
       if (filterColour) {
-        setColorIndex(response.data.availableColors.indexOf(filterColour));
+        const matchedColorIndex = response.data.availableColors.indexOf(filterColour);
+        setColorIndex(matchedColorIndex >= 0 ? matchedColorIndex : 0);
       }
 
       setAverageProdRating(() => {
@@ -414,6 +416,10 @@ const ProductDetailPage = () => {
       fetchProductDetail(productId);
     }
   }, [productId, fetchProductDetail]);
+
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [colorIndex, productImage]);
 
   // Check if product is in wishlist on mount
   useEffect(() => {
@@ -475,52 +481,6 @@ const ProductDetailPage = () => {
   useEffect(() => {
     setCarouselIndex(0);
   }, [itemsPerView, newProducts.length]);
-
-  // Handle scroll to change images (both horizontal on mobile and vertical on desktop)
-  useEffect(() => {
-    const scrollContainer = imageScrollRef.current;
-    if (!scrollContainer || !product || product.images.length <= 1) return;
-
-    const handleScroll = () => {
-      const isMobile = window.innerWidth < 1024; // lg breakpoint
-
-      if (isMobile) {
-        // Horizontal scrolling on mobile
-        const scrollLeft = scrollContainer.scrollLeft;
-        const containerWidth = scrollContainer.clientWidth;
-        const imageWidth = containerWidth; // Each image takes full container width
-
-        const newIndex = Math.min(
-          Math.round(scrollLeft / imageWidth),
-          product.images.length - 1
-        );
-
-        if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
-          setSelectedImageIndex(newIndex);
-        }
-      } else {
-        // Vertical scrolling on desktop
-        const scrollTop = scrollContainer.scrollTop;
-        const containerHeight = scrollContainer.clientHeight;
-        const imageHeight = containerHeight; // Each image takes full container height
-
-        const newIndex = Math.min(
-          Math.round(scrollTop / imageHeight),
-          product.images.length - 1
-        );
-
-        if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < product.images.length) {
-          setSelectedImageIndex(newIndex);
-        }
-      }
-    };
-
-    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll);
-    };
-  }, [product, selectedImageIndex]);
 
   // Calculate recommended size when measurements change
   useEffect(() => {
@@ -601,18 +561,23 @@ const ProductDetailPage = () => {
   //   : 0;
   const availableQuantity = 100000000000;
 
+  const goToImage = (nextIndex) => {
+    if (selectedImages.length === 0) return;
+    const maxIndex = selectedImages.length - 1;
+    const clampedIndex = Math.max(0, Math.min(nextIndex, maxIndex));
+    setSelectedImageIndex(clampedIndex);
+  };
+
   const handlePrevImage = () => {
-    if (!product || product.images.length === 0) return;
-    setSelectedImageIndex((prev) =>
-      prev === 0 ? product.images.length - 1 : prev - 1
-    );
+    if (selectedImages.length === 0) return;
+    const prevIndex = selectedImageIndex === 0 ? selectedImages.length - 1 : selectedImageIndex - 1;
+    setSelectedImageIndex(prevIndex);
   };
 
   const handleNextImage = () => {
-    if (!product || product.images.length === 0) return;
-    setSelectedImageIndex((prev) =>
-      prev === product.images.length - 1 ? 0 : prev + 1
-    );
+    if (selectedImages.length === 0) return;
+    const nextIndex = selectedImageIndex === selectedImages.length - 1 ? 0 : selectedImageIndex + 1;
+    setSelectedImageIndex(nextIndex);
   };
 
   // Quantity controls
@@ -898,8 +863,7 @@ const ProductDetailPage = () => {
     );
   }
   const displayedReviews = showAll ? product.reviews : product.reviews.slice(0, 5);
-  const currentImage = product.images[selectedImageIndex] || product.images[0];
-  const hasMultipleImages = product.images.length > 1;
+  const hasMultipleImages = selectedImages.length > 1;
   const handleCountryChange = (e) => {
     setSelectedCountry(e.target.value);
     // You can also trigger other logic here if needed
@@ -990,122 +954,156 @@ const ProductDetailPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-0">
 
           {/* Left Column - Full Product Image */}
-          <div className="relative bg-white flex items-center justify-center h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px] group">
-            {/* Main Product Image - Horizontal Scroll on Mobile, Vertical Scroll on Desktop */}
-            <div
-              ref={imageScrollRef}
-              className="relative w-full h-full overflow-x-scroll lg:overflow-x-hidden lg:overflow-y-scroll overflow-y-hidden scrollbar-hide"
-              style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none'
-              }}
-            >
-              <div className="relative w-full h-full">
-                {/* Mobile: Horizontal Layout */}
-                <div className="flex flex-row lg:hidden h-full">
-                  {selectedImages.map((image, index) => (
-                    <div
-                      key={index}
-                      className="w-full flex items-center justify-center flex-shrink-0 h-full"
-                      style={{ minWidth: '100%' }}
-                    >
+          <div className="relative bg-white h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px] group">
+            {/* Mobile: Single-image horizontal slider with arrows */}
+            <div className="relative w-full h-full lg:hidden">
+              <div className="w-full h-full overflow-hidden">
+                <div
+                  className="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{ transform: `translateX(-${selectedImageIndex * 100}%)` }}
+                >
+                  {selectedImages.map((image, index) => {
+                    const imageSrc = typeof image === "string"
+                      ? image
+                      : (image?.url || image?.thumbnailUrl || "");
+                    const imageAlt = typeof image === "string"
+                      ? `Product image ${index + 1}`
+                      : (image?.alt || `Product image ${index + 1}`);
+
+                    return (
                       <img
-                        src={image.url}
-                        alt={image.alt || `Product image ${index + 1}`}
-                        className="w-full h-full object-contain cursor-pointer"
+                        key={index}
+                        src={imageSrc}
+                        alt={imageAlt}
+                        className="w-full h-full object-contain cursor-pointer flex-shrink-0"
+                        loading={index === selectedImageIndex ? "eager" : "lazy"}
                         onClick={() => {
                           setIsImageFull(true);
-                          setCurrentImageFull(image.url);
+                          setCurrentImageFull(imageSrc);
                         }}
                         onError={(e) => {
                           e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
                         }}
                       />
-                    </div>
-                  ))}
-                </div>
-                {/* Desktop: Vertical Layout */}
-                <div className="hidden lg:flex flex-col h-full">
-                  {selectedImages.map((image, index) => (
-                    <div
-                      key={index}
-                      className="w-full flex items-center justify-center flex-shrink-0 h-[500px] sm:h-[550px] lg:h-[600px] xl:h-[650px]"
-                    >
-                      <img
-                        src={image.url}
-                        alt={image.alt || `Product image ${index + 1}`}
-                        className="w-full h-full object-contain cursor-pointer"
-                        onClick={() => {
-                          setIsImageFull(true);
-                          setCurrentImageFull(image.url);
-                        }}
-                        onError={(e) => {
-                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                        }}
-                      />
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Share Button - Top Right */}
-              <button
-                onClick={handleShare}
-                className="absolute top-4 right-4 w-10 h-10 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all opacity-0 group-hover:opacity-100 duration-300 z-10"
-              >
-                <Share2 className="w-4 h-4 text-black" strokeWidth={1.5} />
-              </button>
+              {hasMultipleImages && (
+                <>
+                  <button
+                    onClick={handlePrevImage}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 border border-gray-300 rounded-full flex items-center justify-center shadow-sm z-20"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={18} strokeWidth={1.8} />
+                  </button>
+                  <button
+                    onClick={handleNextImage}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 border border-gray-300 rounded-full flex items-center justify-center shadow-sm z-20"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={18} strokeWidth={1.8} />
+                  </button>
+                </>
+              )}
+
+              {hasMultipleImages && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-2 z-20">
+                  {selectedImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToImage(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
+                        ? 'bg-black'
+                        : 'bg-gray-400 hover:bg-gray-600'
+                        }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Image Navigation Indicators - Bottom Center on Mobile, Left Middle on Desktop */}
-            {hasMultipleImages && (
-              <>
-                {/* Mobile: Bottom Center */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-2 z-20 lg:hidden">
-                  {selectedImages.map((_, index) => (
+            {/* Desktop: Vertical thumbnails on left + single main image on right */}
+            <div className="hidden lg:flex h-full w-full items-start gap-4 px-4">
+              <div className="w-20 h-full overflow-y-auto scrollbar-hide py-4 flex flex-col gap-3">
+                {selectedImages.map((image, index) => {
+                  const thumbSrc = typeof image === "string"
+                    ? image
+                    : (image?.thumbnailUrl || image?.url || "");
+                  const thumbAlt = typeof image === "string"
+                    ? `Thumbnail ${index + 1}`
+                    : (image?.alt || `Thumbnail ${index + 1}`);
+
+                  return (
                     <button
                       key={index}
-                      onClick={() => {
-                        const scrollContainer = imageScrollRef.current;
-                        if (scrollContainer) {
-                          const containerWidth = scrollContainer.clientWidth;
-                          const scrollPosition = index * containerWidth;
-                          scrollContainer.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-                        }
-                        setSelectedImageIndex(index);
-                      }}
-                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
-                        ? 'bg-black'
-                        : 'bg-gray-400 hover:bg-gray-600'
+                      onClick={() => goToImage(index)}
+                      className={`w-full h-24 border transition-all overflow-hidden ${index === selectedImageIndex
+                        ? "border-black"
+                        : "border-gray-200 hover:border-gray-400"
                         }`}
-                      aria-label={`Go to image ${index + 1}`}
-                    />
-                  ))}
+                      aria-label={`Select image ${index + 1}`}
+                    >
+                      <img
+                        src={thumbSrc}
+                        alt={thumbAlt}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                        }}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="relative flex-1 h-full flex items-center justify-center py-4">
+                <div className="w-full h-full overflow-hidden">
+                  <div
+                    className="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    style={{ transform: `translateX(-${selectedImageIndex * 100}%)` }}
+                  >
+                    {selectedImages.map((image, index) => {
+                      const imageSrc = typeof image === "string"
+                        ? image
+                        : (image?.url || image?.thumbnailUrl || "");
+                      const imageAlt = typeof image === "string"
+                        ? `Product image ${index + 1}`
+                        : (image?.alt || `Product image ${index + 1}`);
+
+                      return (
+                        <img
+                          key={index}
+                          src={imageSrc}
+                          alt={imageAlt}
+                          className="w-full h-full object-contain cursor-pointer flex-shrink-0"
+                          loading={index === selectedImageIndex ? "eager" : "lazy"}
+                          onClick={() => {
+                            setIsImageFull(true);
+                            setCurrentImageFull(imageSrc);
+                          }}
+                          onError={(e) => {
+                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-                {/* Desktop: Left Middle */}
-                <div className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
-                  {selectedImages.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        const scrollContainer = imageScrollRef.current;
-                        if (scrollContainer) {
-                          const containerHeight = scrollContainer.clientHeight;
-                          const scrollPosition = index * containerHeight;
-                          scrollContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-                        }
-                        setSelectedImageIndex(index);
-                      }}
-                      className={`w-2 h-2 rounded-full transition-all ${index === selectedImageIndex
-                        ? 'bg-black'
-                        : 'bg-gray-400 hover:bg-gray-600'
-                        }`}
-                      aria-label={`Go to image ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
+              </div>
+            </div>
+
+            {/* Share Button - Top Right */}
+            <button
+              onClick={handleShare}
+              className="absolute top-4 right-4 w-10 h-10 bg-white hover:bg-white border border-gray-300 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all opacity-0 group-hover:opacity-100 duration-300 z-20"
+            >
+              <Share2 className="w-4 h-4 text-black" strokeWidth={1.5} />
+            </button>
           </div>
 
           {/* Right Column - Product Info - Louis Vuitton Style */}
