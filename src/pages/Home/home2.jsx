@@ -323,7 +323,7 @@ const HomePage2 = () => {
             </div>
           ) : products.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                 {products
                   .filter((p) => p.available)
                   .slice(0, 8)
@@ -1094,4 +1094,3 @@ const HomePage2 = () => {
 };
 
 export default HomePage2;
-

@@ -407,9 +407,8 @@ const selectedImages = useMemo(() => {
         style={{
           aspectRatio: '1 / 1',
           border: 'none',
-          boxShadow: isHovered ? '0 10px 30px rgba(0, 0, 0, 0.1)' : 'none',
-          transition: 'box-shadow 0.5s ease-out, transform 0.5s ease-out',
-          transform: isHovered ? 'translateY(-4px)' : 'translateY(0)'
+          boxShadow: 'none',
+          transition: 'none'
         }}
       >
         {/* Carousel Images with Zoom Effect */}
@@ -419,7 +418,7 @@ const selectedImages = useMemo(() => {
               key={index}
               src={img}
               alt={`${productName} - ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-contain ${index === currentImageIndex
+              className={`absolute inset-0 w-full h-full object-cover ${index === currentImageIndex
                 ? 'opacity-100'
                 : 'opacity-0'
                 }`}
