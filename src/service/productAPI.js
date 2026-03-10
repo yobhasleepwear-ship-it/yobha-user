@@ -1,4 +1,5 @@
 import * as axiosService from "./axiosService";
+import { trackAddToCartMeta } from "../analytics/metaPixel";
 
 
 export const getFilteredProducts = async (payload) => {
@@ -51,6 +52,11 @@ export const getCartDetails = async () => {
 export const addToCart = async (payload) => {
   try {
     const response = await axiosService.Post(`/Cart`, payload);
+    trackAddToCartMeta({
+      productId: payload?.productId,
+      quantity: payload?.quantity,
+      currency: payload?.currency,
+    });
     return response.data;
   } catch (err) {
     console.error("addToCart error:", err.response?.data || err.message);

@@ -18,6 +18,7 @@ import { setCartCount } from "../../redux/cartSlice";
 import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import { countryCodeOptions } from "../../constants/commanConstant";
+import { trackAddToCartMeta } from "../../analytics/metaPixel";
 
 const Personalization = () => {
   const navigate = useNavigate();
@@ -561,6 +562,13 @@ const Personalization = () => {
 
       localStorage.setItem("cart", JSON.stringify(cart));
       dispatch(setCartCount(cart.length));
+      trackAddToCartMeta({
+        productId: safeProduct?.productId || safeProduct?.id,
+        productName: safeProduct?.productName || safeProduct?.name,
+        quantity,
+        value: lineTotal,
+        currency: itemCurrency,
+      });
       message.success(`${safeProduct.productName || "Product"} added to cart!`);
       navigate("/cart");
     } catch (error) {

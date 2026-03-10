@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
 import { getPinCodeDetails } from "../../service/delivery";
 import { countryCodeOptions } from "../../constants/commanConstant";
+import { trackPurchaseMeta } from "../../analytics/metaPixel";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -91,6 +92,16 @@ const CheckoutPage = () => {
   const [giftWrapEnabled, setGiftWrapEnabled] = useState(false);
   const [email, setEmail] = useState("")
   const [giftCardNumber, setGiftCardNumber] = useState("")
+
+  const trackPurchaseEvent = (orderRes, currencyCode) => {
+    trackPurchaseMeta({
+      orderId: orderRes?.orderId,
+      value: orderRes?.total ?? cartSummary?.grandTotal,
+      currency: currencyCode || cartSummary?.currency || "INR",
+      productIds: (cartItems || []).map((item) => item.productId || item.id).filter(Boolean),
+      itemCount: (cartItems || []).reduce((sum, item) => sum + Number(item.quantity || 1), 0),
+    });
+  };
   // Payment Methods
   const paymentMethods = [
     {
@@ -407,6 +418,10 @@ const CheckoutPage = () => {
         return;
       }
       if (orderRes.razorpayOrderId == null) {
+        const codCurrency = pageProps == "GiftCardPurchase"
+          ? currency
+          : cartItems?.[0]?.priceList?.find((e) => e.country === cartItems?.[0]?.country)?.currency;
+        trackPurchaseEvent(orderRes, codCurrency);
         message.success("Order Created Successfully , your orderId is " + orderRes.orderId, 10000)
         // Remove only ordered items from cart, keep unselected items
         removeOrderedItemsFromCart(cartItems);
@@ -428,6 +443,13 @@ const CheckoutPage = () => {
             razorpayPaymentId: response.razorpay_payment_id,
             isSuccess: true,
           });
+
+          if (updateRes?.success !== false) {
+            const prepaidCurrency = pageProps == "GiftCardPurchase"
+              ? currency
+              : cartItems?.[0]?.priceList?.find((e) => e.country === cartItems?.[0]?.country)?.currency;
+            trackPurchaseEvent(orderRes, prepaidCurrency);
+          }
 
           message.success("Payment successful ✅");
           // Remove only ordered items from cart, keep unselected items

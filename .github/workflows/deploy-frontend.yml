@@ -30,6 +30,8 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          REACT_APP_META_PIXEL_ID: ${{ secrets.REACT_APP_META_PIXEL_ID }}
         run: CI=false npm run build
 
       - name: Configure AWS credentials

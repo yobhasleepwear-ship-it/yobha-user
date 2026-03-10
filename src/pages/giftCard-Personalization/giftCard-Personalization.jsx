@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { createOrder, updatePayment } from "../../service/orderService";
+import { trackPurchaseMeta } from "../../analytics/metaPixel";
 
 // import { createOrder, updatePayment } from "../../service/orderAPI"; // adjust path if needed
 
@@ -43,6 +44,13 @@ const GiftCardPage = () => {
 
       // 3️⃣ If no Razorpay order, mark as success
       if (!orderRes.razorpayOrderId) {
+        trackPurchaseMeta({
+          orderId: orderRes?.orderId,
+          value: orderRes?.total ?? parseFloat(amount),
+          currency,
+          productIds: ["gift-card"],
+          itemCount: 1,
+        });
         message.success("Gift Card Order Created Successfully 🎁", 10000);
         setEmail("");
         setAmount("");
@@ -63,6 +71,16 @@ const GiftCardPage = () => {
                 razorpayPaymentId: response.razorpay_payment_id,
                 isSuccess: true,
               });
+
+              if (updateRes?.success !== false) {
+                trackPurchaseMeta({
+                  orderId: orderRes?.orderId,
+                  value: orderRes?.total ?? parseFloat(amount),
+                  currency,
+                  productIds: ["gift-card"],
+                  itemCount: 1,
+                });
+              }
     
               message.success("Payment successful ✅");
            

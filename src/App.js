@@ -19,6 +19,7 @@ import { addToWishlist } from "./service/wishlist";
 import { invalidateWishlistCache } from "./service/wishlistCache";
 import { incrementWishlistCount } from "./redux/wishlistSlice";
 import { message } from "./comman/toster-message/ToastContainer";
+import MetaPixelRouteTracker from "./analytics/MetaPixelRouteTracker";
 
 function AppContent() {
   const dispatch = useDispatch();
@@ -89,6 +90,7 @@ function AppContent() {
   }, []);
   return (
    <ScrollToTop>
+      <MetaPixelRouteTracker />
       {!countryConfirmed ? (
         <div style={{ padding: "10px" }}>
           <CountryDropdown onConfirmed={() => { setCountryConfirmed(true); }} />

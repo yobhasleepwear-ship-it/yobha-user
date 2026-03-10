@@ -26,6 +26,7 @@ import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import SlidePanel from "./slider";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { trackAddToCartMeta } from "../../analytics/metaPixel";
 
 const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
   if (!Array.isArray(priceList) || priceList.length === 0) return 0;
@@ -697,6 +698,19 @@ const ProductDetailPage = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
     setCartItems(cart);
     dispatch(setCartCount(cart.length));
+
+    const matchedPrice = product?.priceList?.find(
+      (item) => item.country === selectedCountry && item.size === selectedSize
+    );
+    const unitPrice = Number(matchedPrice?.priceAmount || product?.unitPrice || 0);
+    trackAddToCartMeta({
+      productId: product?.productId || product?.id,
+      productName: product?.name,
+      quantity,
+      value: unitPrice * Number(quantity || 1),
+      currency: matchedPrice?.currency || "INR",
+    });
+
     message.success(`${safeProduct.name || "Product"} added to cart!`);
   };
 

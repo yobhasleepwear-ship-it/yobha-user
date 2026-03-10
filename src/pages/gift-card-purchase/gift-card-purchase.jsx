@@ -4,6 +4,7 @@ import { Gift, Mail, DollarSign, MapPin, ArrowRight, CheckCircle, Copy, Check } 
 import { message } from "../../comman/toster-message/ToastContainer";
 import { createOrder, updatePayment } from "../../service/orderService";
 import { CountrySelector, countryOptions } from "../../countryDropdown";
+import { trackPurchaseMeta } from "../../analytics/metaPixel";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -167,6 +168,14 @@ const GiftCardPurchase = () => {
 
       // If no Razorpay order, mark as success
       if (!orderRes.razorpayOrderId) {
+        trackPurchaseMeta({
+          orderId: orderRes?.orderId,
+          value: orderRes?.total ?? parseFloat(amount),
+          currency,
+          productIds: ["gift-card"],
+          itemCount: 1,
+        });
+
         console.log("Order created without Razorpay:", orderRes);
         // Check if gift card code is in response (check multiple possible paths)
         const giftCardCode = orderRes?.data?.giftCardCode || 
@@ -231,6 +240,14 @@ const GiftCardPurchase = () => {
             console.log("Extracted gift card code:", giftCardCode);
             
             if (giftCardCode) {
+              trackPurchaseMeta({
+                orderId: orderRes?.orderId,
+                value: orderRes?.total ?? parseFloat(amount),
+                currency,
+                productIds: ["gift-card"],
+                itemCount: 1,
+              });
+
               setGiftCardCode(giftCardCode);
               setGiftCardAmount(amount);
               setGiftCardCurrency(currency);

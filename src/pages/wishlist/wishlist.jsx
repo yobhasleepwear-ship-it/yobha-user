@@ -11,6 +11,7 @@ import { message } from "../../comman/toster-message/ToastContainer";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 import ProductCard from "../product/components/product-card";
+import { trackAddToCartMeta } from "../../analytics/metaPixel";
 
 export const countryOptions = [
   { code: "IN", label: "India", currency: "INR" },
@@ -222,6 +223,19 @@ const WishlistPage = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
     // setCartItems(cart);
     dispatch(setCartCount(cart.length));
+
+    const matchedPrice = safeProduct?.priceList?.find(
+      (price) => price.country === selectedCountry && price.size === selectedSize
+    );
+    const unitPrice = Number(matchedPrice?.priceAmount || safeProduct?.price || 0);
+    trackAddToCartMeta({
+      productId: safeProduct?.productId || safeProduct?.id,
+      productName: safeProduct?.name,
+      quantity: 1,
+      value: unitPrice,
+      currency: matchedPrice?.currency || safeProduct?.currency || "INR",
+    });
+
     message.success(`${safeProduct.name || "Product"} added to cart!`);
   };
 
