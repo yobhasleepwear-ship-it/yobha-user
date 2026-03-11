@@ -255,6 +255,7 @@ const ProductDetailPage = () => {
   console.log(productImage, "productImage")
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [loadedImageMap, setLoadedImageMap] = useState({});
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -421,6 +422,32 @@ const ProductDetailPage = () => {
   useEffect(() => {
     setSelectedImageIndex(0);
   }, [colorIndex, productImage]);
+
+  useEffect(() => {
+    setLoadedImageMap({});
+  }, [colorIndex, productId]);
+
+  const markImageLoaded = useCallback((src) => {
+    if (!src) return;
+    setLoadedImageMap((prev) => (prev[src] ? prev : { ...prev, [src]: true }));
+  }, []);
+
+  // Preload all color thumbnails so switching colors updates instantly.
+  useEffect(() => {
+    if (!Array.isArray(productImage) || productImage.length === 0) return;
+
+    const preload = (image) => {
+      const src = typeof image === "string"
+        ? image
+        : (image?.thumbnailUrl || image?.url || "");
+      if (!src) return;
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+    };
+
+    productImage.forEach(preload);
+  }, [productImage]);
 
   // Check if product is in wishlist on mount
   useEffect(() => {
@@ -973,11 +1000,14 @@ const ProductDetailPage = () => {
             <div className="relative w-full h-full lg:hidden">
               <div className="w-full h-full overflow-hidden">
                 <div
-                  className="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  className="flex h-full transition-transform duration-300 ease-out"
                   style={{ transform: `translateX(-${selectedImageIndex * 100}%)` }}
                 >
                   {selectedImages.map((image, index) => {
                     const imageSrc = typeof image === "string"
+                      ? image
+                      : (image?.thumbnailUrl || image?.url || "");
+                    const fullImageSrc = typeof image === "string"
                       ? image
                       : (image?.url || image?.thumbnailUrl || "");
                     const imageAlt = typeof image === "string"
@@ -985,20 +1015,28 @@ const ProductDetailPage = () => {
                       : (image?.alt || `Product image ${index + 1}`);
 
                     return (
-                      <img
-                        key={index}
-                        src={imageSrc}
-                        alt={imageAlt}
-                        className="w-full h-full object-contain cursor-pointer flex-shrink-0"
-                        loading={index === selectedImageIndex ? "eager" : "lazy"}
-                        onClick={() => {
-                          setIsImageFull(true);
-                          setCurrentImageFull(imageSrc);
-                        }}
-                        onError={(e) => {
-                          e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                        }}
-                      />
+                      <div key={`${colorIndex}-${index}-${imageSrc}`} className="relative w-full h-full flex-shrink-0">
+                        {!loadedImageMap[imageSrc] && (
+                          <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+                        )}
+                        <img
+                          src={imageSrc}
+                          alt={imageAlt}
+                          className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${loadedImageMap[imageSrc] ? "opacity-100" : "opacity-0"}`}
+                          loading={index === selectedImageIndex ? "eager" : "lazy"}
+                          fetchPriority={index === selectedImageIndex ? "high" : "auto"}
+                          decoding="async"
+                          onLoad={() => markImageLoaded(imageSrc)}
+                          onClick={() => {
+                            setIsImageFull(true);
+                            setCurrentImageFull(fullImageSrc);
+                          }}
+                          onError={(e) => {
+                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                            markImageLoaded(imageSrc);
+                          }}
+                        />
+                      </div>
                     );
                   })}
                 </div>
@@ -1053,7 +1091,7 @@ const ProductDetailPage = () => {
 
                   return (
                     <button
-                      key={index}
+                      key={`${colorIndex}-${index}-${thumbSrc}`}
                       onClick={() => goToImage(index)}
                       className={`w-full h-24 border transition-all overflow-hidden ${index === selectedImageIndex
                         ? "border-black"
@@ -1062,10 +1100,12 @@ const ProductDetailPage = () => {
                       aria-label={`Select image ${index + 1}`}
                     >
                       <img
+                        key={`${colorIndex}-${index}-${thumbSrc}`}
                         src={thumbSrc}
                         alt={thumbAlt}
                         className="w-full h-full object-cover"
-                        loading="lazy"
+                        loading="eager"
+                        decoding="async"
                         onError={(e) => {
                           e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
                         }}
@@ -1078,11 +1118,14 @@ const ProductDetailPage = () => {
               <div className="relative flex-1 h-full flex items-center justify-center py-4">
                 <div className="w-full h-full overflow-hidden">
                   <div
-                    className="flex h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="flex h-full transition-transform duration-300 ease-out"
                     style={{ transform: `translateX(-${selectedImageIndex * 100}%)` }}
                   >
                     {selectedImages.map((image, index) => {
                       const imageSrc = typeof image === "string"
+                        ? image
+                        : (image?.thumbnailUrl || image?.url || "");
+                      const fullImageSrc = typeof image === "string"
                         ? image
                         : (image?.url || image?.thumbnailUrl || "");
                       const imageAlt = typeof image === "string"
@@ -1090,20 +1133,28 @@ const ProductDetailPage = () => {
                         : (image?.alt || `Product image ${index + 1}`);
 
                       return (
-                        <img
-                          key={index}
-                          src={imageSrc}
-                          alt={imageAlt}
-                          className="w-full h-full object-contain cursor-pointer flex-shrink-0"
-                          loading={index === selectedImageIndex ? "eager" : "lazy"}
-                          onClick={() => {
-                            setIsImageFull(true);
-                            setCurrentImageFull(imageSrc);
-                          }}
-                          onError={(e) => {
-                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                          }}
-                        />
+                        <div key={`${colorIndex}-${index}-${imageSrc}`} className="relative w-full h-full flex-shrink-0">
+                          {!loadedImageMap[imageSrc] && (
+                            <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+                          )}
+                          <img
+                            src={imageSrc}
+                            alt={imageAlt}
+                            className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${loadedImageMap[imageSrc] ? "opacity-100" : "opacity-0"}`}
+                            loading={index === selectedImageIndex ? "eager" : "lazy"}
+                            fetchPriority={index === selectedImageIndex ? "high" : "auto"}
+                            decoding="async"
+                            onLoad={() => markImageLoaded(imageSrc)}
+                            onClick={() => {
+                              setIsImageFull(true);
+                              setCurrentImageFull(fullImageSrc);
+                            }}
+                            onError={(e) => {
+                              e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                              markImageLoaded(imageSrc);
+                            }}
+                          />
+                        </div>
                       );
                     })}
                   </div>
@@ -1212,6 +1263,7 @@ const ProductDetailPage = () => {
                     <button
                       key={color}
                       onClick={() => {
+                        setSelectedImageIndex(0);
                         setSelectedColor(color);
                         setItemAddedToCart(false);
                         setColorIndex(index);
