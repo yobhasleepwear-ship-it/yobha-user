@@ -676,7 +676,8 @@ const ProductDetailPage = () => {
   //     setAddingToCart(false);
   //   }
   // };
-  const handleAddToCart = (product, selectedSize, selectedCountry, quantity) => {
+  const handleAddToCart = async (product, selectedSize, selectedCountry, quantity) => {
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 
@@ -715,28 +716,48 @@ const ProductDetailPage = () => {
         size: selectedSize,
         country: selectedCountry,
         quantity: quantity,
-        country: selectedCountry,
         monogram: monogram,
         color: selectedColor,
         note: notes
       });
     }
 
+    const matchedPrice = product?.priceList?.find(
+      (item) => item.country === selectedCountry && item.size === selectedSize
+    );
+
+    if (token) {
+      const payload = {
+        productId: product?.productId,
+        size: selectedSize,
+        quantity,
+        currency: matchedPrice?.currency || "INR",
+        note: notes || "",
+      };
+
+      try {
+        await addToCart(payload);
+        await fetchCart();
+      } catch (err) {
+        console.error("Error syncing cart to backend:", err);
+      }
+    }
+
     localStorage.setItem("cart", JSON.stringify(cart));
     setCartItems(cart);
     dispatch(setCartCount(cart.length));
 
-    const matchedPrice = product?.priceList?.find(
-      (item) => item.country === selectedCountry && item.size === selectedSize
-    );
-    const unitPrice = Number(matchedPrice?.priceAmount || product?.unitPrice || 0);
-    trackAddToCartMeta({
-      productId: product?.productId || product?.id,
-      productName: product?.name,
-      quantity,
-      value: unitPrice * Number(quantity || 1),
-      currency: matchedPrice?.currency || "INR",
-    });
+    // Track meta only for guest/local flow to avoid duplicate tracking.
+    if (!token) {
+      const unitPrice = Number(matchedPrice?.priceAmount || product?.unitPrice || 0);
+      trackAddToCartMeta({
+        productId: product?.productId || product?.id,
+        productName: product?.name,
+        quantity,
+        value: unitPrice * Number(quantity || 1),
+        currency: matchedPrice?.currency || "INR",
+      });
+    }
 
     message.success(`${safeProduct.name || "Product"} added to cart!`);
   };
