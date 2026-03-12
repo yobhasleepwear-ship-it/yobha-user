@@ -4,6 +4,9 @@ import { Plus, Minus, Heart, Trash2, ShoppingBag, ArrowRight, Truck, RotateCcw }
 import { useDispatch } from "react-redux";
 import { setCartCount } from "../../redux/cartSlice";
 import { addToWishlist } from "../../service/wishlist";
+import { deleteCartItem, getCartDetails, updateCartQuantity } from "../../service/productAPI";
+import * as localStorageService from "../../service/localStorageService";
+import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import { message } from "../../comman/toster-message/ToastContainer";
 
 /**
@@ -54,18 +57,64 @@ const CartPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [wishlistedItems, setWishlistedItems] = useState(() => new Set());
   const [selectedItems, setSelectedItems] = useState(() => new Set());
-  const fetchCart = useCallback(() => {
+  const selectedCountry = localStorage.getItem("selectedCountry") || "IN";
+
+  const mapApiCartItem = useCallback((item) => {
+    const product = item?.product || {};
+    const currency = product?.currency || item?.currency || "INR";
+    const size = product?.variantSize || item?.size || item?.variantSku || "";
+
+    return {
+      ...item,
+      cartItemId: item?.id,
+      id: product?.productObjectId || item?.productObjectId || item?.id,
+      productId: product?.productId || item?.productId,
+      name: product?.name || item?.productName || "",
+      slug: product?.slug || "",
+      size,
+      color: product?.variantColor || item?.color || "",
+      quantity: item?.quantity || 1,
+      unitPrice: Number(product?.unitPrice ?? item?.price ?? 0),
+      price: Number(product?.unitPrice ?? item?.price ?? 0),
+      country: selectedCountry,
+      currency,
+      priceList: Array.isArray(product?.priceList)
+        ? product.priceList.map((priceTier) => ({
+            ...priceTier,
+            country: selectedCountry,
+          }))
+        : [],
+      images: product?.thumbnailUrl
+        ? [{ url: product.thumbnailUrl, thumbnailUrl: product.thumbnailUrl }]
+        : [],
+      thumbnailUrl: product?.thumbnailUrl || "",
+      monogram: item?.note || "",
+      note: item?.note || "",
+    };
+  }, [selectedCountry]);
+
+  const fetchCart = useCallback(async () => {
     setIsLoading(true);
     try {
+      const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+      if (token) {
+        const response = await getCartDetails();
+        const apiItems = response?.data?.items || [];
+        const mappedItems = apiItems.map(mapApiCartItem);
+        setCartItems(mappedItems);
+        dispatch(setCartCount(mappedItems.length));
+        return;
+      }
+
       const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
       setCartItems(storedCart);
       dispatch(setCartCount(storedCart.length));
     } catch (err) {
-      console.error("Error reading cart from localStorage:", err);
+      console.error("Error loading cart:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch]);
+  }, [dispatch, mapApiCartItem]);
 
 
   useEffect(() => {
@@ -161,11 +210,30 @@ const CartPage = () => {
       message.error("Failed to add to wishlist");
     }
   };
-  const updateQuantity = (itemId, size, delta) => {
+  const updateQuantity = async (itemId, size, delta) => {
+    const target = cartItems.find((item) => item.id === itemId && item.size === size);
+    if (!target) return;
+
+    const newQuantity = Math.max(1, Number(target.quantity || 1) + delta);
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
+
+    if (token && target.cartItemId) {
+      try {
+        await updateCartQuantity({
+          cartItemId: target.cartItemId,
+          quantity: newQuantity,
+        });
+        await fetchCart();
+      } catch (err) {
+        console.error("Failed to update backend cart quantity:", err);
+        message.error("Failed to update quantity");
+      }
+      return;
+    }
+
     setCartItems((prevCart) => {
       const updated = prevCart.map((item) => {
         if (item.id === itemId && item.size === size) {
-          const newQuantity = Math.max(1, item.quantity + delta);
           return { ...item, quantity: newQuantity };
         }
         return item;
@@ -176,11 +244,27 @@ const CartPage = () => {
   };
 
 
-  const removeItem = (itemId, size, color) => {
+  const removeItem = async (itemId, size, color) => {
+    const target = cartItems.find((item) => item.id === itemId && item.size === size && item.color === color);
+    const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
     const itemKey = `${itemId}_${size || ""}`;
+
+    if (token && target?.cartItemId) {
+      try {
+        await deleteCartItem(target.cartItemId);
+        await fetchCart();
+      } catch (err) {
+        console.error("Failed to delete backend cart item:", err);
+        message.error("Failed to remove item");
+        return;
+      }
+    }
+
     setCartItems((prevCart) => {
       const updated = prevCart.filter(item => !(item.id === itemId && item.size === size && item.color === color));
-      localStorage.setItem("cart", JSON.stringify(updated));
+      if (!token) {
+        localStorage.setItem("cart", JSON.stringify(updated));
+      }
       dispatch(setCartCount(updated.length));
       return updated;
     });

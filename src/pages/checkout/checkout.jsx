@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, MapPin, CreditCard, Banknote, Truck, RotateCcw, Shield, ChevronDown, Pencil, Tag, Star, Gift } from "lucide-react";
 import { getAddresses, addAddress, updateAddress } from "../../service/address";
-import { getCartDetails } from "../../service/productAPI";
+import { deleteCartItem, getCartDetails } from "../../service/productAPI";
 import { CreateOrder } from "../../service/order";
 import { message } from "../../comman/toster-message/ToastContainer";
 import { getCoupons } from "../../service/coupans";
@@ -297,6 +297,19 @@ const CheckoutPage = () => {
   // Helper function to remove only ordered items from cart
   const removeOrderedItemsFromCart = (orderedItems) => {
     try {
+      const token = getValue("auth_token");
+      if (token) {
+        orderedItems
+          .filter((item) => !!item?.cartItemId)
+          .forEach(async (item) => {
+            try {
+              await deleteCartItem(item.cartItemId);
+            } catch (err) {
+              console.error("Failed to remove backend cart item:", err);
+            }
+          });
+      }
+
       const fullCart = getValue("cart") || [];
       if (!Array.isArray(fullCart) || fullCart.length === 0) {
         return;
@@ -491,8 +504,49 @@ const CheckoutPage = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await JSON.parse(localStorage.getItem("cart")) || [];
-      const items = response || [];
+      const token = getValue("auth_token");
+      let items = [];
+
+      if (token) {
+        const response = await getCartDetails();
+        const apiItems = response?.data?.items || [];
+        const selectedCountryFromStorage = localStorage.getItem("selectedCountry") || "IN";
+
+        items = apiItems.map((item) => {
+          const product = item?.product || {};
+          const size = product?.variantSize || item?.variantSku || "";
+          const unitPrice = Number(product?.unitPrice ?? item?.price ?? 0);
+          return {
+            ...item,
+            cartItemId: item?.id,
+            id: product?.productObjectId || item?.productObjectId || item?.id,
+            productId: product?.productId || item?.productId,
+            name: product?.name || item?.productName || "",
+            size,
+            color: product?.variantColor || item?.color || "",
+            quantity: item?.quantity || 1,
+            price: unitPrice,
+            unitPrice,
+            country: selectedCountryFromStorage,
+            currency: product?.currency || item?.currency || "INR",
+            priceList: Array.isArray(product?.priceList)
+              ? product.priceList.map((priceTier) => ({
+                  ...priceTier,
+                  country: selectedCountryFromStorage,
+                }))
+              : [],
+            monogram: item?.note || "",
+            note: item?.note || "",
+            images: product?.thumbnailUrl
+              ? [{ url: product.thumbnailUrl, thumbnailUrl: product.thumbnailUrl }]
+              : [],
+          };
+        });
+      } else {
+        const response = JSON.parse(localStorage.getItem("cart")) || [];
+        items = response || [];
+      }
+
       setCartItems(items)
       const subTotal = items.reduce((sum, item) => {
         const product = item || {};
