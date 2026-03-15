@@ -1253,7 +1253,53 @@ const ProductDetailPage = () => {
                     return <span className="text-sm text-gray-500 font-light font-futura-pt-light">Price not available</span>;
                   }
 
-                  const priceFormatted = formatPrice(matchedPrice.priceAmount, matchedPrice.currency);
+                  const currentPrice = Number(matchedPrice.priceAmount || 0);
+                  const priceFormatted = formatPrice(currentPrice, matchedPrice.currency);
+                  const compareAtRaw = product?.compareAtPrice ?? product?.CompareAtPrice ?? null;
+                  let compareAtPrice = Number(compareAtRaw);
+                  let hasCompareAt = Number.isFinite(compareAtPrice) && compareAtPrice > currentPrice;
+                  const discountPercentRaw = product?.discountPercent ?? product?.DiscountPercent ?? null;
+                  let discountPercent = Number(discountPercentRaw);
+
+                  const resolvedCompareAtFormatted = hasCompareAt
+                    ? formatPrice(compareAtPrice, matchedPrice.currency)
+                    : null;
+
+                  if ((!Number.isFinite(discountPercent) || discountPercent <= 0) && hasCompareAt) {
+                    discountPercent = Math.round(((compareAtPrice - currentPrice) / compareAtPrice) * 100);
+                  }
+
+                  const hasDiscount = (Number.isFinite(discountPercent) && discountPercent > 0) || hasCompareAt;
+
+                  if (hasDiscount) {
+                    return (
+                      <>
+                        <div className="flex items-center gap-2 mb-1">
+                          {Number.isFinite(discountPercent) && discountPercent > 0 && (
+                            <span className="text-[10px] uppercase tracking-wide bg-black text-white px-2 py-0.5 font-futura-pt-book">
+                              {discountPercent}% Off
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-end gap-2">
+                          <span className="text-lg md:text-md sm:text-sm font-light text-black font-futura-pt-light">
+                            <span className="font-sans">{priceFormatted.symbol}</span>
+                            {priceFormatted.number}
+                          </span>
+                          {resolvedCompareAtFormatted && (
+                            <span className="text-sm text-gray-400 line-through font-futura-pt-light">
+                              <span className="font-sans">{resolvedCompareAtFormatted.symbol}</span>
+                              {resolvedCompareAtFormatted.number}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500 font-light font-futura-pt-light mt-1">
+                          (M.R.P. incl. of all taxes)
+                        </p>
+                      </>
+                    );
+                  }
+
                   return (
                     <>
                       <span className="text-lg md:text-md sm:text-sm font-light text-black font-futura-pt-light">

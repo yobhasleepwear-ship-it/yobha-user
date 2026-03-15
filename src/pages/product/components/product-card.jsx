@@ -108,6 +108,19 @@ const selectedImages = useMemo(() => {
     // Try to determine currency from priceList or default to INR
     currency = product?.priceList?.[0]?.currency || "INR";
   }
+
+  const compareAtRaw = product?.compareAtPrice ?? product?.CompareAtPrice ?? null;
+  let compareAtPrice = Number(compareAtRaw);
+  const discountPercentRaw = product?.discountPercent ?? product?.DiscountPercent ?? null;
+  let discountPercent = Number(discountPercentRaw);
+  let hasCompareAt = Number.isFinite(compareAtPrice) && compareAtPrice > productPrice;
+  const hasDiscountPercent = Number.isFinite(discountPercent) && discountPercent > 0;
+
+  if (!hasDiscountPercent && hasCompareAt && compareAtPrice > 0) {
+    discountPercent = Math.round(((compareAtPrice - productPrice) / compareAtPrice) * 100);
+  }
+
+  const hasSalePricing = hasCompareAt || (hasDiscountPercent && productPrice > 0);
   const productImages = useMemo(() => {
     return Array.isArray(product?.images) && product.images.length > 0
       ? product.images
@@ -133,6 +146,18 @@ const selectedImages = useMemo(() => {
       maximumFractionDigits: 2
     });
     return `${symbol} ${formattedNumber}`;
+  };
+
+  const formatPriceParts = (price, curr = 'INR') => {
+    if (typeof price !== 'number') return { symbol: '₹', number: '0.00' };
+    const normalized = curr ? curr.toUpperCase() : 'INR';
+    const symbolMap = { INR: '₹', USD: '$' };
+    const symbol = symbolMap[normalized] || normalized;
+    const number = price.toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return { symbol, number };
   };
 
 // useEffect(() => {
@@ -477,26 +502,56 @@ const selectedImages = useMemo(() => {
         </h3>
 
         {/* Price */}
-        <p 
+        <div
           className="text-gray-600 text-sm font-light font-futura-light transition-all duration-300"
           style={{
-            
             lineHeight: '1.25rem',
-        
             transform: isHovered ? 'translateX(2px)' : 'translateX(0)'
           }}
         >
-          {(() => {
-            const priceStr = formatPrice(productPrice, currency);
-            const parts = priceStr.split(' ');
-            return (
-              <>
-                <span className="font-light text-black">{parts[0]}</span>
-                <span className="font-light text-black"> {parts.slice(1).join(' ')}</span>
-              </>
-            );
-          })()}
-        </p>
+          {hasSalePricing ? (
+            <>
+              {discountPercent > 0 && (
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] uppercase tracking-wide bg-black text-white px-2 py-0.5 font-futura-pt-book">
+                    {discountPercent}% Off
+                  </span>
+                </div>
+              )}
+              <div className="flex items-end gap-2">
+                {(() => {
+                  const current = formatPriceParts(productPrice, currency);
+                  return (
+                    <span className="text-sm font-light text-black font-futura-pt-light">
+                      <span className="font-sans">{current.symbol}</span> {current.number}
+                    </span>
+                  );
+                })()}
+                {hasCompareAt && (
+                  <span className="text-xs text-gray-400 line-through font-futura-pt-light">
+                    {(() => {
+                      const original = formatPriceParts(compareAtPrice, currency);
+                      return (
+                        <>
+                          <span className="font-sans">{original.symbol}</span> {original.number}
+                        </>
+                      );
+                    })()}
+                  </span>
+                )}
+              </div>
+            </>
+          ) : (
+            (() => {
+              const current = formatPriceParts(productPrice, currency);
+              return (
+                <span className="font-light text-black">
+                  <span className="font-sans">{current.symbol}</span> {current.number}
+                </span>
+              );
+            })()
+          )}
+        </div>
       </div>
     </div>
   );

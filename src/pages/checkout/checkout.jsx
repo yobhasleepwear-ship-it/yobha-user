@@ -82,7 +82,7 @@ const CheckoutPage = () => {
   // Coupons & Loyalty State
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
-  const [selectedCoupon, setSelectedCoupon] = useState({});
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [isCouponsExpanded, setIsCouponsExpanded] = useState(false);
   const [isLoadingCoupons, setIsLoadingCoupons] = useState(false);
   const [loyaltyDiscountAmount, setLoyaltyDiscountAmount] = useState(0);
@@ -359,7 +359,7 @@ const CheckoutPage = () => {
       return;
     }
     
-    console.log(selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "", "kkk")
+    console.log(selectedCoupon?.code || "", "kkk")
     try {
       const PurchasedProduct = cartItems.map((item, index) => {
         // Combine monogram and note with dash separator
@@ -403,8 +403,8 @@ const CheckoutPage = () => {
         },
         ShippingRemarks: ShippingRemarks,
         paymentMethod: selectedPayment ? selectedPayment.id : "",
-        couponCode: selectedCoupon && selectedCoupon.code ? selectedCoupon.code : "",
-        couponDiscount: calculateCouponDiscount(selectedCoupon) ?? "",
+        couponCode: selectedCoupon?.code || "",
+        couponDiscount: selectedCoupon ? calculateCouponDiscount(selectedCoupon) : 0,
         loyaltyDiscountAmount: loyaltyDiscountAmount ?? 0,
         email: email,
         orderCountry: cartItems.country,
@@ -452,8 +452,10 @@ const CheckoutPage = () => {
         prefill: { email: orderPayload.email },
         handler: async (response) => {
           const updateRes = await updatePayment({
+            orderId: orderRes.id || orderRes.orderId,
             razorpayOrderId: orderRes.razorpayOrderId,
             razorpayPaymentId: response.razorpay_payment_id,
+            razorpaySignature: response.razorpay_signature,
             isSuccess: true,
           });
 
@@ -800,7 +802,7 @@ const CheckoutPage = () => {
     // const userId = user.id || "anonymous";
     // console.log(userId)
     const payload = {
-      "couponCode": selectedCoupon ? selectedCoupon.code : null,
+      "couponCode": selectedCoupon?.code || null,
       "loyaltyDiscountAmount": loyaltyDiscountAmount,
       "paymentMethod": selectedPayment ? selectedPayment.id.toUpperCase() : "COD",
       "shippingAddress": {
@@ -837,12 +839,13 @@ const CheckoutPage = () => {
   };
 
   const handleCouponSelect = (coupon) => {
+    if (!coupon) return;
     setSelectedCoupon(coupon);
     message.success(`Coupon "${coupon.code}" applied successfully!`);
   }
 
   const handleCouponRemove = () => {
-    setSelectedCoupon({});
+    setSelectedCoupon(null);
     message.info("Coupon removed");
   }
 
@@ -1443,7 +1446,7 @@ const CheckoutPage = () => {
                         Applied Discounts
                       </h4>
                       <div className="space-y-2">
-                        {selectedCoupon && (
+                        {selectedCoupon?.code && (
                           <div className="flex justify-between text-sm md:text-base">
                             <span className="text-text-medium font-futura-pt-light">Coupon: {selectedCoupon.code}</span>
                             {(() => {
@@ -1607,6 +1610,17 @@ const CheckoutPage = () => {
                   const unitPrice = matchingPrice?.priceAmount ?? product?.unitPrice ?? 0;
                   const currency = matchingPrice?.currency ?? getCurrency();
                   const itemTotal = unitPrice * (item.quantity || 0);
+                  const compareAtRaw = product?.compareAtPrice ?? product?.CompareAtPrice ?? item?.compareAtPrice ?? item?.CompareAtPrice ?? null;
+                  let compareAtUnitPrice = Number(compareAtRaw);
+                  let discountPercent = Number(product?.discountPercent ?? product?.DiscountPercent ?? item?.discountPercent ?? item?.DiscountPercent ?? 0);
+                  if ((!Number.isFinite(compareAtUnitPrice) || compareAtUnitPrice <= unitPrice) && Number.isFinite(discountPercent) && discountPercent > 0 && unitPrice > 0) {
+                    compareAtUnitPrice = Math.round(unitPrice / (1 - discountPercent / 100));
+                  }
+                  if ((!Number.isFinite(discountPercent) || discountPercent <= 0) && Number.isFinite(compareAtUnitPrice) && compareAtUnitPrice > unitPrice) {
+                    discountPercent = Math.round(((compareAtUnitPrice - unitPrice) / compareAtUnitPrice) * 100);
+                  }
+                  const hasDiscount = (Number.isFinite(compareAtUnitPrice) && compareAtUnitPrice > unitPrice) || (Number.isFinite(discountPercent) && discountPercent > 0);
+                  const compareAtItemTotal = compareAtUnitPrice * (item.quantity || 0);
                   const imageSrc = item?.images?.[0]?.thumbnailUrl || item?.images?.[0]?.url || product?.images?.[0]?.thumbnailUrl || product?.images?.[0]?.url || item?.thumbnailUrl || product?.thumbnailUrl || "https://via.placeholder.com/64";
                   const monogramText = (item?.monogram || product?.monogram || "").trim();
 
@@ -1632,8 +1646,24 @@ const CheckoutPage = () => {
                         )}
                         {(() => {
                           const priceFormatted = formatPrice(unitPrice, currency);
+                          const compareAtFormatted = Number.isFinite(compareAtUnitPrice) && compareAtUnitPrice > unitPrice
+                            ? formatPrice(compareAtUnitPrice, currency)
+                            : null;
                           return (
-                            <p className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">{item.quantity} × <span className="font-sans">{priceFormatted.symbol}</span>{priceFormatted.number}</p>
+                            <div className="text-sm md:text-base text-text-medium font-light font-futura-pt-light">
+                              {hasDiscount && discountPercent > 0 && (
+                                <span className="text-[10px] uppercase tracking-wide bg-black text-white px-2 py-0.5 font-futura-pt-book mr-2">
+                                  {discountPercent}% Off
+                                </span>
+                              )}
+                              <span>{item.quantity} × </span>
+                              <span className="font-sans">{priceFormatted.symbol}</span>{priceFormatted.number}
+                              {compareAtFormatted && (
+                                <span className="ml-2 text-xs text-gray-400 line-through">
+                                  <span className="font-sans">{compareAtFormatted.symbol}</span>{compareAtFormatted.number}
+                                </span>
+                              )}
+                            </div>
                           );
                         })()}
                         {monogramText && (
@@ -1644,10 +1674,21 @@ const CheckoutPage = () => {
                       </div>
                       {(() => {
                         const priceFormatted = formatPrice(itemTotal, currency);
+                        const compareAtTotalFormatted = Number.isFinite(compareAtUnitPrice) && compareAtUnitPrice > unitPrice
+                          ? formatPrice(compareAtItemTotal, currency)
+                          : null;
                         return (
-                          <div className="text-sm md:text-base font-light text-black whitespace-nowrap font-futura-pt-light">
-                            <span className="font-sans">{priceFormatted.symbol}</span>
-                            {priceFormatted.number}
+                          <div className="text-sm md:text-base font-light text-black whitespace-nowrap font-futura-pt-light text-right">
+                            <div>
+                              <span className="font-sans">{priceFormatted.symbol}</span>
+                              {priceFormatted.number}
+                            </div>
+                            {compareAtTotalFormatted && (
+                              <div className="text-xs text-gray-400 line-through">
+                                <span className="font-sans">{compareAtTotalFormatted.symbol}</span>
+                                {compareAtTotalFormatted.number}
+                              </div>
+                            )}
                           </div>
                         );
                       })()}
@@ -1670,7 +1711,7 @@ const CheckoutPage = () => {
                   </div>
 
                   {/* Coupon Discount */}
-                  {selectedCoupon && (
+                  {selectedCoupon?.code && (
                     <div className="flex justify-between text-sm md:text-base">
                       <span className="text-text-medium font-futura-pt-light">Coupon: {selectedCoupon.code}</span>
                       {(() => {

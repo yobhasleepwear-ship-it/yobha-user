@@ -430,6 +430,20 @@ const CartPage = () => {
                   const currency = matchedPrice?.currency || product.currency || item.currency || 'INR';
                   const priceAmount = matchedPrice?.priceAmount || product.unitPrice || item.price || product.price || 0;
                   const priceFormatted = formatPrice(priceAmount, currency);
+                  const compareAtRaw = product?.compareAtPrice ?? product?.CompareAtPrice ?? item?.compareAtPrice ?? item?.CompareAtPrice ?? null;
+                  let compareAtAmount = Number(compareAtRaw);
+                  let discountPercent = Number(product?.discountPercent ?? product?.DiscountPercent ?? item?.discountPercent ?? item?.DiscountPercent ?? 0);
+
+                  if ((!Number.isFinite(compareAtAmount) || compareAtAmount <= priceAmount) && Number.isFinite(discountPercent) && discountPercent > 0 && priceAmount > 0) {
+                    compareAtAmount = Math.round(priceAmount / (1 - discountPercent / 100));
+                  }
+                  if ((!Number.isFinite(discountPercent) || discountPercent <= 0) && Number.isFinite(compareAtAmount) && compareAtAmount > priceAmount) {
+                    discountPercent = Math.round(((compareAtAmount - priceAmount) / compareAtAmount) * 100);
+                  }
+                  const hasDiscount = (Number.isFinite(compareAtAmount) && compareAtAmount > priceAmount) || (Number.isFinite(discountPercent) && discountPercent > 0);
+                  const compareAtFormatted = Number.isFinite(compareAtAmount) && compareAtAmount > priceAmount
+                    ? formatPrice(compareAtAmount, currency)
+                    : null;
 
                   return (
                     <div
@@ -520,11 +534,24 @@ const CartPage = () => {
                         {/* Right: Price, Quantity, Actions - Myntra style */}
                         <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
                           {/* Price */}
-                          <div className="hidden sm:flex items-center flex-shrink-0">
-                            <span className="text-sm md:text-base font-light text-black font-futura-pt-light whitespace-nowrap">
-                              <span className="font-sans">{priceFormatted.symbol}</span>
-                              {priceFormatted.number}
-                            </span>
+                          <div className="hidden sm:flex flex-col items-end flex-shrink-0">
+                            {hasDiscount && discountPercent > 0 && (
+                              <span className="text-[10px] uppercase tracking-wide bg-black text-white px-2 py-0.5 font-futura-pt-book mb-1">
+                                {discountPercent}% Off
+                              </span>
+                            )}
+                            <div className="flex items-center gap-2 whitespace-nowrap">
+                              <span className="text-sm md:text-base font-light text-black font-futura-pt-light">
+                                <span className="font-sans">{priceFormatted.symbol}</span>
+                                {priceFormatted.number}
+                              </span>
+                              {compareAtFormatted && (
+                                <span className="text-xs text-gray-400 line-through font-futura-pt-light">
+                                  <span className="font-sans">{compareAtFormatted.symbol}</span>
+                                  {compareAtFormatted.number}
+                                </span>
+                              )}
+                            </div>
                           </div>
 
                           {/* Quantity Controls */}
@@ -548,11 +575,24 @@ const CartPage = () => {
                           </div>
 
                           {/* Price on Mobile - Below quantity */}
-                          <div className="sm:hidden flex items-center flex-shrink-0">
-                            <span className="text-xs sm:text-sm font-light text-black font-futura-pt-light whitespace-nowrap">
-                              <span className="font-sans">{priceFormatted.symbol}</span>
-                              {priceFormatted.number}
-                            </span>
+                          <div className="sm:hidden flex flex-col items-end flex-shrink-0">
+                            {hasDiscount && discountPercent > 0 && (
+                              <span className="text-[10px] uppercase tracking-wide bg-black text-white px-1.5 py-0.5 font-futura-pt-book mb-1">
+                                {discountPercent}% Off
+                              </span>
+                            )}
+                            <div className="flex items-center gap-1 whitespace-nowrap">
+                              <span className="text-xs sm:text-sm font-light text-black font-futura-pt-light">
+                                <span className="font-sans">{priceFormatted.symbol}</span>
+                                {priceFormatted.number}
+                              </span>
+                              {compareAtFormatted && (
+                                <span className="text-[10px] text-gray-400 line-through font-futura-pt-light">
+                                  <span className="font-sans">{compareAtFormatted.symbol}</span>
+                                  {compareAtFormatted.number}
+                                </span>
+                              )}
+                            </div>
                           </div>
 
                           {/* Action buttons */}

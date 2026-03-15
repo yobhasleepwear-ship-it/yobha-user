@@ -44,7 +44,7 @@ const debounce = (func, delay) => {
 /**
  * Product Card with Image Carousel Component
  */
-const ProductCardWithCarousel = ({ product, gridClass, index, productImages, productPrice, onProductClick, onWishlistClick, wishlistItems, wishlistLoading }) => {
+const ProductCardWithCarousel = ({ product, gridClass, index, productImages, pricing, onProductClick, onWishlistClick, wishlistItems, wishlistLoading }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -132,10 +132,26 @@ const ProductCardWithCarousel = ({ product, gridClass, index, productImages, pro
             <p className="text-white text-sm md:text-base font-light mb-1 line-clamp-2 font-futura-pt-light">
               {product.name || product.productName || 'Product'}
             </p>
-            {productPrice && (
-              <p className="text-white text-lg md:text-xl font-light font-futura-pt-light">
-                <span className="font-sans">{productPrice}</span>
-              </p>
+            {pricing?.currentFormatted && (
+              <>
+                {pricing?.hasDiscount && pricing?.discountPercent > 0 && (
+                  <div className="mb-1">
+                    <span className="text-[10px] uppercase tracking-wide bg-black text-white px-2 py-0.5 font-futura-pt-book">
+                      {pricing.discountPercent}% Off
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-end justify-center gap-2">
+                  <p className="text-white text-lg md:text-xl font-light font-futura-pt-light">
+                    <span className="font-sans">{pricing.currentFormatted}</span>
+                  </p>
+                  {pricing?.compareFormatted && (
+                    <p className="text-white/70 text-xs md:text-sm line-through font-futura-pt-light">
+                      <span className="font-sans">{pricing.compareFormatted}</span>
+                    </p>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -836,12 +852,14 @@ const Gifts = () => {
     return fallbackImage ? [fallbackImage] : [];
   };
 
-  // Format price helper
-  const formatPrice = (product) => {
+  // Build normalized price and discount display data
+  const getPricing = (product) => {
     const savedCountry = localStorage.getItem('selectedCountry');
     const parsedCountry = savedCountry ? JSON.parse(savedCountry) : { code: 'IN' };
     const selectedCountry = parsedCountry?.code || 'IN';
-    
+    let currentPrice = 0;
+    let currency = 'INR';
+
     if (product?.priceList && Array.isArray(product.priceList) && product.priceList.length > 0) {
       const firstSize = product?.availableSizes?.[0];
       let matchedPrice = product.priceList.find(
@@ -855,19 +873,46 @@ const Gifts = () => {
       if (!matchedPrice) {
         matchedPrice = product.priceList[0];
       }
-      
-      const price = matchedPrice?.priceAmount || 0;
-      const currency = matchedPrice?.currency || 'INR';
-      
-      if (price === 0 && product?.price && product.price > 0) {
-        return `${currency === 'INR' ? '₹' : '$'}${product.price.toLocaleString()}`;
-      }
-      
-      const symbol = currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency;
-      return `${symbol}${price.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+      currentPrice = matchedPrice?.priceAmount || 0;
+      currency = matchedPrice?.currency || 'INR';
     }
-    
-    return '';
+
+    if (currentPrice === 0 && product?.price && product.price > 0) {
+      currentPrice = product.price;
+      currency = product?.priceList?.[0]?.currency || 'INR';
+    }
+
+    if (currentPrice <= 0) {
+      return {
+        currentFormatted: '',
+        compareFormatted: null,
+        discountPercent: 0,
+        hasDiscount: false
+      };
+    }
+
+    const symbol = currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency;
+    const formatAmount = (amount) => `${symbol}${amount.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+    let compareAtPrice = Number(product?.compareAtPrice ?? product?.CompareAtPrice ?? 0);
+    let discountPercent = Number(product?.discountPercent ?? product?.DiscountPercent ?? 0);
+
+    if ((!Number.isFinite(compareAtPrice) || compareAtPrice <= currentPrice) && Number.isFinite(discountPercent) && discountPercent > 0) {
+      compareAtPrice = Math.round(currentPrice / (1 - discountPercent / 100));
+    }
+    if ((!Number.isFinite(discountPercent) || discountPercent <= 0) && Number.isFinite(compareAtPrice) && compareAtPrice > currentPrice) {
+      discountPercent = Math.round(((compareAtPrice - currentPrice) / compareAtPrice) * 100);
+    }
+
+    const hasDiscount = (Number.isFinite(compareAtPrice) && compareAtPrice > currentPrice) || (Number.isFinite(discountPercent) && discountPercent > 0);
+
+    return {
+      currentFormatted: formatAmount(currentPrice),
+      compareFormatted: Number.isFinite(compareAtPrice) && compareAtPrice > currentPrice ? formatAmount(compareAtPrice) : null,
+      discountPercent: Number.isFinite(discountPercent) && discountPercent > 0 ? discountPercent : 0,
+      hasDiscount
+    };
   };
 
   // Handle product click
@@ -1511,7 +1556,7 @@ const Gifts = () => {
             {products.map((product, index) => {
               const gridClass = getGridLayout(index);
               const productImages = getProductImages(product);
-              const productPrice = formatPrice(product);
+              const pricing = getPricing(product);
 
               return (
                 <ProductCardWithCarousel
@@ -1520,7 +1565,7 @@ const Gifts = () => {
                   gridClass={gridClass}
                   index={index}
                   productImages={productImages}
-                  productPrice={productPrice}
+                  pricing={pricing}
                   onProductClick={handleProductClick}
                   onWishlistClick={handleWishlistClick}
                   wishlistItems={wishlistItems}
@@ -1612,4 +1657,3 @@ const Gifts = () => {
 };
 
 export default Gifts;
-

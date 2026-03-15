@@ -220,8 +220,10 @@ const GiftCardPurchase = () => {
         handler: async (response) => {
           try {
             const updateRes = await updatePayment({
+              orderId: orderRes.id || orderRes.orderId,
               razorpayOrderId: orderRes.razorpayOrderId,
               razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
               isSuccess: true,
             });
 
