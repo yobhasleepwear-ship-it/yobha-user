@@ -135,6 +135,15 @@ const selectedImages = useMemo(() => {
     hasCompareAt = Number.isFinite(compareAtPrice) && compareAtPrice > productPrice;
   }
 
+  // Listing payload fallback: root/base price can be original MRP while priceList is discounted.
+  if (!hasCompareAt && !hasDiscountPercent && productPrice > 0) {
+    const basePrice = Number(product?.price ?? product?.Price ?? 0);
+    if (Number.isFinite(basePrice) && basePrice > productPrice) {
+      compareAtPrice = basePrice;
+      hasCompareAt = true;
+    }
+  }
+
   if (!hasDiscountPercent && hasCompareAt && compareAtPrice > 0) {
     discountPercent = Math.round(((compareAtPrice - productPrice) / compareAtPrice) * 100);
   }
