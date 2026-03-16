@@ -109,12 +109,31 @@ const selectedImages = useMemo(() => {
     currency = product?.priceList?.[0]?.currency || "INR";
   }
 
-  const compareAtRaw = product?.compareAtPrice ?? product?.CompareAtPrice ?? null;
+  const compareAtRaw =
+    product?.compareAtPrice ??
+    product?.CompareAtPrice ??
+    product?.countryPrice?.compareAtPrice ??
+    product?.countryPrice?.CompareAtPrice ??
+    matchedPrice?.compareAtPrice ??
+    matchedPrice?.CompareAtPrice ??
+    null;
   let compareAtPrice = Number(compareAtRaw);
-  const discountPercentRaw = product?.discountPercent ?? product?.DiscountPercent ?? null;
+  const discountPercentRaw =
+    product?.discountPercent ??
+    product?.DiscountPercent ??
+    product?.countryPrice?.discountPercent ??
+    product?.countryPrice?.DiscountPercent ??
+    matchedPrice?.discountPercent ??
+    matchedPrice?.DiscountPercent ??
+    null;
   let discountPercent = Number(discountPercentRaw);
   let hasCompareAt = Number.isFinite(compareAtPrice) && compareAtPrice > productPrice;
   const hasDiscountPercent = Number.isFinite(discountPercent) && discountPercent > 0;
+
+  if (!hasCompareAt && hasDiscountPercent && productPrice > 0) {
+    compareAtPrice = Math.round(productPrice / (1 - discountPercent / 100));
+    hasCompareAt = Number.isFinite(compareAtPrice) && compareAtPrice > productPrice;
+  }
 
   if (!hasDiscountPercent && hasCompareAt && compareAtPrice > 0) {
     discountPercent = Math.round(((compareAtPrice - productPrice) / compareAtPrice) * 100);
