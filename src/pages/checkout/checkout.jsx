@@ -529,6 +529,8 @@ const CheckoutPage = () => {
             quantity: item?.quantity || 1,
             price: unitPrice,
             unitPrice,
+            compareAtPrice: Number(product?.compareAtPrice ?? item?.compareAtPrice ?? 0) || null,
+            discountPercent: Number(product?.discountPercent ?? item?.discountPercent ?? 0) || 0,
             country: selectedCountryFromStorage,
             currency: product?.currency || item?.currency || "INR",
             priceList: Array.isArray(product?.priceList)

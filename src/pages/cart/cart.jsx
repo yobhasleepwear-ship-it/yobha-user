@@ -76,6 +76,8 @@ const CartPage = () => {
       quantity: item?.quantity || 1,
       unitPrice: Number(product?.unitPrice ?? item?.price ?? 0),
       price: Number(product?.unitPrice ?? item?.price ?? 0),
+      compareAtPrice: Number(product?.compareAtPrice ?? item?.compareAtPrice ?? 0) || null,
+      discountPercent: Number(product?.discountPercent ?? item?.discountPercent ?? 0) || 0,
       country: selectedCountry,
       currency,
       priceList: Array.isArray(product?.priceList)
