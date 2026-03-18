@@ -297,16 +297,11 @@ const HeaderWithSidebar2 = () => {
     }
   }, [isAuthenticated]);
 
-  // Determine if header is transparent (home page, not scrolled, not hovered)
-  const isHeaderTransparent = isHomePage && scrollY === 0 && !isHovered;
+  // Keep header readable on all hero/banner states
+  const isHeaderTransparent = false;
 
   const headerClasses = `
-      fixed top-0 left-0 right-0  z-[1200] border-b transition-all duration-500
-    ${isHomePage
-      ? (scrollY !== 0 || isHovered
-        ? "bg-white  border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)] "
-        : "bg-transparent border-transparent ")
-      : "sticky top-0 relative  z-[1200] bg-white border-b border-gray-200 font-futura-pt-light shadow-[0_4px_14px_rgba(15,23,42,0.04)]"}
+      sticky top-0 left-0 right-0 z-[1200] bg-white border-b border-gray-200 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition-all duration-500
   `;
 
   // Icon color classes based on header transparency

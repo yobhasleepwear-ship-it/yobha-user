@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Facebook, Instagram } from "lucide-react";
-import Hero_video from "../../assets/Hero_Video.mp4";
 import MEN_IMAGE from "../../assets/Men.png";
 import WOMEN_IMAGE from "../../assets/Women.png";
 import KID_IMAGE from "../../assets/kids-hero.png";
@@ -39,9 +38,28 @@ const HomePage2 = () => {
   const [isAccHovered, setIsAccHovered] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
+  const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
+  const [isHeroHovered, setIsHeroHovered] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isVideoHovered, setIsVideoHovered] = useState(false);
   const giftShopRef = useRef(null);
+
+  const heroSlides = [
+    {
+      id: "signature-sleepwear",
+      desktopSrc: "/home-banners/signature-sleepwear-desktop.jpg",
+      mobileSrc: "/home-banners/signature-sleepwear-mobile.jpg",
+      alt: "Signature Sleepwear banner",
+      ctaPath: "/products",
+    },
+    {
+      id: "style-defines-her",
+      desktopSrc: "/home-banners/style-defines-her-desktop.jpg",
+      mobileSrc: "/home-banners/style-defines-her-mobile.jpg",
+      alt: "Style that defines her banner",
+      ctaPath: "/products",
+    },
+  ];
 
   // Video URLs - Add your manufacturing/packaging video URLs here
   const manufacturingVideos = [
@@ -66,10 +84,6 @@ const HomePage2 = () => {
     // },
   ];
 
-  // Hero Video URLs (for hero section)
-  const portraitVideo = Hero_video;
-  const landscapeVideo = Hero_video;
-
   useEffect(() => {
     if(products.length===0){
   fetchProducts();
@@ -90,6 +104,14 @@ const HomePage2 = () => {
 
 
   }, []);
+
+  useEffect(() => {
+    if (heroSlides.length <= 1 || isHeroHovered) return;
+    const timer = setInterval(() => {
+      setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [heroSlides.length, isHeroHovered]);
 
   useEffect(() => {
     const stored = localStorage.getItem("recentVisited");
@@ -276,34 +298,60 @@ const HomePage2 = () => {
 
   return (
     <div className="relative min-h-screen bg-[#FAF6F2]">
-      {/* Hero Section - Full Width Video */}
+      {/* Hero Section - Full Width Banner Slider */}
       <section className="relative w-full">
-        <div className="relative w-full h-[320px] sm:h-[420px] md:h-[520px] lg:h-[640px] overflow-hidden">
-          <video
-            src={isPortrait ? portraitVideo : landscapeVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover object-center"
-            key={isPortrait ? "portrait" : "landscape"}
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-black/30 pointer-events-none" />
-
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <div
+          className="relative w-full bg-[#f3f3f1] aspect-[1080/1536] md:aspect-[21/9] overflow-hidden"
+          onMouseEnter={() => setIsHeroHovered(true)}
+          onMouseLeave={() => setIsHeroHovered(false)}
+        >
+          {heroSlides.map((slide, index) => (
             <button
-              onClick={() => {
-                // if (giftShopRef.current) {
-                //   giftShopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-                // }
-                navigate("/gifts-personalization")
-              }}
-              className="px-8 py-3 bg-black text-white text-sm sm:text-base md:text-lg Futura-Regular font-light rounded-full  tracking-[0.1em] hover:bg-white hover:text-black transition-all duration-300 shadow-[0_8px_30px_rgba(17,17,26,0.1)]"
+              key={slide.id}
+              onClick={() => navigate(slide.ctaPath)}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${index === currentHeroSlide ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+              aria-label={`Open ${slide.alt}`}
             >
-              Gifts
+              <img
+                src={isPortrait ? slide.mobileSrc : slide.desktopSrc}
+                alt={slide.alt}
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/5 pointer-events-none" />
             </button>
-          </div>
+          ))}
+
+          {heroSlides.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() => setCurrentHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
+                className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white text-gray-900 shadow-md transition-all"
+                aria-label="Previous banner"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length)}
+                className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/90 hover:bg-white text-gray-900 shadow-md transition-all"
+                aria-label="Next banner"
+              >
+                ›
+              </button>
+              <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                {heroSlides.map((slide, index) => (
+                  <button
+                    key={slide.id}
+                    type="button"
+                    onClick={() => setCurrentHeroSlide(index)}
+                    className={`h-2 rounded-full transition-all ${index === currentHeroSlide ? "w-8 bg-white" : "w-2 bg-white/70"}`}
+                    aria-label={`Go to banner ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
       <section className="relative w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 md:py-10 lg:py-12 bg-white font-sweet-sans">
