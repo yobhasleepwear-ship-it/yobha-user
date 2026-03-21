@@ -32,7 +32,7 @@ const ToastContainer = () => {
   const getBgColor = (type) => {
     switch (type) {
       case "success":
-        return "bg-green-500";
+        return "bg-black";
       case "error":
         return "bg-red-500";
       case "info":
