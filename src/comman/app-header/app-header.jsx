@@ -11,6 +11,7 @@ import LanguageSwitcher from "../../LanguageSwitcher";
 import { getFilteredProducts } from "../../service/productAPI";
 import { useTranslation } from "react-i18next";
 import { countryOptions, CountrySelector } from "../../countryDropdown";
+import { buildProductDetailUrl } from "../../utils/cartVariantImage";
 
 const HeaderWithSidebar = () => {
   const { t, i18n } = useTranslation();
@@ -299,7 +300,7 @@ const HeaderWithSidebar = () => {
 
   // Handle search result click
   const handleSearchResultClick = (product) => {
-    navigate(`/productDetail/${product.id}`);
+    navigate(buildProductDetailUrl(product));
     setSearchOpen(false);
     setSearchQuery("");
     setSearchResults([]);

@@ -8,6 +8,7 @@ import { deleteCartItem, getCartDetails, updateCartQuantity } from "../../servic
 import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import { message } from "../../comman/toster-message/ToastContainer";
+import { buildProductDetailUrl, getCartIdentityKey, getColorAwareProductImage, mergeCartItemWithStoredVariant } from "../../utils/cartVariantImage";
 
 /**
  * Format price based on currency
@@ -53,7 +54,6 @@ const CartPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [cartItems, setCartItems] = useState([]);
-  console.log(cartItems, "carrt")
   const [isLoading, setIsLoading] = useState(false);
   const [wishlistedItems, setWishlistedItems] = useState(() => new Set());
   const [selectedItems, setSelectedItems] = useState(() => new Set());
@@ -64,7 +64,7 @@ const CartPage = () => {
     const currency = product?.currency || item?.currency || "INR";
     const size = product?.variantSize || item?.size || item?.variantSku || "";
 
-    return {
+    return mergeCartItemWithStoredVariant({
       ...item,
       cartItemId: item?.id,
       id: product?.productObjectId || item?.productObjectId || item?.id,
@@ -73,6 +73,7 @@ const CartPage = () => {
       slug: product?.slug || "",
       size,
       color: product?.variantColor || item?.color || "",
+      availableColors: Array.isArray(product?.availableColors) ? product.availableColors : [],
       quantity: item?.quantity || 1,
       unitPrice: Number(product?.unitPrice ?? item?.price ?? 0),
       price: Number(product?.unitPrice ?? item?.price ?? 0),
@@ -92,7 +93,7 @@ const CartPage = () => {
       thumbnailUrl: product?.thumbnailUrl || "",
       monogram: item?.note || "",
       note: item?.note || "",
-    };
+    });
   }, [selectedCountry]);
 
   const fetchCart = useCallback(async () => {
@@ -148,7 +149,7 @@ const CartPage = () => {
 
   // Generate unique key for cart item
   const getItemKey = (item) => {
-    return `${item.id}_${item.size || ""}`;
+    return getCartIdentityKey(item);
   };
 
   // Handle individual item selection
@@ -184,7 +185,7 @@ const CartPage = () => {
   };
 
   const handleAddToWishlist = async (productId, item) => {
-    const itemKey = `${productId}_${item.size || ""}`;
+    const itemKey = `${productId}_${item.size || ""}_${item.color || item.variantColor || ""}`;
     const selectedVariant = (item.variants && Array.isArray(item.variants))
       ? item.variants.find((v) => v.color === item.color && v.size === item.size)
       : null;
@@ -212,8 +213,8 @@ const CartPage = () => {
       message.error("Failed to add to wishlist");
     }
   };
-  const updateQuantity = async (itemId, size, delta) => {
-    const target = cartItems.find((item) => item.id === itemId && item.size === size);
+  const updateQuantity = async (itemId, size, color, delta) => {
+    const target = cartItems.find((item) => item.id === itemId && item.size === size && item.color === color);
     if (!target) return;
 
     const newQuantity = Math.max(1, Number(target.quantity || 1) + delta);
@@ -235,7 +236,7 @@ const CartPage = () => {
 
     setCartItems((prevCart) => {
       const updated = prevCart.map((item) => {
-        if (item.id === itemId && item.size === size) {
+        if (item.id === itemId && item.size === size && item.color === color) {
           return { ...item, quantity: newQuantity };
         }
         return item;
@@ -249,7 +250,7 @@ const CartPage = () => {
   const removeItem = async (itemId, size, color) => {
     const target = cartItems.find((item) => item.id === itemId && item.size === size && item.color === color);
     const token = localStorageService.getValue(LocalStorageKeys.AuthToken);
-    const itemKey = `${itemId}_${size || ""}`;
+    const itemKey = getItemKey(target || { id: itemId, size, color });
 
     if (token && target?.cartItemId) {
       try {
@@ -449,7 +450,7 @@ const CartPage = () => {
 
                   return (
                     <div
-                      key={item.id + item.size}
+                      key={getItemKey(item)}
                       className={`flex items-center gap-2 sm:gap-3 md:gap-4 px-3 sm:px-4 md:px-5 py-3 sm:py-4 border-b ${index === cartItems.length - 1 ? 'border-b-0' : 'border-text-light/20'} ${isSelected ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-50/50 transition-colors overflow-hidden`}
                     >
                       {/* Checkbox */}
@@ -468,7 +469,7 @@ const CartPage = () => {
                       {/* Image - Myntra style compact */}
                       <div
                         className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0 bg-premium-beige overflow-hidden rounded cursor-pointer"
-                        onClick={() => navigate(`/productDetail/${product.id}`)}
+                        onClick={() => navigate(buildProductDetailUrl(product))}
                       >
                         {/* <img
                           src={
@@ -481,19 +482,7 @@ const CartPage = () => {
                           onError={(e) => e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9Ijc1IiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+'}
                         /> */}
                         <img
-                          src={
-                            (() => {
-                              if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-                                const colors = product.availableColors || [];
-                                const colorIndex = colors.indexOf(item.color); // index of the item's color
-                                const imagesPerColor = 4; // number of images per color
-                                const startIndex = colorIndex >= 0 ? colorIndex * imagesPerColor : 0;
-                                const imgObj = product.images[startIndex]; // pick first image of that color
-                                return imgObj?.thumbnailUrl || imgObj?.url || imgObj || product.thumbnailUrl || product.image || '';
-                              }
-                              return product.thumbnailUrl || product.image || '';
-                            })()
-                          }
+                          src={getColorAwareProductImage(product)}
                           alt={product.name || 'Product'}
                           className="w-full h-full object-cover"
                         />
@@ -506,7 +495,7 @@ const CartPage = () => {
                         <div className="flex-1 min-w-0 overflow-hidden">
                           <h3
                             className="font-light text-black text-xs sm:text-sm md:text-base mb-1 line-clamp-2 hover:underline cursor-pointer font-futura-pt-book"
-                            onClick={() => navigate(`/productDetail/${product.id}`)}
+                            onClick={() => navigate(buildProductDetailUrl(product))}
                           >
                             {product.name}
                           </h3>
@@ -559,7 +548,7 @@ const CartPage = () => {
                           {/* Quantity Controls */}
                           <div className="flex items-center border border-text-light/30 rounded flex-shrink-0">
                             <button
-                              onClick={() => updateQuantity(item.id, item.size, -1)}
+                              onClick={() => updateQuantity(item.id, item.size, item.color, -1)}
                               disabled={item.quantity <= 1}
                               className="p-1 sm:p-1.5 hover:bg-premium-beige transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                             >
@@ -569,7 +558,7 @@ const CartPage = () => {
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => updateQuantity(item.id, item.size, 1)}
+                              onClick={() => updateQuantity(item.id, item.size, item.color, 1)}
                               className="p-1 sm:p-1.5 hover:bg-premium-beige transition-colors flex-shrink-0"
                             >
                               <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" strokeWidth={2} />

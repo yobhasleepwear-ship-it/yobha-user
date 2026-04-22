@@ -3,6 +3,7 @@ import TrendingNewArrivals from './components/TrendingNewArrivals';
 import GenderGrid from './components/GenderGrid';
 import AccessoriesSection from './components/AccessoriesSection';
 import { useNavigate } from "react-router-dom";
+import { buildProductDetailUrl } from "../../utils/cartVariantImage";
 const HomePage = () => {
   const navigate = useNavigate();
   const [isPortrait, setIsPortrait] = useState(false);
@@ -123,7 +124,7 @@ const HomePage = () => {
                 {recentVisited.map((item) => (
                   <article
                     key={item.id}
-                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                    onClick={() => navigate(buildProductDetailUrl(item))}
                     className={`group flex-shrink-0 w-60 border border-gray-200/70 bg-white/85 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2 ${isCarousel ? 'snap-center' : ''} ${isSingleRecent ? 'mx-auto' : ''}`}
                   >
                     <div className="relative h-48 overflow-hidden">
@@ -154,7 +155,7 @@ const HomePage = () => {
                 {recentVisited.map((item) => (
                   <article
                     key={item.id}
-                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                    onClick={() => navigate(buildProductDetailUrl(item))}
                     className="group border border-gray-200/70 bg-white/90 backdrop-blur-sm shadow-[0_12px_30px_rgba(0,0,0,0.08)] overflow-hidden cursor-pointer transition-transform duration-500 hover:-translate-y-2"
                   >
                     <div className="relative h-60 overflow-hidden">

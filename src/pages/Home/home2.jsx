@@ -21,6 +21,7 @@ import { SubscribeNewsletter } from "../../service/notification";
 import { message } from "../../comman/toster-message/ToastContainer";
 import ProductCard from "../product/components/product-card";
 import RandomPic from "../../assets/randompic.png";
+import { buildProductDetailUrl } from "../../utils/cartVariantImage";
 const HomePage2 = () => {
   const navigate = useNavigate();
   const [isPortrait, setIsPortrait] = useState(false);
@@ -896,7 +897,7 @@ const HomePage2 = () => {
                   <article
                     key={item.id}
                     className="group cursor-pointer flex-shrink-0 w-[calc((100%-16px)/2)] max-w-[180px]"
-                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                    onClick={() => navigate(buildProductDetailUrl(item))}
                   >
                     <div className="relative h-40 w-full overflow-hidden bg-gray-50 border border-gray-200/50  group-hover:border-gray-300 transition-all duration-300 mb-2">
                       <img
@@ -929,7 +930,7 @@ const HomePage2 = () => {
                   <article
                     key={item.id}
                     className="group cursor-pointer w-full max-w-[200px]"
-                    onClick={() => navigate(`/productDetail/${item.id}`)}
+                    onClick={() => navigate(buildProductDetailUrl(item))}
                   >
                     <div className="relative h-48 w-full overflow-hidden bg-gray-50 border border-gray-200/50  group-hover:border-gray-300 group-hover:shadow-lg transition-all duration-300 mb-3">
                       <img

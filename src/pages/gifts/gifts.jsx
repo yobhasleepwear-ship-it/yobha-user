@@ -10,6 +10,7 @@ import { incrementWishlistCount } from "../../redux/wishlistSlice";
 import { message } from "../../comman/toster-message/ToastContainer";
 import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
+import { buildProductDetailUrl } from "../../utils/cartVariantImage";
 // Import dummy images from assets
 import heroImage from "../../assets/heroImage.jpg";
 import coupleHero from "../../assets/couple-hero1.jpg";
@@ -926,7 +927,7 @@ const Gifts = () => {
     } catch (err) {
       console.error("Error saving recent visited products:", err);
     }
-    navigate(`/productDetail/${product?.id}`);
+    navigate(buildProductDetailUrl(product));
   };
 
   // Handle wishlist click

@@ -12,6 +12,7 @@ import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import * as localStorageService from "../../service/localStorageService";
 import ProductCard from "../product/components/product-card";
 import { trackAddToCartMeta } from "../../analytics/metaPixel";
+import { buildProductDetailUrl, getColorAwareProductImage } from "../../utils/cartVariantImage";
 
 export const countryOptions = [
   { code: "IN", label: "India", currency: "INR" },
@@ -75,6 +76,8 @@ const transformWishlistItemToProduct = (wishlistItem) => {
     productMainCategory: product.productMainCategory || '',
     availableColors: product.availableColors || [],
     availableSizes: product.availableSizes || [],
+    color: wishlistItem.desiredColor || product.variantColor || '',
+    variantColor: wishlistItem.desiredColor || product.variantColor || '',
     category: product.category || '',
     wishlistItemId: wishlistItem.id // Store original wishlist item ID for removal
   };
@@ -198,11 +201,23 @@ const WishlistPage = () => {
       (item) => item.id === safeProduct.id && item.size === selectedSize && item.color === selectedColor
     );
 
+    const itemQuantity = Math.max(1, Number(quantity || 1));
+    const colorAwareThumbnail = getColorAwareProductImage({
+      ...safeProduct,
+      color: selectedColor,
+    });
+
     if (itemIndex !== -1) {
+      const nextQuantity = Number(cart[itemIndex]?.quantity || 0) + itemQuantity;
 
       cart[itemIndex] = {
         ...cart[itemIndex],
-        quantity: 1,
+        ...safeProduct,
+        size: selectedSize,
+        country: selectedCountry,
+        quantity: nextQuantity,
+        color: selectedColor,
+        thumbnailUrl: colorAwareThumbnail,
         note: "",
         monogram: "",
       };
@@ -212,10 +227,10 @@ const WishlistPage = () => {
         ...safeProduct,
         size: selectedSize,
         country: selectedCountry,
-        quantity: 1,
-        country: selectedCountry,
+        quantity: itemQuantity,
         monogram: "",
         color: selectedColor,
+        thumbnailUrl: colorAwareThumbnail,
         note: "",
       });
     }
@@ -231,8 +246,8 @@ const WishlistPage = () => {
     trackAddToCartMeta({
       productId: safeProduct?.productId || safeProduct?.id,
       productName: safeProduct?.name,
-      quantity: 1,
-      value: unitPrice,
+      quantity: itemQuantity,
+      value: unitPrice * itemQuantity,
       currency: matchedPrice?.currency || safeProduct?.currency || "INR",
     });
 
@@ -364,7 +379,7 @@ const WishlistPage = () => {
                           } catch (err) {
                             console.error("Error saving recent visited products:", err);
                           }
-                          navigate(`/productDetail/${item.id}`);
+                          navigate(buildProductDetailUrl(item));
                         }}
                       >
                         {/* Product Image */}

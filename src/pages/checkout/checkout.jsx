@@ -13,6 +13,7 @@ import { setCartCount } from "../../redux/cartSlice";
 import { getPinCodeDetails } from "../../service/delivery";
 import { countryCodeOptions } from "../../constants/commanConstant";
 import { trackPurchaseMeta } from "../../analytics/metaPixel";
+import { getCartIdentityKey, getColorAwareProductImage, mergeCartItemWithStoredVariant } from "../../utils/cartVariantImage";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -291,7 +292,7 @@ const CheckoutPage = () => {
 
   // Helper function to generate item key (same logic as cart page)
   const getItemKey = (item) => {
-    return `${item.id}_${item.size || ""}`;
+    return getCartIdentityKey(item);
   };
 
   // Helper function to remove only ordered items from cart
@@ -518,7 +519,7 @@ const CheckoutPage = () => {
           const product = item?.product || {};
           const size = product?.variantSize || item?.variantSku || "";
           const unitPrice = Number(product?.unitPrice ?? item?.price ?? 0);
-          return {
+          return mergeCartItemWithStoredVariant({
             ...item,
             cartItemId: item?.id,
             id: product?.productObjectId || item?.productObjectId || item?.id,
@@ -526,6 +527,7 @@ const CheckoutPage = () => {
             name: product?.name || item?.productName || "",
             size,
             color: product?.variantColor || item?.color || "",
+            availableColors: Array.isArray(product?.availableColors) ? product.availableColors : [],
             quantity: item?.quantity || 1,
             price: unitPrice,
             unitPrice,
@@ -544,7 +546,7 @@ const CheckoutPage = () => {
             images: product?.thumbnailUrl
               ? [{ url: product.thumbnailUrl, thumbnailUrl: product.thumbnailUrl }]
               : [],
-          };
+          });
         });
       } else {
         const response = JSON.parse(localStorage.getItem("cart")) || [];
@@ -1623,24 +1625,15 @@ const CheckoutPage = () => {
                   }
                   const hasDiscount = (Number.isFinite(compareAtUnitPrice) && compareAtUnitPrice > unitPrice) || (Number.isFinite(discountPercent) && discountPercent > 0);
                   const compareAtItemTotal = compareAtUnitPrice * (item.quantity || 0);
-                  const imageSrc = item?.images?.[0]?.thumbnailUrl || item?.images?.[0]?.url || product?.images?.[0]?.thumbnailUrl || product?.images?.[0]?.url || item?.thumbnailUrl || product?.thumbnailUrl || "https://via.placeholder.com/64";
                   const monogramText = (item?.monogram || product?.monogram || "").trim();
 
                   return (
-                    <div key={`${item.id}_${item.size || "nosize"}`} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
-                      <img src={
-                        (() => {
-                          if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-                            const colors = product.availableColors || [];
-                            const colorIndex = colors.indexOf(item.color); // index of the item's color
-                            const imagesPerColor = 4; // number of images per color
-                            const startIndex = colorIndex >= 0 ? colorIndex * imagesPerColor : 0;
-                            const imgObj = product.images[startIndex]; // pick first image of that color
-                            return imgObj?.thumbnailUrl || imgObj?.url || imgObj || product.thumbnailUrl || product.image || '';
-                          }
-                          return product.thumbnailUrl || product.image || '';
-                        })()
-                      } alt={product.name} className="w-16 h-16 object-cover rounded" />
+                    <div key={getItemKey(item)} className="flex items-center gap-3 border-b border-text-light/10 pb-3">
+                      <img
+                        src={getColorAwareProductImage(product) || "https://via.placeholder.com/64"}
+                        alt={product.name}
+                        className="w-16 h-16 object-cover rounded"
+                      />
                       <div className="flex-1 min-w-0 space-y-1">
                         <p className="text-sm md:text-base font-light text-black truncate font-futura-pt-book">{product.name}</p>
                         {item.size && (

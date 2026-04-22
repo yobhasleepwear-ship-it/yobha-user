@@ -11,6 +11,7 @@ import { getPaymentStatusUpdated } from "../../service/buyback";
 import { message } from "../../comman/toster-message/ToastContainer";
 import ImageUploader from "../../comman/Image-Uploader/ImageUploader";
 import { TrackOrder } from "../../service/delivery";
+import { buildProductDetailUrl } from "../../utils/cartVariantImage";
 
 /**
  * Helper function to safely format order detail data from API
@@ -42,6 +43,8 @@ const formatOrderDetailData = (orderData) => {
         productName: item?.productName || 'Untitled Product',
         variantSku: item?.variantSku || '',
         variantId: item?.variantId || '',
+        size: item?.size || item?.variantSize || '',
+        color: Array.isArray(item?.color) ? item.color[0] || '' : item?.color || item?.variantColor || '',
         quantity: typeof item?.quantity === 'number' ? item.quantity : 0,
         unitPrice: typeof item?.unitPrice === 'number' ? item.unitPrice : 0,
         lineTotal: typeof item?.lineTotal === 'number' ? item.lineTotal : 0,
@@ -644,7 +647,7 @@ const OrderDetailPage = () => {
                       >
                         <div
                           className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 flex-shrink-0 bg-gray-50 border border-gray-200 overflow-hidden cursor-pointer"
-                          onClick={() => item.productId && navigate(`/productDetail/${item.productId}`)}
+                          onClick={() => item.productObjectId && navigate(buildProductDetailUrl(item))}
                         >
                           <img
                             src={item.thumbnailUrl}
@@ -659,7 +662,7 @@ const OrderDetailPage = () => {
                         <div className="flex-1 min-w-0">
                           <h3
                             className="font-light text-black text-base mb-2 line-clamp-2 hover:underline cursor-pointer font-futura-pt-book"
-                            onClick={() => item.productId && navigate(`/productDetail/${item.productId}`)}
+                            onClick={() => item.productObjectId && navigate(buildProductDetailUrl(item))}
                           >
                             {item.productName}
                           </h3>

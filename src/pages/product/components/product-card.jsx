@@ -8,6 +8,7 @@ import { incrementWishlistCount } from "../../../redux/wishlistSlice";
 import { message } from "../../../comman/toster-message/ToastContainer";
 import * as localStorageService from "../../../service/localStorageService";
 import { LocalStorageKeys } from "../../../constants/localStorageKeys";
+import { buildProductDetailUrl } from "../../../utils/cartVariantImage";
 
 /**
  * ProductCard Component - Luxury Gucci-inspired design
@@ -45,7 +46,7 @@ const ProductCard = ({ product ,filter}) => {
   const touchTimeoutRef = useRef(null);
   const IMAGES_PER_COLOR = 4;
 const [selectedColor, setSelectedColor] = useState(
-  filter?.colors?.[0] || product.availableColors?.[0]
+  filter?.colors?.[0] || product.color || product.variantColor || product.availableColors?.[0]
 );
 const colorIndex = useMemo(() => {
   if (!selectedColor || !product.availableColors) return 0;
@@ -199,18 +200,22 @@ const selectedImages = useMemo(() => {
 
   const handleCardClick = () => {
     if (productId) {
+      const productWithSelectedColor = {
+        ...product,
+        id: productId,
+        color: selectedColor,
+        variantColor: selectedColor,
+      };
       try {
         const existing = JSON.parse(localStorage.getItem("recentVisited")) || [];
         const filtered = existing.filter((p) => p.id !== productId);
-        const updated = [product, ...filtered];
+        const updated = [productWithSelectedColor, ...filtered];
         const limited = updated.slice(0, 8);
         localStorage.setItem("recentVisited", JSON.stringify(limited));
       } catch (err) {
         console.error("Error saving recent visited products:", err);
       }
-      navigate(`/productDetail/${productId}`, {
-    state: { filterColour: filter?.colors?.[0] },
-  });
+      navigate(buildProductDetailUrl(productWithSelectedColor));
     }
   };
 

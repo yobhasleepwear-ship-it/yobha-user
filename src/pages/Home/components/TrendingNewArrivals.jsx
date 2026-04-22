@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getFilteredProducts } from "../../../service/productAPI";
+import { buildProductDetailUrl } from "../../../utils/cartVariantImage";
 
 const TrendingNewArrivals = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -140,7 +141,7 @@ const TrendingNewArrivals = () => {
             <article
               key={product.id}
               className="group bg-white/95 backdrop-blur-sm border border-gray-100/50 overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-700 flex flex-col relative transform hover:-translate-y-2"
-              onClick={() => navigate(`/productDetail/${product.id}`)}
+              onClick={() => navigate(buildProductDetailUrl(product))}
               onMouseEnter={() => setHoveredCard(product.id)}
               onMouseLeave={() => setHoveredCard(null)}
               style={{

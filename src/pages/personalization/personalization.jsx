@@ -19,6 +19,7 @@ import * as localStorageService from "../../service/localStorageService";
 import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import { countryCodeOptions } from "../../constants/commanConstant";
 import { trackAddToCartMeta } from "../../analytics/metaPixel";
+import { getColorAwareProductImage } from "../../utils/cartVariantImage";
 
 const Personalization = () => {
   const navigate = useNavigate();
@@ -547,6 +548,10 @@ const Personalization = () => {
         currency: itemCurrency,
         priceList: productDetails?.priceList || [],
         lineTotal: lineTotal,
+        thumbnailUrl: getColorAwareProductImage({
+          ...safeProduct,
+          color: selectedColor,
+        }),
         // Add countryPrice for shipping calculation
         countryPrice: matchedPrice ? {
           priceAmount: itemPrice,
@@ -555,7 +560,13 @@ const Personalization = () => {
       };
 
       if (itemIndex !== -1) {
-        cart[itemIndex] = cartItem;
+        const nextQuantity = Number(cart[itemIndex]?.quantity || 0) + quantity;
+        cart[itemIndex] = {
+          ...cart[itemIndex],
+          ...cartItem,
+          quantity: nextQuantity,
+          lineTotal: itemPrice * nextQuantity,
+        };
       } else {
         cart.push(cartItem);
       }
@@ -603,7 +614,10 @@ const Personalization = () => {
         id: Date.now().toString(),
         productId: productDetails?.id,
         productName: productDetails?.productName || productDetails?.name,
-        productImage: productDetails?.images?.[0]?.url || productDetails?.images?.[0] || productDetails?.thumbnailUrl || '',
+        productImage: getColorAwareProductImage({
+          ...productDetails,
+          color: selectedColor,
+        }),
         size: selectedSize,
         color: selectedColor,
         monogram: monogram,

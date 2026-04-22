@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ShoppingBag,
@@ -27,6 +27,7 @@ import { LocalStorageKeys } from "../../constants/localStorageKeys";
 import SlidePanel from "./slider";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { trackAddToCartMeta } from "../../analytics/metaPixel";
+import { buildProductDetailUrl, getColorAwareProductImage } from "../../utils/cartVariantImage";
 
 const getAvailableQuantity = (priceList, selectedCountry, selectedSize) => {
   if (!Array.isArray(priceList) || priceList.length === 0) return 0;
@@ -215,8 +216,6 @@ const ProductDetailPage = () => {
   const { productId } = useParams();
   const location = useLocation();
   const filterColour = location.state?.filterColour;
-  console.log(filterColour, "filterColour")
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // UI State
@@ -252,10 +251,8 @@ const ProductDetailPage = () => {
     const imagesForColor = productImage.slice(start, end);
     return imagesForColor.length > 0 ? imagesForColor : productImage.slice(0, IMAGES_PER_COLOR);
   }, [colorIndex, productImage]);
-  console.log(productImage, "productImage")
   const [selectedCountry, setSelectedCountry] = useState(parsedCountry?.code);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [loadedImageMap, setLoadedImageMap] = useState({});
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -290,7 +287,6 @@ const ProductDetailPage = () => {
     // }
   ); // which section to show
 
-  console.log(activeSection, "activeSection")
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -349,6 +345,7 @@ const ProductDetailPage = () => {
   const [addingToWishlist, setAddingToWishlist] = useState(false);
   const [itemAddedToCart, setItemAddedToCart] = useState(false);
   const [openSlider, setOpenSlider] = useState(false);
+  const preloadedImageUrlsRef = useRef(new Set());
   // API State
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -357,6 +354,10 @@ const ProductDetailPage = () => {
   const [monogram, setMonogram] = useState("")
   const MONOGRAM_CHAR_LIMIT = 12;
   const [notes, setNotes] = useState("");
+  const preferredColor = useMemo(() => {
+    const colorFromQuery = new URLSearchParams(location.search).get("color");
+    return colorFromQuery || filterColour || "";
+  }, [location.search, filterColour]);
   // Review Form State
   const [averageProdRating, setAverageProdRating] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -389,10 +390,6 @@ const ProductDetailPage = () => {
       const response = await getProductDescription(productId);
       setProduct(response.data);
       setProductImage(response.data.images)
-      if (filterColour) {
-        const matchedColorIndex = response.data.availableColors.indexOf(filterColour);
-        setColorIndex(matchedColorIndex >= 0 ? matchedColorIndex : 0);
-      }
 
       setAverageProdRating(() => {
         const reviews = response.data.reviews || [];
@@ -410,10 +407,6 @@ const ProductDetailPage = () => {
     }
   }, []);
   useEffect(() => {
-    if (filterColour)
-      setSelectedColor(filterColour || '');
-  }, [filterColour]);
-  useEffect(() => {
     if (productId) {
       fetchProductDetail(productId);
     }
@@ -421,33 +414,42 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     setSelectedImageIndex(0);
-  }, [colorIndex, productImage]);
+  }, [productId]);
 
-  useEffect(() => {
-    setLoadedImageMap({});
-  }, [colorIndex, productId]);
-
-  const markImageLoaded = useCallback((src) => {
-    if (!src) return;
-    setLoadedImageMap((prev) => (prev[src] ? prev : { ...prev, [src]: true }));
-  }, []);
-
-  // Preload all color thumbnails so switching colors updates instantly.
   useEffect(() => {
     if (!Array.isArray(productImage) || productImage.length === 0) return;
 
-    const preload = (image) => {
+    const urlsToWarm = new Set();
+
+    for (let i = 0; i < productImage.length; i += IMAGES_PER_COLOR) {
+      const image = productImage[i];
       const src = typeof image === "string"
         ? image
         : (image?.thumbnailUrl || image?.url || "");
-      if (!src) return;
+      if (src) {
+        urlsToWarm.add(src);
+      }
+    }
+
+    selectedImages.forEach((image) => {
+      const src = typeof image === "string"
+        ? image
+        : (image?.thumbnailUrl || image?.url || "");
+      if (src) {
+        urlsToWarm.add(src);
+      }
+    });
+
+    urlsToWarm.forEach((src) => {
+      if (preloadedImageUrlsRef.current.has(src)) {
+        return;
+      }
+      preloadedImageUrlsRef.current.add(src);
       const img = new Image();
       img.decoding = "async";
       img.src = src;
-    };
-
-    productImage.forEach(preload);
-  }, [productImage]);
+    });
+  }, [productImage, selectedImages]);
 
   // Check if product is in wishlist on mount
   useEffect(() => {
@@ -484,15 +486,26 @@ const ProductDetailPage = () => {
   }, [product?.productId, productId]); // Only depend on productId to prevent unnecessary re-renders
 
   useEffect(() => {
-    if (product) {
-      if (product.availableColors.length > 0 && !selectedColor) {
-        setSelectedColor(product.availableColors[0]);
-      }
-      if (product.sizeOfProduct.length > 0 && !selectedSize) {
-        setSelectedSize(product.sizeOfProduct[0]);
-      }
+    if (!product) return;
+
+    const availableColors = Array.isArray(product.availableColors) ? product.availableColors : [];
+    const sizes = Array.isArray(product.sizeOfProduct) ? product.sizeOfProduct : [];
+
+    if (availableColors.length > 0) {
+      const matchedColorIndex = availableColors.findIndex(
+        (color) => color.toLowerCase() === preferredColor.toLowerCase()
+      );
+      const resolvedIndex = matchedColorIndex >= 0 ? matchedColorIndex : 0;
+      const resolvedColor = availableColors[resolvedIndex];
+
+      setSelectedColor((prev) => (prev === resolvedColor ? prev : resolvedColor));
+      setColorIndex((prev) => (prev === resolvedIndex ? prev : resolvedIndex));
     }
-  }, [product, selectedColor, selectedSize]);
+
+    if (sizes.length > 0 && !selectedSize) {
+      setSelectedSize(sizes[0]);
+    }
+  }, [product, preferredColor, selectedSize]);
 
   // Handle carousel responsive items per view
   useEffect(() => {
@@ -702,12 +715,18 @@ const ProductDetailPage = () => {
     );
 
     if (itemIndex !== -1) {
+      const nextQuantity = Number(cart[itemIndex]?.quantity || 0) + Number(quantity || 1);
 
       cart[itemIndex] = {
         ...cart[itemIndex],
-        quantity: quantity,
+        color: selectedColor,
+        quantity: nextQuantity,
         note: notes,
         monogram: monogram,
+        thumbnailUrl: getColorAwareProductImage({
+          ...safeProduct,
+          color: selectedColor,
+        }),
       };
     } else {
 
@@ -718,7 +737,11 @@ const ProductDetailPage = () => {
         quantity: quantity,
         monogram: monogram,
         color: selectedColor,
-        note: notes
+        note: notes,
+        thumbnailUrl: getColorAwareProductImage({
+          ...safeProduct,
+          color: selectedColor,
+        })
       });
     }
 
@@ -730,6 +753,7 @@ const ProductDetailPage = () => {
       const payload = {
         productId: product?.productId,
         size: selectedSize,
+        color: selectedColor,
         quantity,
         currency: matchedPrice?.currency || "INR",
         note: notes || "",
@@ -779,7 +803,6 @@ const ProductDetailPage = () => {
       ) || {};
 
     const lineTotal = (selectedPrice.priceAmount || product.unitPrice) * quantity;
-    console.log(product.priceList, "pro")
     const checkoutProd = {
       items: [
 
@@ -791,7 +814,10 @@ const ProductDetailPage = () => {
           color: selectedColor,
           country: selectedCountry,
           size: selectedSize,
-          thumbnailUrl: product.images[0].url,
+          thumbnailUrl: getColorAwareProductImage({
+            ...product,
+            color: selectedColor,
+          }),
           // countryPrice: {
           //   priceAmount: selectedPrice.priceAmount || product.unitPrice,
           //   currency: selectedPrice.currency || product.currency,
@@ -1037,24 +1063,19 @@ const ProductDetailPage = () => {
 
                     return (
                       <div key={`${colorIndex}-${index}-${imageSrc}`} className="relative w-full h-full flex-shrink-0">
-                        {!loadedImageMap[imageSrc] && (
-                          <div className="absolute inset-0 bg-gray-100 animate-pulse" />
-                        )}
                         <img
                           src={imageSrc}
                           alt={imageAlt}
-                          className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${loadedImageMap[imageSrc] ? "opacity-100" : "opacity-0"}`}
+                          className="w-full h-full object-contain cursor-pointer"
                           loading={index === selectedImageIndex ? "eager" : "lazy"}
                           fetchPriority={index === selectedImageIndex ? "high" : "auto"}
                           decoding="async"
-                          onLoad={() => markImageLoaded(imageSrc)}
                           onClick={() => {
                             setIsImageFull(true);
                             setCurrentImageFull(fullImageSrc);
                           }}
                           onError={(e) => {
                             e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                            markImageLoaded(imageSrc);
                           }}
                         />
                       </div>
@@ -1155,24 +1176,19 @@ const ProductDetailPage = () => {
 
                       return (
                         <div key={`${colorIndex}-${index}-${imageSrc}`} className="relative w-full h-full flex-shrink-0">
-                          {!loadedImageMap[imageSrc] && (
-                            <div className="absolute inset-0 bg-gray-100 animate-pulse" />
-                          )}
                           <img
                             src={imageSrc}
                             alt={imageAlt}
-                            className={`w-full h-full object-contain cursor-pointer transition-opacity duration-200 ${loadedImageMap[imageSrc] ? "opacity-100" : "opacity-0"}`}
+                            className="w-full h-full object-contain cursor-pointer"
                             loading={index === selectedImageIndex ? "eager" : "lazy"}
                             fetchPriority={index === selectedImageIndex ? "high" : "auto"}
                             decoding="async"
-                            onLoad={() => markImageLoaded(imageSrc)}
                             onClick={() => {
                               setIsImageFull(true);
                               setCurrentImageFull(fullImageSrc);
                             }}
                             onError={(e) => {
                               e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjgwMCIgdmlld0JveD0iMCAwIDgwMCA4MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iODAwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjQwMCIgeT0iNDAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5OTk5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
-                              markImageLoaded(imageSrc);
                             }}
                           />
                         </div>
@@ -1330,10 +1346,25 @@ const ProductDetailPage = () => {
                     <button
                       key={color}
                       onClick={() => {
+                        if (index === colorIndex && color === selectedColor) {
+                          return;
+                        }
+                        const params = new URLSearchParams(location.search);
+                        params.set("color", color);
                         setSelectedImageIndex(0);
                         setSelectedColor(color);
                         setItemAddedToCart(false);
                         setColorIndex(index);
+                        navigate(
+                          {
+                            pathname: location.pathname,
+                            search: `?${params.toString()}`,
+                          },
+                          {
+                            replace: true,
+                            state: location.state,
+                          }
+                        );
                       }}
                       className={`flex-shrink-0 px-3 py-1.5 border transition-all duration-300 text-md lg:text-md md:text-md sm:text-sm font-light rounded-full relative group min-h-[28px] flex items-center justify-center ${selectedColor === color
                         ? 'border-black bg-black text-white'
@@ -2022,7 +2053,7 @@ const ProductDetailPage = () => {
                           } catch (err) {
                             console.error("Error saving recent visited products:", err);
                           }
-                          navigate(`/productDetail/${product?.id}`);
+                          navigate(buildProductDetailUrl(product));
                         }}
                       >
                         {/* Image Section */}

@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { getWishlist } from "../../service/wishlist";
 import { getCachedWishlist } from "../../service/wishlistCache";
 import Sidebar from "./Sidebar";
+import { buildProductDetailUrl } from "../../utils/cartVariantImage";
 
 const HeaderWithSidebar2 = () => {
   const { t, i18n } = useTranslation();
@@ -260,7 +261,7 @@ const HeaderWithSidebar2 = () => {
 
   // Handle search result click
   const handleSearchResultClick = (product) => {
-    navigate(`/productDetail/${product.id}`);
+    navigate(buildProductDetailUrl(product));
     setSearchOpen(false);
     setSearchQuery("");
     setSearchResults([]);
