@@ -1,7 +1,6 @@
 // countryCodeOptions.js
 
 export const countryCodeOptions = [
-    {code:'None',country:'Select Country Code',short:'NA'},
   { code: "91", country: "India", short: "IN" },
   { code: "971", country: "United Arab Emirates", short: "AE" },
   { code: "966", country: "Saudi Arabia", short: "SA" },

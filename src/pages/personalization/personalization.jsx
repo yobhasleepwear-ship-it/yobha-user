@@ -21,6 +21,97 @@ import { countryCodeOptions } from "../../constants/commanConstant";
 import { trackAddToCartMeta } from "../../analytics/metaPixel";
 import { getColorAwareProductImage } from "../../utils/cartVariantImage";
 
+const COUNTRY_CODE_BY_NAME = countryCodeOptions.reduce((acc, option) => {
+  acc[option.country.trim().toLowerCase()] = option.code;
+  return acc;
+}, {});
+
+const COUNTRY_OPTION_BY_SHORT = countryCodeOptions.reduce((acc, option) => {
+  acc[option.short.trim().toUpperCase()] = option;
+  return acc;
+}, {});
+
+const COUNTRY_NAME_BY_CODE = countryCodeOptions.reduce((acc, option) => {
+  acc[option.code] = option.country;
+  return acc;
+}, {});
+
+const normalizeDigits = (value = "") => String(value).replace(/\D/g, "");
+
+const getCountryOptionFromStorefrontCode = (storefrontCode = "") => {
+  const normalizedStorefrontCode = String(storefrontCode || "").trim().toUpperCase();
+
+  if (!normalizedStorefrontCode) {
+    return null;
+  }
+
+  return COUNTRY_OPTION_BY_SHORT[normalizedStorefrontCode]
+    || (normalizedStorefrontCode === "GB" ? COUNTRY_OPTION_BY_SHORT.UK : null);
+};
+
+const getStoredSelectedCountry = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const savedCountry = window.localStorage.getItem("selectedCountry");
+  if (!savedCountry) {
+    return null;
+  }
+
+  try {
+    const parsedCountry = JSON.parse(savedCountry);
+    if (parsedCountry?.code) {
+      return parsedCountry;
+    }
+  } catch (error) {
+    return { code: savedCountry };
+  }
+
+  return null;
+};
+
+const getDefaultAddressState = () => {
+  const storefrontCode = getStoredSelectedCountry()?.code || "IN";
+  const countryOption = getCountryOptionFromStorefrontCode(storefrontCode)
+    || getCountryOptionFromStorefrontCode("IN");
+
+  return {
+    fullName: "",
+    phone: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    pincode: "",
+    countryCode: countryOption?.code || "91",
+    country: countryOption?.country || "India",
+    landmark: "",
+  };
+};
+
+const inferCountryCode = (country = "", countryCode = "") => {
+  const normalizedCountryCode = normalizeDigits(countryCode);
+  if (normalizedCountryCode) {
+    return normalizedCountryCode;
+  }
+
+  return COUNTRY_CODE_BY_NAME[String(country || "").trim().toLowerCase()] || "";
+};
+
+const toStoredPhone = (phone = "", countryCode = "") => {
+  const digits = normalizeDigits(phone);
+  const normalizedCountryCode = inferCountryCode("", countryCode);
+
+  if (!digits || !normalizedCountryCode) {
+    return digits;
+  }
+
+  return digits.startsWith(normalizedCountryCode)
+    ? digits
+    : `${normalizedCountryCode}${digits}`;
+};
+
 const Personalization = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -120,30 +211,9 @@ const Personalization = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [useSavedAddress, setUseSavedAddress] = useState(true);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
-  const [newAddress, setNewAddress] = useState({
-    fullName: '',
-    phone: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    pincode: '',
-    countryCode:'91',
-    country: 'India',
-    landmark: '',
-  });
+  const [newAddress, setNewAddress] = useState(() => getDefaultAddressState());
   // Recipient address (for "Send directly to recipient")
-  const [recipientAddress, setRecipientAddress] = useState({
-    fullName: '',
-    phone: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    pincode: '',
-    country: 'India',
-    landmark: '',
-  });
+  const [recipientAddress, setRecipientAddress] = useState(() => getDefaultAddressState());
 
   // Loading states
   const [addingToCart, setAddingToCart] = useState(false);
@@ -354,17 +424,7 @@ const Personalization = () => {
       fetchAddresses();
     } else if (deliveryOption === "recipient") {
       // Reset recipient address when switching to recipient option
-      setRecipientAddress({
-        fullName: '',
-        phone: '',
-        addressLine1: '',
-        addressLine2: '',
-        city: '',
-        state: '',
-        pincode: '',
-        country: 'India',
-        landmark: '',
-      });
+      setRecipientAddress(getDefaultAddressState());
     }
   }, [deliveryOption]);
 
@@ -391,22 +451,24 @@ const Personalization = () => {
 
   // Handle add address
   const handleAddAddress = async () => {
-    if (!newAddress.fullName || !newAddress.phone || !newAddress.addressLine1 || !newAddress.city || !newAddress.state || !newAddress.pincode) {
+    if (!newAddress.fullName || !newAddress.phone || !newAddress.addressLine1 || !newAddress.city || !newAddress.state || !newAddress.pincode || !newAddress.countryCode) {
       message.error("Please fill all required fields");
       return;
     }
 
     setIsAddingAddress(true);
     try {
+      const countryCode = inferCountryCode(newAddress.country, newAddress.countryCode);
       const addressPayload = {
         fullName: newAddress.fullName,
-        MobileNumnber: newAddress.phone,
+        MobileNumnber: toStoredPhone(newAddress.phone, countryCode),
         line1: newAddress.addressLine1,
         line2: newAddress.addressLine2 || '',
         city: newAddress.city,
         state: newAddress.state,
         zip: newAddress.pincode,
         country: newAddress.country,
+        countryCode,
         landmark: newAddress.landmark || '',
         isDefault: false
       };
@@ -417,17 +479,7 @@ const Personalization = () => {
         await fetchAddresses();
         setSelectedAddress(response.data);
         setUseSavedAddress(true);
-        setNewAddress({
-          fullName: '',
-          phone: '',
-          addressLine1: '',
-          addressLine2: '',
-          city: '',
-          state: '',
-          pincode: '',
-          country: 'India',
-          landmark: '',
-        });
+        setNewAddress(getDefaultAddressState());
       }
     } catch (error) {
       console.error("Failed to add address:", error);
@@ -489,7 +541,7 @@ const Personalization = () => {
 
     if (deliveryOption === "recipient") {
       // Validate recipient address
-      if (!recipientAddress.fullName || !recipientAddress.phone || !recipientAddress.addressLine1 || !recipientAddress.city || !recipientAddress.state || !recipientAddress.pincode) {
+      if (!recipientAddress.fullName || !recipientAddress.phone || !recipientAddress.addressLine1 || !recipientAddress.city || !recipientAddress.state || !recipientAddress.pincode || !recipientAddress.countryCode) {
         message.error("Please fill all required recipient details");
         return;
       }
@@ -598,7 +650,7 @@ const Personalization = () => {
     }
 
     if (deliveryOption === "recipient") {
-      if (!recipientAddress.fullName || !recipientAddress.phone || !recipientAddress.addressLine1 || !recipientAddress.city || !recipientAddress.state || !recipientAddress.pincode) {
+      if (!recipientAddress.fullName || !recipientAddress.phone || !recipientAddress.addressLine1 || !recipientAddress.city || !recipientAddress.state || !recipientAddress.pincode || !recipientAddress.countryCode) {
         message.error("Please fill all required recipient details");
         return;
       }
@@ -651,17 +703,7 @@ const Personalization = () => {
         setSelectedAddress(saved.address);
         setUseSavedAddress(true);
       } else if (saved.deliveryOption === "recipient") {
-        setRecipientAddress(saved.address || {
-          fullName: '',
-          phone: '',
-          addressLine1: '',
-          addressLine2: '',
-          city: '',
-          state: '',
-          pincode: '',
-          country: 'India',
-          landmark: '',
-        });
+        setRecipientAddress(saved.address || getDefaultAddressState());
       }
       setShowSavedPersonalizations(false);
       // Fetch product details and set size/color
@@ -1220,11 +1262,15 @@ const Personalization = () => {
                     onChange={(e) => setRecipientAddress({ ...recipientAddress, fullName: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg"
                   />
-                    <select
+                      <select
                         required
                         value={recipientAddress.countryCode }
                         onChange={(e) =>
-                          setRecipientAddress({ ...recipientAddress, countryCode: e.target.value })
+                          setRecipientAddress((prev) => ({
+                            ...prev,
+                            countryCode: normalizeDigits(e.target.value),
+                            country: COUNTRY_NAME_BY_CODE[normalizeDigits(e.target.value)] || prev.country,
+                          }))
                         }
                         className="w-28 px-3 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg bg-white"
                       >
@@ -1238,7 +1284,7 @@ const Personalization = () => {
                     type="tel"
                     placeholder="Phone Number"
                     value={recipientAddress.phone}
-                    onChange={(e) => setRecipientAddress({ ...recipientAddress, phone: e.target.value })}
+                    onChange={(e) => setRecipientAddress({ ...recipientAddress, phone: normalizeDigits(e.target.value) })}
                     className="w-full px-4 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg"
                   />
                   <input
@@ -1372,7 +1418,11 @@ const Personalization = () => {
                         required
                         value={newAddress.countryCode }
                         onChange={(e) =>
-                          setNewAddress({ ...newAddress, countryCode: e.target.value })
+                          setNewAddress((prev) => ({
+                            ...prev,
+                            countryCode: normalizeDigits(e.target.value),
+                            country: COUNTRY_NAME_BY_CODE[normalizeDigits(e.target.value)] || prev.country,
+                          }))
                         }
                         className="w-28 px-3 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg bg-white"
                       >
@@ -1386,7 +1436,7 @@ const Personalization = () => {
                         type="tel"
                         placeholder="Phone Number"
                         value={newAddress.phone}
-                        onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
+                        onChange={(e) => setNewAddress({ ...newAddress, phone: normalizeDigits(e.target.value) })}
                         className="w-full px-4 py-2 border border-gray-200 focus:outline-none focus:border-black font-light font-futura-pt-light text-black rounded-lg"
                       />
                       <input

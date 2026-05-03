@@ -8,6 +8,14 @@ import { getOrders } from "../../service/order";
 import { getLoyaltyAudit } from "../../service/wallet";
 import CountryDropdown from "../../countryDropdown";
 import { countryCodeOptions } from "../../constants/commanConstant";
+import {
+  getDefaultAddressState,
+  getCountryNameFromCode,
+  inferCountryCode,
+  normalizeAccountAddressDraft,
+  normalizeDigits,
+  toLocalPhone,
+} from "../../utils/addressNormalization";
 
 // Toggle for dummy data - set to false to use real API
 const USE_DUMMY_DATA = false;
@@ -208,33 +216,26 @@ const createDummyWalletData={
       if (addressId) {
         const addressToEdit = userData.find(addr => addr.id === addressId);
         if (addressToEdit) {
+          const normalizedAddress = normalizeAccountAddressDraft(addressToEdit);
           setEditingAddressId(addressId);
           setTempData({
-            fullName: addressToEdit.fullName || "",
-            line1: addressToEdit.line1 || "",
-            line2: addressToEdit.line2 || "",
-            city: addressToEdit.city || "",
-            state: addressToEdit.state || "",
-            zip: addressToEdit.zip || "",
-            countryCode: addressToEdit.countryCode || "",
-            country: addressToEdit.country || "",
-            MobileNumnber: addressToEdit.mobileNumner || "",
-            isDefault: addressToEdit.isDefault || false
+            fullName: normalizedAddress.fullName || "",
+            line1: normalizedAddress.line1 || "",
+            line2: normalizedAddress.line2 || "",
+            city: normalizedAddress.city || "",
+            state: normalizedAddress.state || "",
+            zip: normalizedAddress.zip || "",
+            countryCode: normalizedAddress.countryCode || "",
+            country: normalizedAddress.country || "",
+            MobileNumnber: normalizedAddress.phone || "",
+            isDefault: normalizedAddress.isDefault || false
           });
         }
       } else {
         setEditingAddressId(null);
         setTempData({
+          ...getDefaultAddressState(),
           fullName: LocalUserData.fullName || LocalUserData.name || "",
-          line1: "",
-          line2: "",
-          city: "",
-          state: "",
-          zip: "",
-          countryCode: "",
-          country: "",
-          MobileNumnber: '',
-          isDefault: false
         });
       }
     } else if (field === "name") {
@@ -247,15 +248,23 @@ const createDummyWalletData={
     if (editingField === "address") {
       setSavingAddress(true);
       try {
+        const normalizedAddress = normalizeAccountAddressDraft(tempData);
+        const requiredFields = ["fullName", "line1", "city", "state", "zip", "country", "countryCode", "MobileNumnber"];
+        const hasMissingRequiredField = requiredFields.some((field) => !normalizedAddress[field]);
+
+        if (hasMissingRequiredField) {
+          message.error("Please fill all required address fields");
+          return;
+        }
+
         if (editingAddressId) {
-          await updateAddress(editingAddressId, tempData);
+          await updateAddress(editingAddressId, normalizedAddress);
           message.success("Address Updated Successfully");
           updateLocalStorage({
-            [`address_${editingAddressId}`]: tempData
+            [`address_${editingAddressId}`]: normalizedAddress
           });
         } else {
-          const payload = { ...tempData };
-          await addAddress(payload);
+          await addAddress(normalizedAddress);
           message.success("Address Saved Successfully");
         }
         GetAddress();
@@ -498,7 +507,14 @@ const createDummyWalletData={
                       
                     }
                     onChange={(e) =>
-                      setTempData({ ...tempData, countryCode: e.target.value })
+                      setTempData((prev) => {
+                        const countryCode = normalizeDigits(e.target.value);
+                        return {
+                          ...prev,
+                          countryCode,
+                          country: getCountryNameFromCode(countryCode) || prev.country,
+                        };
+                      })
                     }
                     className="w-28 px-3 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light text-sm md:text-base"
                   >
@@ -512,7 +528,7 @@ const createDummyWalletData={
                     type="text"
                     placeholder="Mobile Number"
                     value={tempData.MobileNumnber || ""}
-                    onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
+                    onChange={(e) => setTempData({ ...tempData, MobileNumnber: normalizeDigits(e.target.value) })}
                     className="w-full px-4 py-3 border border-gray-300 focus:border-black focus:outline-none text-black bg-white placeholder:text-gray-400 font-light text-sm md:text-base font-futura-pt-light"
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -608,7 +624,9 @@ const createDummyWalletData={
                               {addr.city}, {addr.state} - {addr.zip}
                             </p>
                             <p className="text-sm font-light text-black mt-1 font-futura-pt-light">
-                             {addr.countryCode} {addr.mobileNumner || "No mobile number"}
+                             {addr.mobileNumner
+                               ? `${inferCountryCode(addr.country, addr.countryCode)} ${toLocalPhone(addr.mobileNumner, addr.countryCode)}`
+                               : "No mobile number"}
                             </p>
                             <p className="text-sm font-light text-black font-futura-pt-light">{addr.country}</p>
                           </div>
@@ -892,4 +910,3 @@ const createDummyWalletData={
 };
 
 export default AccountPage2;
-

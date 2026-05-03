@@ -15,6 +15,143 @@ import { countryCodeOptions } from "../../constants/commanConstant";
 import { trackPurchaseMeta } from "../../analytics/metaPixel";
 import { getCartIdentityKey, getColorAwareProductImage, mergeCartItemWithStoredVariant } from "../../utils/cartVariantImage";
 
+const COUNTRY_CODE_BY_NAME = countryCodeOptions.reduce((acc, option) => {
+  acc[option.country.trim().toLowerCase()] = option.code;
+  return acc;
+}, {});
+
+const COUNTRY_OPTION_BY_SHORT = countryCodeOptions.reduce((acc, option) => {
+  acc[option.short.trim().toUpperCase()] = option;
+  return acc;
+}, {});
+
+const COUNTRY_NAME_BY_CODE = countryCodeOptions.reduce((acc, option) => {
+  acc[option.code] = option.country;
+  return acc;
+}, {});
+
+const normalizeDigits = (value = "") => String(value).replace(/\D/g, "");
+
+const getCountryOptionFromStorefrontCode = (storefrontCode = "") => {
+  const normalizedStorefrontCode = String(storefrontCode || "").trim().toUpperCase();
+
+  if (!normalizedStorefrontCode) {
+    return null;
+  }
+
+  return COUNTRY_OPTION_BY_SHORT[normalizedStorefrontCode]
+    || (normalizedStorefrontCode === "GB" ? COUNTRY_OPTION_BY_SHORT.UK : null);
+};
+
+const getStoredSelectedCountry = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const savedCountry = window.localStorage.getItem("selectedCountry");
+  if (!savedCountry) {
+    return null;
+  }
+
+  try {
+    const parsedCountry = JSON.parse(savedCountry);
+    if (parsedCountry?.code) {
+      return parsedCountry;
+    }
+  } catch (error) {
+    return { code: savedCountry };
+  }
+
+  return null;
+};
+
+const getDefaultAddressState = () => {
+  const storefrontCode = getStoredSelectedCountry()?.code || "IN";
+  const countryOption = getCountryOptionFromStorefrontCode(storefrontCode)
+    || getCountryOptionFromStorefrontCode("IN");
+
+  return {
+    fullName: "",
+    countryCode: countryOption?.code || "91",
+    phone: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    pincode: "",
+    country: countryOption?.country || "India",
+    landmark: "",
+  };
+};
+
+const normalizeCountryName = (country = "", countryCode = "") => {
+  const trimmedCountry = String(country || "").trim();
+  if (trimmedCountry && trimmedCountry !== "+91") {
+    return trimmedCountry;
+  }
+
+  if (normalizeDigits(countryCode) === "91") {
+    return "India";
+  }
+
+  return trimmedCountry;
+};
+
+const inferCountryCode = (country = "", countryCode = "") => {
+  const normalizedCountryCode = normalizeDigits(countryCode);
+  if (normalizedCountryCode) {
+    return normalizedCountryCode;
+  }
+
+  const normalizedCountry = normalizeCountryName(country, countryCode).toLowerCase();
+  return COUNTRY_CODE_BY_NAME[normalizedCountry] || "";
+};
+
+const toLocalPhone = (phone = "", countryCode = "") => {
+  const digits = normalizeDigits(phone);
+  const normalizedCountryCode = inferCountryCode("", countryCode);
+
+  if (!digits || !normalizedCountryCode) {
+    return digits;
+  }
+
+  return digits.startsWith(normalizedCountryCode)
+    ? digits.slice(normalizedCountryCode.length)
+    : digits;
+};
+
+const toStoredPhone = (phone = "", countryCode = "") => {
+  const digits = normalizeDigits(phone);
+  const normalizedCountryCode = inferCountryCode("", countryCode);
+
+  if (!digits || !normalizedCountryCode) {
+    return digits;
+  }
+
+  return digits.startsWith(normalizedCountryCode)
+    ? digits
+    : `${normalizedCountryCode}${digits}`;
+};
+
+const normalizeAddressForWrite = (address) => {
+  const countryCode = inferCountryCode(address.country, address.countryCode);
+  const country = normalizeCountryName(address.country, countryCode) || "India";
+  const localPhone = toLocalPhone(
+    address.phone || address.mobileNumner || address.MobileNumnber || "",
+    countryCode
+  );
+  const storedPhone = toStoredPhone(localPhone, countryCode);
+
+  return {
+    ...address,
+    country,
+    countryCode,
+    phone: localPhone,
+    mobileNumner: storedPhone,
+    MobileNumnber: storedPhone,
+  };
+};
+
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
     if (window.Razorpay) {
@@ -42,18 +179,7 @@ const CheckoutPage = () => {
     (state) => state.giftCard
   );
   // Address State
-  const [address, setAddress] = useState({
-    fullName: '',
-    countryCode: '',
-    phone: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    pincode: '',
-    country: '',
-    landmark: '',
-  });
+  const [address, setAddress] = useState(() => getDefaultAddressState());
   const [addressErrors, setAddressErrors] = useState({});
   const [userAddresses, setUserAddresses] = useState([]);
   const [useSavedAddress, setUseSavedAddress] = useState(true);
@@ -269,24 +395,31 @@ const CheckoutPage = () => {
   };
   const normalizeAddress = (addr) => {
     if (!addr) return null;
+    const countryCode = inferCountryCode(addr.country, addr.countryCode);
+    const country = normalizeCountryName(addr.country, countryCode) || 'India';
+    const localPhone = toLocalPhone(
+      addr.phone || addr.mobileNumner || addr.MobileNumnber || '',
+      countryCode
+    );
+
     return {
       id: addr.id || null,
       fullName: addr.fullName || '',
-      countryCode: addr.countryCode || '',
-      phone: addr.phone || addr.mobileNumner || addr.MobileNumnber || '',
+      countryCode,
+      phone: localPhone,
       addressLine1: addr.addressLine1 || addr.line1 || '',
       addressLine2: addr.addressLine2 || addr.line2 || '',
       city: addr.city || '',
       state: addr.state || '',
       pincode: addr.pincode || addr.zip || '',
-      country: addr.country || 'India',
+      country,
       landmark: addr.landmark || '',
       // Keep original API fields for backward compatibility
       line1: addr.line1 || addr.addressLine1 || '',
       line2: addr.line2 || addr.addressLine2 || '',
       zip: addr.zip || addr.pincode || '',
-      mobileNumner: addr.mobileNumner || addr.MobileNumnber || addr.phone || '',
-      MobileNumnber: addr.MobileNumnber || addr.mobileNumner || addr.phone || '',
+      mobileNumner: toStoredPhone(localPhone, countryCode),
+      MobileNumnber: toStoredPhone(localPhone, countryCode),
     };
   };
 
@@ -347,7 +480,7 @@ const CheckoutPage = () => {
 
   const handleOrder = async () => {
     // Validate address fields
-    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country', 'countryCode'];
     const missingFields = requiredFields.filter(field => !address[field]);
     
     if (missingFields.length > 0) {
@@ -385,21 +518,20 @@ const CheckoutPage = () => {
           monogram: combinedMonogramNote || undefined
         };
       });
+      const normalizedAddress = normalizeAddressForWrite(address);
       const orderPayload = {
         currency: cartItems[0].priceList.find((e) => e.country === cartItems[0].country).currency,
         productRequests: PurchasedProduct,
         shippingAddress: {
-          FullName: address.fullName || '',
-          Line1: address.line1 || address.addressLine1 || '',
-          Line2: address.line2 || address.addressLine2 || '',
-          City: address.city || '',
-          State: address.state || '',
-          Zip: address.zip || address.pincode || '',
-          Country: address.country || 'India',
-          countryCode: address.countryCode || '',
-          // mobileNumner: (address.countryCode || '') + (address.mobileNumner || address.MobileNumnber || address.phone || ''),
-          MobileNumner: (address.countryCode || '') + 
-              (address.mobileNumner || address.MobileNumnber || address.phone || ''),
+          FullName: normalizedAddress.fullName || '',
+          Line1: normalizedAddress.line1 || normalizedAddress.addressLine1 || '',
+          Line2: normalizedAddress.line2 || normalizedAddress.addressLine2 || '',
+          City: normalizedAddress.city || '',
+          State: normalizedAddress.state || '',
+          Zip: normalizedAddress.zip || normalizedAddress.pincode || '',
+          Country: normalizedAddress.country || 'India',
+          countryCode: normalizedAddress.countryCode || '',
+          MobileNumner: normalizedAddress.MobileNumnber || '',
 
         },
         ShippingRemarks: ShippingRemarks,
@@ -607,15 +739,31 @@ const CheckoutPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setAddress(prev => ({ ...prev, [name]: value }));
+    setAddress((prev) => {
+      const next = { ...prev, [name]: value };
+
+      if (name === "countryCode") {
+        next.countryCode = normalizeDigits(value);
+        next.country = COUNTRY_NAME_BY_CODE[next.countryCode] || next.country;
+      }
+
+      if (name === "phone") {
+        next.phone = normalizeDigits(value);
+      }
+
+      return next;
+    });
     if (addressErrors[name]) {
       setAddressErrors(prev => ({ ...prev, [name]: '' }));
+    }
+    if (name === "countryCode" && addressErrors.countryCode) {
+      setAddressErrors(prev => ({ ...prev, countryCode: '' }));
     }
   };
 
   const handleAddAddress = async () => {
     // Validate required fields
-    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country', 'countryCode'];
     const errors = {};
 
     requiredFields.forEach(field => {
@@ -631,18 +779,19 @@ const CheckoutPage = () => {
 
     try {
       setIsAddingAddress(true);
+      const normalizedAddress = normalizeAddressForWrite(address);
 
       // Map form fields to API expected fields
       const addressPayload = {
-        fullName: address.fullName,
-        MobileNumnber: address.phone,
-        line1: address.addressLine1,
-        line2: address.addressLine2 || '',
-        city: address.city,
-        state: address.state,
-        zip: address.pincode,
-        countryCode: address.countryCode,
-        country: address.country,
+        fullName: normalizedAddress.fullName,
+        MobileNumnber: normalizedAddress.MobileNumnber,
+        line1: normalizedAddress.addressLine1,
+        line2: normalizedAddress.addressLine2 || '',
+        city: normalizedAddress.city,
+        state: normalizedAddress.state,
+        zip: normalizedAddress.pincode,
+        countryCode: normalizedAddress.countryCode,
+        country: normalizedAddress.country,
         isDefault: false
       };
 
@@ -677,14 +826,14 @@ const CheckoutPage = () => {
     setAddress({
       fullName: addressToEdit.fullName,
       // API returns mobile number as `mobileNumner` (typo in backend); fall back to `phone`
-      phone: addressToEdit.mobileNumner || addressToEdit.phone || '',
+      phone: toLocalPhone(addressToEdit.mobileNumner || addressToEdit.phone || '', addressToEdit.countryCode || ''),
       addressLine1: addressToEdit.line1,
       addressLine2: addressToEdit.line2 || '',
       city: addressToEdit.city,
       state: addressToEdit.state,
       pincode: addressToEdit.zip,
-      countryCode: addressToEdit.countryCode || '',
-      country: addressToEdit.country,
+      countryCode: inferCountryCode(addressToEdit.country, addressToEdit.countryCode),
+      country: normalizeCountryName(addressToEdit.country, addressToEdit.countryCode) || 'India',
       landmark: addressToEdit.landmark || ''
     });
     setUseSavedAddress(false);
@@ -692,7 +841,7 @@ const CheckoutPage = () => {
 
   const handleValidateAddress = async () => {
     // Validate required fields
-    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country', 'countryCode'];
     const errors = {};
 
     requiredFields.forEach(field => {
@@ -713,7 +862,7 @@ const CheckoutPage = () => {
 
   const handleUpdateAddress = async () => {
     // Validate required fields
-    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country'];
+    const requiredFields = ['fullName', 'phone', 'addressLine1', 'city', 'state', 'pincode', 'country', 'countryCode'];
     const errors = {};
 
     requiredFields.forEach(field => {
@@ -729,20 +878,21 @@ const CheckoutPage = () => {
 
     try {
       setIsAddingAddress(true);
+      const normalizedAddress = normalizeAddressForWrite(address);
 
       // Map form fields to API expected fields
       const addressPayload = {
-        fullName: address.fullName,
+        fullName: normalizedAddress.fullName,
         // Backend expects this exact key (matches addAddress)
-        countryCode: address.countryCode,
-        MobileNumnber: address.phone,
-        line1: address.addressLine1,
-        line2: address.addressLine2 || '',
-        city: address.city,
-        state: address.state,
-        zip: address.pincode,
-        country: address.country,
-        landmark: address.landmark || ''
+        countryCode: normalizedAddress.countryCode,
+        MobileNumnber: normalizedAddress.MobileNumnber,
+        line1: normalizedAddress.addressLine1,
+        line2: normalizedAddress.addressLine2 || '',
+        city: normalizedAddress.city,
+        state: normalizedAddress.state,
+        zip: normalizedAddress.pincode,
+        country: normalizedAddress.country,
+        landmark: normalizedAddress.landmark || ''
       };
 
       const response = await updateAddress(editingAddressId, addressPayload);
@@ -769,18 +919,7 @@ const CheckoutPage = () => {
   const handleCancelEdit = () => {
     setIsEditingAddress(false);
     setEditingAddressId(null);
-    setAddress({
-      fullName: '',
-      countryCode: '',
-      phone: '',
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      state: '',
-      pincode: '',
-      country: 'India',
-      landmark: '',
-    });
+    setAddress(getDefaultAddressState());
     setAddressErrors({});
   };
 
@@ -805,18 +944,21 @@ const CheckoutPage = () => {
     // console.log(user,"user")
     // const userId = user.id || "anonymous";
     // console.log(userId)
+    const normalizedAddress = normalizeAddressForWrite(address);
     const payload = {
       "couponCode": selectedCoupon?.code || null,
       "loyaltyDiscountAmount": loyaltyDiscountAmount,
       "paymentMethod": selectedPayment ? selectedPayment.id.toUpperCase() : "COD",
       "shippingAddress": {
-        "fullName": address.fullName || "Samrat Sarotra",
-        "line1": address.addressLine1 || "Flat 302, Yuhanns Empire",
-        "line2": address.addressLine2 || "Murugeshpalya",
-        "city": address.city || "Bangalore",
-        "state": address.state || "Karnataka",
-        "zip": address.pincode || "560017",
-        "country": address.country || "India",
+        "fullName": normalizedAddress.fullName || "Samrat Sarotra",
+        "line1": normalizedAddress.addressLine1 || "Flat 302, Yuhanns Empire",
+        "line2": normalizedAddress.addressLine2 || "Murugeshpalya",
+        "city": normalizedAddress.city || "Bangalore",
+        "state": normalizedAddress.state || "Karnataka",
+        "zip": normalizedAddress.pincode || "560017",
+        "country": normalizedAddress.country || "India",
+        "countryCode": normalizedAddress.countryCode || "",
+        "MobileNumner": normalizedAddress.MobileNumnber || "",
         "isDefault": true
       }
     };
@@ -1130,7 +1272,7 @@ const CheckoutPage = () => {
                                 target: { name: "countryCode", value: e.target.value },
                               })
                             }
-                            className={`w-28 px-3 py-3 border-2 focus:outline-none text-sm font-light transition-colors rounded-lg ${addressErrors.phone
+                            className={`w-28 px-3 py-3 border-2 focus:outline-none text-sm font-light transition-colors rounded-lg ${(addressErrors.phone || addressErrors.countryCode)
                                 ? "border-red-500 bg-red-50"
                                 : "border-gray-300 focus:border-black hover:border-gray-400"
                               }`}
@@ -1152,7 +1294,7 @@ const CheckoutPage = () => {
                               : 'border-gray-300 focus:border-black hover:border-gray-400'
                               }`}
                           />
-                          {addressErrors.phone && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.phone}</p>}
+                          {(addressErrors.phone || addressErrors.countryCode) && <p className="text-sm text-red-500 mt-1 font-light font-futura-pt-light">{addressErrors.phone || addressErrors.countryCode}</p>}
                         </div>
 
                         <div className="md:col-span-2">

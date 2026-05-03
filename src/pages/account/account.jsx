@@ -5,6 +5,14 @@ import { message } from "../../comman/toster-message/ToastContainer";
 import { updateUserName } from "../../service/user";
 import CountryDropdown from "../../countryDropdown";
 import { countryCodeOptions } from "../../constants/commanConstant";
+import {
+  getDefaultAddressState,
+  getCountryNameFromCode,
+  inferCountryCode,
+  normalizeAccountAddressDraft,
+  normalizeDigits,
+  toLocalPhone,
+} from "../../utils/addressNormalization";
 
 
 const AccountPage = () => {
@@ -97,17 +105,19 @@ const AccountPage = () => {
         // Editing existing address - populate with saved address data
         const addressToEdit = userData.find(addr => addr.id === addressId);
         if (addressToEdit) {
+          const normalizedAddress = normalizeAccountAddressDraft(addressToEdit);
           setEditingAddressId(addressId);
           setTempData({
-            fullName: addressToEdit.fullName || "",
-            line1: addressToEdit.line1 || "",
-            line2: addressToEdit.line2 || "",
-            city: addressToEdit.city || "",
-            state: addressToEdit.state || "",
-            zip: addressToEdit.zip || "",
-            country: addressToEdit.country || "",
-            MobileNumnber: addressToEdit.mobileNumner || "",
-            isDefault: addressToEdit.isDefault || false
+            fullName: normalizedAddress.fullName || "",
+            line1: normalizedAddress.line1 || "",
+            line2: normalizedAddress.line2 || "",
+            city: normalizedAddress.city || "",
+            state: normalizedAddress.state || "",
+            zip: normalizedAddress.zip || "",
+            countryCode: normalizedAddress.countryCode || "",
+            country: normalizedAddress.country || "",
+            MobileNumnber: normalizedAddress.phone || "",
+            isDefault: normalizedAddress.isDefault || false
           });
 
         }
@@ -115,15 +125,8 @@ const AccountPage = () => {
 
         setEditingAddressId(null);
         setTempData({
+          ...getDefaultAddressState(),
           fullName: LocalUserData.fullName || LocalUserData.name || "",
-          line1: "",
-          line2: "",
-          city: "",
-          state: "",
-          zip: "",
-          country: "",
-          MobileNumnber: '',
-          isDefault: false
         });
       }
     } else if (field === "name") {
@@ -138,18 +141,25 @@ const AccountPage = () => {
     if (editingField === "address") {
       setSavingAddress(true);
       try {
+        const normalizedAddress = normalizeAccountAddressDraft(tempData);
+        const requiredFields = ["fullName", "line1", "city", "state", "zip", "country", "countryCode", "MobileNumnber"];
+        const hasMissingRequiredField = requiredFields.some((field) => !normalizedAddress[field]);
+
+        if (hasMissingRequiredField) {
+          message.error("Please fill all required address fields");
+          return;
+        }
+
         if (editingAddressId) {
-          await updateAddress(editingAddressId, tempData);
+          await updateAddress(editingAddressId, normalizedAddress);
           message.success("Address Updated Successfully");
 
           // Update localStorage with the updated address
           updateLocalStorage({
-            [`address_${editingAddressId}`]: tempData
+            [`address_${editingAddressId}`]: normalizedAddress
           });
         } else {
-          // Add new address
-          const payload = { ...tempData };
-          await addAddress(payload);
+          await addAddress(normalizedAddress);
           message.success("Address Saved Successfully");
         }
 
@@ -408,14 +418,17 @@ const AccountPage = () => {
                       <select
                         required
                         value={
-                          tempData.CountryCode ||
-                          countryCodeOptions.find((c) =>
-                            tempData.mobileNumner?.startsWith(c.code)
-                          )?.code ||
-                          "+91"
+                          tempData.countryCode
                         }
                         onChange={(e) =>
-                          setTempData({ ...tempData, CountryCode: e.target.value })
+                          setTempData((prev) => {
+                            const countryCode = normalizeDigits(e.target.value);
+                            return {
+                              ...prev,
+                              countryCode,
+                              country: getCountryNameFromCode(countryCode) || prev.country,
+                            };
+                          })
                         }
                         className="w-28 px-3 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white transition-all duration-300 font-light text-sm md:text-base"
                       >
@@ -429,7 +442,7 @@ const AccountPage = () => {
                         type="text"
                         placeholder="Mobile Number"
                         value={tempData.MobileNumnber || ""}
-                        onChange={(e) => setTempData({ ...tempData, MobileNumnber: e.target.value })}
+                        onChange={(e) => setTempData({ ...tempData, MobileNumnber: normalizeDigits(e.target.value) })}
                         className="w-full px-4 py-3 border border-gray-200/50 focus:border-gray-900 focus:outline-none text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-300 font-light text-sm md:text-base"
                       />
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -527,7 +540,9 @@ const AccountPage = () => {
                                   {addr.city}, {addr.state} - {addr.zip}
                                 </p>
                                 <p className="text-gray-600 font-light mt-1 text-sm">
-                                  {addr.mobileNumner || "No mobile number"}
+                                  {addr.mobileNumner
+                                    ? `${inferCountryCode(addr.country, addr.countryCode)} ${toLocalPhone(addr.mobileNumner, addr.countryCode)}`
+                                    : "No mobile number"}
                                 </p>
                                 <p className="text-gray-600 font-light text-sm">{addr.country}</p>
                               </div>
